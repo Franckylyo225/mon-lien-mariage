@@ -143,7 +143,7 @@ function DashboardHome() {
             Tout voir
           </Link>
         </div>
-        <div className="space-y-4">
+        <div className="grid gap-4 md:grid-cols-2">
           {ceremonies.map((c) => {
             const list = guests
               .filter((g) => g.ceremonyIds.includes(c.id))
