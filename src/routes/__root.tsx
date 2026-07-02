@@ -26,7 +26,7 @@ function NotFoundComponent() {
           to="/"
           className="mt-8 inline-flex items-center justify-center rounded-full bg-primary px-6 py-3 text-xs font-medium uppercase tracking-widest text-primary-foreground transition hover:opacity-90"
         >
-          Retour à l'invitation
+          Retour à l'accueil
         </Link>
       </div>
     </div>
