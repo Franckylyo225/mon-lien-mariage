@@ -50,54 +50,56 @@ function CeremoniesPage() {
           const s = guestStats(guests, c.id);
           return (
             <li key={c.id} className="rounded-3xl border border-border bg-card p-5">
-              <div className="flex items-start gap-3">
-                <span
-                  className="mt-1.5 size-3 shrink-0 rounded-full"
-                  style={{ backgroundColor: c.color }}
-                />
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-serif text-lg">{c.name}</h3>
-                    <span
-                      className={
-                        "rounded-full px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest " +
-                        (c.status === "publiée"
-                          ? "bg-primary/10 text-primary"
-                          : "bg-muted text-muted-foreground")
-                      }
-                    >
-                      {c.status}
-                    </span>
-                  </div>
-                  <p className="mt-0.5 font-mono text-[10px] uppercase tracking-widest opacity-60">
-                    {c.label} · {formatShortDate(c.date)} · {c.timeStart}
-                    {c.timeEnd ? `–${c.timeEnd}` : ""}
-                  </p>
-                  <p className="mt-1 text-xs opacity-70">{c.venue}</p>
-                  {c.dressCode ? (
-                    <p className="mt-2 inline-block rounded-full bg-accent/20 px-2.5 py-0.5 text-[10px] opacity-80">
-                      {c.dressCode}
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+                <div className="flex flex-1 items-start gap-3">
+                  <span
+                    className="mt-1.5 size-3 shrink-0 rounded-full"
+                    style={{ backgroundColor: c.color }}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="font-serif text-lg">{c.name}</h3>
+                      <span
+                        className={
+                          "rounded-full px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest " +
+                          (c.status === "publiée"
+                            ? "bg-primary/10 text-primary"
+                            : "bg-muted text-muted-foreground")
+                        }
+                      >
+                        {c.status}
+                      </span>
+                    </div>
+                    <p className="mt-0.5 font-mono text-[10px] uppercase tracking-widest opacity-60">
+                      {c.label} · {formatShortDate(c.date)} · {c.timeStart}
+                      {c.timeEnd ? `–${c.timeEnd}` : ""}
                     </p>
-                  ) : null}
-                  <div className="mt-3 flex gap-4 font-mono text-[10px] uppercase tracking-widest">
-                    <span>
-                      <span className="text-primary">{s.confirmés}</span> conf.
-                    </span>
-                    <span>
-                      <span className="text-amber-600">{s.en_attente}</span> att.
-                    </span>
-                    <span>
-                      <span className="opacity-60">{s.déclinés}</span> décl.
-                    </span>
-                    {c.capacity ? (
-                      <span className="opacity-60">/ {c.capacity} max</span>
+                    <p className="mt-1 text-xs opacity-70">{c.venue}</p>
+                    {c.dressCode ? (
+                      <p className="mt-2 inline-block rounded-full bg-accent/20 px-2.5 py-0.5 text-[10px] opacity-80">
+                        {c.dressCode}
+                      </p>
                     ) : null}
+                    <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[10px] uppercase tracking-widest">
+                      <span>
+                        <span className="text-primary">{s.confirmés}</span> conf.
+                      </span>
+                      <span>
+                        <span className="text-amber-600">{s.en_attente}</span> att.
+                      </span>
+                      <span>
+                        <span className="opacity-60">{s.déclinés}</span> décl.
+                      </span>
+                      {c.capacity ? (
+                        <span className="opacity-60">/ {c.capacity} max</span>
+                      ) : null}
+                    </div>
                   </div>
                 </div>
-                <div className="flex shrink-0 flex-col gap-1">
+                <div className="flex shrink-0 gap-2 sm:flex-col">
                   <button
                     onClick={() => setEditing(c)}
-                    className="rounded-full border border-border px-3 py-1 font-mono text-[10px] uppercase tracking-widest hover:bg-accent/20"
+                    className="flex-1 rounded-full border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest hover:bg-accent/20 sm:flex-none"
                   >
                     Éditer
                   </button>
@@ -107,13 +109,14 @@ function CeremoniesPage() {
                         status: c.status === "publiée" ? "brouillon" : "publiée",
                       })
                     }
-                    className="rounded-full border border-border px-3 py-1 font-mono text-[10px] uppercase tracking-widest hover:bg-accent/20"
+                    className="flex-1 rounded-full border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest hover:bg-accent/20 sm:flex-none"
                   >
                     {c.status === "publiée" ? "Dépublier" : "Publier"}
                   </button>
                 </div>
               </div>
             </li>
+
           );
         })}
       </ul>
