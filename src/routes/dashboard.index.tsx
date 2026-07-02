@@ -5,6 +5,7 @@ import {
   guestStats,
   formatShortDate,
   nextCeremony,
+  type RSVPStatus,
 } from "@/lib/wedding-store";
 
 export const Route = createFileRoute("/dashboard/")({
@@ -131,6 +132,76 @@ function DashboardHome() {
         </div>
       </section>
 
+      {/* Invités par cérémonie */}
+      <section>
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="font-serif text-lg italic">Invités par cérémonie</h2>
+          <Link
+            to="/dashboard/invites"
+            className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary hover:underline"
+          >
+            Tout voir
+          </Link>
+        </div>
+        <div className="space-y-4">
+          {ceremonies.map((c) => {
+            const list = guests
+              .filter((g) => g.ceremonyIds.includes(c.id))
+              .map((g) => ({
+                g,
+                status:
+                  g.rsvps.find((r) => r.ceremonyId === c.id)?.status ??
+                  "en_attente",
+              }));
+            const s = guestStats(guests, c.id);
+            return (
+              <div
+                key={c.id}
+                className="overflow-hidden rounded-2xl border border-border bg-card"
+              >
+                <div
+                  className="flex items-center justify-between border-b border-border px-4 py-3"
+                  style={{ backgroundColor: c.color + "18" }}
+                >
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="size-2.5 rounded-full"
+                      style={{ backgroundColor: c.color }}
+                    />
+                    <p className="text-sm font-medium">{c.label}</p>
+                  </div>
+                  <p className="font-mono text-[10px] uppercase tracking-widest opacity-70">
+                    {s.confirmés}/{s.total} confirmés
+                  </p>
+                </div>
+                {list.length === 0 ? (
+                  <p className="px-4 py-4 text-xs opacity-60">
+                    Aucun invité pour cette cérémonie.
+                  </p>
+                ) : (
+                  <ul className="divide-y divide-border">
+                    {list.slice(0, 6).map(({ g, status }) => (
+                      <li
+                        key={g.id}
+                        className="flex items-center justify-between px-4 py-2.5 text-sm"
+                      >
+                        <span className="truncate">{g.name}</span>
+                        <StatusPill status={status} />
+                      </li>
+                    ))}
+                    {list.length > 6 ? (
+                      <li className="px-4 py-2 text-center font-mono text-[10px] uppercase tracking-widest opacity-60">
+                        + {list.length - 6} autres
+                      </li>
+                    ) : null}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
       {/* Quick actions */}
       <div className="grid grid-cols-2 gap-3">
         <Link
@@ -140,10 +211,10 @@ function DashboardHome() {
           + Ajouter un invité
         </Link>
         <Link
-          to="/dashboard/ceremonies"
+          to="/dashboard/landing"
           className="rounded-2xl border border-foreground/15 py-4 text-center font-mono text-[10px] uppercase tracking-[0.25em] transition hover:bg-accent/20"
         >
-          + Cérémonie
+          Modifier ma page
         </Link>
       </div>
     </div>
