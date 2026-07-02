@@ -201,7 +201,7 @@ const seedGuests = (ceremonies: Ceremony[]): Guest[] => {
 export function WeddingProvider({ children }: { children: ReactNode }) {
   const [couple, setCouple] = useState<Couple>({
     brideName: "Aïcha",
-    groomName: "Kouassi",
+    groomName: "Stéphane",
     weddingDate: "2027-02-14",
     city: "Abidjan",
     introMessage:
