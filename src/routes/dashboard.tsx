@@ -11,6 +11,7 @@ function DashboardLayout() {
 
   const nav = [
     { to: "/dashboard", label: "Tableau", exact: true },
+    { to: "/dashboard/landing", label: "Ma page" },
     { to: "/dashboard/invites", label: "Invités" },
     { to: "/dashboard/ceremonies", label: "Cérémonies" },
   ];
@@ -33,7 +34,7 @@ function DashboardLayout() {
             </div>
           </Link>
           <Link
-            to="/"
+            to="/invitation"
             className="rounded-full border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] transition hover:bg-accent/20"
           >
             Invitation
