@@ -245,3 +245,23 @@ function StatCard({
     </div>
   );
 }
+
+function StatusPill({ status }: { status: RSVPStatus }) {
+  const map: Record<RSVPStatus, { label: string; cls: string }> = {
+    confirmé: { label: "Confirmé", cls: "bg-primary/15 text-primary" },
+    en_attente: { label: "En attente", cls: "bg-amber-500/15 text-amber-700" },
+    sans_reponse: { label: "En attente", cls: "bg-amber-500/15 text-amber-700" },
+    décliné: { label: "Décliné", cls: "bg-muted text-muted-foreground" },
+  };
+  const { label, cls } = map[status];
+  return (
+    <span
+      className={
+        "shrink-0 rounded-full px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-widest " +
+        cls
+      }
+    >
+      {label}
+    </span>
+  );
+}
