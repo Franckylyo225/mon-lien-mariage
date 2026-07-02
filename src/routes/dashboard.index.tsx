@@ -99,7 +99,7 @@ function DashboardHome() {
             Gérer
           </Link>
         </div>
-        <div className="space-y-2">
+        <div className="grid gap-2 md:grid-cols-2">
           {ceremonies.map((c) => (
             <div
               key={c.id}
