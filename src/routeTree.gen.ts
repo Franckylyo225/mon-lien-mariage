@@ -9,20 +9,20 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as InvitationRouteImport } from './routes/invitation'
 import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as DashboardInvitesRouteImport } from './routes/dashboard.invites'
 import { Route as DashboardCeremoniesRouteImport } from './routes/dashboard.ceremonies'
 
+const InvitationRoute = InvitationRouteImport.update({
+  id: '/invitation',
+  path: '/invitation',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
@@ -42,22 +42,22 @@ const DashboardCeremoniesRoute = DashboardCeremoniesRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/invitation': typeof InvitationRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRoute
   '/dashboard/invites': typeof DashboardInvitesRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/invitation': typeof InvitationRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRoute
   '/dashboard/invites': typeof DashboardInvitesRoute
   '/dashboard': typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/invitation': typeof InvitationRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRoute
   '/dashboard/invites': typeof DashboardInvitesRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -65,41 +65,45 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/dashboard'
+    | '/invitation'
     | '/dashboard/ceremonies'
     | '/dashboard/invites'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard/ceremonies' | '/dashboard/invites' | '/dashboard'
+  to:
+    | '/invitation'
+    | '/dashboard/ceremonies'
+    | '/dashboard/invites'
+    | '/dashboard'
   id:
     | '__root__'
-    | '/'
     | '/dashboard'
+    | '/invitation'
     | '/dashboard/ceremonies'
     | '/dashboard/invites'
     | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRouteWithChildren
+  InvitationRoute: typeof InvitationRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/invitation': {
+      id: '/invitation'
+      path: '/invitation'
+      fullPath: '/invitation'
+      preLoaderRoute: typeof InvitationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/': {
@@ -143,8 +147,8 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   DashboardRoute: DashboardRouteWithChildren,
+  InvitationRoute: InvitationRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

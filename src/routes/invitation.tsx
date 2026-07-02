@@ -8,7 +8,7 @@ import {
   type RSVPStatus,
 } from "@/lib/wedding-store";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/invitation")({
   component: InvitationPage,
 });
 
