@@ -11,7 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as InvitationRouteImport } from './routes/invitation'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as DashboardLandingRouteImport } from './routes/dashboard.landing'
 import { Route as DashboardInvitesRouteImport } from './routes/dashboard.invites'
 import { Route as DashboardCeremoniesRouteImport } from './routes/dashboard.ceremonies'
 
@@ -25,9 +27,19 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardLandingRoute = DashboardLandingRouteImport.update({
+  id: '/landing',
+  path: '/landing',
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardInvitesRoute = DashboardInvitesRouteImport.update({
@@ -42,50 +54,63 @@ const DashboardCeremoniesRoute = DashboardCeremoniesRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/invitation': typeof InvitationRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRoute
   '/dashboard/invites': typeof DashboardInvitesRoute
+  '/dashboard/landing': typeof DashboardLandingRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/invitation': typeof InvitationRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRoute
   '/dashboard/invites': typeof DashboardInvitesRoute
+  '/dashboard/landing': typeof DashboardLandingRoute
   '/dashboard': typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/invitation': typeof InvitationRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRoute
   '/dashboard/invites': typeof DashboardInvitesRoute
+  '/dashboard/landing': typeof DashboardLandingRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/dashboard'
     | '/invitation'
     | '/dashboard/ceremonies'
     | '/dashboard/invites'
+    | '/dashboard/landing'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/invitation'
     | '/dashboard/ceremonies'
     | '/dashboard/invites'
+    | '/dashboard/landing'
     | '/dashboard'
   id:
     | '__root__'
+    | '/'
     | '/dashboard'
     | '/invitation'
     | '/dashboard/ceremonies'
     | '/dashboard/invites'
+    | '/dashboard/landing'
     | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   InvitationRoute: typeof InvitationRoute
 }
@@ -106,11 +131,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/': {
       id: '/dashboard/'
       path: '/'
       fullPath: '/dashboard/'
       preLoaderRoute: typeof DashboardIndexRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/landing': {
+      id: '/dashboard/landing'
+      path: '/landing'
+      fullPath: '/dashboard/landing'
+      preLoaderRoute: typeof DashboardLandingRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/invites': {
@@ -133,12 +172,14 @@ declare module '@tanstack/react-router' {
 interface DashboardRouteChildren {
   DashboardCeremoniesRoute: typeof DashboardCeremoniesRoute
   DashboardInvitesRoute: typeof DashboardInvitesRoute
+  DashboardLandingRoute: typeof DashboardLandingRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardCeremoniesRoute: DashboardCeremoniesRoute,
   DashboardInvitesRoute: DashboardInvitesRoute,
+  DashboardLandingRoute: DashboardLandingRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 
@@ -147,6 +188,7 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   DashboardRoute: DashboardRouteWithChildren,
   InvitationRoute: InvitationRoute,
 }
