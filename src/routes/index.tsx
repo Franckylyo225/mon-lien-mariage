@@ -223,37 +223,57 @@ function MarketingHome() {
         id="fonctionnalites"
         className="border-y border-border bg-accent/10 py-20"
       >
-        <div className="mx-auto max-w-6xl px-5 sm:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <span className="mx-auto mb-4 block h-px w-10 bg-primary/50" />
-            <h2 className="font-serif text-4xl italic">En 3 étapes, c'est prêt</h2>
+        <div className="mx-auto grid max-w-6xl gap-12 px-5 sm:px-8 md:grid-cols-[1fr_1.1fr] md:items-center">
+          <div className="relative order-2 md:order-1">
+            <div className="overflow-hidden rounded-[2rem] shadow-xl ring-1 ring-border">
+              <img
+                src={engagementRing.url}
+                alt="Un homme passe la bague de fiançailles au doigt de sa fiancée"
+                className="aspect-[4/5] w-full object-cover"
+                loading="lazy"
+              />
+            </div>
+            <div className="absolute -bottom-4 -right-4 hidden rounded-2xl bg-background px-4 py-3 shadow-lg ring-1 ring-border sm:block">
+              <p className="font-mono text-[9px] uppercase tracking-widest opacity-60">
+                De la promesse
+              </p>
+              <p className="font-serif text-lg italic">au grand jour</p>
+            </div>
           </div>
-          <div className="mt-14 grid gap-8 md:grid-cols-3">
-            {[
-              {
-                n: "01",
-                t: "Personnalisez votre page",
-                d: "Vos prénoms, la date, une photo, un mot pour vos invités. Choisissez vos cérémonies.",
-              },
-              {
-                n: "02",
-                t: "Partagez le lien ou le QR",
-                d: "Envoyez sur WhatsApp, imprimez le QR sur vos cartons, publiez sur Instagram.",
-              },
-              {
-                n: "03",
-                t: "Suivez tout depuis votre dashboard",
-                d: "Confirmations, déclinaisons, +1, messages — tout se met à jour automatiquement.",
-              },
-            ].map((s) => (
-              <div key={s.n} className="relative">
-                <p className="font-serif text-6xl italic text-primary/30">
-                  {s.n}
-                </p>
-                <h3 className="mt-2 font-serif text-2xl italic">{s.t}</h3>
-                <p className="mt-3 text-sm leading-relaxed opacity-75">{s.d}</p>
-              </div>
-            ))}
+          <div className="order-1 md:order-2">
+            <span className="mb-4 block h-px w-10 bg-primary/50" />
+            <h2 className="font-serif text-4xl italic">En 3 étapes, c'est prêt</h2>
+            <div className="mt-10 space-y-8">
+              {[
+                {
+                  n: "01",
+                  t: "Personnalisez votre page",
+                  d: "Vos prénoms, la date, une photo, un mot pour vos invités. Choisissez vos cérémonies.",
+                },
+                {
+                  n: "02",
+                  t: "Partagez le lien ou le QR",
+                  d: "Envoyez sur WhatsApp, imprimez le QR sur vos cartons, publiez sur Instagram.",
+                },
+                {
+                  n: "03",
+                  t: "Suivez tout depuis votre dashboard",
+                  d: "Confirmations, déclinaisons, +1, messages — tout se met à jour automatiquement.",
+                },
+              ].map((s) => (
+                <div key={s.n} className="flex gap-5">
+                  <p className="font-serif text-5xl italic text-primary/40">
+                    {s.n}
+                  </p>
+                  <div>
+                    <h3 className="font-serif text-2xl italic">{s.t}</h3>
+                    <p className="mt-2 text-sm leading-relaxed opacity-75">
+                      {s.d}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
