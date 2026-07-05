@@ -280,40 +280,55 @@ function MarketingHome() {
 
       {/* Testimonials */}
       <section className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
-        <div className="grid gap-6 md:grid-cols-2">
-          {[
-            {
-              n: "Aïcha & Kouassi",
-              c: "Abidjan · Février 2027",
-              q: "On a envoyé le lien sur WhatsApp le vendredi soir. Le dimanche, on avait déjà 140 confirmations. Une tranquillité incroyable.",
-            },
-            {
-              n: "Fatou & Ismaël",
-              c: "Yamoussoukro · Août 2026",
-              q: "Trois cérémonies à organiser, trois listes différentes. Sans MonMariage.ci, je crois qu'on aurait perdu la tête.",
-            },
-          ].map((t) => (
-            <figure
-              key={t.n}
-              className="rounded-3xl bg-card p-8 shadow-sm ring-1 ring-border"
-            >
-              <p className="font-serif text-3xl italic text-primary/40">“</p>
-              <blockquote className="-mt-4 font-serif text-xl italic leading-relaxed">
-                {t.q}
-              </blockquote>
-              <figcaption className="mt-6 flex items-center gap-3">
-                <span className="grid size-10 place-items-center rounded-full bg-primary/15 font-serif italic text-primary">
-                  {t.n[0]}
-                </span>
-                <div>
-                  <p className="text-sm font-medium">{t.n}</p>
-                  <p className="font-mono text-[10px] uppercase tracking-widest opacity-60">
-                    {t.c}
-                  </p>
-                </div>
-              </figcaption>
-            </figure>
-          ))}
+        <div className="grid gap-10 md:grid-cols-[1.1fr_1fr] md:items-center">
+          <div className="space-y-6">
+            {[
+              {
+                n: "Aïcha & Stéphane",
+                c: "Abidjan · Février 2027",
+                q: "On a envoyé le lien sur WhatsApp le vendredi soir. Le dimanche, on avait déjà 140 confirmations. Une tranquillité incroyable.",
+              },
+              {
+                n: "Fatou & Ismaël",
+                c: "Yamoussoukro · Août 2026",
+                q: "Trois cérémonies à organiser, trois listes différentes. Sans MonMariage.ci, je crois qu'on aurait perdu la tête.",
+              },
+            ].map((t) => (
+              <figure
+                key={t.n}
+                className="rounded-3xl bg-card p-8 shadow-sm ring-1 ring-border"
+              >
+                <p className="font-serif text-3xl italic text-primary/40">“</p>
+                <blockquote className="-mt-4 font-serif text-xl italic leading-relaxed">
+                  {t.q}
+                </blockquote>
+                <figcaption className="mt-6 flex items-center gap-3">
+                  <span className="grid size-10 place-items-center rounded-full bg-primary/15 font-serif italic text-primary">
+                    {t.n[0]}
+                  </span>
+                  <div>
+                    <p className="text-sm font-medium">{t.n}</p>
+                    <p className="font-mono text-[10px] uppercase tracking-widest opacity-60">
+                      {t.c}
+                    </p>
+                  </div>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+          <div className="relative">
+            <div className="overflow-hidden rounded-[2rem] shadow-xl ring-1 ring-border">
+              <img
+                src={churchCouple.url}
+                alt="Mariés se tenant le bras à l'église, la mariée tenant un bouquet"
+                className="aspect-[4/5] w-full object-cover"
+                loading="lazy"
+              />
+            </div>
+            <div className="absolute -top-4 -left-4 hidden rounded-full bg-primary px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-primary-foreground shadow-lg sm:block">
+              +120 couples heureux
+            </div>
+          </div>
         </div>
       </section>
 
