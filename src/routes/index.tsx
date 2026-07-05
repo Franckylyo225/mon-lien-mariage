@@ -1,4 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import heroBouquet from "@/assets/hero-bouquet.jpg.asset.json";
+import engagementRing from "@/assets/engagement-ring.jpg.asset.json";
+import churchCouple from "@/assets/church-couple.jpg.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -128,42 +131,19 @@ function MarketingHome() {
             </div>
           </div>
 
-          {/* Phone mockup */}
-          <div className="relative mx-auto w-full max-w-sm">
-            <div className="relative rotate-2 rounded-[2.5rem] border-8 border-foreground/90 bg-background p-3 shadow-2xl">
-              <div className="overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-accent/40 via-primary/15 to-accent/60">
-                <div className="flex aspect-[9/16] flex-col items-center justify-center p-6 text-center">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-primary">
-                    Ils se disent oui
-                  </p>
-                  <p className="mt-6 font-serif text-5xl italic text-primary/70">
-                    A
-                  </p>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-primary/60">
-                    &
-                  </p>
-                  <p className="font-serif text-5xl italic text-primary/70">K</p>
-                  <p className="mt-6 font-serif text-2xl italic">Aïcha & Kouassi</p>
-                  <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.25em] opacity-70">
-                    14 Février 2027 · Abidjan
-                  </p>
-                  <div className="mt-8 w-full space-y-2">
-                    {[
-                      { l: "Dot", t: "09:00" },
-                      { l: "Civil", t: "11:30" },
-                      { l: "Réception", t: "19:00" },
-                    ].map((r) => (
-                      <div
-                        key={r.l}
-                        className="flex items-center justify-between rounded-full bg-background/70 px-4 py-2 text-[11px]"
-                      >
-                        <span>{r.l}</span>
-                        <span className="font-mono opacity-70">{r.t}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+          {/* Hero photo */}
+          <div className="relative mx-auto w-full max-w-md">
+            <div className="relative rotate-2 overflow-hidden rounded-[2rem] shadow-2xl ring-1 ring-border">
+              <img
+                src={heroBouquet.url}
+                alt="Mariée tenant un bouquet de roses pastel"
+                className="aspect-[3/4] w-full object-cover"
+                loading="eager"
+              />
+              <div
+                aria-hidden
+                className="absolute inset-0 bg-gradient-to-t from-foreground/30 via-transparent to-transparent"
+              />
             </div>
             <div className="absolute -bottom-6 -left-6 rounded-2xl bg-background p-3 shadow-xl ring-1 ring-border">
               <p className="font-mono text-[9px] uppercase tracking-widest opacity-60">
