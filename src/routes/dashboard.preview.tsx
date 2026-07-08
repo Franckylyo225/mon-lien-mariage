@@ -46,7 +46,13 @@ function PreviewPage() {
         <Template
           couple={couple}
           ceremonies={ceremonies}
-          rsvpSlot={<TemplateRsvpForm tone={templateRsvpTone[couple.templateId]} />}
+          rsvpSlot={
+            <TemplateRsvpForm
+              tone={templateRsvpTone[couple.templateId]}
+              weddingId={couple.isPublished && weddingId ? weddingId : undefined}
+              ceremonies={ceremonies}
+            />
+          }
         />
       </div>
     </div>
