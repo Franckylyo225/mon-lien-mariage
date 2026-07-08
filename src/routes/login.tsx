@@ -29,8 +29,8 @@ function LoginPage() {
           e.preventDefault();
           signIn(email);
           const step = account.onboardingStep;
+          const targets = ["/onboarding/couple", "/onboarding/ceremonies", "/onboarding/theme", "/onboarding/guests"] as const;
           if (step < 4) {
-            const targets = ["/onboarding/couple", "/onboarding/ceremonies", "/onboarding/theme", "/onboarding/guests"] as const;
             navigate({ to: targets[step] });
           } else {
             navigate({ to: "/dashboard" });
