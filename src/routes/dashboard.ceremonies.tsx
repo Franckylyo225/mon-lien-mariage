@@ -161,8 +161,9 @@ function CeremonySheet({
   onSave: (c: Omit<Ceremony, "id" | "publicSlug">) => void;
   onDelete?: () => void;
 }) {
-  const [type, setType] = useState<CeremonyType>(initial?.type ?? "reception");
-  const [label, setLabel] = useState(initial?.label ?? "Réception");
+  const [type, setType] = useState<CeremonyType>(initial?.type ?? "diner");
+  const [label, setLabel] = useState(initial?.label ?? "Dîner");
+
   const [name, setName] = useState(initial?.name ?? "");
   const [date, setDate] = useState(initial?.date ?? "2027-02-14");
   const [timeStart, setTimeStart] = useState(initial?.timeStart ?? "18:00");
