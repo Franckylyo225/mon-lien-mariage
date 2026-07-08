@@ -108,12 +108,38 @@ function DashboardHome() {
         </Link>
       </section>
 
-      <Link
-        to="/invitation"
-        className="block w-full rounded-lg bg-primary py-4 text-center text-sm font-medium text-primary-foreground transition hover:opacity-90"
-      >
-        Voir ma page d'invitation
-      </Link>
+      {couple.isPublished && couple.slug ? (
+        <div className="space-y-3">
+          <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 text-center">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-primary">
+              Publié le {new Date(couple.publishedAt ?? "").toLocaleDateString("fr-FR")}
+            </p>
+            <p className="mt-1 text-sm">Votre page est en ligne.</p>
+          </div>
+          <Link
+            to="/e/$slug"
+            params={{ slug: couple.slug }}
+            className="block w-full rounded-lg bg-primary py-4 text-center text-sm font-medium text-primary-foreground transition hover:opacity-90"
+          >
+            Voir ma page publique
+          </Link>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          <Link
+            to="/dashboard/preview"
+            className="block w-full rounded-lg border border-border bg-card py-4 text-center text-sm font-medium transition hover:bg-secondary/40"
+          >
+            Aperçu privé de ma page
+          </Link>
+          <Link
+            to="/publish"
+            className="block w-full rounded-lg bg-primary py-4 text-center text-sm font-medium text-primary-foreground transition hover:opacity-90"
+          >
+            Publier mon invitation
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
