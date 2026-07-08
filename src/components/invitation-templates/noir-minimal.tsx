@@ -62,6 +62,28 @@ export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
                       Dress code — {c.dressCode}
                     </p>
                   ) : null}
+                  {c.program && c.program.length > 0 ? (
+                    <ul className="mt-4 space-y-2">
+                      {c.program.map((it) => (
+                        <li
+                          key={it.id}
+                          className="grid grid-cols-[70px_1fr] gap-3 border-t border-[#f5f3ee]/10 pt-2 first:border-t-0 first:pt-0"
+                        >
+                          <span className="font-mono text-[10px] uppercase tracking-widest text-[#f5f3ee]/50">
+                            {it.time}
+                          </span>
+                          <div>
+                            <p className="text-sm">{it.title}</p>
+                            {it.description ? (
+                              <p className="mt-0.5 text-[11px] text-[#f5f3ee]/50">
+                                {it.description}
+                              </p>
+                            ) : null}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
                 </div>
               </div>
             ))}

@@ -28,6 +28,13 @@ export type RSVPStatus = "confirmé" | "en_attente" | "décliné" | "sans_repons
 
 export type GuestSource = "manuel" | "csv" | "auto";
 
+export interface ProgramItem {
+  id: string;
+  time: string; // "HH:mm"
+  title: string;
+  description?: string;
+}
+
 export interface Ceremony {
   id: string;
   type: CeremonyType;
@@ -42,6 +49,7 @@ export interface Ceremony {
   color: string; // hex
   capacity?: number;
   notes?: string;
+  program?: ProgramItem[];
   status: "brouillon" | "publiée";
   publicSlug: string;
 }
@@ -119,6 +127,12 @@ const seedCeremonies = (): Ceremony[] => [
     notes: "Prévoir kolas, pagnes et enveloppe pour la belle-famille.",
     status: "publiée",
     publicSlug: "dot-diabate",
+    program: [
+      { id: "p1", time: "09:00", title: "Accueil des familles", description: "Café, jus et présentation des délégations." },
+      { id: "p2", time: "10:00", title: "Présentation des kolas", description: "Remise symbolique par la famille du marié." },
+      { id: "p3", time: "11:30", title: "Bénédiction des anciens" },
+      { id: "p4", time: "12:30", title: "Repas traditionnel" },
+    ],
   },
   {
     id: "c2",
@@ -149,6 +163,13 @@ const seedCeremonies = (): Ceremony[] => [
     capacity: 300,
     status: "publiée",
     publicSlug: "reception-jardins",
+    program: [
+      { id: "p1", time: "19:00", title: "Cocktail de bienvenue", description: "Sur la terrasse, au coucher du soleil." },
+      { id: "p2", time: "20:00", title: "Entrée des mariés" },
+      { id: "p3", time: "20:30", title: "Dîner assis" },
+      { id: "p4", time: "22:00", title: "Discours & première danse" },
+      { id: "p5", time: "23:00", title: "Ouverture de la piste" },
+    ],
   },
 
 ];

@@ -93,6 +93,25 @@ export function TropicalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
                     {c.dressCode}
                   </p>
                 ) : null}
+                {c.program && c.program.length > 0 ? (
+                  <ul className="mt-4 space-y-2 border-t border-[#f4e4c1]/15 pt-3">
+                    {c.program.map((it) => (
+                      <li key={it.id} className="flex gap-3">
+                        <span className="w-14 shrink-0 font-mono text-[10px] uppercase tracking-widest text-[#e88b62]">
+                          {it.time}
+                        </span>
+                        <div className="min-w-0">
+                          <p className="font-serif italic text-[#f4e4c1]">{it.title}</p>
+                          {it.description ? (
+                            <p className="mt-0.5 text-[11px] text-[#f4e4c1]/70">
+                              {it.description}
+                            </p>
+                          ) : null}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
               </div>
             ))}
           </div>
