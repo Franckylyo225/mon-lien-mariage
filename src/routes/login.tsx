@@ -56,6 +56,8 @@ function LoginPage() {
 
   return (
     <AuthLayout title="Se connecter">
+      <GoogleAuthButton label="Continuer avec Google" />
+      <AuthDivider />
       <form onSubmit={submit} className="space-y-4">
         <Field label="Adresse email">
           <input
