@@ -66,7 +66,7 @@ function InvitationPage() {
       <Template
         couple={couple}
         ceremonies={ceremonies}
-        rsvpSlot={<TemplateRsvpForm tone={templateRsvpTone[preview]} />}
+        rsvpSlot={<TemplateRsvpForm tone={templateRsvpTone[preview]} ceremonies={ceremonies} />}
       />
     </div>
   );
