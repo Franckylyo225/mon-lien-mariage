@@ -106,6 +106,7 @@ function DashboardHome() {
                 </Link>
               </li>
             ))}
+
             {done.slice(0, 2).map((i) => (
               <li key={i.label} className="flex items-center gap-3 px-4 py-3">
                 <span className="grid size-5 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground">
@@ -145,10 +146,9 @@ function Metric({ label, value, to }: { label: string; value: number; to: string
   );
 }
 
-function destFor(label: string): string {
-  if (label.includes("Prénoms") || label.includes("Date") || label.includes("Photo") || label.includes("Thème"))
-    return "/dashboard/landing";
-  if (label.toLowerCase().includes("cérémonie")) return "/dashboard/ceremonies";
-  if (label.toLowerCase().includes("invités")) return "/dashboard/guests";
-  return "/dashboard";
+function destFor(label: string) {
+  if (label.toLowerCase().includes("cérémonie")) return "/dashboard/ceremonies" as const;
+  if (label.toLowerCase().includes("invités")) return "/dashboard/guests" as const;
+  return "/dashboard/landing" as const;
 }
+
