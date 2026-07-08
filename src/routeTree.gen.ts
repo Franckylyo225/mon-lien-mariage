@@ -17,6 +17,7 @@ import { Route as InvitationRouteImport } from './routes/invitation'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as PublishSuccessRouteImport } from './routes/publish.success'
 import { Route as OnboardingThemeRouteImport } from './routes/onboarding.theme'
 import { Route as OnboardingGuestsRouteImport } from './routes/onboarding.guests'
 import { Route as OnboardingCoupleRouteImport } from './routes/onboarding.couple'
@@ -68,6 +69,11 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => DashboardRoute,
+} as any)
+const PublishSuccessRoute = PublishSuccessRouteImport.update({
+  id: '/success',
+  path: '/success',
+  getParentRoute: () => PublishRoute,
 } as any)
 const OnboardingThemeRoute = OnboardingThemeRouteImport.update({
   id: '/theme',
@@ -131,7 +137,7 @@ export interface FileRoutesByFullPath {
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRouteWithChildren
-  '/publish': typeof PublishRoute
+  '/publish': typeof PublishRouteWithChildren
   '/signup': typeof SignupRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/guests': typeof DashboardGuestsRouteWithChildren
@@ -142,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/onboarding/couple': typeof OnboardingCoupleRoute
   '/onboarding/guests': typeof OnboardingGuestsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
+  '/publish/success': typeof PublishSuccessRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
@@ -151,7 +158,7 @@ export interface FileRoutesByTo {
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRouteWithChildren
-  '/publish': typeof PublishRoute
+  '/publish': typeof PublishRouteWithChildren
   '/signup': typeof SignupRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/guests': typeof DashboardGuestsRouteWithChildren
@@ -162,6 +169,7 @@ export interface FileRoutesByTo {
   '/onboarding/couple': typeof OnboardingCoupleRoute
   '/onboarding/guests': typeof OnboardingGuestsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
+  '/publish/success': typeof PublishSuccessRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
@@ -173,7 +181,7 @@ export interface FileRoutesById {
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRouteWithChildren
-  '/publish': typeof PublishRoute
+  '/publish': typeof PublishRouteWithChildren
   '/signup': typeof SignupRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/guests': typeof DashboardGuestsRouteWithChildren
@@ -184,6 +192,7 @@ export interface FileRoutesById {
   '/onboarding/couple': typeof OnboardingCoupleRoute
   '/onboarding/guests': typeof OnboardingGuestsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
+  '/publish/success': typeof PublishSuccessRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
@@ -207,6 +216,7 @@ export interface FileRouteTypes {
     | '/onboarding/couple'
     | '/onboarding/guests'
     | '/onboarding/theme'
+    | '/publish/success'
     | '/dashboard/'
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
@@ -227,6 +237,7 @@ export interface FileRouteTypes {
     | '/onboarding/couple'
     | '/onboarding/guests'
     | '/onboarding/theme'
+    | '/publish/success'
     | '/dashboard'
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
@@ -248,6 +259,7 @@ export interface FileRouteTypes {
     | '/onboarding/couple'
     | '/onboarding/guests'
     | '/onboarding/theme'
+    | '/publish/success'
     | '/dashboard/'
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
@@ -259,7 +271,7 @@ export interface RootRouteChildren {
   InvitationRoute: typeof InvitationRoute
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRouteWithChildren
-  PublishRoute: typeof PublishRoute
+  PublishRoute: typeof PublishRouteWithChildren
   SignupRoute: typeof SignupRoute
 }
 
@@ -320,6 +332,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/'
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
+    }
+    '/publish/success': {
+      id: '/publish/success'
+      path: '/success'
+      fullPath: '/publish/success'
+      preLoaderRoute: typeof PublishSuccessRouteImport
+      parentRoute: typeof PublishRoute
     }
     '/onboarding/theme': {
       id: '/onboarding/theme'
@@ -464,13 +483,24 @@ const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
   OnboardingRouteChildren,
 )
 
+interface PublishRouteChildren {
+  PublishSuccessRoute: typeof PublishSuccessRoute
+}
+
+const PublishRouteChildren: PublishRouteChildren = {
+  PublishSuccessRoute: PublishSuccessRoute,
+}
+
+const PublishRouteWithChildren =
+  PublishRoute._addFileChildren(PublishRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRouteWithChildren,
   InvitationRoute: InvitationRoute,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRouteWithChildren,
-  PublishRoute: PublishRoute,
+  PublishRoute: PublishRouteWithChildren,
   SignupRoute: SignupRoute,
 }
 export const routeTree = rootRouteImport
