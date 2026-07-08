@@ -1,9 +1,18 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { useWedding } from "@/lib/wedding-store";
+import { useState } from "react";
+import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
+import { getPublicWedding } from "@/lib/public-wedding.functions";
 import { templateComponents, templateRsvpTone } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
 import { EnvelopeAnimation } from "@/components/envelope-animation";
+import type { Ceremony, Couple, TemplateId, ThemeId } from "@/lib/wedding-store";
+
+const publicWeddingQuery = (slug: string) =>
+  queryOptions({
+    queryKey: ["public-wedding", slug],
+    queryFn: () => getPublicWedding({ data: { slug } }),
+    staleTime: 30_000,
+  });
 
 export const Route = createFileRoute("/e/$slug")({
   head: ({ params }) => ({
@@ -21,40 +30,62 @@ export const Route = createFileRoute("/e/$slug")({
       },
     ],
   }),
+  loader: ({ context, params }) =>
+    context.queryClient.ensureQueryData(publicWeddingQuery(params.slug)),
   component: PublicInvitationPage,
   notFoundComponent: NotFound,
+  errorComponent: () => <NotFound />,
 });
 
 function PublicInvitationPage() {
   const { slug } = Route.useParams();
-  const { couple, ceremonies } = useWedding();
-  const [hydrated, setHydrated] = useState(false);
+  const { data } = useSuspenseQuery(publicWeddingQuery(slug));
   const [animPlayed, setAnimPlayed] = useState(false);
 
-  useEffect(() => {
-    setHydrated(true);
-  }, []);
+  if (!data.wedding) throw notFound();
 
-  // Attend l'hydratation localStorage avant de juger l'accessibilité
-  if (!hydrated) {
-    return (
-      <div className="grid min-h-screen place-items-center bg-background">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-40">
-          Chargement…
-        </p>
-      </div>
-    );
-  }
+  const w = data.wedding;
+  const couple: Couple = {
+    brideName: w.bride_name,
+    groomName: w.groom_name,
+    weddingDate: w.wedding_date ?? "",
+    city: w.city ?? "Abidjan",
+    introMessage: w.intro_message ?? "",
+    coupleStory: w.couple_story ?? undefined,
+    heroImageUrl: w.hero_image_url ?? undefined,
+    templateId: (w.template_id as TemplateId) ?? "terracotta",
+    theme: (w.theme as ThemeId) ?? "rose-elegance",
+    accent: w.accent ?? undefined,
+    hashtag: w.hashtag ?? undefined,
+    slug: w.slug ?? undefined,
+    isPublished: true,
+    isLocked: true,
+    hasEnvelopeAnimation: !!w.has_envelope_animation,
+  };
 
-  const accessible = couple.isPublished && couple.slug === slug;
-  if (!accessible) {
-    throw notFound();
-  }
+  const ceremonies: Ceremony[] = (data.ceremonies ?? []).map((c) => ({
+    id: c.id,
+    type: (c.type as Ceremony["type"]) ?? "autre",
+    label: c.label ?? "",
+    name: c.name ?? "",
+    date: c.date ?? "",
+    timeStart: c.time_start ?? "",
+    timeEnd: c.time_end ?? undefined,
+    venue: c.venue ?? "",
+    mapsUrl: c.maps_url ?? undefined,
+    dressCode: c.dress_code ?? undefined,
+    color: c.color ?? "#993556",
+    capacity: c.capacity ?? undefined,
+    notes: c.notes ?? undefined,
+    program: Array.isArray(c.program) ? (c.program as unknown as Ceremony["program"]) : [],
+    status: (c.status as Ceremony["status"]) ?? "publiée",
+    publicSlug: c.public_slug ?? "",
+  }));
 
   const Template = templateComponents[couple.templateId];
 
   return (
-    <div className="relative">
+    <div className="relative" data-theme={couple.theme}>
       {couple.hasEnvelopeAnimation && !animPlayed ? (
         <EnvelopeAnimation
           brideName={couple.brideName}
@@ -65,7 +96,13 @@ function PublicInvitationPage() {
       <Template
         couple={couple}
         ceremonies={ceremonies}
-        rsvpSlot={<TemplateRsvpForm tone={templateRsvpTone[couple.templateId]} />}
+        rsvpSlot={
+          <TemplateRsvpForm
+            tone={templateRsvpTone[couple.templateId]}
+            weddingId={w.id}
+            ceremonies={ceremonies}
+          />
+        }
       />
     </div>
   );

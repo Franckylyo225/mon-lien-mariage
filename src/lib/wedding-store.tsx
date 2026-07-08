@@ -4,9 +4,12 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
+import type { Session } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
 import type { GuestType } from "./guest-meta";
 
 export type CeremonyType =
@@ -100,33 +103,32 @@ export interface Couple {
 export interface Account {
   email: string | null;
   isAuthenticated: boolean;
-  onboardingStep: 0 | 1 | 2 | 3 | 4; // 0 = pas commencé, 4 = terminé
+  onboardingStep: 0 | 1 | 2 | 3 | 4;
 }
 
 interface WeddingState {
+  weddingId: string | null;
+  loading: boolean;
   account: Account;
   couple: Couple;
   ceremonies: Ceremony[];
   guests: Guest[];
-  signIn: (email: string) => void;
-  signOut: () => void;
-  setOnboardingStep: (n: Account["onboardingStep"]) => void;
-  updateCouple: (patch: Partial<Couple>) => void;
-  addCeremony: (c: Omit<Ceremony, "id" | "publicSlug">) => Ceremony;
-  updateCeremony: (id: string, patch: Partial<Ceremony>) => void;
-  removeCeremony: (id: string) => void;
-  addGuest: (g: Omit<Guest, "id" | "rsvps"> & { rsvps?: RSVP[] }) => Guest;
-  updateGuest: (id: string, patch: Partial<Guest>) => void;
-  removeGuest: (id: string) => void;
-  setRsvp: (guestId: string, ceremonyId: string, status: RSVPStatus, plusOnes?: number) => void;
-  publish: (opts?: { slug?: string; envelopeAnimation?: boolean }) => void;
-  unpublish: () => void;
-  resetAll: () => void;
+  signOut: () => Promise<void>;
+  setOnboardingStep: (n: Account["onboardingStep"]) => Promise<void>;
+  updateCouple: (patch: Partial<Couple>) => Promise<void>;
+  addCeremony: (c: Omit<Ceremony, "id" | "publicSlug">) => Promise<Ceremony>;
+  updateCeremony: (id: string, patch: Partial<Ceremony>) => Promise<void>;
+  removeCeremony: (id: string) => Promise<void>;
+  addGuest: (g: Omit<Guest, "id" | "rsvps"> & { rsvps?: RSVP[] }) => Promise<Guest>;
+  updateGuest: (id: string, patch: Partial<Guest>) => Promise<void>;
+  removeGuest: (id: string) => Promise<void>;
+  setRsvp: (guestId: string, ceremonyId: string, status: RSVPStatus, plusOnes?: number) => Promise<void>;
+  publish: (opts?: { slug?: string; envelopeAnimation?: boolean }) => Promise<void>;
+  unpublish: () => Promise<void>;
 }
 
 const WeddingContext = createContext<WeddingState | null>(null);
 
-const uid = () => Math.random().toString(36).slice(2, 10);
 export const slugify = (s: string) =>
   s
     .toLowerCase()
@@ -135,7 +137,10 @@ export const slugify = (s: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
-const STORAGE_KEY = "mmci_state_v1";
+const uid = () =>
+  typeof crypto !== "undefined" && "randomUUID" in crypto
+    ? crypto.randomUUID()
+    : Math.random().toString(36).slice(2);
 
 const defaultCouple = (): Couple => ({
   brideName: "Aïcha",
@@ -155,12 +160,25 @@ const defaultCouple = (): Couple => ({
 const defaultAccount = (): Account => ({
   email: null,
   isAuthenticated: false,
-  onboardingStep: 4, // démo pré-remplie
+  onboardingStep: 4,
 });
 
-const seedCeremonies = (): Ceremony[] => [
+const emptyCouple = (): Couple => ({
+  brideName: "",
+  groomName: "",
+  weddingDate: "",
+  city: "Abidjan",
+  introMessage: "",
+  templateId: "terracotta",
+  theme: "rose-elegance",
+  isPublished: false,
+  isLocked: false,
+});
+
+// ---------- Demo data (used for anonymous browsing on /invitation preview) ----------
+const demoCeremonies = (): Ceremony[] => [
   {
-    id: "c1",
+    id: "demo-c1",
     type: "dot",
     label: "Dot Traditionnelle",
     name: "Dot chez la famille Diabaté",
@@ -171,18 +189,17 @@ const seedCeremonies = (): Ceremony[] => [
     dressCode: "Tenue traditionnelle exigée",
     color: "#993556",
     capacity: 80,
-    notes: "Prévoir kolas, pagnes et enveloppe pour la belle-famille.",
     status: "publiée",
     publicSlug: "dot-diabate",
     program: [
-      { id: "p1", time: "09:00", title: "Accueil des familles", description: "Café, jus et présentation des délégations." },
-      { id: "p2", time: "10:00", title: "Présentation des kolas", description: "Remise symbolique par la famille du marié." },
+      { id: "p1", time: "09:00", title: "Accueil des familles" },
+      { id: "p2", time: "10:00", title: "Présentation des kolas" },
       { id: "p3", time: "11:30", title: "Bénédiction des anciens" },
       { id: "p4", time: "12:30", title: "Repas traditionnel" },
     ],
   },
   {
-    id: "c2",
+    id: "demo-c2",
     type: "civil",
     label: "Mariage Civil",
     name: "Mairie de Cocody",
@@ -197,7 +214,7 @@ const seedCeremonies = (): Ceremony[] => [
     publicSlug: "civil-cocody",
   },
   {
-    id: "c3",
+    id: "demo-c3",
     type: "diner",
     label: "Réception & Dîner",
     name: "Les Jardins de Cocody",
@@ -211,192 +228,408 @@ const seedCeremonies = (): Ceremony[] => [
     status: "publiée",
     publicSlug: "reception-jardins",
     program: [
-      { id: "p1", time: "19:00", title: "Cocktail de bienvenue", description: "Sur la terrasse, au coucher du soleil." },
+      { id: "p1", time: "19:00", title: "Cocktail de bienvenue" },
       { id: "p2", time: "20:00", title: "Entrée des mariés" },
       { id: "p3", time: "20:30", title: "Dîner assis" },
       { id: "p4", time: "22:00", title: "Discours & première danse" },
-      { id: "p5", time: "23:00", title: "Ouverture de la piste" },
     ],
   },
 ];
 
-const seedGuests = (ceremonies: Ceremony[]): Guest[] => {
-  const [dot, civil, reception] = ceremonies;
-  const mk = (
-    name: string,
-    group: string,
-    guestType: GuestType,
-    allowed: number,
-    ids: string[],
-    rsvps: Partial<Record<string, RSVPStatus>>,
-    source: GuestSource = "manuel",
-    phone?: string,
-  ): Guest => ({
-    id: uid(),
-    name,
-    phone,
-    group,
-    guestType,
-    allowedPlusOnes: allowed,
-    source,
-    ceremonyIds: ids,
-    rsvps: ids.map((cid) => ({
-      ceremonyId: cid,
-      status: rsvps[cid] ?? "en_attente",
-      plusOnes: 0,
-    })),
-  });
-  return [
-    mk("Tante Adjoua Kouamé", "Famille mariée", "parent_mariee", 1, [dot.id, civil.id, reception.id], {
-      [dot.id]: "confirmé", [civil.id]: "confirmé", [reception.id]: "confirmé",
-    }, "manuel", "+225 07 12 34 56 78"),
-    mk("Oncle Yao Diabaté", "Famille mariée", "parent_mariee", 2, [dot.id, reception.id], {
-      [dot.id]: "confirmé", [reception.id]: "en_attente",
-    }, "manuel", "+225 05 44 12 90 33"),
-    mk("N'Guessan Konan", "Famille marié", "parent_marie", 1, [dot.id, civil.id, reception.id], {
-      [dot.id]: "confirmé", [civil.id]: "en_attente", [reception.id]: "confirmé",
-    }),
-    mk("Fatou Traoré", "Amies mariée", "ami_mariee", 1, [reception.id], {
-      [reception.id]: "confirmé",
-    }, "csv", "+225 07 88 41 22 10"),
-    mk("Marc Anoumaba", "Collègues", "collegue", 1, [reception.id], {
-      [reception.id]: "décliné",
-    }, "csv"),
-    mk("Grace Adepo", "Amies mariée", "ami_mariee", 0, [reception.id], {
-      [reception.id]: "en_attente",
-    }, "auto", "+225 01 22 55 09 87"),
-    mk("Pasteur Kouadio", "VIP", "autre", 0, [civil.id, reception.id], {
-      [civil.id]: "confirmé", [reception.id]: "confirmé",
-    }),
-    mk("Aminata Bakayoko", "Amies mariée", "ami_mariee", 1, [dot.id, reception.id], {
-      [dot.id]: "en_attente", [reception.id]: "confirmé",
-    }),
-  ];
+// ---------- DB row mappers ----------
+type WeddingRow = {
+  id: string;
+  bride_name: string;
+  groom_name: string;
+  wedding_date: string | null;
+  city: string | null;
+  intro_message: string | null;
+  couple_story: string | null;
+  hero_image_url: string | null;
+  template_id: string;
+  theme: string;
+  accent: string | null;
+  hashtag: string | null;
+  slug: string | null;
+  is_published: boolean;
+  is_locked: boolean;
+  published_at: string | null;
+  has_envelope_animation: boolean;
+  onboarding_step: number;
 };
 
-interface Persisted {
-  account: Account;
-  couple: Couple;
-  ceremonies: Ceremony[];
-  guests: Guest[];
+function rowToCouple(w: WeddingRow): Couple {
+  return {
+    brideName: w.bride_name ?? "",
+    groomName: w.groom_name ?? "",
+    weddingDate: w.wedding_date ?? "",
+    city: w.city ?? "Abidjan",
+    introMessage: w.intro_message ?? "",
+    coupleStory: w.couple_story ?? undefined,
+    heroImageUrl: w.hero_image_url ?? undefined,
+    templateId: (w.template_id as TemplateId) ?? "terracotta",
+    theme: (w.theme as ThemeId) ?? "rose-elegance",
+    accent: w.accent ?? undefined,
+    hashtag: w.hashtag ?? undefined,
+    slug: w.slug ?? undefined,
+    isPublished: !!w.is_published,
+    isLocked: !!w.is_locked,
+    publishedAt: w.published_at ?? undefined,
+    hasEnvelopeAnimation: !!w.has_envelope_animation,
+  };
 }
 
-function loadPersisted(): Persisted | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as Persisted;
-    if (!parsed?.couple || !Array.isArray(parsed?.ceremonies)) return null;
-    return parsed;
-  } catch {
-    return null;
-  }
+function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
+  const r: Record<string, unknown> = {};
+  if (p.brideName !== undefined) r.bride_name = p.brideName;
+  if (p.groomName !== undefined) r.groom_name = p.groomName;
+  if (p.weddingDate !== undefined) r.wedding_date = p.weddingDate || null;
+  if (p.city !== undefined) r.city = p.city;
+  if (p.introMessage !== undefined) r.intro_message = p.introMessage;
+  if (p.coupleStory !== undefined) r.couple_story = p.coupleStory;
+  if (p.heroImageUrl !== undefined) r.hero_image_url = p.heroImageUrl;
+  if (p.templateId !== undefined) r.template_id = p.templateId;
+  if (p.theme !== undefined) r.theme = p.theme;
+  if (p.accent !== undefined) r.accent = p.accent;
+  if (p.hashtag !== undefined) r.hashtag = p.hashtag;
+  if (p.slug !== undefined) r.slug = p.slug;
+  if (p.isPublished !== undefined) r.is_published = p.isPublished;
+  if (p.isLocked !== undefined) r.is_locked = p.isLocked;
+  if (p.publishedAt !== undefined) r.published_at = p.publishedAt;
+  if (p.hasEnvelopeAnimation !== undefined) r.has_envelope_animation = p.hasEnvelopeAnimation;
+  return r;
+}
+
+type CeremonyRow = {
+  id: string;
+  type: string;
+  label: string;
+  name: string;
+  date: string | null;
+  time_start: string | null;
+  time_end: string | null;
+  venue: string | null;
+  maps_url: string | null;
+  dress_code: string | null;
+  color: string | null;
+  capacity: number | null;
+  notes: string | null;
+  program: ProgramItem[] | null;
+  status: string;
+  public_slug: string;
+  sort_order: number;
+};
+
+function rowToCeremony(c: CeremonyRow): Ceremony {
+  return {
+    id: c.id,
+    type: (c.type as CeremonyType) ?? "autre",
+    label: c.label ?? "",
+    name: c.name ?? "",
+    date: c.date ?? "",
+    timeStart: c.time_start ?? "",
+    timeEnd: c.time_end ?? undefined,
+    venue: c.venue ?? "",
+    mapsUrl: c.maps_url ?? undefined,
+    dressCode: c.dress_code ?? undefined,
+    color: c.color ?? "#993556",
+    capacity: c.capacity ?? undefined,
+    notes: c.notes ?? undefined,
+    program: Array.isArray(c.program) ? c.program : [],
+    status: (c.status as Ceremony["status"]) ?? "brouillon",
+    publicSlug: c.public_slug ?? "",
+  };
+}
+
+function ceremonyToRow(c: Partial<Ceremony>): Record<string, unknown> {
+  const r: Record<string, unknown> = {};
+  if (c.type !== undefined) r.type = c.type;
+  if (c.label !== undefined) r.label = c.label;
+  if (c.name !== undefined) r.name = c.name;
+  if (c.date !== undefined) r.date = c.date || null;
+  if (c.timeStart !== undefined) r.time_start = c.timeStart;
+  if (c.timeEnd !== undefined) r.time_end = c.timeEnd;
+  if (c.venue !== undefined) r.venue = c.venue;
+  if (c.mapsUrl !== undefined) r.maps_url = c.mapsUrl;
+  if (c.dressCode !== undefined) r.dress_code = c.dressCode;
+  if (c.color !== undefined) r.color = c.color;
+  if (c.capacity !== undefined) r.capacity = c.capacity;
+  if (c.notes !== undefined) r.notes = c.notes;
+  if (c.program !== undefined) r.program = c.program;
+  if (c.status !== undefined) r.status = c.status;
+  if (c.publicSlug !== undefined) r.public_slug = c.publicSlug;
+  return r;
+}
+
+type GuestRow = {
+  id: string;
+  name: string;
+  phone: string | null;
+  email: string | null;
+  group_name: string;
+  guest_type: string;
+  allowed_plus_ones: number;
+  source: string;
+  ceremony_ids: string[];
+  rsvps: RSVP[] | null;
+  message: string | null;
+};
+
+function rowToGuest(g: GuestRow): Guest {
+  return {
+    id: g.id,
+    name: g.name,
+    phone: g.phone ?? undefined,
+    email: g.email ?? undefined,
+    group: g.group_name ?? "",
+    guestType: (g.guest_type as GuestType) ?? "autre",
+    allowedPlusOnes: g.allowed_plus_ones ?? 0,
+    source: (g.source as GuestSource) ?? "manuel",
+    ceremonyIds: Array.isArray(g.ceremony_ids) ? g.ceremony_ids : [],
+    rsvps: Array.isArray(g.rsvps) ? g.rsvps : [],
+    message: g.message ?? undefined,
+  };
+}
+
+function guestToRow(g: Partial<Guest>): Record<string, unknown> {
+  const r: Record<string, unknown> = {};
+  if (g.name !== undefined) r.name = g.name;
+  if (g.phone !== undefined) r.phone = g.phone;
+  if (g.email !== undefined) r.email = g.email;
+  if (g.group !== undefined) r.group_name = g.group;
+  if (g.guestType !== undefined) r.guest_type = g.guestType;
+  if (g.allowedPlusOnes !== undefined) r.allowed_plus_ones = g.allowedPlusOnes;
+  if (g.source !== undefined) r.source = g.source;
+  if (g.ceremonyIds !== undefined) r.ceremony_ids = g.ceremonyIds;
+  if (g.rsvps !== undefined) r.rsvps = g.rsvps;
+  if (g.message !== undefined) r.message = g.message;
+  return r;
 }
 
 export function WeddingProvider({ children }: { children: ReactNode }) {
+  const [session, setSession] = useState<Session | null>(null);
+  const [authReady, setAuthReady] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [weddingId, setWeddingId] = useState<string | null>(null);
+
   const [account, setAccount] = useState<Account>(defaultAccount);
   const [couple, setCouple] = useState<Couple>(defaultCouple);
-  const [ceremonies, setCeremonies] = useState<Ceremony[]>(() => seedCeremonies());
-  const [guests, setGuests] = useState<Guest[]>(() => seedGuests(seedCeremonies()));
-  const [hydrated, setHydrated] = useState(false);
+  const [ceremonies, setCeremonies] = useState<Ceremony[]>(demoCeremonies);
+  const [guests, setGuests] = useState<Guest[]>([]);
 
-  // Hydrate depuis localStorage côté client
+  const loadedFor = useRef<string | null>(null);
+
+  // Auth subscription
   useEffect(() => {
-    const p = loadPersisted();
-    if (p) {
-      setAccount({ ...defaultAccount(), ...p.account });
-      setCouple({ ...defaultCouple(), ...p.couple });
-      setCeremonies(p.ceremonies);
-      setGuests(p.guests);
-    }
-    setHydrated(true);
+    let mounted = true;
+    supabase.auth.getSession().then(({ data }) => {
+      if (!mounted) return;
+      setSession(data.session);
+      setAuthReady(true);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => {
+      setSession(s);
+    });
+    return () => {
+      mounted = false;
+      sub.subscription.unsubscribe();
+    };
   }, []);
 
+  // Load or create wedding when session changes
   useEffect(() => {
-    if (!hydrated) return;
-    try {
-      window.localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify({ account, couple, ceremonies, guests }),
-      );
-    } catch { /* quota / SSR */ }
-  }, [hydrated, account, couple, ceremonies, guests]);
+    if (!authReady) return;
+    if (!session) {
+      loadedFor.current = null;
+      setWeddingId(null);
+      setAccount(defaultAccount());
+      setCouple(defaultCouple());
+      setCeremonies(demoCeremonies());
+      setGuests([]);
+      setLoading(false);
+      return;
+    }
+    if (loadedFor.current === session.user.id) return;
+    loadedFor.current = session.user.id;
+    setLoading(true);
 
-  // Applique le data-theme sur <html>
+    (async () => {
+      let { data: w } = await supabase
+        .from("weddings")
+        .select("*")
+        .eq("owner_id", session.user.id)
+        .maybeSingle();
+
+      if (!w) {
+        const empty = emptyCouple();
+        const insertRow = { owner_id: session.user.id, ...coupleToRow(empty) };
+        const { data: created, error } = await supabase
+          .from("weddings")
+          .insert(insertRow as never)
+          .select("*")
+          .single();
+        if (error) {
+          console.error("createWedding", error);
+          setLoading(false);
+          return;
+        }
+        w = created;
+      }
+
+      const wRow = w as WeddingRow;
+      setWeddingId(wRow.id);
+      setCouple(rowToCouple(wRow));
+      setAccount({
+        email: session.user.email ?? null,
+        isAuthenticated: true,
+        onboardingStep: (wRow.onboarding_step as Account["onboardingStep"]) ?? 0,
+      });
+
+      const [{ data: cs }, { data: gs }] = await Promise.all([
+        supabase.from("ceremonies").select("*").eq("wedding_id", wRow.id).order("sort_order"),
+        supabase.from("guests").select("*").eq("wedding_id", wRow.id).order("created_at"),
+      ]);
+      setCeremonies((cs ?? []).map((c) => rowToCeremony(c as CeremonyRow)));
+      setGuests((gs ?? []).map((g) => rowToGuest(g as GuestRow)));
+      setLoading(false);
+    })();
+  }, [session, authReady]);
+
+  // Apply data-theme
   useEffect(() => {
     if (typeof document === "undefined") return;
     document.documentElement.setAttribute("data-theme", couple.theme);
   }, [couple.theme]);
 
-  const signIn = useCallback((email: string) => {
-    setAccount((a) => ({ ...a, email, isAuthenticated: true }));
-  }, []);
-  const signOut = useCallback(() => {
-    setAccount((a) => ({ ...a, isAuthenticated: false }));
-  }, []);
-  const setOnboardingStep = useCallback((n: Account["onboardingStep"]) => {
-    setAccount((a) => ({ ...a, onboardingStep: n }));
+  const signOut = useCallback(async () => {
+    await supabase.auth.signOut();
   }, []);
 
-  const updateCouple = useCallback(
-    (patch: Partial<Couple>) => setCouple((c) => ({ ...c, ...patch })),
-    [],
+  const setOnboardingStep = useCallback<WeddingState["setOnboardingStep"]>(
+    async (n) => {
+      setAccount((a) => ({ ...a, onboardingStep: n }));
+      if (weddingId) {
+        await supabase.from("weddings").update({ onboarding_step: n } as never).eq("id", weddingId);
+      }
+    },
+    [weddingId],
   );
 
-  const addCeremony = useCallback((c: Omit<Ceremony, "id" | "publicSlug">) => {
-    const created: Ceremony = { ...c, id: uid(), publicSlug: slugify(c.name) || uid() };
-    setCeremonies((prev) => [...prev, created]);
-    return created;
-  }, []);
-
-  const updateCeremony = useCallback(
-    (id: string, patch: Partial<Ceremony>) =>
-      setCeremonies((prev) => prev.map((c) => (c.id === id ? { ...c, ...patch } : c))),
-    [],
+  const updateCouple = useCallback<WeddingState["updateCouple"]>(
+    async (patch) => {
+      setCouple((c) => ({ ...c, ...patch }));
+      if (weddingId) {
+        const { error } = await supabase
+          .from("weddings")
+          .update(coupleToRow(patch) as never)
+          .eq("id", weddingId);
+        if (error) console.error("updateCouple", error);
+      }
+    },
+    [weddingId],
   );
 
-  const removeCeremony = useCallback((id: string) => {
-    setCeremonies((prev) => prev.filter((c) => c.id !== id));
-    setGuests((prev) =>
-      prev.map((g) => ({
-        ...g,
-        ceremonyIds: g.ceremonyIds.filter((cid) => cid !== id),
-        rsvps: g.rsvps.filter((r) => r.ceremonyId !== id),
-      })),
-    );
-  }, []);
+  const addCeremony = useCallback<WeddingState["addCeremony"]>(
+    async (c) => {
+      const id = uid();
+      const publicSlug = slugify(c.name) || id.slice(0, 6);
+      const created: Ceremony = { ...c, id, publicSlug };
+      setCeremonies((prev) => [...prev, created]);
+      if (weddingId) {
+        const row = {
+          id,
+          wedding_id: weddingId,
+          ...ceremonyToRow(created),
+          sort_order: ceremonies.length,
+        };
+        const { error } = await supabase.from("ceremonies").insert(row as never);
+        if (error) console.error("addCeremony", error);
+      }
+      return created;
+    },
+    [weddingId, ceremonies.length],
+  );
 
-  const addGuest = useCallback<WeddingState["addGuest"]>((g) => {
-    const guest: Guest = {
-      ...g,
-      id: uid(),
-      rsvps:
+  const updateCeremony = useCallback<WeddingState["updateCeremony"]>(
+    async (id, patch) => {
+      setCeremonies((prev) => prev.map((c) => (c.id === id ? { ...c, ...patch } : c)));
+      if (weddingId) {
+        const { error } = await supabase
+          .from("ceremonies")
+          .update(ceremonyToRow(patch) as never)
+          .eq("id", id);
+        if (error) console.error("updateCeremony", error);
+      }
+    },
+    [weddingId],
+  );
+
+  const removeCeremony = useCallback<WeddingState["removeCeremony"]>(
+    async (id) => {
+      setCeremonies((prev) => prev.filter((c) => c.id !== id));
+      setGuests((prev) =>
+        prev.map((g) => ({
+          ...g,
+          ceremonyIds: g.ceremonyIds.filter((cid) => cid !== id),
+          rsvps: g.rsvps.filter((r) => r.ceremonyId !== id),
+        })),
+      );
+      if (weddingId) {
+        const { error } = await supabase.from("ceremonies").delete().eq("id", id);
+        if (error) console.error("removeCeremony", error);
+      }
+    },
+    [weddingId],
+  );
+
+  const addGuest = useCallback<WeddingState["addGuest"]>(
+    async (g) => {
+      const id = uid();
+      const rsvps =
         g.rsvps ??
-        g.ceremonyIds.map((cid) => ({ ceremonyId: cid, status: "en_attente", plusOnes: 0 })),
-    };
-    setGuests((prev) => [guest, ...prev]);
-    return guest;
-  }, []);
-
-  const updateGuest = useCallback(
-    (id: string, patch: Partial<Guest>) =>
-      setGuests((prev) => prev.map((g) => (g.id === id ? { ...g, ...patch } : g))),
-    [],
+        g.ceremonyIds.map((cid) => ({ ceremonyId: cid, status: "en_attente" as RSVPStatus, plusOnes: 0 }));
+      const created: Guest = { ...g, id, rsvps };
+      setGuests((prev) => [created, ...prev]);
+      if (weddingId) {
+        const row = { id, wedding_id: weddingId, ...guestToRow(created) };
+        const { error } = await supabase.from("guests").insert(row as never);
+        if (error) console.error("addGuest", error);
+      }
+      return created;
+    },
+    [weddingId],
   );
 
-  const removeGuest = useCallback(
-    (id: string) => setGuests((prev) => prev.filter((g) => g.id !== id)),
-    [],
+  const updateGuest = useCallback<WeddingState["updateGuest"]>(
+    async (id, patch) => {
+      setGuests((prev) => prev.map((g) => (g.id === id ? { ...g, ...patch } : g)));
+      if (weddingId) {
+        const { error } = await supabase.from("guests").update(guestToRow(patch) as never).eq("id", id);
+        if (error) console.error("updateGuest", error);
+      }
+    },
+    [weddingId],
+  );
+
+  const removeGuest = useCallback<WeddingState["removeGuest"]>(
+    async (id) => {
+      setGuests((prev) => prev.filter((g) => g.id !== id));
+      if (weddingId) {
+        const { error } = await supabase.from("guests").delete().eq("id", id);
+        if (error) console.error("removeGuest", error);
+      }
+    },
+    [weddingId],
   );
 
   const setRsvp = useCallback<WeddingState["setRsvp"]>(
-    (guestId, ceremonyId, status, plusOnes) => {
+    async (guestId, ceremonyId, status, plusOnes) => {
+      let nextRsvps: RSVP[] = [];
       setGuests((prev) =>
         prev.map((g) => {
           if (g.id !== guestId) return g;
           const existing = g.rsvps.find((r) => r.ceremonyId === ceremonyId);
-          const nextRsvps = existing
+          nextRsvps = existing
             ? g.rsvps.map((r) =>
                 r.ceremonyId === ceremonyId
                   ? { ...r, status, plusOnes: plusOnes ?? r.plusOnes }
@@ -406,51 +639,81 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
           return { ...g, rsvps: nextRsvps };
         }),
       );
+      if (weddingId) {
+        await supabase.from("guests").update({ rsvps: nextRsvps as unknown as never } as never).eq("id", guestId);
+      }
     },
-    [],
+    [weddingId],
   );
 
-  const publish = useCallback<WeddingState["publish"]>((opts) => {
-    setCouple((c) => {
-      const baseSlug = opts?.slug || c.slug || slugify(`${c.brideName}-et-${c.groomName}`) || uid();
-      return {
-        ...c,
+  const publish = useCallback<WeddingState["publish"]>(
+    async (opts) => {
+      const baseSlug =
+        opts?.slug || couple.slug || slugify(`${couple.brideName}-et-${couple.groomName}`) || uid();
+      const patch: Partial<Couple> = {
         slug: baseSlug,
         isPublished: true,
         isLocked: true,
         publishedAt: new Date().toISOString(),
-        hasEnvelopeAnimation: opts?.envelopeAnimation ?? c.hasEnvelopeAnimation ?? false,
+        hasEnvelopeAnimation: opts?.envelopeAnimation ?? couple.hasEnvelopeAnimation ?? false,
       };
-    });
-  }, []);
+      setCouple((c) => ({ ...c, ...patch }));
+      if (weddingId) {
+        const { error } = await supabase.from("weddings").update(coupleToRow(patch) as never).eq("id", weddingId);
+        if (error) console.error("publish", error);
+      }
+    },
+    [weddingId, couple.slug, couple.brideName, couple.groomName, couple.hasEnvelopeAnimation],
+  );
 
-  const unpublish = useCallback(() => {
-    setCouple((c) => ({ ...c, isPublished: false, isLocked: false }));
-  }, []);
-
-  const resetAll = useCallback(() => {
-    setAccount(defaultAccount());
-    setCouple(defaultCouple());
-    const seeds = seedCeremonies();
-    setCeremonies(seeds);
-    setGuests(seedGuests(seeds));
-    try { window.localStorage.removeItem(STORAGE_KEY); } catch { /* noop */ }
-  }, []);
+  const unpublish = useCallback<WeddingState["unpublish"]>(async () => {
+    const patch: Partial<Couple> = { isPublished: false, isLocked: false };
+    setCouple((c) => ({ ...c, ...patch }));
+    if (weddingId) {
+      await supabase.from("weddings").update(coupleToRow(patch) as never).eq("id", weddingId);
+    }
+  }, [weddingId]);
 
   const value = useMemo<WeddingState>(
     () => ({
-      account, couple, ceremonies, guests,
-      signIn, signOut, setOnboardingStep,
-      updateCouple, addCeremony, updateCeremony, removeCeremony,
-      addGuest, updateGuest, removeGuest, setRsvp,
-      publish, unpublish, resetAll,
+      weddingId,
+      loading,
+      account,
+      couple,
+      ceremonies,
+      guests,
+      signOut,
+      setOnboardingStep,
+      updateCouple,
+      addCeremony,
+      updateCeremony,
+      removeCeremony,
+      addGuest,
+      updateGuest,
+      removeGuest,
+      setRsvp,
+      publish,
+      unpublish,
     }),
     [
-      account, couple, ceremonies, guests,
-      signIn, signOut, setOnboardingStep,
-      updateCouple, addCeremony, updateCeremony, removeCeremony,
-      addGuest, updateGuest, removeGuest, setRsvp,
-      publish, unpublish, resetAll,
+      weddingId,
+      loading,
+      account,
+      couple,
+      ceremonies,
+      guests,
+      signOut,
+      setOnboardingStep,
+      updateCouple,
+      addCeremony,
+      updateCeremony,
+      removeCeremony,
+      addGuest,
+      updateGuest,
+      removeGuest,
+      setRsvp,
+      publish,
+      unpublish,
     ],
   );
 
@@ -513,7 +776,6 @@ export function guestStats(guests: Guest[], ceremonyId?: string) {
   return { total, confirmés, en_attente, déclinés };
 }
 
-// Progression de configuration (0-100)
 export function configProgress(state: {
   couple: Couple;
   ceremonies: Ceremony[];
@@ -521,41 +783,13 @@ export function configProgress(state: {
 }): { pct: number; items: { label: string; done: boolean; weight: number }[] } {
   const { couple, ceremonies, guests } = state;
   const items = [
-    {
-      label: "Prénoms du couple",
-      done: !!couple.brideName && !!couple.groomName,
-      weight: 15,
-    },
-    {
-      label: "Date du mariage",
-      done: !!couple.weddingDate,
-      weight: 10,
-    },
-    {
-      label: "Au moins 1 cérémonie avec date et lieu",
-      done: ceremonies.some((c) => c.date && c.venue),
-      weight: 20,
-    },
-    {
-      label: "Toutes les cérémonies ont date et lieu",
-      done: ceremonies.length > 0 && ceremonies.every((c) => c.date && c.venue),
-      weight: 15,
-    },
-    {
-      label: "Au moins 5 invités",
-      done: guests.length >= 5,
-      weight: 15,
-    },
-    {
-      label: "Photo du couple",
-      done: !!couple.heroImageUrl,
-      weight: 10,
-    },
-    {
-      label: "Thème choisi",
-      done: !!couple.theme,
-      weight: 15,
-    },
+    { label: "Prénoms du couple", done: !!couple.brideName && !!couple.groomName, weight: 15 },
+    { label: "Date du mariage", done: !!couple.weddingDate, weight: 10 },
+    { label: "Au moins 1 cérémonie avec date et lieu", done: ceremonies.some((c) => c.date && c.venue), weight: 20 },
+    { label: "Toutes les cérémonies ont date et lieu", done: ceremonies.length > 0 && ceremonies.every((c) => c.date && c.venue), weight: 15 },
+    { label: "Au moins 5 invités", done: guests.length >= 5, weight: 15 },
+    { label: "Photo du couple", done: !!couple.heroImageUrl, weight: 10 },
+    { label: "Thème choisi", done: !!couple.theme, weight: 15 },
   ];
   const pct = items.reduce((sum, i) => sum + (i.done ? i.weight : 0), 0);
   return { pct, items };

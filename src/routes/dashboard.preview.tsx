@@ -14,7 +14,7 @@ export const Route = createFileRoute("/dashboard/preview")({
 });
 
 function PreviewPage() {
-  const { couple, ceremonies } = useWedding();
+  const { couple, ceremonies, weddingId } = useWedding();
   const Template = templateComponents[couple.templateId];
 
   return (
@@ -46,7 +46,13 @@ function PreviewPage() {
         <Template
           couple={couple}
           ceremonies={ceremonies}
-          rsvpSlot={<TemplateRsvpForm tone={templateRsvpTone[couple.templateId]} />}
+          rsvpSlot={
+            <TemplateRsvpForm
+              tone={templateRsvpTone[couple.templateId]}
+              weddingId={couple.isPublished && weddingId ? weddingId : undefined}
+              ceremonies={ceremonies}
+            />
+          }
         />
       </div>
     </div>

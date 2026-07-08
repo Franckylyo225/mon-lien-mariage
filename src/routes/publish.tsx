@@ -32,7 +32,7 @@ function PublishPage() {
     setLoading(true);
     // Paiement simulé (démo). CinetPay sera branché plus tard.
     await new Promise((r) => setTimeout(r, 900));
-    publish({ slug, envelopeAnimation: envelope });
+    await publish({ slug, envelopeAnimation: envelope });
     navigate({ to: "/publish/success" });
   };
 
