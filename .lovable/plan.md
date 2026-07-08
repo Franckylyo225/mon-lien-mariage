@@ -1,94 +1,65 @@
 
-# Refonte MonMariage.ci — v2
+# Refonte MonMariage.ci — Étape 1 (front-only, mocks)
 
-Direction produit : passer d'un site "démo unique" à une vraie plateforme SaaS de création d'invitations de cérémonie, avec catalogue de templates, éditeur simple, et dashboard invités par cérémonie. Tout reste front-only (données en localStorage via `wedding-store`), donc les "pages publiques" sont des routes locales partageables en démo.
+Livraison par étapes comme convenu. **Cette PR = étapes 1-3 du brief** : landing, auth (mockée), wizard 4 étapes, dashboard avec progression. Pas de Supabase, pas de CinetPay. Les écrans suivants (aperçu, paywall + animation enveloppe, publication, page publique `/e/:slug`) sont scopés pour l'étape 2.
 
-## 1. Nouvelle homepage `/`
+## Ce qui change dans l'existant
 
-Objectif : convertir. Structure repensée, plus "produit" et moins "carte de visite".
+- **Store** : `wedding-store` reste la source de vérité côté démo, mais je le fais évoluer pour matcher le modèle du brief.
+  - Ajout d'un objet `account` (email mocké, `isAuthenticated`, `onboardingStep`).
+  - Ajout sur `couple` : `isPublished`, `isLocked`, `publishedAt`, `slug`, `coupleStory`, `coupleyPhotoUrl` (déjà partiellement là).
+  - Ajout sur `Guest` : `guestType` (`parent_mariee | parent_marie | ami_mariee | ami_marie | collegue | autre`) + `maxCompanions` (existe déjà en `allowedPlusOnes`, je renomme conceptuellement).
+  - Persistance localStorage (aujourd'hui non persistée → j'ajoute pour que le wizard survive un refresh).
+- **Thèmes** : je passe des 5 templates actuels aux **3 thèmes du brief** (`rose-elegance` / `ivoire-epure` / `wax-dore`). Les 5 templates existants deviennent des variantes internes non-exposées pour l'instant — je garde le code mais je masque les entrées UI. Ça évite de tout jeter.
+- **Homepage `/`** : remplacée par la landing marketing du brief (héro romantique serif, 3 bénéfices, un seul CTA "Commencer gratuitement"). L'ancienne homepage "produit" est supprimée.
 
-Sections dans l'ordre :
-1. **Hero produit** — headline orienté bénéfice + aperçu visuel d'une invitation (mockup mobile flottant avec une des templates), 2 CTA : "Créer mon invitation" / "Voir les modèles".
-2. **Bandeau confiance** — logos/citations courtes + compteurs (couples, RSVP, cérémonies).
-3. **Galerie des templates** — grille de 5+ vignettes cliquables qui ouvrent la démo `/invitation/:template`.
-4. **Types de cérémonies couverts** — 6 pictos (dot, civil, religieux, traditionnel, dîner, anniversaire de mariage) avec 1 phrase chacun.
-5. **Comment ça marche** — 3 étapes (choisir un modèle → personnaliser → partager le lien/QR), avec une capture du dashboard.
-6. **Fonctionnalités clés** — RSVP par cérémonie, +1, QR, WhatsApp, programme, plan d'accès.
-7. **Témoignages** (garder les 2 actuels, remonter l'image `churchCouple`).
-8. **Tarifs** — garder Gratuit / Le Grand Jour, ajouter une 3e offre "Sur-mesure" pour agences/wedding planners.
-9. **FAQ** — 6 questions (est-ce que ça marche sans internet chez l'invité, puis-je changer après envoi, etc.).
-10. **CTA final** + footer.
+## Nouvelles routes (Étape 1)
 
-Direction visuelle : conserver la palette Terracotta lumière douce + typo serif italique déjà en place (cohérence avec ce qui a été validé), mais densifier la page (plus de preuves visuelles de produit, moins de "brochure").
+```
+/                            landing (refonte)
+/signup                      inscription mockée (email + mdp, pas de vraie auth)
+/login                       connexion mockée
+/onboarding/couple           wizard 1/4 — prénoms + date
+/onboarding/ceremonies       wizard 2/4 — types de cérémonies (multi)
+/onboarding/theme            wizard 3/4 — 3 thèmes
+/onboarding/guests           wizard 4/4 — premiers invités (skippable)
+/dashboard                   refonte : prénoms serif, compte à rebours, progression %, checklist
+/dashboard/ceremonies        déjà là, adapté au nouveau modèle
+/dashboard/ceremonies/$id    nouvel écran d'édition détaillée (dress code, capacité, notes, maps URL)
+/dashboard/guests            renommage de dashboard.invites, avec chips de type d'invité
+/dashboard/guests/new        écran d'ajout dédié (obligatoire par le brief)
+```
 
-## 2. Catalogue de templates d'invitation (5)
+## Étape 2 (pas dans cette PR)
 
-Chaque template = un composant React qui reçoit les mêmes données (`useWedding()`), rendu sur `/invitation/:template`.
+- `/dashboard/preview` avec bandeau sticky "Aperçu privé"
+- `/publish` paywall + add-on animation enveloppe (modale SVG 3s)
+- `/publish/success` avec verrouillage `isLocked`
+- `/e/$slug` page publique (404 si non publié)
+- Activation Lovable Cloud + migration des tables Supabase
+- Intégration CinetPay sandbox
 
-Templates prévus :
-- `terracotta` — la version actuelle, chaleureuse ivoirienne (défaut).
-- `noir-minimal` — noir/ivoire, typo grotesque, très éditorial.
-- `botanique-dore` — feuillages, filets dorés, ambiance classique.
-- `tropical` — palmes, vert profond + corail, esprit lagunaire Abidjan.
-- `art-deco` — géométrie or/bordeaux, style années 20.
+## Design system
 
-Sélecteur de template : petit switcher en haut de `/invitation` (chip par style) — permet aussi à l'utilisateur de tester avant de choisir depuis le dashboard.
+- Palette **Rose Élégance** par défaut (bordeaux `#993556`, rose poudré `#FBEAF0`, fond `#FAFAF9`, texte `#1A1A1A`). Les 3 thèmes sont définis en CSS vars et switchables via `data-theme` sur `<html>`.
+- Typos déjà chargées : **Playfair Display** (serif italique, titres et prénoms) + **Inter** (UI). OK.
+- Radii 8-12px, pas d'ombres lourdes, beaucoup de blanc.
+- **Mobile-first strict** : chaque écran testé à 375px avant de scaler.
 
-## 3. Éditeur landing `/dashboard/landing`
+## Règles métier appliquées dès l'étape 1
 
-Ajouts à l'existant :
-- Choix du template (radio visuel avec vignette de chaque style).
-- Aperçu live du template sélectionné à droite (desktop) / dessous (mobile).
-- Champs : prénoms, date, lieu principal, hashtag, mot des mariés, photo de couverture (URL), couleur d'accent (préréglages).
-- Bouton "Copier le lien" + "Télécharger le QR" (QR généré côté client).
-
-## 4. Cérémonies — passage à 6 types
-
-Étendre le type `Ceremony` dans `src/lib/wedding-store.tsx` :
-`dot | civil | religieux | traditionnel | diner | anniversaire`
-
-- Chaque type a une icône, une couleur d'accent, un libellé FR.
-- `dashboard.ceremonies` : sélecteur du type à la création, filtre par type.
-- `dashboard.invites` : filtre "par cérémonie" déjà présent, s'étend automatiquement.
-- Page invitation : afficher les cérémonies sous forme de timeline avec RSVP indépendant par cérémonie.
-
-## 5. Dashboard — simplification
-
-Garder la structure actuelle mais :
-- **Overview (`/dashboard`)** : 4 KPI (invités totaux, confirmés, en attente, refus) + prochain événement + raccourcis (Partager le lien, Ajouter un invité, Ajouter une cérémonie).
-- **Invités** : ajout d'un mini import "coller une liste" (une ligne = un invité), export CSV (blob local), recherche.
-- **Cérémonies** : cartes par type avec compteur RSVP, action "Voir les invités de cette cérémonie".
-- **Ma page** : voir §3.
-
-## 6. Plan SaaS proposé
-
-À afficher dans la section Tarifs :
-
-| Offre | Prix | Cible | Limites |
-|---|---|---|---|
-| Découverte | Gratuit | Essayer | 1 cérémonie, 30 invités, 1 template, branding MonMariage.ci |
-| Le Grand Jour | 25 000 FCFA (paiement unique) | Couple standard | Cérémonies & invités illimités, 5 templates, QR HD, WhatsApp, import CSV |
-| Prestige | 75 000 FCFA | Grand mariage / wedding planner | Tout Grand Jour + sous-domaine perso, retrait du branding, plusieurs mariages gérés, support prioritaire |
+- **Wizard resume** : au login, si `account.onboardingStep < 4`, redirection vers l'étape correspondante (détectée depuis l'état du wedding en store).
+- **Progression dashboard** (formule du brief, 6 items pondérés) : prénoms 15%, date 10%, ≥1 cérémonie avec date+lieu 20%, toutes cérémonies date+lieu 15%, ≥5 invités 15%, photo 10%, thème 15%. Calculée à partir du store.
+- **isLocked** existe déjà en modèle mais reste `false` en étape 1 (verrouillage sera testable à l'étape 2 après le paywall). Le bouton "Supprimer cérémonie" et les inputs prénoms reçoivent déjà la logique conditionnelle.
 
 ## Détails techniques
 
-- **Front-only strict** : aucune activation Cloud, tout dans `wedding-store` (localStorage). Les "pages publiques" sont juste des routes locales, on assume que la démo montre le concept.
-- **Nouvelles routes** :
-  - `src/routes/invitation.$template.tsx` (params `terracotta|noir-minimal|…`), et `src/routes/invitation.tsx` redirige vers le template choisi par défaut.
-  - Chaque template dans `src/components/invitation-templates/<name>.tsx`, tous typés avec la même prop `WeddingData`.
-- **QR code** : `bun add qrcode` (pure JS, compatible edge), génération côté client à partir de `window.location.origin + /invitation/:template`.
-- **Icônes cérémonies** : mapping `type → LucideIcon` centralisé dans `src/lib/ceremony-meta.ts`.
-- **Store** : étendre l'enum `type` de `Ceremony`, ajouter `templateId` sur `couple`, ajouter `accentColor` optionnel. Migration douce (fallback si absent en localStorage existant).
-- **Responsive** : conserver les patterns déjà appliqués (grid + min-w-0 + shrink-0 pour headers).
-- **SEO/head** : chaque nouvelle route reçoit son propre `head()` avec title + description FR spécifiques (pas de duplication).
-- Aucun backend, aucune migration DB, aucune edge function.
-
-## Ce qui ne change pas
-
-- Palette et typographie actuelles (Terracotta), pour rester cohérent avec la direction déjà validée.
-- Auth : aucune (front-only).
-- Le store `wedding-store` reste la seule source de vérité côté démo.
+- Auth mockée : `signup`/`login` écrivent juste `{ email, isAuthenticated: true }` dans le store + localStorage. Aucune vérification. Une bannière discrète "Mode démo — auth simulée" est affichée sur `/signup` et `/login`.
+- Persistance : `wedding-store` gagne un `useEffect` de sync localStorage (clé `mmci_state_v1`). Migration silencieuse si version différente.
+- Chips de type d'invité : dictionnaire de couleurs douces (rose poudré / bleu poudré / lavande / menthe / sable / gris) centralisé dans `src/lib/guest-meta.ts`.
+- Sélecteurs date/heure : `<input type="date">` / `<input type="time">` natifs (mobile-friendly), pas de dépendance externe.
+- Aucun package ajouté à cette étape (pas de `qrcode`, pas de CinetPay SDK, pas de Supabase client).
 
 ## Livraison
 
-Prêt à implémenter en une passe une fois validé : nouvelle homepage, 5 templates, éditeur enrichi, dashboard mis à jour, 6 types de cérémonies, QR client.
+Une seule passe pour livrer cette étape 1. À la fin je te propose de tester le parcours signup → wizard → dashboard, puis on enchaîne sur l'étape 2 (aperçu + paywall + animation enveloppe) dans un prompt séparé.
