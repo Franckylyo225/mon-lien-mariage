@@ -268,6 +268,7 @@ function AddGuestSheet({
     name: string;
     phone?: string;
     group: string;
+    guestType: import("@/lib/guest-meta").GuestType;
     allowedPlusOnes: number;
     source: GuestSource;
     ceremonyIds: string[];
@@ -373,6 +374,7 @@ function AddGuestSheet({
                 name: name.trim(),
                 phone: phone.trim() || undefined,
                 group,
+                guestType: "autre",
                 allowedPlusOnes: plus,
                 source: "manuel",
                 ceremonyIds: ids,
