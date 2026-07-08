@@ -14,7 +14,7 @@ export const Route = createFileRoute("/dashboard/preview")({
 });
 
 function PreviewPage() {
-  const { couple, ceremonies } = useWedding();
+  const { couple, ceremonies, weddingId } = useWedding();
   const Template = templateComponents[couple.templateId];
 
   return (
