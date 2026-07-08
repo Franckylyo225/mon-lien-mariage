@@ -15,13 +15,6 @@ export const templateComponents: Record<TemplateId, ComponentType<TemplateProps>
   "art-deco": ArtDecoTemplate,
 };
 
-  terracotta: TerracottaTemplate,
-  "noir-minimal": NoirMinimalTemplate,
-  "botanique-dore": BotaniqueDoreTemplate,
-  tropical: TropicalTemplate,
-  "art-deco": ArtDecoTemplate,
-};
-
 export const templateRsvpTone: Record<
   TemplateId,
   "warm" | "dark" | "gold" | "tropical" | "deco"
