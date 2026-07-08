@@ -104,6 +104,21 @@ export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
                     {c.dressCode}
                   </p>
                 ) : null}
+                {c.program && c.program.length > 0 ? (
+                  <ul className="mt-3 space-y-2 border-l border-dashed border-[#4a2a20]/25 pl-4">
+                    {c.program.map((it) => (
+                      <li key={it.id}>
+                        <p className="font-mono text-[9px] uppercase tracking-wider" style={{ color: accent }}>
+                          {it.time}
+                        </p>
+                        <p className="font-serif text-sm italic">{it.title}</p>
+                        {it.description ? (
+                          <p className="mt-0.5 text-[11px] opacity-70">{it.description}</p>
+                        ) : null}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
               </li>
             ))}
           </ol>

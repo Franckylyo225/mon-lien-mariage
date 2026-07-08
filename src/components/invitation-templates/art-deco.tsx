@@ -85,6 +85,25 @@ export function ArtDecoTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps)
                     ◆ {c.dressCode}
                   </p>
                 ) : null}
+                {c.program && c.program.length > 0 ? (
+                  <ul className="relative z-10 mt-4 space-y-2 border-t border-[#c9a84c]/30 pt-3">
+                    {c.program.map((it) => (
+                      <li key={it.id} className="flex gap-3">
+                        <span className="w-14 shrink-0 font-mono text-[10px] uppercase tracking-[0.25em] text-[#c9a84c]">
+                          {it.time}
+                        </span>
+                        <div className="min-w-0">
+                          <p className="font-serif italic">{it.title}</p>
+                          {it.description ? (
+                            <p className="mt-0.5 text-[11px] text-[#f0d78c]/70">
+                              {it.description}
+                            </p>
+                          ) : null}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
               </div>
             ))}
           </div>
