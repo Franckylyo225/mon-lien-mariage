@@ -119,6 +119,8 @@ interface WeddingState {
   updateGuest: (id: string, patch: Partial<Guest>) => void;
   removeGuest: (id: string) => void;
   setRsvp: (guestId: string, ceremonyId: string, status: RSVPStatus, plusOnes?: number) => void;
+  publish: (opts?: { slug?: string; envelopeAnimation?: boolean }) => void;
+  unpublish: () => void;
   resetAll: () => void;
 }
 
