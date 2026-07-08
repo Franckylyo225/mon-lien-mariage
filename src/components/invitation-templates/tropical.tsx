@@ -1,5 +1,6 @@
 import { daysUntil, formatFrenchDate } from "@/lib/wedding-store";
 import type { TemplateProps } from "./types";
+import { CeremonyProgramTabs } from "./program-tabs";
 
 export function TropicalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
   const published = ceremonies.filter((c) => c.status === "publiée");
