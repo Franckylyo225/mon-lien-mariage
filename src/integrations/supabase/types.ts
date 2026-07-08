@@ -14,7 +14,283 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      ceremonies: {
+        Row: {
+          capacity: number | null
+          color: string | null
+          created_at: string
+          date: string | null
+          dress_code: string | null
+          id: string
+          label: string
+          maps_url: string | null
+          name: string
+          notes: string | null
+          program: Json
+          public_slug: string
+          sort_order: number
+          status: string
+          time_end: string | null
+          time_start: string | null
+          type: string
+          venue: string | null
+          wedding_id: string
+        }
+        Insert: {
+          capacity?: number | null
+          color?: string | null
+          created_at?: string
+          date?: string | null
+          dress_code?: string | null
+          id?: string
+          label: string
+          maps_url?: string | null
+          name: string
+          notes?: string | null
+          program?: Json
+          public_slug?: string
+          sort_order?: number
+          status?: string
+          time_end?: string | null
+          time_start?: string | null
+          type: string
+          venue?: string | null
+          wedding_id: string
+        }
+        Update: {
+          capacity?: number | null
+          color?: string | null
+          created_at?: string
+          date?: string | null
+          dress_code?: string | null
+          id?: string
+          label?: string
+          maps_url?: string | null
+          name?: string
+          notes?: string | null
+          program?: Json
+          public_slug?: string
+          sort_order?: number
+          status?: string
+          time_end?: string | null
+          time_start?: string | null
+          type?: string
+          venue?: string | null
+          wedding_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ceremonies_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      guests: {
+        Row: {
+          allowed_plus_ones: number
+          ceremony_ids: string[]
+          created_at: string
+          email: string | null
+          group_name: string | null
+          guest_type: string
+          id: string
+          message: string | null
+          name: string
+          phone: string | null
+          rsvps: Json
+          source: string
+          wedding_id: string
+        }
+        Insert: {
+          allowed_plus_ones?: number
+          ceremony_ids?: string[]
+          created_at?: string
+          email?: string | null
+          group_name?: string | null
+          guest_type?: string
+          id?: string
+          message?: string | null
+          name: string
+          phone?: string | null
+          rsvps?: Json
+          source?: string
+          wedding_id: string
+        }
+        Update: {
+          allowed_plus_ones?: number
+          ceremony_ids?: string[]
+          created_at?: string
+          email?: string | null
+          group_name?: string | null
+          guest_type?: string
+          id?: string
+          message?: string | null
+          name?: string
+          phone?: string | null
+          rsvps?: Json
+          source?: string
+          wedding_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guests_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
+      rsvps: {
+        Row: {
+          attending: boolean
+          ceremony_id: string | null
+          companions: number
+          created_at: string
+          guest_email: string | null
+          guest_name: string
+          guest_phone: string | null
+          id: string
+          message: string | null
+          wedding_id: string
+        }
+        Insert: {
+          attending: boolean
+          ceremony_id?: string | null
+          companions?: number
+          created_at?: string
+          guest_email?: string | null
+          guest_name: string
+          guest_phone?: string | null
+          id?: string
+          message?: string | null
+          wedding_id: string
+        }
+        Update: {
+          attending?: boolean
+          ceremony_id?: string | null
+          companions?: number
+          created_at?: string
+          guest_email?: string | null
+          guest_name?: string
+          guest_phone?: string | null
+          id?: string
+          message?: string | null
+          wedding_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rsvps_ceremony_id_fkey"
+            columns: ["ceremony_id"]
+            isOneToOne: false
+            referencedRelation: "ceremonies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rsvps_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      weddings: {
+        Row: {
+          accent: string | null
+          bride_name: string
+          city: string | null
+          couple_story: string | null
+          created_at: string
+          groom_name: string
+          has_envelope_animation: boolean
+          hashtag: string | null
+          hero_image_url: string | null
+          id: string
+          intro_message: string | null
+          is_locked: boolean
+          is_published: boolean
+          onboarding_step: number
+          owner_id: string
+          published_at: string | null
+          slug: string | null
+          template_id: string
+          theme: string
+          updated_at: string
+          wedding_date: string | null
+        }
+        Insert: {
+          accent?: string | null
+          bride_name?: string
+          city?: string | null
+          couple_story?: string | null
+          created_at?: string
+          groom_name?: string
+          has_envelope_animation?: boolean
+          hashtag?: string | null
+          hero_image_url?: string | null
+          id?: string
+          intro_message?: string | null
+          is_locked?: boolean
+          is_published?: boolean
+          onboarding_step?: number
+          owner_id: string
+          published_at?: string | null
+          slug?: string | null
+          template_id?: string
+          theme?: string
+          updated_at?: string
+          wedding_date?: string | null
+        }
+        Update: {
+          accent?: string | null
+          bride_name?: string
+          city?: string | null
+          couple_story?: string | null
+          created_at?: string
+          groom_name?: string
+          has_envelope_animation?: boolean
+          hashtag?: string | null
+          hero_image_url?: string | null
+          id?: string
+          intro_message?: string | null
+          is_locked?: boolean
+          is_published?: boolean
+          onboarding_step?: number
+          owner_id?: string
+          published_at?: string | null
+          slug?: string | null
+          template_id?: string
+          theme?: string
+          updated_at?: string
+          wedding_date?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
