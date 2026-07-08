@@ -94,6 +94,7 @@ export interface Couple {
   isPublished: boolean;
   isLocked: boolean;
   publishedAt?: string;
+  hasEnvelopeAnimation?: boolean;
 }
 
 export interface Account {
@@ -118,6 +119,8 @@ interface WeddingState {
   updateGuest: (id: string, patch: Partial<Guest>) => void;
   removeGuest: (id: string) => void;
   setRsvp: (guestId: string, ceremonyId: string, status: RSVPStatus, plusOnes?: number) => void;
+  publish: (opts?: { slug?: string; envelopeAnimation?: boolean }) => void;
+  unpublish: () => void;
   resetAll: () => void;
 }
 
@@ -407,6 +410,24 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  const publish = useCallback<WeddingState["publish"]>((opts) => {
+    setCouple((c) => {
+      const baseSlug = opts?.slug || c.slug || slugify(`${c.brideName}-et-${c.groomName}`) || uid();
+      return {
+        ...c,
+        slug: baseSlug,
+        isPublished: true,
+        isLocked: true,
+        publishedAt: new Date().toISOString(),
+        hasEnvelopeAnimation: opts?.envelopeAnimation ?? c.hasEnvelopeAnimation ?? false,
+      };
+    });
+  }, []);
+
+  const unpublish = useCallback(() => {
+    setCouple((c) => ({ ...c, isPublished: false, isLocked: false }));
+  }, []);
+
   const resetAll = useCallback(() => {
     setAccount(defaultAccount());
     setCouple(defaultCouple());
@@ -421,13 +442,15 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       account, couple, ceremonies, guests,
       signIn, signOut, setOnboardingStep,
       updateCouple, addCeremony, updateCeremony, removeCeremony,
-      addGuest, updateGuest, removeGuest, setRsvp, resetAll,
+      addGuest, updateGuest, removeGuest, setRsvp,
+      publish, unpublish, resetAll,
     }),
     [
       account, couple, ceremonies, guests,
       signIn, signOut, setOnboardingStep,
       updateCouple, addCeremony, updateCeremony, removeCeremony,
-      addGuest, updateGuest, removeGuest, setRsvp, resetAll,
+      addGuest, updateGuest, removeGuest, setRsvp,
+      publish, unpublish, resetAll,
     ],
   );
 
