@@ -20,6 +20,7 @@ import { Route as OnboardingThemeRouteImport } from './routes/onboarding.theme'
 import { Route as OnboardingGuestsRouteImport } from './routes/onboarding.guests'
 import { Route as OnboardingCoupleRouteImport } from './routes/onboarding.couple'
 import { Route as OnboardingCeremoniesRouteImport } from './routes/onboarding.ceremonies'
+import { Route as DashboardPreviewRouteImport } from './routes/dashboard.preview'
 import { Route as DashboardLandingRouteImport } from './routes/dashboard.landing'
 import { Route as DashboardInvitesRouteImport } from './routes/dashboard.invites'
 import { Route as DashboardGuestsRouteImport } from './routes/dashboard.guests'
@@ -82,6 +83,11 @@ const OnboardingCeremoniesRoute = OnboardingCeremoniesRouteImport.update({
   path: '/ceremonies',
   getParentRoute: () => OnboardingRoute,
 } as any)
+const DashboardPreviewRoute = DashboardPreviewRouteImport.update({
+  id: '/preview',
+  path: '/preview',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardLandingRoute = DashboardLandingRouteImport.update({
   id: '/landing',
   path: '/landing',
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/guests': typeof DashboardGuestsRouteWithChildren
   '/dashboard/invites': typeof DashboardInvitesRoute
   '/dashboard/landing': typeof DashboardLandingRoute
+  '/dashboard/preview': typeof DashboardPreviewRoute
   '/onboarding/ceremonies': typeof OnboardingCeremoniesRoute
   '/onboarding/couple': typeof OnboardingCoupleRoute
   '/onboarding/guests': typeof OnboardingGuestsRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/dashboard/guests': typeof DashboardGuestsRouteWithChildren
   '/dashboard/invites': typeof DashboardInvitesRoute
   '/dashboard/landing': typeof DashboardLandingRoute
+  '/dashboard/preview': typeof DashboardPreviewRoute
   '/onboarding/ceremonies': typeof OnboardingCeremoniesRoute
   '/onboarding/couple': typeof OnboardingCoupleRoute
   '/onboarding/guests': typeof OnboardingGuestsRoute
@@ -162,6 +170,7 @@ export interface FileRoutesById {
   '/dashboard/guests': typeof DashboardGuestsRouteWithChildren
   '/dashboard/invites': typeof DashboardInvitesRoute
   '/dashboard/landing': typeof DashboardLandingRoute
+  '/dashboard/preview': typeof DashboardPreviewRoute
   '/onboarding/ceremonies': typeof OnboardingCeremoniesRoute
   '/onboarding/couple': typeof OnboardingCoupleRoute
   '/onboarding/guests': typeof OnboardingGuestsRoute
@@ -183,6 +192,7 @@ export interface FileRouteTypes {
     | '/dashboard/guests'
     | '/dashboard/invites'
     | '/dashboard/landing'
+    | '/dashboard/preview'
     | '/onboarding/ceremonies'
     | '/onboarding/couple'
     | '/onboarding/guests'
@@ -201,6 +211,7 @@ export interface FileRouteTypes {
     | '/dashboard/guests'
     | '/dashboard/invites'
     | '/dashboard/landing'
+    | '/dashboard/preview'
     | '/onboarding/ceremonies'
     | '/onboarding/couple'
     | '/onboarding/guests'
@@ -220,6 +231,7 @@ export interface FileRouteTypes {
     | '/dashboard/guests'
     | '/dashboard/invites'
     | '/dashboard/landing'
+    | '/dashboard/preview'
     | '/onboarding/ceremonies'
     | '/onboarding/couple'
     | '/onboarding/guests'
@@ -317,6 +329,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingCeremoniesRouteImport
       parentRoute: typeof OnboardingRoute
     }
+    '/dashboard/preview': {
+      id: '/dashboard/preview'
+      path: '/preview'
+      fullPath: '/dashboard/preview'
+      preLoaderRoute: typeof DashboardPreviewRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/landing': {
       id: '/dashboard/landing'
       path: '/landing'
@@ -390,6 +409,7 @@ interface DashboardRouteChildren {
   DashboardGuestsRoute: typeof DashboardGuestsRouteWithChildren
   DashboardInvitesRoute: typeof DashboardInvitesRoute
   DashboardLandingRoute: typeof DashboardLandingRoute
+  DashboardPreviewRoute: typeof DashboardPreviewRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
@@ -398,6 +418,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardGuestsRoute: DashboardGuestsRouteWithChildren,
   DashboardInvitesRoute: DashboardInvitesRoute,
   DashboardLandingRoute: DashboardLandingRoute,
+  DashboardPreviewRoute: DashboardPreviewRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 
