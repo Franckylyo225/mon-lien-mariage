@@ -6,6 +6,7 @@ import {
   guestStats,
   type Ceremony,
   type CeremonyType,
+  type ProgramItem,
 } from "@/lib/wedding-store";
 
 export const Route = createFileRoute("/dashboard/ceremonies")({
@@ -174,6 +175,27 @@ function CeremonySheet({
   const [capacity, setCapacity] = useState<number | "">(initial?.capacity ?? "");
   const [notes, setNotes] = useState(initial?.notes ?? "");
   const [status, setStatus] = useState<Ceremony["status"]>(initial?.status ?? "brouillon");
+  const [program, setProgram] = useState<ProgramItem[]>(initial?.program ?? []);
+
+  const addProgramItem = () =>
+    setProgram((p) => [
+      ...p,
+      { id: Math.random().toString(36).slice(2, 9), time: "", title: "", description: "" },
+    ]);
+  const updateProgramItem = (id: string, patch: Partial<ProgramItem>) =>
+    setProgram((p) => p.map((it) => (it.id === id ? { ...it, ...patch } : it)));
+  const removeProgramItem = (id: string) =>
+    setProgram((p) => p.filter((it) => it.id !== id));
+  const moveProgramItem = (id: string, dir: -1 | 1) =>
+    setProgram((p) => {
+      const i = p.findIndex((it) => it.id === id);
+      if (i < 0) return p;
+      const j = i + dir;
+      if (j < 0 || j >= p.length) return p;
+      const next = [...p];
+      [next[i], next[j]] = [next[j], next[i]];
+      return next;
+    });
 
   return (
     <div
