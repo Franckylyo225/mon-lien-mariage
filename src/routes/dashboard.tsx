@@ -11,9 +11,9 @@ function DashboardLayout() {
 
   const nav = [
     { to: "/dashboard", label: "Tableau", exact: true },
-    { to: "/dashboard/landing", label: "Ma page" },
-    { to: "/dashboard/invites", label: "Invités" },
+    { to: "/dashboard/guests", label: "Invités" },
     { to: "/dashboard/ceremonies", label: "Cérémonies" },
+    { to: "/dashboard/landing", label: "Ma page" },
   ];
 
   return (
