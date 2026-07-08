@@ -77,7 +77,7 @@ function PublicInvitationPage() {
     color: c.color ?? "#993556",
     capacity: c.capacity ?? undefined,
     notes: c.notes ?? undefined,
-    program: Array.isArray(c.program) ? (c.program as Ceremony["program"]) : [],
+    program: Array.isArray(c.program) ? (c.program as unknown as Ceremony["program"]) : [],
     status: (c.status as Ceremony["status"]) ?? "publiée",
     publicSlug: c.public_slug ?? "",
   }));
