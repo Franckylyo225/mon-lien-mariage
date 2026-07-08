@@ -324,7 +324,91 @@ function CeremonySheet({
               {status}
             </button>
           </div>
+
+          <div className="rounded-2xl border border-border bg-muted/30 p-4">
+            <div className="mb-3 flex items-center justify-between">
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-widest opacity-60">
+                  Programme de la cérémonie
+                </p>
+                <p className="mt-0.5 text-[11px] opacity-60">
+                  Les étapes affichées aux invités.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={addProgramItem}
+                className="shrink-0 rounded-full border border-border bg-background px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest hover:bg-accent/20"
+              >
+                + Étape
+              </button>
+            </div>
+            {program.length === 0 ? (
+              <p className="rounded-xl border border-dashed border-border bg-background/50 p-4 text-center text-[11px] opacity-60">
+                Aucune étape. Ajoutez le déroulé (accueil, discours, dîner…).
+              </p>
+            ) : (
+              <ul className="space-y-2">
+                {program.map((it, idx) => (
+                  <li
+                    key={it.id}
+                    className="rounded-xl border border-border bg-background p-3"
+                  >
+                    <div className="flex gap-2">
+                      <input
+                        type="time"
+                        value={it.time}
+                        onChange={(e) => updateProgramItem(it.id, { time: e.target.value })}
+                        className="w-24 shrink-0 rounded-lg border border-input bg-background px-2 py-2 text-xs"
+                      />
+                      <input
+                        value={it.title}
+                        onChange={(e) => updateProgramItem(it.id, { title: e.target.value })}
+                        placeholder="Titre de l'étape"
+                        className="min-w-0 flex-1 rounded-lg border border-input bg-background px-3 py-2 text-sm"
+                      />
+                    </div>
+                    <textarea
+                      value={it.description ?? ""}
+                      onChange={(e) =>
+                        updateProgramItem(it.id, { description: e.target.value })
+                      }
+                      rows={2}
+                      placeholder="Description (optionnelle)"
+                      className="mt-2 w-full rounded-lg border border-input bg-background px-3 py-2 text-xs"
+                    />
+                    <div className="mt-2 flex justify-end gap-1">
+                      <button
+                        type="button"
+                        onClick={() => moveProgramItem(it.id, -1)}
+                        disabled={idx === 0}
+                        className="rounded-full border border-border px-2 py-1 font-mono text-[9px] uppercase tracking-widest disabled:opacity-30 hover:bg-accent/20"
+                      >
+                        ↑
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveProgramItem(it.id, 1)}
+                        disabled={idx === program.length - 1}
+                        className="rounded-full border border-border px-2 py-1 font-mono text-[9px] uppercase tracking-widest disabled:opacity-30 hover:bg-accent/20"
+                      >
+                        ↓
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeProgramItem(it.id)}
+                        className="rounded-full border border-destructive/30 px-2 py-1 font-mono text-[9px] uppercase tracking-widest text-destructive hover:bg-destructive/10"
+                      >
+                        Suppr.
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
+
 
         <div className="mt-6 flex gap-2">
           {onDelete ? (
