@@ -72,7 +72,11 @@ export interface Couple {
   city: string;
   introMessage: string;
   heroImageUrl?: string;
+  templateId: TemplateId;
+  accent?: string;
+  hashtag?: string;
 }
+
 
 interface WeddingState {
   couple: Couple;
