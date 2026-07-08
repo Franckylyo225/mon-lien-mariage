@@ -1,5 +1,6 @@
 import { formatFrenchDate } from "@/lib/wedding-store";
 import type { TemplateProps } from "./types";
+import { CeremonyProgramTabs } from "./program-tabs";
 
 export function BotaniqueDoreTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
   const published = ceremonies.filter((c) => c.status === "publiée");
