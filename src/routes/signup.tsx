@@ -50,6 +50,8 @@ function SignupPage() {
 
   return (
     <AuthLayout title="Créer un compte">
+      <GoogleAuthButton label="S'inscrire avec Google" />
+      <AuthDivider />
       <form onSubmit={submit} className="space-y-4">
         <Field label="Adresse email">
           <input
