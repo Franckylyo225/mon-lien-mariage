@@ -74,48 +74,7 @@ export function TropicalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
             <h2 className="font-serif text-2xl italic">Programme</h2>
             <span className="ml-auto h-px flex-1 bg-[#e88b62]/40" />
           </div>
-          <div className="space-y-4">
-            {published.map((c) => (
-              <div
-                key={c.id}
-                className="rounded-2xl border border-[#f4e4c1]/15 bg-[#1a4d3d] p-5"
-              >
-                <div className="flex items-baseline justify-between">
-                  <h3 className="font-serif text-xl italic text-[#f4e4c1]">
-                    {c.name}
-                  </h3>
-                  <p className="font-mono text-xs text-[#e88b62]">{c.timeStart}</p>
-                </div>
-                <p className="mt-1 text-sm text-[#f4e4c1]/70">
-                  {c.label} · {c.venue}
-                </p>
-                {c.dressCode ? (
-                  <p className="mt-3 inline-block rounded-full bg-[#e88b62]/20 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-[#e88b62]">
-                    {c.dressCode}
-                  </p>
-                ) : null}
-                {c.program && c.program.length > 0 ? (
-                  <ul className="mt-4 space-y-2 border-t border-[#f4e4c1]/15 pt-3">
-                    {c.program.map((it) => (
-                      <li key={it.id} className="flex gap-3">
-                        <span className="w-14 shrink-0 font-mono text-[10px] uppercase tracking-widest text-[#e88b62]">
-                          {it.time}
-                        </span>
-                        <div className="min-w-0">
-                          <p className="font-serif italic text-[#f4e4c1]">{it.title}</p>
-                          {it.description ? (
-                            <p className="mt-0.5 text-[11px] text-[#f4e4c1]/70">
-                              {it.description}
-                            </p>
-                          ) : null}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-              </div>
-            ))}
-          </div>
+          <CeremonyProgramTabs ceremonies={published} variant="tropical" />
         </section>
 
         {rsvpSlot}
