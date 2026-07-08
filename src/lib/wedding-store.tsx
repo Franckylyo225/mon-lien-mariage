@@ -137,7 +137,7 @@ const seedCeremonies = (): Ceremony[] => [
   },
   {
     id: "c3",
-    type: "reception",
+    type: "diner",
     label: "Réception & Dîner",
     name: "Les Jardins de Cocody",
     date: "2027-02-14",
@@ -150,6 +150,7 @@ const seedCeremonies = (): Ceremony[] => [
     status: "publiée",
     publicSlug: "reception-jardins",
   },
+
 ];
 
 const seedGuests = (ceremonies: Ceremony[]): Guest[] => {
