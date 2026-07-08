@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { AuthLayout, Field } from "./signup";
+import { AuthLayout, Field, GoogleAuthButton, AuthDivider } from "./signup";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -56,6 +56,8 @@ function LoginPage() {
 
   return (
     <AuthLayout title="Se connecter">
+      <GoogleAuthButton label="Continuer avec Google" />
+      <AuthDivider />
       <form onSubmit={submit} className="space-y-4">
         <Field label="Adresse email">
           <input
