@@ -440,6 +440,13 @@ function CeremonySheet({
                 color,
                 capacity: capacity === "" ? undefined : capacity,
                 notes: notes.trim() || undefined,
+                program: program
+                  .map((it) => ({
+                    ...it,
+                    title: it.title.trim(),
+                    description: it.description?.trim() || undefined,
+                  }))
+                  .filter((it) => it.title.length > 0),
                 status,
               })
             }
