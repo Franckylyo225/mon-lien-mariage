@@ -1,3 +1,4 @@
+import type { ComponentType } from "react";
 import type { TemplateId } from "@/lib/wedding-store";
 import type { TemplateProps } from "./types";
 import { TerracottaTemplate } from "./terracotta";
@@ -6,10 +7,14 @@ import { BotaniqueDoreTemplate } from "./botanique-dore";
 import { TropicalTemplate } from "./tropical";
 import { ArtDecoTemplate } from "./art-deco";
 
-export const templateComponents: Record<
-  TemplateId,
-  (props: TemplateProps) => JSX.Element
-> = {
+export const templateComponents: Record<TemplateId, ComponentType<TemplateProps>> = {
+  terracotta: TerracottaTemplate,
+  "noir-minimal": NoirMinimalTemplate,
+  "botanique-dore": BotaniqueDoreTemplate,
+  tropical: TropicalTemplate,
+  "art-deco": ArtDecoTemplate,
+};
+
   terracotta: TerracottaTemplate,
   "noir-minimal": NoirMinimalTemplate,
   "botanique-dore": BotaniqueDoreTemplate,
