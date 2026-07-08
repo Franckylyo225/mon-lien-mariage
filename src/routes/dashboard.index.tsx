@@ -3,265 +3,147 @@ import {
   useWedding,
   daysUntil,
   guestStats,
-  formatShortDate,
-  nextCeremony,
-  type RSVPStatus,
+  formatFrenchDate,
+  configProgress,
 } from "@/lib/wedding-store";
 
 export const Route = createFileRoute("/dashboard/")({
+  head: () => ({ meta: [{ title: "Tableau de bord — MonMariage.ci" }] }),
   component: DashboardHome,
 });
 
 function DashboardHome() {
   const { couple, ceremonies, guests } = useWedding();
-  const days = daysUntil(couple.weddingDate);
+  const days = couple.weddingDate ? daysUntil(couple.weddingDate) : null;
   const stats = guestStats(guests);
-  const upcoming = nextCeremony(ceremonies);
-
-  const perCeremony = ceremonies.map((c) => {
-    const s = guestStats(guests, c.id);
-    return { c, s };
-  });
-  const totalConfirmedAll = perCeremony.reduce((a, b) => a + b.s.confirmés, 0) || 1;
+  const { pct, items } = configProgress({ couple, ceremonies, guests });
 
   return (
-    <div className="space-y-8">
-      <div>
-        <p className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-50">
-          Bienvenue, {couple.brideName}
+    <div className="space-y-10">
+      {/* Prénoms du couple */}
+      <section className="text-center py-6">
+        <p className="font-serif text-4xl italic sm:text-5xl">{couple.brideName}</p>
+        <p className="my-2 font-serif text-2xl italic text-primary sm:text-3xl">&</p>
+        <p className="font-serif text-4xl italic sm:text-5xl">{couple.groomName}</p>
+        <p className="mt-6 text-sm text-muted-foreground">
+          {couple.weddingDate ? (
+            <>
+              {formatFrenchDate(couple.weddingDate)}
+              {days !== null ? <> · <span className="text-primary">{days} jours</span></> : null}
+            </>
+          ) : (
+            <Link to="/dashboard/ceremonies" className="underline">
+              Date à définir
+            </Link>
+          )}
         </p>
-        <h1 className="mt-1 font-serif text-3xl italic">Tableau de bord</h1>
-      </div>
-
-      {/* Countdown */}
-      <div className="relative overflow-hidden rounded-3xl bg-primary p-8 text-primary-foreground">
-        <div className="absolute -right-6 -top-6 size-40 rounded-full bg-white/10 blur-3xl" />
-        <p className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-80">
-          Compte à rebours
-        </p>
-        <p className="mt-2 font-serif text-5xl italic">J − {days}</p>
-        <p className="mt-1 text-sm opacity-80">{formatShortDate(couple.weddingDate)}</p>
-        {upcoming ? (
-          <p className="mt-4 inline-block rounded-full bg-white/15 px-3 py-1 font-mono text-[10px] uppercase tracking-widest">
-            Prochaine : {upcoming.label} · {upcoming.timeStart}
-          </p>
-        ) : null}
-      </div>
-
-      {/* Stats grid */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatCard label="Total RSVP" value={stats.total} />
-        <StatCard label="Confirmés" value={stats.confirmés} tone="primary" />
-        <StatCard label="En attente" value={stats.en_attente} tone="warn" />
-        <StatCard label="Déclinés" value={stats.déclinés} tone="mute" />
-      </div>
-
-      {/* Répartition par cérémonie */}
-      <section className="rounded-3xl border border-border bg-card p-6">
-        <h2 className="font-serif text-lg italic">Répartition par cérémonie</h2>
-        <div className="mt-5 space-y-4">
-          {perCeremony.map(({ c, s }) => {
-            const pct = Math.round((s.confirmés / totalConfirmedAll) * 100);
-            return (
-              <div key={c.id}>
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2">
-                    <span
-                      className="size-2.5 rounded-full"
-                      style={{ backgroundColor: c.color }}
-                    />
-                    <span>{c.label}</span>
-                  </div>
-                  <span className="font-mono opacity-70">
-                    {s.confirmés} conf. · {s.en_attente} att.
-                  </span>
-                </div>
-                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-muted">
-                  <div
-                    className="h-full rounded-full"
-                    style={{ width: pct + "%", backgroundColor: c.color }}
-                  />
-                </div>
-              </div>
-            );
-          })}
-        </div>
       </section>
 
-      {/* Ceremonies status */}
-      <section>
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="font-serif text-lg italic">Statut des cérémonies</h2>
-          <Link
-            to="/dashboard/ceremonies"
-            className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary hover:underline"
-          >
-            Gérer
-          </Link>
+      {/* Progression */}
+      <section className="rounded-xl border border-border bg-card p-5">
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-medium">Configuration</p>
+          <p className="font-mono text-sm">{pct}%</p>
         </div>
-        <div className="grid gap-2 md:grid-cols-2">
-          {ceremonies.map((c) => (
-            <div
-              key={c.id}
-              className="flex items-center justify-between rounded-2xl border border-border bg-card p-4"
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-muted">
+          <div
+            className="h-full rounded-full bg-foreground transition-all"
+            style={{ width: pct + "%" }}
+          />
+        </div>
+        <ul className="mt-5 space-y-2">
+          {items.slice(0, 4).map((i) => (
+            <li
+              key={i.label}
+              className={
+                "flex items-center gap-3 text-sm " +
+                (i.done ? "text-muted-foreground line-through" : "")
+              }
             >
-              <div className="flex min-w-0 items-center gap-3">
-                <span
-                  className="size-2.5 shrink-0 rounded-full"
-                  style={{ backgroundColor: c.color }}
-                />
-                <div className="min-w-0">
-                  <p className="truncate text-sm">{c.name}</p>
-                  <p className="font-mono text-[10px] uppercase tracking-widest opacity-60">
-                    {formatShortDate(c.date)} · {c.timeStart}
-                  </p>
-                </div>
-              </div>
               <span
                 className={
-                  "shrink-0 rounded-full px-2 py-1 font-mono text-[9px] uppercase tracking-widest " +
-                  (c.status === "publiée"
-                    ? "bg-primary/10 text-primary"
-                    : "bg-muted text-muted-foreground")
+                  "grid size-5 shrink-0 place-items-center rounded-full text-[10px] " +
+                  (i.done
+                    ? "bg-primary text-primary-foreground"
+                    : "border border-border")
                 }
               >
-                {c.status}
+                {i.done ? "✓" : ""}
               </span>
-            </div>
+              {i.label}
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
 
-      {/* Invités par cérémonie */}
+      {/* Métriques */}
+      <section className="grid grid-cols-2 gap-3">
+        <MetricCard label="Cérémonies" value={ceremonies.length} to="/dashboard/ceremonies" />
+        <MetricCard label="Invités" value={guests.length} to="/dashboard/guests" />
+      </section>
+
+      {/* KPI RSVP */}
       <section>
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="font-serif text-lg italic">Invités par cérémonie</h2>
-          <Link
-            to="/dashboard/invites"
-            className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary hover:underline"
-          >
-            Tout voir
-          </Link>
-        </div>
-        <div className="grid gap-4 md:grid-cols-2">
-          {ceremonies.map((c) => {
-            const list = guests
-              .filter((g) => g.ceremonyIds.includes(c.id))
-              .map((g) => ({
-                g,
-                status:
-                  g.rsvps.find((r) => r.ceremonyId === c.id)?.status ??
-                  "en_attente",
-              }));
-            const s = guestStats(guests, c.id);
-            return (
-              <div
-                key={c.id}
-                className="overflow-hidden rounded-2xl border border-border bg-card"
-              >
-                <div
-                  className="flex items-center justify-between border-b border-border px-4 py-3"
-                  style={{ backgroundColor: c.color + "18" }}
-                >
-                  <div className="flex items-center gap-2">
-                    <span
-                      className="size-2.5 rounded-full"
-                      style={{ backgroundColor: c.color }}
-                    />
-                    <p className="text-sm font-medium">{c.label}</p>
-                  </div>
-                  <p className="font-mono text-[10px] uppercase tracking-widest opacity-70">
-                    {s.confirmés}/{s.total} confirmés
-                  </p>
-                </div>
-                {list.length === 0 ? (
-                  <p className="px-4 py-4 text-xs opacity-60">
-                    Aucun invité pour cette cérémonie.
-                  </p>
-                ) : (
-                  <ul className="divide-y divide-border">
-                    {list.slice(0, 6).map(({ g, status }) => (
-                      <li
-                        key={g.id}
-                        className="flex items-center justify-between px-4 py-2.5 text-sm"
-                      >
-                        <span className="truncate">{g.name}</span>
-                        <StatusPill status={status} />
-                      </li>
-                    ))}
-                    {list.length > 6 ? (
-                      <li className="px-4 py-2 text-center font-mono text-[10px] uppercase tracking-widest opacity-60">
-                        + {list.length - 6} autres
-                      </li>
-                    ) : null}
-                  </ul>
-                )}
-              </div>
-            );
-          })}
+        <h2 className="mb-3 font-serif text-lg italic">Réponses des invités</h2>
+        <div className="grid grid-cols-3 gap-2">
+          <KPI label="Confirmés" value={stats.confirmés} tone="primary" />
+          <KPI label="En attente" value={stats.en_attente} />
+          <KPI label="Refus" value={stats.déclinés} tone="mute" />
         </div>
       </section>
 
-      {/* Quick actions */}
-      <div className="grid grid-cols-2 gap-3">
+      {/* Actions */}
+      <section className="grid gap-3 sm:grid-cols-2">
         <Link
-          to="/dashboard/invites"
-          className="rounded-2xl bg-foreground py-4 text-center font-mono text-[10px] uppercase tracking-[0.25em] text-background transition hover:opacity-90"
+          to="/dashboard/guests/new"
+          className="rounded-lg border border-border bg-card px-4 py-4 text-sm font-medium transition hover:bg-secondary/40"
         >
           + Ajouter un invité
         </Link>
         <Link
-          to="/dashboard/landing"
-          className="rounded-2xl border border-foreground/15 py-4 text-center font-mono text-[10px] uppercase tracking-[0.25em] transition hover:bg-accent/20"
+          to="/dashboard/ceremonies"
+          className="rounded-lg border border-border bg-card px-4 py-4 text-sm font-medium transition hover:bg-secondary/40"
         >
-          Modifier ma page
+          Gérer les cérémonies
         </Link>
-      </div>
+      </section>
+
+      <Link
+        to="/invitation"
+        className="block w-full rounded-lg bg-primary py-4 text-center text-sm font-medium text-primary-foreground transition hover:opacity-90"
+      >
+        Voir ma page d'invitation
+      </Link>
     </div>
   );
 }
 
-function StatCard({
-  label,
-  value,
-  tone,
-}: {
-  label: string;
-  value: number;
-  tone?: "primary" | "warn" | "mute";
-}) {
-  const color =
-    tone === "primary"
-      ? "text-primary"
-      : tone === "warn"
-        ? "text-amber-600"
-        : tone === "mute"
-          ? "text-muted-foreground"
-          : "text-foreground";
+function MetricCard({ label, value, to }: { label: string; value: number; to: string }) {
   return (
-    <div className="rounded-2xl border border-border bg-card p-4">
-      <p className="font-mono text-[9px] uppercase tracking-widest opacity-50">{label}</p>
-      <p className={"mt-1 font-mono text-2xl " + color}>{value}</p>
-    </div>
-  );
-}
-
-function StatusPill({ status }: { status: RSVPStatus }) {
-  const map: Record<RSVPStatus, { label: string; cls: string }> = {
-    confirmé: { label: "Confirmé", cls: "bg-primary/15 text-primary" },
-    en_attente: { label: "En attente", cls: "bg-amber-500/15 text-amber-700" },
-    sans_reponse: { label: "En attente", cls: "bg-amber-500/15 text-amber-700" },
-    décliné: { label: "Décliné", cls: "bg-muted text-muted-foreground" },
-  };
-  const { label, cls } = map[status];
-  return (
-    <span
-      className={
-        "shrink-0 rounded-full px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-widest " +
-        cls
-      }
+    <Link
+      to={to}
+      className="rounded-xl border border-border bg-card p-5 transition hover:border-primary"
     >
-      {label}
-    </span>
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="mt-2 font-serif text-3xl italic">{value}</p>
+    </Link>
+  );
+}
+
+function KPI({ label, value, tone }: { label: string; value: number; tone?: "primary" | "mute" }) {
+  return (
+    <div className="rounded-lg border border-border bg-card p-4 text-center">
+      <p
+        className={
+          "font-serif text-3xl italic " +
+          (tone === "primary" ? "text-primary" : tone === "mute" ? "text-muted-foreground" : "")
+        }
+      >
+        {value}
+      </p>
+      <p className="mt-1 text-[11px] uppercase tracking-widest text-muted-foreground">
+        {label}
+      </p>
+    </div>
   );
 }

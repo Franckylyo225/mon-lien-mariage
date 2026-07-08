@@ -22,6 +22,7 @@ const sourceLabel: Record<GuestSource, string> = {
   manuel: "Manuel",
   csv: "CSV",
   auto: "QR / lien",
+  qr_signup: "QR",
 };
 
 function GuestsPage() {
@@ -267,6 +268,7 @@ function AddGuestSheet({
     name: string;
     phone?: string;
     group: string;
+    guestType: import("@/lib/guest-meta").GuestType;
     allowedPlusOnes: number;
     source: GuestSource;
     ceremonyIds: string[];
@@ -372,6 +374,7 @@ function AddGuestSheet({
                 name: name.trim(),
                 phone: phone.trim() || undefined,
                 group,
+                guestType: "autre",
                 allowedPlusOnes: plus,
                 source: "manuel",
                 ceremonyIds: ids,

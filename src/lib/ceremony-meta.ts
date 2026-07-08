@@ -46,6 +46,13 @@ export const ceremonyMeta: Record<
     color: "#c9a84c",
     blurb: "Célébrer une union qui dure, une année de plus.",
   },
+  fiancailles: {
+    label: "Fiançailles",
+    short: "Fiançailles",
+    icon: "♡",
+    color: "#993556",
+    blurb: "L'annonce officielle, entre proches.",
+  },
   autre: {
     label: "Autre cérémonie",
     short: "Autre",

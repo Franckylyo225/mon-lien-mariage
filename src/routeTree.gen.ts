@@ -9,14 +9,39 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as InvitationRouteImport } from './routes/invitation'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as OnboardingThemeRouteImport } from './routes/onboarding.theme'
+import { Route as OnboardingGuestsRouteImport } from './routes/onboarding.guests'
+import { Route as OnboardingCoupleRouteImport } from './routes/onboarding.couple'
+import { Route as OnboardingCeremoniesRouteImport } from './routes/onboarding.ceremonies'
 import { Route as DashboardLandingRouteImport } from './routes/dashboard.landing'
 import { Route as DashboardInvitesRouteImport } from './routes/dashboard.invites'
+import { Route as DashboardGuestsRouteImport } from './routes/dashboard.guests'
 import { Route as DashboardCeremoniesRouteImport } from './routes/dashboard.ceremonies'
+import { Route as DashboardGuestsNewRouteImport } from './routes/dashboard.guests.new'
+import { Route as DashboardCeremoniesIdRouteImport } from './routes/dashboard.ceremonies.$id'
 
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InvitationRoute = InvitationRouteImport.update({
   id: '/invitation',
   path: '/invitation',
@@ -37,6 +62,26 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/',
   getParentRoute: () => DashboardRoute,
 } as any)
+const OnboardingThemeRoute = OnboardingThemeRouteImport.update({
+  id: '/theme',
+  path: '/theme',
+  getParentRoute: () => OnboardingRoute,
+} as any)
+const OnboardingGuestsRoute = OnboardingGuestsRouteImport.update({
+  id: '/guests',
+  path: '/guests',
+  getParentRoute: () => OnboardingRoute,
+} as any)
+const OnboardingCoupleRoute = OnboardingCoupleRouteImport.update({
+  id: '/couple',
+  path: '/couple',
+  getParentRoute: () => OnboardingRoute,
+} as any)
+const OnboardingCeremoniesRoute = OnboardingCeremoniesRouteImport.update({
+  id: '/ceremonies',
+  path: '/ceremonies',
+  getParentRoute: () => OnboardingRoute,
+} as any)
 const DashboardLandingRoute = DashboardLandingRouteImport.update({
   id: '/landing',
   path: '/landing',
@@ -47,38 +92,83 @@ const DashboardInvitesRoute = DashboardInvitesRouteImport.update({
   path: '/invites',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardGuestsRoute = DashboardGuestsRouteImport.update({
+  id: '/guests',
+  path: '/guests',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardCeremoniesRoute = DashboardCeremoniesRouteImport.update({
   id: '/ceremonies',
   path: '/ceremonies',
   getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardGuestsNewRoute = DashboardGuestsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => DashboardGuestsRoute,
+} as any)
+const DashboardCeremoniesIdRoute = DashboardCeremoniesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => DashboardCeremoniesRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/invitation': typeof InvitationRoute
-  '/dashboard/ceremonies': typeof DashboardCeremoniesRoute
+  '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRouteWithChildren
+  '/signup': typeof SignupRoute
+  '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
+  '/dashboard/guests': typeof DashboardGuestsRouteWithChildren
   '/dashboard/invites': typeof DashboardInvitesRoute
   '/dashboard/landing': typeof DashboardLandingRoute
+  '/onboarding/ceremonies': typeof OnboardingCeremoniesRoute
+  '/onboarding/couple': typeof OnboardingCoupleRoute
+  '/onboarding/guests': typeof OnboardingGuestsRoute
+  '/onboarding/theme': typeof OnboardingThemeRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
+  '/dashboard/guests/new': typeof DashboardGuestsNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/invitation': typeof InvitationRoute
-  '/dashboard/ceremonies': typeof DashboardCeremoniesRoute
+  '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRouteWithChildren
+  '/signup': typeof SignupRoute
+  '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
+  '/dashboard/guests': typeof DashboardGuestsRouteWithChildren
   '/dashboard/invites': typeof DashboardInvitesRoute
   '/dashboard/landing': typeof DashboardLandingRoute
+  '/onboarding/ceremonies': typeof OnboardingCeremoniesRoute
+  '/onboarding/couple': typeof OnboardingCoupleRoute
+  '/onboarding/guests': typeof OnboardingGuestsRoute
+  '/onboarding/theme': typeof OnboardingThemeRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
+  '/dashboard/guests/new': typeof DashboardGuestsNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/invitation': typeof InvitationRoute
-  '/dashboard/ceremonies': typeof DashboardCeremoniesRoute
+  '/login': typeof LoginRoute
+  '/onboarding': typeof OnboardingRouteWithChildren
+  '/signup': typeof SignupRoute
+  '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
+  '/dashboard/guests': typeof DashboardGuestsRouteWithChildren
   '/dashboard/invites': typeof DashboardInvitesRoute
   '/dashboard/landing': typeof DashboardLandingRoute
+  '/onboarding/ceremonies': typeof OnboardingCeremoniesRoute
+  '/onboarding/couple': typeof OnboardingCoupleRoute
+  '/onboarding/guests': typeof OnboardingGuestsRoute
+  '/onboarding/theme': typeof OnboardingThemeRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
+  '/dashboard/guests/new': typeof DashboardGuestsNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -86,37 +176,91 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/invitation'
+    | '/login'
+    | '/onboarding'
+    | '/signup'
     | '/dashboard/ceremonies'
+    | '/dashboard/guests'
     | '/dashboard/invites'
     | '/dashboard/landing'
+    | '/onboarding/ceremonies'
+    | '/onboarding/couple'
+    | '/onboarding/guests'
+    | '/onboarding/theme'
     | '/dashboard/'
+    | '/dashboard/ceremonies/$id'
+    | '/dashboard/guests/new'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/invitation'
+    | '/login'
+    | '/onboarding'
+    | '/signup'
     | '/dashboard/ceremonies'
+    | '/dashboard/guests'
     | '/dashboard/invites'
     | '/dashboard/landing'
+    | '/onboarding/ceremonies'
+    | '/onboarding/couple'
+    | '/onboarding/guests'
+    | '/onboarding/theme'
     | '/dashboard'
+    | '/dashboard/ceremonies/$id'
+    | '/dashboard/guests/new'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
     | '/invitation'
+    | '/login'
+    | '/onboarding'
+    | '/signup'
     | '/dashboard/ceremonies'
+    | '/dashboard/guests'
     | '/dashboard/invites'
     | '/dashboard/landing'
+    | '/onboarding/ceremonies'
+    | '/onboarding/couple'
+    | '/onboarding/guests'
+    | '/onboarding/theme'
     | '/dashboard/'
+    | '/dashboard/ceremonies/$id'
+    | '/dashboard/guests/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   InvitationRoute: typeof InvitationRoute
+  LoginRoute: typeof LoginRoute
+  OnboardingRoute: typeof OnboardingRouteWithChildren
+  SignupRoute: typeof SignupRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/invitation': {
       id: '/invitation'
       path: '/invitation'
@@ -145,6 +289,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/onboarding/theme': {
+      id: '/onboarding/theme'
+      path: '/theme'
+      fullPath: '/onboarding/theme'
+      preLoaderRoute: typeof OnboardingThemeRouteImport
+      parentRoute: typeof OnboardingRoute
+    }
+    '/onboarding/guests': {
+      id: '/onboarding/guests'
+      path: '/guests'
+      fullPath: '/onboarding/guests'
+      preLoaderRoute: typeof OnboardingGuestsRouteImport
+      parentRoute: typeof OnboardingRoute
+    }
+    '/onboarding/couple': {
+      id: '/onboarding/couple'
+      path: '/couple'
+      fullPath: '/onboarding/couple'
+      preLoaderRoute: typeof OnboardingCoupleRouteImport
+      parentRoute: typeof OnboardingRoute
+    }
+    '/onboarding/ceremonies': {
+      id: '/onboarding/ceremonies'
+      path: '/ceremonies'
+      fullPath: '/onboarding/ceremonies'
+      preLoaderRoute: typeof OnboardingCeremoniesRouteImport
+      parentRoute: typeof OnboardingRoute
+    }
     '/dashboard/landing': {
       id: '/dashboard/landing'
       path: '/landing'
@@ -159,6 +331,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardInvitesRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/guests': {
+      id: '/dashboard/guests'
+      path: '/guests'
+      fullPath: '/dashboard/guests'
+      preLoaderRoute: typeof DashboardGuestsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/ceremonies': {
       id: '/dashboard/ceremonies'
       path: '/ceremonies'
@@ -166,18 +345,57 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardCeremoniesRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/guests/new': {
+      id: '/dashboard/guests/new'
+      path: '/new'
+      fullPath: '/dashboard/guests/new'
+      preLoaderRoute: typeof DashboardGuestsNewRouteImport
+      parentRoute: typeof DashboardGuestsRoute
+    }
+    '/dashboard/ceremonies/$id': {
+      id: '/dashboard/ceremonies/$id'
+      path: '/$id'
+      fullPath: '/dashboard/ceremonies/$id'
+      preLoaderRoute: typeof DashboardCeremoniesIdRouteImport
+      parentRoute: typeof DashboardCeremoniesRoute
+    }
   }
 }
 
+interface DashboardCeremoniesRouteChildren {
+  DashboardCeremoniesIdRoute: typeof DashboardCeremoniesIdRoute
+}
+
+const DashboardCeremoniesRouteChildren: DashboardCeremoniesRouteChildren = {
+  DashboardCeremoniesIdRoute: DashboardCeremoniesIdRoute,
+}
+
+const DashboardCeremoniesRouteWithChildren =
+  DashboardCeremoniesRoute._addFileChildren(DashboardCeremoniesRouteChildren)
+
+interface DashboardGuestsRouteChildren {
+  DashboardGuestsNewRoute: typeof DashboardGuestsNewRoute
+}
+
+const DashboardGuestsRouteChildren: DashboardGuestsRouteChildren = {
+  DashboardGuestsNewRoute: DashboardGuestsNewRoute,
+}
+
+const DashboardGuestsRouteWithChildren = DashboardGuestsRoute._addFileChildren(
+  DashboardGuestsRouteChildren,
+)
+
 interface DashboardRouteChildren {
-  DashboardCeremoniesRoute: typeof DashboardCeremoniesRoute
+  DashboardCeremoniesRoute: typeof DashboardCeremoniesRouteWithChildren
+  DashboardGuestsRoute: typeof DashboardGuestsRouteWithChildren
   DashboardInvitesRoute: typeof DashboardInvitesRoute
   DashboardLandingRoute: typeof DashboardLandingRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
-  DashboardCeremoniesRoute: DashboardCeremoniesRoute,
+  DashboardCeremoniesRoute: DashboardCeremoniesRouteWithChildren,
+  DashboardGuestsRoute: DashboardGuestsRouteWithChildren,
   DashboardInvitesRoute: DashboardInvitesRoute,
   DashboardLandingRoute: DashboardLandingRoute,
   DashboardIndexRoute: DashboardIndexRoute,
@@ -187,21 +405,32 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
   DashboardRouteChildren,
 )
 
+interface OnboardingRouteChildren {
+  OnboardingCeremoniesRoute: typeof OnboardingCeremoniesRoute
+  OnboardingCoupleRoute: typeof OnboardingCoupleRoute
+  OnboardingGuestsRoute: typeof OnboardingGuestsRoute
+  OnboardingThemeRoute: typeof OnboardingThemeRoute
+}
+
+const OnboardingRouteChildren: OnboardingRouteChildren = {
+  OnboardingCeremoniesRoute: OnboardingCeremoniesRoute,
+  OnboardingCoupleRoute: OnboardingCoupleRoute,
+  OnboardingGuestsRoute: OnboardingGuestsRoute,
+  OnboardingThemeRoute: OnboardingThemeRoute,
+}
+
+const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
+  OnboardingRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRouteWithChildren,
   InvitationRoute: InvitationRoute,
+  LoginRoute: LoginRoute,
+  OnboardingRoute: OnboardingRouteWithChildren,
+  SignupRoute: SignupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
