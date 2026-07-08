@@ -1,5 +1,6 @@
 import { formatFrenchDate } from "@/lib/wedding-store";
 import type { TemplateProps } from "./types";
+import { CeremonyProgramTabs } from "./program-tabs";
 
 export function BotaniqueDoreTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
   const published = ceremonies.filter((c) => c.status === "publiée");
@@ -53,43 +54,8 @@ export function BotaniqueDoreTemplate({ couple, ceremonies, rsvpSlot }: Template
             <span className="text-2xl text-[#c9a84c]">❦</span>
             <h2 className="mt-1 font-serif text-2xl italic">Le programme</h2>
           </div>
-          <div className="mt-8 space-y-6">
-            {published.map((c) => (
-              <div
-                key={c.id}
-                className="rounded-2xl border border-[#c9a84c]/30 bg-[#faf6ec] p-5"
-              >
-                <div className="flex items-baseline justify-between gap-3">
-                  <h3 className="font-serif text-xl italic">{c.name}</h3>
-                  <p className="font-mono text-xs text-[#c9a84c]">{c.timeStart}</p>
-                </div>
-                <p className="mt-1 text-sm opacity-70">
-                  {c.label} · {c.venue}
-                </p>
-                {c.dressCode ? (
-                  <p className="mt-3 font-mono text-[10px] uppercase tracking-widest opacity-60">
-                    Tenue — {c.dressCode}
-                  </p>
-                ) : null}
-                {c.program && c.program.length > 0 ? (
-                  <ul className="mt-4 space-y-2 border-t border-[#c9a84c]/30 pt-3">
-                    {c.program.map((it) => (
-                      <li key={it.id} className="flex gap-3">
-                        <span className="w-14 shrink-0 font-mono text-[10px] uppercase tracking-widest text-[#c9a84c]">
-                          {it.time}
-                        </span>
-                        <div className="min-w-0">
-                          <p className="font-serif italic">{it.title}</p>
-                          {it.description ? (
-                            <p className="mt-0.5 text-[11px] opacity-70">{it.description}</p>
-                          ) : null}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-              </div>
-            ))}
+          <div className="mt-8">
+            <CeremonyProgramTabs ceremonies={published} variant="gold" />
           </div>
         </section>
 

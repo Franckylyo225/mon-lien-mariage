@@ -1,5 +1,6 @@
 import { formatFrenchDate } from "@/lib/wedding-store";
 import type { TemplateProps } from "./types";
+import { CeremonyProgramTabs } from "./program-tabs";
 
 export function ArtDecoTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
   const published = ceremonies.filter((c) => c.status === "publiée");
@@ -64,48 +65,8 @@ export function ArtDecoTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps)
               — Programme —
             </p>
           </div>
-          <div className="mt-8 space-y-4">
-            {published.map((c) => (
-              <div
-                key={c.id}
-                className="relative rounded-xl border border-[#c9a84c]/30 bg-[#1a0f1a]/60 p-5"
-              >
-                <div className="pointer-events-none absolute inset-1 rounded-lg border border-[#c9a84c]/15" />
-                <div className="flex items-baseline justify-between gap-3">
-                  <h3 className="font-serif text-xl italic">{c.name}</h3>
-                  <span className="font-mono text-xs text-[#c9a84c]">
-                    {c.timeStart}
-                  </span>
-                </div>
-                <p className="mt-1 text-sm text-[#f0d78c]/70">
-                  {c.label} · {c.venue}
-                </p>
-                {c.dressCode ? (
-                  <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.3em] text-[#c9a84c]">
-                    ◆ {c.dressCode}
-                  </p>
-                ) : null}
-                {c.program && c.program.length > 0 ? (
-                  <ul className="relative z-10 mt-4 space-y-2 border-t border-[#c9a84c]/30 pt-3">
-                    {c.program.map((it) => (
-                      <li key={it.id} className="flex gap-3">
-                        <span className="w-14 shrink-0 font-mono text-[10px] uppercase tracking-[0.25em] text-[#c9a84c]">
-                          {it.time}
-                        </span>
-                        <div className="min-w-0">
-                          <p className="font-serif italic">{it.title}</p>
-                          {it.description ? (
-                            <p className="mt-0.5 text-[11px] text-[#f0d78c]/70">
-                              {it.description}
-                            </p>
-                          ) : null}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-              </div>
-            ))}
+          <div className="mt-8">
+            <CeremonyProgramTabs ceremonies={published} variant="deco" />
           </div>
         </section>
 

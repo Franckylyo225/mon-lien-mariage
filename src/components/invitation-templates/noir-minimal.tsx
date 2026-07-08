@@ -1,5 +1,6 @@
 import { formatFrenchDate, daysUntil } from "@/lib/wedding-store";
 import type { TemplateProps } from "./types";
+import { CeremonyProgramTabs } from "./program-tabs";
 
 export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
   const published = ceremonies.filter((c) => c.status === "publiée");
@@ -43,50 +44,8 @@ export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
           <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#f5f3ee]/50">
             Programme
           </p>
-          <div className="mt-6 divide-y divide-[#f5f3ee]/15">
-            {published.map((c) => (
-              <div
-                key={c.id}
-                className="grid grid-cols-[80px_1fr] gap-6 py-6 sm:grid-cols-[100px_1fr]"
-              >
-                <div className="font-mono text-xs uppercase tracking-widest text-[#f5f3ee]/60">
-                  {c.timeStart}
-                </div>
-                <div>
-                  <h3 className="text-xl font-medium tracking-tight">{c.name}</h3>
-                  <p className="mt-1 text-sm text-[#f5f3ee]/60">
-                    {c.label} · {c.venue}
-                  </p>
-                  {c.dressCode ? (
-                    <p className="mt-3 font-mono text-[10px] uppercase tracking-widest text-[#f5f3ee]/40">
-                      Dress code — {c.dressCode}
-                    </p>
-                  ) : null}
-                  {c.program && c.program.length > 0 ? (
-                    <ul className="mt-4 space-y-2">
-                      {c.program.map((it) => (
-                        <li
-                          key={it.id}
-                          className="grid grid-cols-[70px_1fr] gap-3 border-t border-[#f5f3ee]/10 pt-2 first:border-t-0 first:pt-0"
-                        >
-                          <span className="font-mono text-[10px] uppercase tracking-widest text-[#f5f3ee]/50">
-                            {it.time}
-                          </span>
-                          <div>
-                            <p className="text-sm">{it.title}</p>
-                            {it.description ? (
-                              <p className="mt-0.5 text-[11px] text-[#f5f3ee]/50">
-                                {it.description}
-                              </p>
-                            ) : null}
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
-                </div>
-              </div>
-            ))}
+          <div className="mt-6">
+            <CeremonyProgramTabs ceremonies={published} variant="noir" />
           </div>
         </section>
 
