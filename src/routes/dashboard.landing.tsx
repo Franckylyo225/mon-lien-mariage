@@ -1,10 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { useWedding, guestStats } from "@/lib/wedding-store";
+import { useWedding, guestStats, type TemplateId } from "@/lib/wedding-store";
+import { templateMeta, templateOrder } from "@/lib/ceremony-meta";
 
 export const Route = createFileRoute("/dashboard/landing")({
+  head: () => ({
+    meta: [
+      { title: "Ma page d'invitation — MonMariage.ci" },
+      {
+        name: "description",
+        content:
+          "Personnalisez le modèle, les prénoms, la date et l'accent de votre page d'invitation, puis partagez le lien ou le QR code.",
+      },
+    ],
+  }),
   component: LandingEditor,
 });
+
+const accentChoices = ["#d97757", "#c17c74", "#8b6f5e", "#4a6741", "#c9a84c", "#4c0519"];
 
 function LandingEditor() {
   const { couple, updateCouple, ceremonies, guests } = useWedding();
@@ -49,10 +62,61 @@ function LandingEditor() {
         </p>
         <h1 className="mt-1 font-serif text-3xl italic">Ma page d'invitation</h1>
         <p className="mt-2 max-w-lg text-sm opacity-70">
-          Modifiez le contenu de votre page publique, partagez le lien ou le QR
-          code à vos invités.
+          Choisissez un modèle, personnalisez le contenu, puis partagez le lien
+          ou le QR code à vos invités.
         </p>
       </div>
+
+      {/* Template picker */}
+      <section className="rounded-3xl border border-border bg-card p-6">
+        <div className="mb-5 flex items-baseline justify-between">
+          <h2 className="font-serif text-lg italic">Modèle d'invitation</h2>
+          <a
+            href="/invitation"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-mono text-[10px] uppercase tracking-[0.2em] text-primary hover:underline"
+          >
+            Voir en grand ↗
+          </a>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          {templateOrder.map((t) => {
+            const meta = templateMeta[t];
+            const active = couple.templateId === t;
+            return (
+              <button
+                key={t}
+                onClick={() => updateCouple({ templateId: t as TemplateId })}
+                className={
+                  "group flex flex-col items-stretch overflow-hidden rounded-2xl border text-left transition " +
+                  (active
+                    ? "border-primary shadow-md shadow-primary/20"
+                    : "border-border hover:border-primary/40")
+                }
+              >
+                <div
+                  className="aspect-[3/4] w-full"
+                  style={{
+                    background: `linear-gradient(160deg, ${meta.swatch[0]}, ${meta.swatch[1]} 40%, ${meta.swatch[2]} 75%, ${meta.swatch[3]})`,
+                  }}
+                />
+                <div className="p-3">
+                  <p className="text-sm font-medium">{meta.label}</p>
+                  <p className="font-mono text-[9px] uppercase tracking-widest opacity-60">
+                    {meta.tagline}
+                  </p>
+                  {active ? (
+                    <p className="mt-1 font-mono text-[9px] uppercase tracking-widest text-primary">
+                      ✓ Sélectionné
+                    </p>
+                  ) : null}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </section>
 
       {/* Public link + QR */}
       <section className="grid gap-4 rounded-3xl border border-border bg-card p-6 md:grid-cols-[1fr_auto]">
@@ -65,7 +129,7 @@ function LandingEditor() {
               <input
                 readOnly
                 value={publicUrl}
-                className="flex-1 rounded-full border border-input bg-background px-4 py-3 text-xs focus:outline-none"
+                className="min-w-0 flex-1 rounded-full border border-input bg-background px-4 py-3 text-xs focus:outline-none"
               />
               <button
                 onClick={handleCopy}
@@ -85,11 +149,9 @@ function LandingEditor() {
               <input
                 value={slug}
                 onChange={(e) =>
-                  setSlug(
-                    e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""),
-                  )
+                  setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))
                 }
-                className="flex-1 bg-transparent px-1 focus:outline-none"
+                className="min-w-0 flex-1 bg-transparent px-1 focus:outline-none"
               />
             </div>
           </div>
@@ -124,11 +186,7 @@ function LandingEditor() {
         </div>
 
         <div className="flex flex-col items-center justify-center rounded-2xl bg-background p-4 ring-1 ring-border">
-          <img
-            src={qrUrl}
-            alt={`QR code pour ${publicUrl}`}
-            className="size-40 rounded-lg"
-          />
+          <img src={qrUrl} alt={`QR code pour ${publicUrl}`} className="size-40 rounded-lg" />
           <p className="mt-2 font-mono text-[9px] uppercase tracking-widest opacity-60">
             Scannez-moi
           </p>
@@ -167,6 +225,18 @@ function LandingEditor() {
             value={couple.city}
             onChange={(v) => updateCouple({ city: v })}
           />
+          <Field
+            label="Hashtag"
+            value={couple.hashtag ?? ""}
+            placeholder="#AichaEtStephane2027"
+            onChange={(v) => updateCouple({ hashtag: v })}
+          />
+          <Field
+            label="URL photo de couverture"
+            value={couple.heroImageUrl ?? ""}
+            onChange={(v) => updateCouple({ heroImageUrl: v })}
+            placeholder="https://…"
+          />
         </div>
         <div className="mt-4">
           <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest opacity-60">
@@ -179,13 +249,26 @@ function LandingEditor() {
             className="w-full rounded-2xl border border-input bg-background px-4 py-3 text-sm focus:border-primary focus:outline-none"
           />
         </div>
-        <div className="mt-4">
-          <Field
-            label="URL photo héro (optionnel)"
-            value={couple.heroImageUrl ?? ""}
-            onChange={(v) => updateCouple({ heroImageUrl: v })}
-            placeholder="https://…"
-          />
+        <div className="mt-5">
+          <p className="mb-2 font-mono text-[10px] uppercase tracking-widest opacity-60">
+            Couleur d'accent
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {accentChoices.map((c) => (
+              <button
+                key={c}
+                onClick={() => updateCouple({ accent: c })}
+                className={
+                  "size-9 rounded-full transition " +
+                  ((couple.accent ?? "") === c
+                    ? "ring-2 ring-offset-2 ring-foreground"
+                    : "")
+                }
+                style={{ backgroundColor: c }}
+                aria-label={c}
+              />
+            ))}
+          </div>
         </div>
       </section>
     </div>
@@ -232,9 +315,7 @@ function MiniStat({
 }) {
   return (
     <div className="rounded-2xl border border-border bg-card p-4">
-      <p className="font-mono text-[9px] uppercase tracking-widest opacity-50">
-        {label}
-      </p>
+      <p className="font-mono text-[9px] uppercase tracking-widest opacity-50">{label}</p>
       <p
         className={
           "mt-1 font-mono text-2xl " +

@@ -2,15 +2,20 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import heroBouquet from "@/assets/hero-bouquet.jpg.asset.json";
 import engagementRing from "@/assets/engagement-ring.jpg.asset.json";
 import churchCouple from "@/assets/church-couple.jpg.asset.json";
+import { ceremonyMeta, templateMeta, templateOrder } from "@/lib/ceremony-meta";
+import type { CeremonyType } from "@/lib/wedding-store";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MonMariage.ci — Invitations & gestion de mariage en Côte d'Ivoire" },
+      {
+        title:
+          "MonMariage.ci — Invitations digitales & gestion de mariage en Côte d'Ivoire",
+      },
       {
         name: "description",
         content:
-          "Créez votre page d'invitation, gérez vos cérémonies (dot, civil, réception), suivez les RSVP et envoyez vos invitations WhatsApp en quelques minutes.",
+          "Créez une page d'invitation stylée pour chaque cérémonie de mariage (dot, civil, religieux, dîner, anniversaire), collectez les RSVP et pilotez vos invités depuis un dashboard simple.",
       },
       {
         property: "og:title",
@@ -19,30 +24,102 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "La plateforme pensée pour les mariages ivoiriens. Une page, un QR code, tous vos invités.",
+          "5 modèles d'invitation, RSVP par cérémonie, QR code, WhatsApp. Fait pour les mariages ivoiriens.",
       },
     ],
   }),
   component: MarketingHome,
 });
 
+const homeCeremonyTypes: CeremonyType[] = [
+  "dot",
+  "civil",
+  "religieux",
+  "traditionnel",
+  "diner",
+  "anniversaire",
+];
+
+const features = [
+  {
+    icon: "◈",
+    title: "Une page par cérémonie",
+    text: "Chaque étape (dot, civil, religieux, dîner) a son programme, son dress code, son plan d'accès.",
+  },
+  {
+    icon: "❋",
+    title: "RSVP indépendants",
+    text: "Vos invités confirment séparément pour chaque cérémonie. Vous savez précisément qui vient à quoi.",
+  },
+  {
+    icon: "✦",
+    title: "QR code + WhatsApp",
+    text: "Un lien à copier, un QR à imprimer sur vos cartons, et le partage WhatsApp en 1 clic.",
+  },
+  {
+    icon: "❍",
+    title: "Accompagnants gérés",
+    text: "Autorisez un +1 pour certains, refusez pour d'autres. Chaque invité voit sa règle.",
+  },
+  {
+    icon: "⌘",
+    title: "Dashboard en direct",
+    text: "Comptez les confirmés en temps réel, filtrez par cérémonie, exportez votre liste.",
+  },
+  {
+    icon: "✿",
+    title: "100 % mobile",
+    text: "Tante Adjoua remplit son RSVP depuis son téléphone, même sur une petite connexion.",
+  },
+];
+
+const faqs = [
+  {
+    q: "Mes invités ont-ils besoin d'un compte pour répondre ?",
+    a: "Non. Ils cliquent sur le lien ou scannent le QR code, remplissent leur nom et confirment. C'est tout.",
+  },
+  {
+    q: "Puis-je modifier ma page après l'avoir partagée ?",
+    a: "Oui, en permanence. Le lien reste le même, seules les infos changent — même après envoi.",
+  },
+  {
+    q: "Est-ce que ça marche sans internet chez l'invité ?",
+    a: "L'invité a besoin d'internet pour ouvrir la page, mais elle est ultra légère et rapide même en 3G.",
+  },
+  {
+    q: "Puis-je gérer plusieurs cérémonies avec un seul lien ?",
+    a: "Oui. Ajoutez toutes vos cérémonies (dot, civil, religieux, dîner…), chacune avec ses propres invités.",
+  },
+  {
+    q: "Combien coûte la plateforme ?",
+    a: "Gratuit pour tester (1 cérémonie, 30 invités). 25 000 FCFA en paiement unique pour le pack complet.",
+  },
+  {
+    q: "Puis-je récupérer la liste de mes invités ?",
+    a: "Oui, en un clic depuis le dashboard : export CSV avec noms, téléphones et statuts.",
+  },
+];
+
 function MarketingHome() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* Nav */}
-      <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
-          <Link to="/" className="flex items-center gap-2">
-            <span className="grid size-8 place-items-center rounded-full bg-primary/15 font-serif text-sm italic text-primary">
+      <header className="sticky top-0 z-30 border-b border-border/60 bg-background/85 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-4 sm:px-8">
+          <Link to="/" className="flex min-w-0 items-center gap-2">
+            <span className="grid size-8 shrink-0 place-items-center rounded-full bg-primary/15 font-serif text-sm italic text-primary">
               M
             </span>
-            <span className="font-serif text-lg italic">
+            <span className="truncate font-serif text-lg italic">
               MonMariage<span className="text-primary">.ci</span>
             </span>
           </Link>
           <nav className="hidden items-center gap-8 md:flex">
-            <a href="#avantages" className="text-sm opacity-70 hover:opacity-100">
-              Avantages
+            <a href="#modeles" className="text-sm opacity-70 hover:opacity-100">
+              Modèles
+            </a>
+            <a href="#ceremonies" className="text-sm opacity-70 hover:opacity-100">
+              Cérémonies
             </a>
             <a href="#fonctionnalites" className="text-sm opacity-70 hover:opacity-100">
               Fonctionnalités
@@ -50,14 +127,8 @@ function MarketingHome() {
             <a href="#tarifs" className="text-sm opacity-70 hover:opacity-100">
               Tarifs
             </a>
-            <Link
-              to="/invitation"
-              className="text-sm opacity-70 hover:opacity-100"
-            >
-              Démo
-            </Link>
           </nav>
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             <Link
               to="/dashboard"
               className="hidden rounded-full border border-border px-4 py-2 font-mono text-[10px] uppercase tracking-[0.2em] hover:bg-accent/20 sm:inline-block"
@@ -96,26 +167,26 @@ function MarketingHome() {
             </p>
             <h1 className="mt-4 text-balance font-serif text-5xl leading-[1.05] italic sm:text-6xl">
               Votre mariage,{" "}
-              <span className="text-primary">une seule page</span>, zéro chaos.
+              <span className="text-primary">une page stylée</span>, zéro chaos.
             </h1>
             <p className="mt-5 max-w-lg text-pretty text-base leading-relaxed opacity-75">
-              De la dot à la réception, MonMariage.ci vous aide à envoyer vos
-              invitations, suivre les confirmations et organiser vos cérémonies
-              — depuis votre téléphone, sans imprimer un seul carton.
+              Choisissez un des 5 modèles d'invitation, ajoutez vos cérémonies
+              (dot, civil, religieux, dîner…), partagez le lien et laissez vos
+              invités confirmer un par un — depuis leur téléphone.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 to="/dashboard/landing"
                 className="rounded-full bg-primary px-6 py-4 font-mono text-[11px] uppercase tracking-[0.25em] text-primary-foreground shadow-lg shadow-primary/30 transition hover:opacity-90"
               >
-                Créer ma page gratuitement
+                Créer ma page
               </Link>
-              <Link
-                to="/invitation"
+              <a
+                href="#modeles"
                 className="rounded-full border border-foreground/20 px-6 py-4 font-mono text-[11px] uppercase tracking-[0.25em] transition hover:bg-accent/20"
               >
-                Voir une invitation
-              </Link>
+                Voir les 5 modèles
+              </a>
             </div>
             <div className="mt-8 flex items-center gap-4 text-xs opacity-70">
               <div className="flex -space-x-2">
@@ -158,72 +229,126 @@ function MarketingHome() {
         </div>
       </section>
 
-      {/* Pain points → Value */}
-      <section id="avantages" className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
+      {/* Trust bar */}
+      <section className="border-y border-border/60 bg-accent/10 py-6">
+        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-4 px-5 text-center sm:grid-cols-4 sm:px-8">
+          {[
+            { k: "120+", v: "couples" },
+            { k: "6 500+", v: "RSVP collectés" },
+            { k: "5", v: "modèles au choix" },
+            { k: "4.9/5", v: "note moyenne" },
+          ].map((s) => (
+            <div key={s.v}>
+              <p className="font-serif text-2xl italic text-primary">{s.k}</p>
+              <p className="font-mono text-[10px] uppercase tracking-widest opacity-60">
+                {s.v}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Templates gallery */}
+      <section id="modeles" className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <span className="mx-auto mb-4 block h-px w-10 bg-primary/50" />
-          <h2 className="font-serif text-4xl italic">
-            Fini les cartons perdus et les listes WhatsApp interminables
-          </h2>
+          <h2 className="font-serif text-4xl italic">5 modèles, 1 style qui vous ressemble</h2>
           <p className="mt-4 opacity-70">
-            Une plateforme pensée pour la réalité des mariages ivoiriens :
-            plusieurs cérémonies, grande famille, invités à confirmer un par un.
+            Chaque modèle est optimisé mobile, imprimable en QR, et
+            personnalisable en 2 minutes.
           </p>
         </div>
 
-        <div className="mt-14 grid gap-6 md:grid-cols-3">
-          {[
-            {
-              icon: "✦",
-              title: "Une page, tout est dit",
-              text: "Programme, dress code, plan d'accès, mot des mariés. Vos invités trouvent tout au même endroit.",
-            },
-            {
-              icon: "◈",
-              title: "RSVP par cérémonie",
-              text: "Chaque invité confirme séparément pour la dot, le civil et la réception. Vous savez qui vient à quoi.",
-            },
-            {
-              icon: "❋",
-              title: "WhatsApp & QR code",
-              text: "Envoyez le lien en un clic sur WhatsApp, ou imprimez le QR code sur vos faire-part traditionnels.",
-            },
-            {
-              icon: "⌘",
-              title: "Compte des présents",
-              text: "Suivez en direct combien de personnes ont confirmé pour chaque cérémonie. Plus de surprise chez le traiteur.",
-            },
-            {
-              icon: "❍",
-              title: "Gestion des accompagnants",
-              text: "Autorisez un +1 pour certains invités, refusez pour d'autres. Chacun voit sa règle.",
-            },
-            {
-              icon: "✿",
-              title: "100% mobile",
-              text: "Tante Adjoua remplit son RSVP depuis son téléphone, même sur une petite connexion.",
-            },
-          ].map((f) => (
-            <div
-              key={f.title}
-              className="group rounded-3xl border border-border bg-card p-6 transition hover:border-primary/40 hover:shadow-lg"
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {templateOrder.map((t) => {
+            const m = templateMeta[t];
+            return (
+              <a
+                key={t}
+                href="/invitation"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group overflow-hidden rounded-3xl border border-border bg-card transition hover:-translate-y-1 hover:shadow-xl"
+              >
+                <div
+                  className="aspect-[4/5] w-full"
+                  style={{
+                    background: `linear-gradient(160deg, ${m.swatch[0]}, ${m.swatch[1]} 35%, ${m.swatch[2]} 70%, ${m.swatch[3]})`,
+                  }}
+                />
+                <div className="flex items-center justify-between p-5">
+                  <div>
+                    <p className="font-serif text-xl italic">{m.label}</p>
+                    <p className="font-mono text-[10px] uppercase tracking-widest opacity-60">
+                      {m.tagline}
+                    </p>
+                  </div>
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-primary opacity-0 transition group-hover:opacity-100">
+                    Aperçu ↗
+                  </span>
+                </div>
+              </a>
+            );
+          })}
+          <div className="flex flex-col justify-center rounded-3xl border border-dashed border-primary/30 bg-primary/5 p-8 text-center">
+            <p className="font-serif text-2xl italic text-primary">+ Sur-mesure</p>
+            <p className="mt-2 text-sm opacity-70">
+              Besoin d'un modèle 100 % à votre image ? On le dessine avec vous.
+            </p>
+            <a
+              href="#tarifs"
+              className="mt-4 inline-block rounded-full border border-primary/40 px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-primary transition hover:bg-primary/10"
             >
-              <span className="inline-grid size-11 place-items-center rounded-2xl bg-primary/10 font-serif text-2xl italic text-primary">
-                {f.icon}
-              </span>
-              <h3 className="mt-5 font-serif text-xl italic">{f.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed opacity-70">{f.text}</p>
-            </div>
-          ))}
+              Voir l'offre Prestige
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Ceremony types */}
+      <section id="ceremonies" className="border-y border-border bg-accent/10 py-20">
+        <div className="mx-auto max-w-6xl px-5 sm:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <span className="mx-auto mb-4 block h-px w-10 bg-primary/50" />
+            <h2 className="font-serif text-4xl italic">
+              Toutes vos cérémonies, sur une seule plateforme
+            </h2>
+            <p className="mt-4 opacity-70">
+              De la dot à l'anniversaire de mariage, chaque étape a sa page,
+              son programme et ses invités.
+            </p>
+          </div>
+          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {homeCeremonyTypes.map((t) => {
+              const m = ceremonyMeta[t];
+              return (
+                <div
+                  key={t}
+                  className="flex items-start gap-4 rounded-2xl bg-card p-5 ring-1 ring-border"
+                >
+                  <span
+                    className="grid size-11 shrink-0 place-items-center rounded-xl font-serif text-xl italic text-background"
+                    style={{ backgroundColor: m.color }}
+                  >
+                    {m.icon}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="font-serif text-lg italic">{m.label}</p>
+                    <p className="mt-1 text-sm opacity-70">{m.blurb}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
       {/* How it works */}
       <section
         id="fonctionnalites"
-        className="border-y border-border bg-accent/10 py-20"
+        className="mx-auto max-w-6xl px-5 py-20 sm:px-8"
       >
-        <div className="mx-auto grid max-w-6xl gap-12 px-5 sm:px-8 md:grid-cols-[1fr_1.1fr] md:items-center">
+        <div className="grid gap-12 md:grid-cols-[1fr_1.1fr] md:items-center">
           <div className="relative order-2 md:order-1">
             <div className="overflow-hidden rounded-[2rem] shadow-xl ring-1 ring-border">
               <img
@@ -247,40 +372,52 @@ function MarketingHome() {
               {[
                 {
                   n: "01",
-                  t: "Personnalisez votre page",
-                  d: "Vos prénoms, la date, une photo, un mot pour vos invités. Choisissez vos cérémonies.",
+                  t: "Choisissez un modèle",
+                  d: "5 styles au choix, du Terracotta chaleureux au Noir Minimal éditorial. Vous pouvez changer à tout moment.",
                 },
                 {
                   n: "02",
-                  t: "Partagez le lien ou le QR",
-                  d: "Envoyez sur WhatsApp, imprimez le QR sur vos cartons, publiez sur Instagram.",
+                  t: "Ajoutez vos cérémonies",
+                  d: "Dot, civil, religieux, dîner… avec pour chacune sa date, son lieu, son dress code et ses invités.",
                 },
                 {
                   n: "03",
-                  t: "Suivez tout depuis votre dashboard",
-                  d: "Confirmations, déclinaisons, +1, messages — tout se met à jour automatiquement.",
+                  t: "Partagez et suivez tout",
+                  d: "Lien WhatsApp, QR code, dashboard temps réel avec les confirmés par cérémonie.",
                 },
               ].map((s) => (
                 <div key={s.n} className="flex gap-5">
-                  <p className="font-serif text-5xl italic text-primary/40">
-                    {s.n}
-                  </p>
+                  <p className="font-serif text-5xl italic text-primary/40">{s.n}</p>
                   <div>
                     <h3 className="font-serif text-2xl italic">{s.t}</h3>
-                    <p className="mt-2 text-sm leading-relaxed opacity-75">
-                      {s.d}
-                    </p>
+                    <p className="mt-2 text-sm leading-relaxed opacity-75">{s.d}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
         </div>
+
+        {/* Features grid */}
+        <div className="mt-20 grid gap-6 md:grid-cols-3">
+          {features.map((f) => (
+            <div
+              key={f.title}
+              className="rounded-3xl border border-border bg-card p-6 transition hover:border-primary/40 hover:shadow-lg"
+            >
+              <span className="inline-grid size-11 place-items-center rounded-2xl bg-primary/10 font-serif text-2xl italic text-primary">
+                {f.icon}
+              </span>
+              <h3 className="mt-5 font-serif text-xl italic">{f.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed opacity-70">{f.text}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* Testimonials */}
-      <section className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
-        <div className="grid gap-10 md:grid-cols-[1.1fr_1fr] md:items-center">
+      <section className="border-y border-border bg-accent/10 py-20">
+        <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 md:grid-cols-[1.1fr_1fr] md:items-center">
           <div className="space-y-6">
             {[
               {
@@ -333,59 +470,82 @@ function MarketingHome() {
       </section>
 
       {/* Pricing */}
-      <section id="tarifs" className="mx-auto max-w-4xl px-5 py-20 sm:px-8">
+      <section id="tarifs" className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
         <div className="text-center">
           <span className="mx-auto mb-4 block h-px w-10 bg-primary/50" />
           <h2 className="font-serif text-4xl italic">Un prix juste, une seule fois</h2>
-          <p className="mt-3 opacity-70">Pas d'abonnement. Payez, mariez-vous, on efface.</p>
+          <p className="mt-3 opacity-70">
+            Pas d'abonnement. Payez, mariez-vous, on efface.
+          </p>
         </div>
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          <div className="rounded-3xl border border-border bg-card p-8">
-            <p className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-60">
-              Découverte
-            </p>
-            <p className="mt-3 font-serif text-4xl italic">Gratuit</p>
-            <ul className="mt-6 space-y-2 text-sm opacity-80">
-              <li>· 1 cérémonie</li>
-              <li>· Jusqu'à 30 invités</li>
-              <li>· Page publique + QR code</li>
-            </ul>
-            <Link
-              to="/dashboard/landing"
-              className="mt-8 block rounded-full border border-foreground/20 py-3 text-center font-mono text-[10px] uppercase tracking-widest transition hover:bg-accent/20"
-            >
-              Commencer
-            </Link>
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
+          <PlanCard
+            name="Découverte"
+            price="Gratuit"
+            features={[
+              "1 cérémonie",
+              "Jusqu'à 30 invités",
+              "1 modèle d'invitation",
+              "Page publique + QR code",
+              "Branding MonMariage.ci",
+            ]}
+            ctaLabel="Commencer"
+          />
+          <PlanCard
+            name="Le Grand Jour"
+            price="25 000 FCFA"
+            highlight
+            badge="Recommandé"
+            features={[
+              "Cérémonies illimitées",
+              "Invités illimités",
+              "Les 5 modèles",
+              "Import CSV & partage WhatsApp",
+              "Statistiques en direct",
+              "Support prioritaire",
+            ]}
+            ctaLabel="Créer ma page"
+          />
+          <PlanCard
+            name="Prestige"
+            price="75 000 FCFA"
+            features={[
+              "Tout Le Grand Jour",
+              "Sous-domaine personnalisé",
+              "Retrait du branding",
+              "Plusieurs mariages gérés",
+              "Idéal wedding planners",
+            ]}
+            ctaLabel="Nous contacter"
+          />
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="border-t border-border bg-accent/10 py-20">
+        <div className="mx-auto max-w-3xl px-5 sm:px-8">
+          <div className="text-center">
+            <span className="mx-auto mb-4 block h-px w-10 bg-primary/50" />
+            <h2 className="font-serif text-4xl italic">Questions fréquentes</h2>
           </div>
-          <div className="relative rounded-3xl bg-primary p-8 text-primary-foreground shadow-xl shadow-primary/20">
-            <span className="absolute -top-3 right-6 rounded-full bg-foreground px-3 py-1 font-mono text-[9px] uppercase tracking-widest text-background">
-              Recommandé
-            </span>
-            <p className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-80">
-              Le Grand Jour
-            </p>
-            <p className="mt-3 font-serif text-4xl italic">
-              25 000 <span className="text-xl">FCFA</span>
-            </p>
-            <ul className="mt-6 space-y-2 text-sm opacity-90">
-              <li>· Cérémonies illimitées</li>
-              <li>· Invités illimités</li>
-              <li>· Import CSV & WhatsApp</li>
-              <li>· Statistiques en direct</li>
-              <li>· Support prioritaire</li>
-            </ul>
-            <Link
-              to="/dashboard/landing"
-              className="mt-8 block rounded-full bg-background py-3 text-center font-mono text-[10px] uppercase tracking-widest text-foreground transition hover:opacity-90"
-            >
-              Créer ma page
-            </Link>
+          <div className="mt-10 divide-y divide-border rounded-3xl bg-card ring-1 ring-border">
+            {faqs.map((f) => (
+              <details key={f.q} className="group px-6 py-5">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
+                  <span className="font-serif text-lg italic">{f.q}</span>
+                  <span className="grid size-7 shrink-0 place-items-center rounded-full border border-border text-lg transition group-open:rotate-45">
+                    +
+                  </span>
+                </summary>
+                <p className="mt-3 text-sm leading-relaxed opacity-75">{f.a}</p>
+              </details>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Final CTA */}
-      <section className="mx-auto max-w-4xl px-5 pb-24 sm:px-8">
+      <section className="mx-auto max-w-4xl px-5 py-20 sm:px-8">
         <div className="relative overflow-hidden rounded-3xl bg-foreground p-12 text-center text-background">
           <div
             aria-hidden
@@ -417,5 +577,58 @@ function MarketingHome() {
         </div>
       </footer>
     </main>
+  );
+}
+
+function PlanCard({
+  name,
+  price,
+  features,
+  ctaLabel,
+  highlight,
+  badge,
+}: {
+  name: string;
+  price: string;
+  features: string[];
+  ctaLabel: string;
+  highlight?: boolean;
+  badge?: string;
+}) {
+  return (
+    <div
+      className={
+        "relative rounded-3xl p-8 " +
+        (highlight
+          ? "bg-primary text-primary-foreground shadow-xl shadow-primary/20"
+          : "border border-border bg-card")
+      }
+    >
+      {badge ? (
+        <span className="absolute -top-3 right-6 rounded-full bg-foreground px-3 py-1 font-mono text-[9px] uppercase tracking-widest text-background">
+          {badge}
+        </span>
+      ) : null}
+      <p className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-70">
+        {name}
+      </p>
+      <p className="mt-3 font-serif text-4xl italic">{price}</p>
+      <ul className="mt-6 space-y-2 text-sm opacity-90">
+        {features.map((f) => (
+          <li key={f}>· {f}</li>
+        ))}
+      </ul>
+      <Link
+        to="/dashboard/landing"
+        className={
+          "mt-8 block rounded-full py-3 text-center font-mono text-[10px] uppercase tracking-widest transition " +
+          (highlight
+            ? "bg-background text-foreground hover:opacity-90"
+            : "border border-foreground/20 hover:bg-accent/20")
+        }
+      >
+        {ctaLabel}
+      </Link>
+    </div>
   );
 }
