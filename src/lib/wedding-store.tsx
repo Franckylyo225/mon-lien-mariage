@@ -11,9 +11,18 @@ export type CeremonyType =
   | "dot"
   | "civil"
   | "religieux"
-  | "reception"
-  | "fiancailles"
+  | "traditionnel"
+  | "diner"
+  | "anniversaire"
   | "autre";
+
+export type TemplateId =
+  | "terracotta"
+  | "noir-minimal"
+  | "botanique-dore"
+  | "tropical"
+  | "art-deco";
+
 
 export type RSVPStatus = "confirmé" | "en_attente" | "décliné" | "sans_reponse";
 
