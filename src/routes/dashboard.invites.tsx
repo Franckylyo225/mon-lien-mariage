@@ -22,6 +22,7 @@ const sourceLabel: Record<GuestSource, string> = {
   manuel: "Manuel",
   csv: "CSV",
   auto: "QR / lien",
+  qr_signup: "QR",
 };
 
 function GuestsPage() {
