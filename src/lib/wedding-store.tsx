@@ -94,6 +94,7 @@ export interface Couple {
   isPublished: boolean;
   isLocked: boolean;
   publishedAt?: string;
+  hasEnvelopeAnimation?: boolean;
 }
 
 export interface Account {
