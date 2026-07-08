@@ -24,7 +24,7 @@ function SignupPage() {
     e.preventDefault();
     setError(null);
     if (!email.includes("@")) return setError("Adresse email invalide.");
-    if (password.length < 8) return setError("Au moins 8 caractères.");
+    if (password.length < 6) return setError("Au moins 6 caractères.");
     if (!cgu) return setError("Merci d'accepter les CGU.");
     setLoading(true);
     const emailRedirectTo =
@@ -67,11 +67,12 @@ function SignupPage() {
           <input
             type="password"
             required
-            minLength={8}
+            minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-            placeholder="Au moins 8 caractères"
+            placeholder="Au moins 6 caractères"
+
           />
         </Field>
         <label className="flex items-start gap-2 text-xs text-muted-foreground">
