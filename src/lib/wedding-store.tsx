@@ -11,9 +11,18 @@ export type CeremonyType =
   | "dot"
   | "civil"
   | "religieux"
-  | "reception"
-  | "fiancailles"
+  | "traditionnel"
+  | "diner"
+  | "anniversaire"
   | "autre";
+
+export type TemplateId =
+  | "terracotta"
+  | "noir-minimal"
+  | "botanique-dore"
+  | "tropical"
+  | "art-deco";
+
 
 export type RSVPStatus = "confirmé" | "en_attente" | "décliné" | "sans_reponse";
 
@@ -63,7 +72,11 @@ export interface Couple {
   city: string;
   introMessage: string;
   heroImageUrl?: string;
+  templateId: TemplateId;
+  accent?: string;
+  hashtag?: string;
 }
+
 
 interface WeddingState {
   couple: Couple;
@@ -124,7 +137,7 @@ const seedCeremonies = (): Ceremony[] => [
   },
   {
     id: "c3",
-    type: "reception",
+    type: "diner",
     label: "Réception & Dîner",
     name: "Les Jardins de Cocody",
     date: "2027-02-14",
@@ -137,6 +150,7 @@ const seedCeremonies = (): Ceremony[] => [
     status: "publiée",
     publicSlug: "reception-jardins",
   },
+
 ];
 
 const seedGuests = (ceremonies: Ceremony[]): Guest[] => {
@@ -206,7 +220,11 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
     city: "Abidjan",
     introMessage:
       "Sous le soleil d'Abidjan, nous scellons notre promesse. Nous vous invitons à célébrer cette union entourés de chaleur et de lumière.",
+    templateId: "terracotta",
+    accent: "#d97757",
+    hashtag: "#AichaEtStephane2027",
   });
+
   const [ceremonies, setCeremonies] = useState<Ceremony[]>(() => seedCeremonies());
   const [guests, setGuests] = useState<Guest[]>(() => seedGuests(seedCeremonies()));
 

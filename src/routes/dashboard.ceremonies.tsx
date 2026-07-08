@@ -16,10 +16,12 @@ const typeOptions: { value: CeremonyType; label: string }[] = [
   { value: "dot", label: "Dot traditionnelle" },
   { value: "civil", label: "Mariage civil" },
   { value: "religieux", label: "Mariage religieux" },
-  { value: "reception", label: "Réception" },
-  { value: "fiancailles", label: "Fiançailles" },
+  { value: "traditionnel", label: "Cérémonie traditionnelle" },
+  { value: "diner", label: "Dîner / Réception" },
+  { value: "anniversaire", label: "Anniversaire de mariage" },
   { value: "autre", label: "Autre" },
 ];
+
 
 const paletteChoices = ["#d97757", "#c17c74", "#8b6f5e", "#4a6741", "#c9a84c", "#4c0519"];
 
@@ -159,8 +161,9 @@ function CeremonySheet({
   onSave: (c: Omit<Ceremony, "id" | "publicSlug">) => void;
   onDelete?: () => void;
 }) {
-  const [type, setType] = useState<CeremonyType>(initial?.type ?? "reception");
-  const [label, setLabel] = useState(initial?.label ?? "Réception");
+  const [type, setType] = useState<CeremonyType>(initial?.type ?? "diner");
+  const [label, setLabel] = useState(initial?.label ?? "Dîner");
+
   const [name, setName] = useState(initial?.name ?? "");
   const [date, setDate] = useState(initial?.date ?? "2027-02-14");
   const [timeStart, setTimeStart] = useState(initial?.timeStart ?? "18:00");
