@@ -14,6 +14,7 @@ function DashboardLayout() {
     { to: "/dashboard/guests", label: "Invités" },
     { to: "/dashboard/ceremonies", label: "Cérémonies" },
     { to: "/dashboard/landing", label: "Ma page" },
+    { to: "/dashboard/preview", label: "Aperçu" },
   ];
 
   return (

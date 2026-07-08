@@ -22,6 +22,7 @@ import { Route as OnboardingThemeRouteImport } from './routes/onboarding.theme'
 import { Route as OnboardingGuestsRouteImport } from './routes/onboarding.guests'
 import { Route as OnboardingCoupleRouteImport } from './routes/onboarding.couple'
 import { Route as OnboardingCeremoniesRouteImport } from './routes/onboarding.ceremonies'
+import { Route as ESlugRouteImport } from './routes/e.$slug'
 import { Route as DashboardPreviewRouteImport } from './routes/dashboard.preview'
 import { Route as DashboardLandingRouteImport } from './routes/dashboard.landing'
 import { Route as DashboardInvitesRouteImport } from './routes/dashboard.invites'
@@ -95,6 +96,11 @@ const OnboardingCeremoniesRoute = OnboardingCeremoniesRouteImport.update({
   path: '/ceremonies',
   getParentRoute: () => OnboardingRoute,
 } as any)
+const ESlugRoute = ESlugRouteImport.update({
+  id: '/e/$slug',
+  path: '/e/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardPreviewRoute = DashboardPreviewRouteImport.update({
   id: '/preview',
   path: '/preview',
@@ -144,6 +150,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/invites': typeof DashboardInvitesRoute
   '/dashboard/landing': typeof DashboardLandingRoute
   '/dashboard/preview': typeof DashboardPreviewRoute
+  '/e/$slug': typeof ESlugRoute
   '/onboarding/ceremonies': typeof OnboardingCeremoniesRoute
   '/onboarding/couple': typeof OnboardingCoupleRoute
   '/onboarding/guests': typeof OnboardingGuestsRoute
@@ -165,6 +172,7 @@ export interface FileRoutesByTo {
   '/dashboard/invites': typeof DashboardInvitesRoute
   '/dashboard/landing': typeof DashboardLandingRoute
   '/dashboard/preview': typeof DashboardPreviewRoute
+  '/e/$slug': typeof ESlugRoute
   '/onboarding/ceremonies': typeof OnboardingCeremoniesRoute
   '/onboarding/couple': typeof OnboardingCoupleRoute
   '/onboarding/guests': typeof OnboardingGuestsRoute
@@ -188,6 +196,7 @@ export interface FileRoutesById {
   '/dashboard/invites': typeof DashboardInvitesRoute
   '/dashboard/landing': typeof DashboardLandingRoute
   '/dashboard/preview': typeof DashboardPreviewRoute
+  '/e/$slug': typeof ESlugRoute
   '/onboarding/ceremonies': typeof OnboardingCeremoniesRoute
   '/onboarding/couple': typeof OnboardingCoupleRoute
   '/onboarding/guests': typeof OnboardingGuestsRoute
@@ -212,6 +221,7 @@ export interface FileRouteTypes {
     | '/dashboard/invites'
     | '/dashboard/landing'
     | '/dashboard/preview'
+    | '/e/$slug'
     | '/onboarding/ceremonies'
     | '/onboarding/couple'
     | '/onboarding/guests'
@@ -233,6 +243,7 @@ export interface FileRouteTypes {
     | '/dashboard/invites'
     | '/dashboard/landing'
     | '/dashboard/preview'
+    | '/e/$slug'
     | '/onboarding/ceremonies'
     | '/onboarding/couple'
     | '/onboarding/guests'
@@ -255,6 +266,7 @@ export interface FileRouteTypes {
     | '/dashboard/invites'
     | '/dashboard/landing'
     | '/dashboard/preview'
+    | '/e/$slug'
     | '/onboarding/ceremonies'
     | '/onboarding/couple'
     | '/onboarding/guests'
@@ -273,6 +285,7 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRouteWithChildren
   PublishRoute: typeof PublishRouteWithChildren
   SignupRoute: typeof SignupRoute
+  ESlugRoute: typeof ESlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -367,6 +380,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/onboarding/ceremonies'
       preLoaderRoute: typeof OnboardingCeremoniesRouteImport
       parentRoute: typeof OnboardingRoute
+    }
+    '/e/$slug': {
+      id: '/e/$slug'
+      path: '/e/$slug'
+      fullPath: '/e/$slug'
+      preLoaderRoute: typeof ESlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/dashboard/preview': {
       id: '/dashboard/preview'
@@ -502,6 +522,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRouteWithChildren,
   PublishRoute: PublishRouteWithChildren,
   SignupRoute: SignupRoute,
+  ESlugRoute: ESlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
