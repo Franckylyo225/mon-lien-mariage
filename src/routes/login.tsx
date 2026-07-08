@@ -31,7 +31,7 @@ function LoginPage() {
           const step = account.onboardingStep;
           const targets = ["/onboarding/couple", "/onboarding/ceremonies", "/onboarding/theme", "/onboarding/guests"] as const;
           if (step < 4) {
-            navigate({ to: targets[step] });
+            navigate({ to: targets[step as 0 | 1 | 2 | 3] });
           } else {
             navigate({ to: "/dashboard" });
           }
