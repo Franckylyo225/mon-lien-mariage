@@ -28,6 +28,13 @@ export type RSVPStatus = "confirmé" | "en_attente" | "décliné" | "sans_repons
 
 export type GuestSource = "manuel" | "csv" | "auto";
 
+export interface ProgramItem {
+  id: string;
+  time: string; // "HH:mm"
+  title: string;
+  description?: string;
+}
+
 export interface Ceremony {
   id: string;
   type: CeremonyType;
@@ -42,6 +49,7 @@ export interface Ceremony {
   color: string; // hex
   capacity?: number;
   notes?: string;
+  program?: ProgramItem[];
   status: "brouillon" | "publiée";
   publicSlug: string;
 }
