@@ -220,7 +220,11 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
     city: "Abidjan",
     introMessage:
       "Sous le soleil d'Abidjan, nous scellons notre promesse. Nous vous invitons à célébrer cette union entourés de chaleur et de lumière.",
+    templateId: "terracotta",
+    accent: "#d97757",
+    hashtag: "#AichaEtStephane2027",
   });
+
   const [ceremonies, setCeremonies] = useState<Ceremony[]>(() => seedCeremonies());
   const [guests, setGuests] = useState<Guest[]>(() => seedGuests(seedCeremonies()));
 
