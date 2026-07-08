@@ -76,21 +76,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "MonMariage — Aïcha & Kouassi" },
+      { title: "MonMariage.ci — Invitations & gestion de mariage" },
       {
         name: "description",
         content:
-          "Plateforme d'invitation et de gestion de mariage pour les couples ouest-africains. Cérémonies, invités, RSVP.",
+          "Créez une page d'invitation stylée pour chaque cérémonie de mariage (dot, civil, religieux, dîner, anniversaire), collectez les RSVP et gérez vos invités depuis un dashboard simple.",
       },
-      { name: "author", content: "MonMariage" },
-      { property: "og:title", content: "MonMariage — Aïcha & Kouassi" },
+      { name: "author", content: "MonMariage.ci" },
+      { property: "og:title", content: "MonMariage.ci — Invitations & gestion de mariage" },
       {
         property: "og:description",
         content:
-          "Invitation en ligne et gestion de vos cérémonies : dot, mariage civil, réception.",
+          "5 modèles d'invitation, RSVP par cérémonie, QR code et partage WhatsApp. Pensé pour les mariages ivoiriens.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+
     ],
     links: [
       { rel: "stylesheet", href: appCss },
