@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as PublishRouteImport } from './routes/publish'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as InvitationRouteImport } from './routes/invitation'
@@ -31,6 +32,11 @@ import { Route as DashboardCeremoniesIdRouteImport } from './routes/dashboard.ce
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublishRoute = PublishRouteImport.update({
+  id: '/publish',
+  path: '/publish',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -125,6 +131,7 @@ export interface FileRoutesByFullPath {
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRouteWithChildren
+  '/publish': typeof PublishRoute
   '/signup': typeof SignupRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/guests': typeof DashboardGuestsRouteWithChildren
@@ -144,6 +151,7 @@ export interface FileRoutesByTo {
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRouteWithChildren
+  '/publish': typeof PublishRoute
   '/signup': typeof SignupRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/guests': typeof DashboardGuestsRouteWithChildren
@@ -165,6 +173,7 @@ export interface FileRoutesById {
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRouteWithChildren
+  '/publish': typeof PublishRoute
   '/signup': typeof SignupRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/guests': typeof DashboardGuestsRouteWithChildren
@@ -187,6 +196,7 @@ export interface FileRouteTypes {
     | '/invitation'
     | '/login'
     | '/onboarding'
+    | '/publish'
     | '/signup'
     | '/dashboard/ceremonies'
     | '/dashboard/guests'
@@ -206,6 +216,7 @@ export interface FileRouteTypes {
     | '/invitation'
     | '/login'
     | '/onboarding'
+    | '/publish'
     | '/signup'
     | '/dashboard/ceremonies'
     | '/dashboard/guests'
@@ -226,6 +237,7 @@ export interface FileRouteTypes {
     | '/invitation'
     | '/login'
     | '/onboarding'
+    | '/publish'
     | '/signup'
     | '/dashboard/ceremonies'
     | '/dashboard/guests'
@@ -247,6 +259,7 @@ export interface RootRouteChildren {
   InvitationRoute: typeof InvitationRoute
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRouteWithChildren
+  PublishRoute: typeof PublishRoute
   SignupRoute: typeof SignupRoute
 }
 
@@ -257,6 +270,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publish': {
+      id: '/publish'
+      path: '/publish'
+      fullPath: '/publish'
+      preLoaderRoute: typeof PublishRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -450,6 +470,7 @@ const rootRouteChildren: RootRouteChildren = {
   InvitationRoute: InvitationRoute,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRouteWithChildren,
+  PublishRoute: PublishRoute,
   SignupRoute: SignupRoute,
 }
 export const routeTree = rootRouteImport
