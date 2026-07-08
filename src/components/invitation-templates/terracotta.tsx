@@ -84,45 +84,7 @@ export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
             />
             <h2 className="font-serif text-2xl italic">Le Programme</h2>
           </div>
-          <ol className="relative space-y-8">
-            <div className="absolute left-[7px] top-2 bottom-2 w-px border-l border-dashed border-[#4a2a20]/25" />
-            {published.map((c) => (
-              <li key={c.id} className="relative pl-8">
-                <span
-                  className="absolute left-0 top-1.5 size-3 rounded-full ring-4 ring-[#faf6f1]"
-                  style={{ backgroundColor: c.color }}
-                />
-                <p
-                  className="font-mono text-[9px] uppercase tracking-wider"
-                  style={{ color: accent }}
-                >
-                  {c.timeStart} — {c.venue}
-                </p>
-                <h3 className="mt-1 font-serif text-xl">{c.name}</h3>
-                <p className="mt-1 text-xs opacity-70">{c.label}</p>
-                {c.dressCode ? (
-                  <p className="mt-2 inline-block rounded-full bg-[#e8c5b6] px-3 py-1 text-[10px] uppercase tracking-widest opacity-80">
-                    {c.dressCode}
-                  </p>
-                ) : null}
-                {c.program && c.program.length > 0 ? (
-                  <ul className="mt-3 space-y-2 border-l border-dashed border-[#4a2a20]/25 pl-4">
-                    {c.program.map((it) => (
-                      <li key={it.id}>
-                        <p className="font-mono text-[9px] uppercase tracking-wider" style={{ color: accent }}>
-                          {it.time}
-                        </p>
-                        <p className="font-serif text-sm italic">{it.title}</p>
-                        {it.description ? (
-                          <p className="mt-0.5 text-[11px] opacity-70">{it.description}</p>
-                        ) : null}
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-              </li>
-            ))}
-          </ol>
+          <CeremonyProgramTabs ceremonies={published} variant="terracotta" accent={accent} />
         </section>
 
         {rsvpSlot}
