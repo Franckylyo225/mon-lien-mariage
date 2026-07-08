@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { useWedding } from "@/lib/wedding-store";
+import { supabase } from "@/integrations/supabase/client";
 import { AuthLayout, Field } from "./signup";
 
 export const Route = createFileRoute("/login")({
@@ -14,30 +14,49 @@ export const Route = createFileRoute("/login")({
 });
 
 function LoginPage() {
-  const { signIn, account } = useWedding();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    const { error: err } = await supabase.auth.signInWithPassword({ email, password });
+    setLoading(false);
+    if (err) {
+      setError(err.message);
+      return;
+    }
+    // Fetch onboarding step to route correctly
+    const { data: userRes } = await supabase.auth.getUser();
+    const userId = userRes.user?.id;
+    if (userId) {
+      const { data: w } = await supabase
+        .from("weddings")
+        .select("onboarding_step")
+        .eq("owner_id", userId)
+        .maybeSingle();
+      const step = w?.onboarding_step ?? 0;
+      const targets = [
+        "/onboarding/couple",
+        "/onboarding/ceremonies",
+        "/onboarding/theme",
+        "/onboarding/guests",
+      ] as const;
+      if (step < 4) {
+        navigate({ to: targets[step as 0 | 1 | 2 | 3] });
+        return;
+      }
+    }
+    navigate({ to: "/dashboard" });
+  };
 
   return (
     <AuthLayout title="Se connecter">
-      <p className="mb-6 rounded-md bg-secondary/60 px-3 py-2 text-xs text-secondary-foreground">
-        Mode démo — l'authentification est simulée localement.
-      </p>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          signIn(email);
-          const step = account.onboardingStep;
-          const targets = ["/onboarding/couple", "/onboarding/ceremonies", "/onboarding/theme", "/onboarding/guests"] as const;
-          if (step < 4) {
-            navigate({ to: targets[step as 0 | 1 | 2 | 3] });
-          } else {
-            navigate({ to: "/dashboard" });
-          }
-        }}
-        className="space-y-4"
-      >
+      <form onSubmit={submit} className="space-y-4">
         <Field label="Adresse email">
           <input
             type="email"
@@ -57,11 +76,13 @@ function LoginPage() {
             className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring"
           />
         </Field>
+        {error ? <p className="text-xs text-destructive">{error}</p> : null}
         <button
           type="submit"
-          className="w-full rounded-lg bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+          disabled={loading}
+          className="w-full rounded-lg bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
         >
-          Se connecter
+          {loading ? "Connexion…" : "Se connecter"}
         </button>
       </form>
       <p className="mt-6 text-center text-xs text-muted-foreground">

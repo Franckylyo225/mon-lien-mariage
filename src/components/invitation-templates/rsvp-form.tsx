@@ -1,9 +1,14 @@
 import { useMemo, useState } from "react";
-import { useWedding, type RSVPStatus } from "@/lib/wedding-store";
+import { supabase } from "@/integrations/supabase/client";
+import type { Ceremony } from "@/lib/wedding-store";
 
 interface Props {
   tone: "warm" | "dark" | "gold" | "tropical" | "deco";
+  weddingId?: string;
+  ceremonies?: Ceremony[];
 }
+
+type Choice = "confirmé" | "décliné";
 
 const toneClasses: Record<
   Props["tone"],
@@ -79,33 +84,63 @@ const toneClasses: Record<
   },
 };
 
-export function TemplateRsvpForm({ tone }: Props) {
+export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
   const t = toneClasses[tone];
-  const { ceremonies } = useWedding();
   const published = ceremonies.filter((c) => c.status === "publiée");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [plus, setPlus] = useState(0);
-  const [choices, setChoices] = useState<Record<string, RSVPStatus>>({});
+  const [choices, setChoices] = useState<Record<string, Choice>>({});
   const [message, setMessage] = useState("");
   const [done, setDone] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const canSubmit = useMemo(
-    () => name.trim().length > 1 && Object.keys(choices).length === published.length,
-    [name, choices, published.length],
+    () => name.trim().length > 1 && Object.keys(choices).length === published.length && !submitting,
+    [name, choices, published.length, submitting],
   );
+
+  const submit = async () => {
+    setError(null);
+    if (!weddingId) {
+      // Aperçu (pas de publication) — pas d'enregistrement
+      setDone(true);
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const rows = published.map((c) => ({
+        wedding_id: weddingId,
+        ceremony_id: c.id,
+        guest_name: name.trim(),
+        guest_phone: phone.trim() || null,
+        attending: choices[c.id] === "confirmé",
+        companions: choices[c.id] === "confirmé" ? plus : 0,
+        message: message.trim() || null,
+      }));
+      const { error: err } = await supabase.from("rsvps").insert(rows as never);
+      if (err) throw err;
+      setDone(true);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "Une erreur s'est produite.";
+      setError(msg);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   if (done) {
     return (
-      <section
-        className={`mt-12 rounded-3xl p-8 text-center ${t.successBg}`}
-      >
+      <section className={`mt-12 rounded-3xl p-8 text-center ${t.successBg}`}>
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-70">
           Merci {name.split(" ")[0]}
         </p>
         <h3 className={`mt-3 text-2xl ${t.title}`}>Votre réponse est enregistrée</h3>
         <p className="mx-auto mt-3 max-w-sm text-sm opacity-70">
-          Un rappel vous sera envoyé quelques jours avant la cérémonie.
+          {weddingId
+            ? "Un rappel vous sera envoyé quelques jours avant la cérémonie."
+            : "Mode aperçu — cette réponse n'a pas été enregistrée."}
         </p>
         <button
           onClick={() => {
@@ -118,6 +153,16 @@ export function TemplateRsvpForm({ tone }: Props) {
         >
           Modifier ma réponse
         </button>
+      </section>
+    );
+  }
+
+  if (!published.length) {
+    return (
+      <section className={`mt-12 rounded-3xl p-8 text-center ${t.wrapper}`}>
+        <p className="text-sm opacity-70">
+          Les cérémonies seront ajoutées bientôt. Repassez ici pour confirmer votre présence.
+        </p>
       </section>
     );
   }
@@ -146,10 +191,7 @@ export function TemplateRsvpForm({ tone }: Props) {
 
       <div className="mt-6 space-y-3">
         {published.map((c) => (
-          <div
-            key={c.id}
-            className="rounded-2xl border border-current/10 p-4"
-          >
+          <div key={c.id} className="rounded-2xl border border-current/10 p-4">
             <div className="flex items-center gap-3">
               <span
                 className="size-2.5 shrink-0 rounded-full"
@@ -169,9 +211,7 @@ export function TemplateRsvpForm({ tone }: Props) {
                   <button
                     key={s}
                     type="button"
-                    onClick={() =>
-                      setChoices((prev) => ({ ...prev, [c.id]: s }))
-                    }
+                    onClick={() => setChoices((prev) => ({ ...prev, [c.id]: s }))}
                     className={
                       "flex-1 rounded-full px-3 py-2 font-mono text-[10px] uppercase tracking-widest transition " +
                       (active ? t.active : t.inactive)
@@ -198,9 +238,7 @@ export function TemplateRsvpForm({ tone }: Props) {
           >
             −
           </button>
-          <span className="font-mono text-lg">
-            {plus.toString().padStart(2, "0")}
-          </span>
+          <span className="font-mono text-lg">{plus.toString().padStart(2, "0")}</span>
           <button
             type="button"
             onClick={() => setPlus((v) => Math.min(9, v + 1))}
@@ -219,9 +257,11 @@ export function TemplateRsvpForm({ tone }: Props) {
         className={`mt-4 w-full rounded-2xl border px-4 py-3 text-sm focus:outline-none ${t.input}`}
       />
 
+      {error ? <p className="mt-3 text-center text-xs text-red-500">{error}</p> : null}
+
       <button
         disabled={!canSubmit}
-        onClick={() => setDone(true)}
+        onClick={submit}
         className={
           "mt-6 w-full rounded-full py-4 font-mono text-[11px] uppercase tracking-[0.25em] transition " +
           t.button +
@@ -229,7 +269,7 @@ export function TemplateRsvpForm({ tone }: Props) {
           t.disabled
         }
       >
-        Envoyer ma réponse
+        {submitting ? "Envoi…" : "Envoyer ma réponse"}
       </button>
     </section>
   );

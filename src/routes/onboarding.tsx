@@ -1,4 +1,6 @@
-import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { useWedding } from "@/lib/wedding-store";
 
 export const Route = createFileRoute("/onboarding")({
   component: OnboardingLayout,
@@ -13,9 +15,28 @@ const stepPaths = [
 
 function OnboardingLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { account, loading } = useWedding();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !account.isAuthenticated) {
+      navigate({ to: "/login", replace: true });
+    }
+  }, [loading, account.isAuthenticated, navigate]);
+
   const current = Math.max(0, stepPaths.findIndex((p) => pathname.startsWith(p)));
   const stepNum = current + 1;
   const prev = current > 0 ? stepPaths[current - 1] : null;
+
+  if (loading || !account.isAuthenticated) {
+    return (
+      <div className="grid min-h-screen place-items-center bg-background">
+        <p className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-40">
+          Chargement…
+        </p>
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-background">
