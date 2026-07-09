@@ -3,10 +3,11 @@ import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { useWedding } from "@/lib/wedding-store";
 import { useAutosave } from "@/hooks/use-autosave";
 import { SaveIndicator } from "./SaveIndicator";
-import { Lock, Type, Users, Calendar, X, Pencil } from "lucide-react";
+import { HeroPhotoSheet } from "./HeroPhotoSheet";
+import { Lock, Type, Users, Calendar, X, Pencil, ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type Sheet = null | "caption" | "names" | "date";
+type Sheet = null | "caption" | "names" | "date" | "hero";
 
 const CAPTION_SUGGESTIONS = [
   "Ils se disent oui",
