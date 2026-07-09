@@ -165,10 +165,7 @@ export function PreviewEditor({ mode }: EditorProps) {
 
   return (
     <>
-      {/* The Modifier/Terminer toggle now lives in the sticky PageActionBar
-         rendered by the dashboard chrome. `onToggle` remains part of the
-         component signature for API compatibility. */}
-      {void onToggle}
+
 
 
       {/* Bottom edit bar (edit mode only) */}
