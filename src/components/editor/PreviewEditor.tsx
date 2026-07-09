@@ -52,7 +52,7 @@ interface EditorProps {
 export function PreviewEditor({ mode, onToggle }: EditorProps) {
   const { couple, updateCouple, weddingId } = useWedding();
   const [sheet, setSheet] = useState<Sheet>(null);
-  const { status, schedule } = useAutosave(500);
+  const { status, schedule } = useAutosaveContext();
 
   // Local drafts (updated live in UI, persisted debounced)
   const [caption, setCaption] = useState(couple.caption ?? "");
