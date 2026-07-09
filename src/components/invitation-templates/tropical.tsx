@@ -43,7 +43,7 @@ export function TropicalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
           <div className="absolute inset-0 bg-gradient-to-t from-[#0d3b2e] via-[#0d3b2e]/40 to-transparent" />
           <div className="absolute bottom-8 left-0 right-0 px-6 text-center">
             <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.3em] text-[#e88b62]">
-              Un mariage sous les tropiques
+              {couple.caption || "Un mariage sous les tropiques"}
             </p>
             <h1 className="font-serif text-5xl italic leading-none">
               <span className="block">{couple.brideName}</span>

@@ -32,7 +32,7 @@ export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
               className="mb-3 font-mono text-[10px] uppercase tracking-[0.3em]"
               style={{ color: accent }}
             >
-              Ils se disent oui
+              {couple.caption || "Ils se disent oui"}
             </p>
             <h1 className="text-balance font-serif text-[2.5rem] italic leading-none">
               <span className="block">{couple.brideName}</span>
