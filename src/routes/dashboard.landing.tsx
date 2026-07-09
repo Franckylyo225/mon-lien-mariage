@@ -249,7 +249,68 @@ function LandingEditor() {
             className="w-full rounded-2xl border border-input bg-background px-4 py-3 text-sm focus:border-primary focus:outline-none"
           />
         </div>
-        <div className="mt-5">
+
+        <div className="mt-8 border-t border-border pt-6">
+          <p className="mb-3 font-mono text-[10px] uppercase tracking-widest opacity-60">
+            Contact pour plus d'informations
+          </p>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <Field
+              label="Nom de la personne"
+              value={couple.contactName ?? ""}
+              placeholder="Ex. Mariam Diabaté"
+              onChange={(v) => updateCouple({ contactName: v })}
+            />
+            <Field
+              label="Téléphone"
+              value={couple.contactPhone ?? ""}
+              placeholder="+225 07 08 09 10 11"
+              onChange={(v) => updateCouple({ contactPhone: v })}
+            />
+            <Field
+              label="Email"
+              value={couple.contactEmail ?? ""}
+              placeholder="contact@example.com"
+              onChange={(v) => updateCouple({ contactEmail: v })}
+            />
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest opacity-60">
+            Note dress code
+          </label>
+          <textarea
+            value={couple.dressCodeNote ?? ""}
+            onChange={(e) => updateCouple({ dressCodeNote: e.target.value })}
+            rows={2}
+            placeholder="Ex. Élégance chic — accents dorés bienvenus."
+            className="w-full rounded-2xl border border-input bg-background px-4 py-3 text-sm focus:border-primary focus:outline-none"
+          />
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 gap-3">
+          <Field
+            label="Titre de l'info personnalisée"
+            value={couple.customInfoTitle ?? ""}
+            placeholder="Ex. Bon à savoir"
+            onChange={(v) => updateCouple({ customInfoTitle: v })}
+          />
+          <div>
+            <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest opacity-60">
+              Contenu
+            </label>
+            <textarea
+              value={couple.customInfoBody ?? ""}
+              onChange={(e) => updateCouple({ customInfoBody: e.target.value })}
+              rows={3}
+              placeholder="Ex. Une navette est prévue depuis l'hôtel Ivoire à partir de 18h30."
+              className="w-full rounded-2xl border border-input bg-background px-4 py-3 text-sm focus:border-primary focus:outline-none"
+            />
+          </div>
+        </div>
+
+        <div className="mt-6">
           <p className="mb-2 font-mono text-[10px] uppercase tracking-widest opacity-60">
             Couleur d'accent
           </p>
