@@ -257,6 +257,10 @@ export type Database = {
           practical_parking: string | null
           published_at: string | null
           slug: string | null
+          story_body: string | null
+          story_enabled: boolean | null
+          story_images: string[] | null
+          story_title: string | null
           template_id: string
           theme: string
           updated_at: string
@@ -296,6 +300,10 @@ export type Database = {
           practical_parking?: string | null
           published_at?: string | null
           slug?: string | null
+          story_body?: string | null
+          story_enabled?: boolean | null
+          story_images?: string[] | null
+          story_title?: string | null
           template_id?: string
           theme?: string
           updated_at?: string
@@ -335,6 +343,10 @@ export type Database = {
           practical_parking?: string | null
           published_at?: string | null
           slug?: string | null
+          story_body?: string | null
+          story_enabled?: boolean | null
+          story_images?: string[] | null
+          story_title?: string | null
           template_id?: string
           theme?: string
           updated_at?: string

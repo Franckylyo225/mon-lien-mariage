@@ -2,7 +2,7 @@ import { formatFrenchDate } from "@/lib/wedding-store";
 import { eventTypeMeta } from "@/lib/ceremony-meta";
 import type { TemplateProps } from "./types";
 import { CeremonyProgramTabs } from "./program-tabs";
-import { Countdown, TemplateBottomSections } from "./sections";
+import { Countdown, OurStorySection, TemplateBottomSections } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
 
 export function BotaniqueDoreTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
@@ -66,6 +66,8 @@ export function BotaniqueDoreTemplate({ couple, ceremonies, rsvpSlot }: Template
             />
           </div>
         )}
+
+        <OurStorySection couple={couple} accent="#c9a84c" />
 
         <p className="mt-10 text-center font-serif italic leading-relaxed opacity-80">
           {couple.introMessage}

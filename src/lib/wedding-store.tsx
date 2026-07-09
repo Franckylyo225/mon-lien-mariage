@@ -123,6 +123,10 @@ export interface Couple {
   practicalAccommodation?: string;
   practicalContactName?: string;
   practicalContactPhone?: string;
+  storyEnabled?: boolean;
+  storyTitle?: string;
+  storyBody?: string;
+  storyImages?: string[];
 }
 
 
@@ -316,6 +320,10 @@ type WeddingRow = {
   practical_accommodation: string | null;
   practical_contact_name: string | null;
   practical_contact_phone: string | null;
+  story_enabled: boolean | null;
+  story_title: string | null;
+  story_body: string | null;
+  story_images: string[] | null;
 };
 
 
@@ -359,6 +367,10 @@ function rowToCouple(w: WeddingRow): Couple {
     practicalAccommodation: w.practical_accommodation ?? undefined,
     practicalContactName: w.practical_contact_name ?? undefined,
     practicalContactPhone: w.practical_contact_phone ?? undefined,
+    storyEnabled: w.story_enabled ?? true,
+    storyTitle: w.story_title ?? undefined,
+    storyBody: w.story_body ?? undefined,
+    storyImages: w.story_images ?? [],
   };
 }
 
@@ -397,6 +409,10 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.practicalAccommodation !== undefined) r.practical_accommodation = p.practicalAccommodation || null;
   if (p.practicalContactName !== undefined) r.practical_contact_name = p.practicalContactName || null;
   if (p.practicalContactPhone !== undefined) r.practical_contact_phone = p.practicalContactPhone || null;
+  if (p.storyEnabled !== undefined) r.story_enabled = p.storyEnabled;
+  if (p.storyTitle !== undefined) r.story_title = p.storyTitle || null;
+  if (p.storyBody !== undefined) r.story_body = p.storyBody || null;
+  if (p.storyImages !== undefined) r.story_images = p.storyImages ?? [];
   return r;
 }
 
