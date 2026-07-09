@@ -7,6 +7,9 @@ import { NoirMinimalTemplate } from "./noir-minimal";
 import { BotaniqueDoreTemplate } from "./botanique-dore";
 import { TropicalTemplate } from "./tropical";
 import { ArtDecoTemplate } from "./art-deco";
+import { RoseEleganceTemplate } from "./rose-elegance";
+import { IvoireEpureTemplate } from "./ivoire-epure";
+import { OrAntiqueTemplate } from "./or-antique";
 
 export const templateComponents: Record<TemplateId, ComponentType<TemplateProps>> = {
   terracotta: TerracottaTemplate,
@@ -28,16 +31,31 @@ export const templateRsvpTone: Record<
 };
 
 /**
- * Phase 1: theme drives the rendered page. The dynamic loader picks the
- * template component + RSVP tone from the current theme slug.
- * Phase 3 will replace individual templates with per-theme designs.
+ * Phase 3: some themes have dedicated designs and bypass the template
+ * mapping in wedding-theme.ts. Any theme absent here still resolves via
+ * the Phase-2 fallback (templateForTheme). Add a theme here as soon as
+ * its dedicated component ships.
  */
+const themeComponents: Partial<Record<ThemeId, ComponentType<TemplateProps>>> = {
+  "rose-elegance": RoseEleganceTemplate,
+  "ivoire-epure": IvoireEpureTemplate,
+  "or-antique": OrAntiqueTemplate,
+};
+
+const themeRsvpTone: Partial<
+  Record<ThemeId, "warm" | "dark" | "gold" | "tropical" | "deco">
+> = {
+  "rose-elegance": "warm",
+  "ivoire-epure": "dark",
+  "or-antique": "deco",
+};
+
 export function componentForTheme(theme: ThemeId): ComponentType<TemplateProps> {
-  return templateComponents[templateForTheme(theme)];
+  return themeComponents[theme] ?? templateComponents[templateForTheme(theme)];
 }
 
 export function rsvpToneForTheme(
   theme: ThemeId,
 ): "warm" | "dark" | "gold" | "tropical" | "deco" {
-  return templateRsvpTone[templateForTheme(theme)];
+  return themeRsvpTone[theme] ?? templateRsvpTone[templateForTheme(theme)];
 }
