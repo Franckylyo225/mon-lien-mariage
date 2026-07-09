@@ -85,6 +85,8 @@ export function BotaniqueDoreTemplate({ couple, ceremonies, rsvpSlot }: Template
 
         {rsvpSlot}
 
+        <GallerySection couple={couple} accent="#c9a84c" />
+
         <TemplateBottomSections couple={couple} ceremonies={published} accent="#c9a84c" />
 
         <footer className="pt-12 text-center font-serif italic text-[#c9a84c]">
