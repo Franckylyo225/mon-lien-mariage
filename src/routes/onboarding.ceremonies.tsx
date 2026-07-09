@@ -4,7 +4,7 @@ import { useWedding, type CeremonyType } from "@/lib/wedding-store";
 import { ceremonyMeta } from "@/lib/ceremony-meta";
 
 export const Route = createFileRoute("/onboarding/ceremonies")({
-  head: () => ({ meta: [{ title: "Étape 2 / 4 — Vos cérémonies" }] }),
+  head: () => ({ meta: [{ title: "Étape 2 / 4 — Vos étapes" }] }),
   component: Step2,
 });
 
@@ -85,14 +85,14 @@ function Step2() {
             value={autreLabel}
             onChange={(e) => setAutreLabel(e.target.value)}
             className="mt-2 w-full rounded-lg border border-input bg-card px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-            placeholder="Nom de votre cérémonie personnalisée"
+            placeholder="Nom de votre étape personnalisée"
           />
         ) : null}
       </div>
 
       <button
         onClick={() => {
-          // Créer les cérémonies (nouvelles seulement) — évite les doublons si retour
+          // Créer les étapes (nouvelles seulement) — évite les doublons si retour
           const existingTypes = new Set(ceremonies.map((c) => c.type));
           selected.forEach((t) => {
             if (existingTypes.has(t)) return;

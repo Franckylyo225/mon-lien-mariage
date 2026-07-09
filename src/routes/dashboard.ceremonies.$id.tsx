@@ -5,7 +5,7 @@ import { ceremonyMeta } from "@/lib/ceremony-meta";
 import { Field } from "./signup";
 
 export const Route = createFileRoute("/dashboard/ceremonies/$id")({
-  head: () => ({ meta: [{ title: "Éditer une cérémonie — MonMariage.ci" }] }),
+  head: () => ({ meta: [{ title: "Éditer une étape — MonMariage.ci" }] }),
   component: EditCeremony,
 });
 
@@ -24,7 +24,7 @@ function EditCeremony() {
   if (!c || !form) {
     return (
       <div className="text-center py-16">
-        <p className="text-muted-foreground">Cérémonie introuvable.</p>
+        <p className="text-muted-foreground">Étape introuvable.</p>
         <Link to="/dashboard/ceremonies" className="mt-4 inline-block text-primary underline">
           Retour à la liste
         </Link>
@@ -41,10 +41,10 @@ function EditCeremony() {
         to="/dashboard/ceremonies"
         className="text-sm text-muted-foreground hover:text-foreground"
       >
-        ← Mes cérémonies
+        ← Mes étapes
       </Link>
 
-      <h1 className="font-serif text-3xl italic">Éditer la cérémonie</h1>
+      <h1 className="font-serif text-3xl italic">Éditer la étape</h1>
 
       <section className="space-y-4">
         <Field label="Type">
@@ -62,7 +62,7 @@ function EditCeremony() {
           <input
             value={form.name}
             onChange={(e) => patch("name", e.target.value)}
-            placeholder="Ex. Cérémonie du voile"
+            placeholder="Ex. Étape du voile"
             className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm"
           />
         </Field>
@@ -161,7 +161,7 @@ function EditCeremony() {
         <button
           disabled={couple.isLocked}
           onClick={() => {
-            if (confirm("Supprimer cette cérémonie ?")) {
+            if (confirm("Supprimer cette étape ?")) {
               removeCeremony(c.id);
               navigate({ to: "/dashboard/ceremonies" });
             }
@@ -169,7 +169,7 @@ function EditCeremony() {
           className="mx-auto mt-3 block text-xs text-destructive hover:underline disabled:opacity-40"
           title={couple.isLocked ? "Impossible après publication" : undefined}
         >
-          Supprimer cette cérémonie
+          Supprimer cette étape
         </button>
       </div>
     </div>

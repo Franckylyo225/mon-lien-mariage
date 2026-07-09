@@ -98,7 +98,7 @@ function NewGuestPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="font-serif text-lg italic">Cérémonies *</h2>
+        <h2 className="font-serif text-lg italic">Étapes *</h2>
         <div className="space-y-2">
           {ceremonies.map((c) => {
             const checked = ids.includes(c.id);
@@ -151,7 +151,7 @@ function NewGuestPage() {
         <button
           onClick={() => {
             if (!name.trim()) return setErr("Le nom est obligatoire.");
-            if (ids.length === 0) return setErr("Sélectionnez au moins une cérémonie.");
+            if (ids.length === 0) return setErr("Sélectionnez au moins une étape.");
             addGuest({
               name: name.trim(),
               phone: phone.trim(),

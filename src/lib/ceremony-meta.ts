@@ -26,7 +26,7 @@ export const ceremonyMeta: Record<
     blurb: "La bénédiction, à l'église, au temple ou à la mosquée.",
   },
   traditionnel: {
-    label: "Cérémonie traditionnelle",
+    label: "Étape traditionnelle",
     short: "Traditionnel",
     icon: "❋",
     color: "#a0522d",
@@ -54,7 +54,7 @@ export const ceremonyMeta: Record<
     blurb: "L'annonce officielle, entre proches.",
   },
   autre: {
-    label: "Autre cérémonie",
+    label: "Autre étape",
     short: "Autre",
     icon: "✧",
     color: "#4a6741",

@@ -77,7 +77,7 @@ function GuestsPage() {
             active={ceremonyFilter === "all"}
             onClick={() => setCeremonyFilter("all")}
           >
-            Toutes cérémonies
+            Toutes étapes
           </Chip>
           {ceremonies.map((c) => (
             <Chip
@@ -328,7 +328,7 @@ function AddGuestSheet({
           </div>
           <div>
             <p className="mb-2 font-mono text-[10px] uppercase tracking-widest opacity-60">
-              Cérémonies invitées
+              Étapes invitées
             </p>
             <div className="flex flex-wrap gap-2">
               {ceremonies.map((c) => {

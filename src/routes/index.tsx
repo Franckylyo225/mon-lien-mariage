@@ -13,7 +13,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "Une page d'invitation stylée pour chaque cérémonie : dot, civil, religieux, réception.",
+          "Une page d'invitation stylée pour chaque étape : dot, civil, religieux, réception.",
       },
     ],
   }),
@@ -47,7 +47,7 @@ function Landing() {
           <span className="text-primary">votre union.</span>
         </h1>
         <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">
-          Créez la page de votre mariage en 4 étapes. Ajoutez vos cérémonies,
+          Créez la page de votre mariage en 4 étapes. Ajoutez vos étapes,
           invitez vos proches, recevez leurs confirmations — sans stress.
         </p>
         <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
@@ -72,7 +72,7 @@ function Landing() {
           <div className="mt-14 grid gap-8 sm:grid-cols-3">
             {[
               {
-                t: "Plusieurs cérémonies",
+                t: "Plusieurs étapes",
                 d: "Dot, civil, religieux, réception — chaque étape a sa page, son programme et son lieu.",
               },
               {

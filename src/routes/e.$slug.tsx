@@ -21,7 +21,7 @@ export const Route = createFileRoute("/e/$slug")({
       {
         name: "description",
         content:
-          "Vous êtes convié·e à célébrer un mariage. Découvrez les cérémonies et confirmez votre présence.",
+          "Vous êtes convié·e à célébrer un mariage. Découvrez les étapes et confirmez votre présence.",
       },
       { property: "og:title", content: "Vous êtes convié·e" },
       {

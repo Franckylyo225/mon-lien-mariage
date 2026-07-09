@@ -822,8 +822,8 @@ export function configProgress(state: {
   const items = [
     { label: "Prénoms du couple", done: !!couple.brideName && !!couple.groomName, weight: 15 },
     { label: "Date du mariage", done: !!couple.weddingDate, weight: 10 },
-    { label: "Au moins 1 cérémonie avec date et lieu", done: ceremonies.some((c) => c.date && c.venue), weight: 20 },
-    { label: "Toutes les cérémonies ont date et lieu", done: ceremonies.length > 0 && ceremonies.every((c) => c.date && c.venue), weight: 15 },
+    { label: "Au moins 1 étape avec date et lieu", done: ceremonies.some((c) => c.date && c.venue), weight: 20 },
+    { label: "Toutes les étapes ont date et lieu", done: ceremonies.length > 0 && ceremonies.every((c) => c.date && c.venue), weight: 15 },
     { label: "Au moins 5 invités", done: guests.length >= 5, weight: 15 },
     { label: "Photo du couple", done: !!couple.heroImageUrl, weight: 10 },
     { label: "Thème choisi", done: !!couple.theme, weight: 15 },

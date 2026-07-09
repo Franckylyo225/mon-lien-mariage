@@ -57,7 +57,7 @@ function PublishPage() {
         <p className="mt-3 max-w-xl text-sm opacity-70">
           Une fois publiée, votre page devient accessible via son lien public
           et les prénoms du couple sont verrouillés. Vous pourrez toujours
-          modifier les cérémonies et gérer vos invités.
+          modifier les étapes et gérer vos invités.
         </p>
 
         {/* Card offre */}
@@ -79,7 +79,7 @@ function PublishPage() {
               <li className="flex gap-2"><span className="text-primary">✓</span> Page d'invitation publique et partageable</li>
               <li className="flex gap-2"><span className="text-primary">✓</span> Lien personnalisé + QR code</li>
               <li className="flex gap-2"><span className="text-primary">✓</span> RSVP illimités et gestion des invités</li>
-              <li className="flex gap-2"><span className="text-primary">✓</span> Toutes vos cérémonies (dot, civil, religieux, dîner…)</li>
+              <li className="flex gap-2"><span className="text-primary">✓</span> Toutes vos étapes (dot, civil, religieux, dîner…)</li>
             </ul>
           </div>
 

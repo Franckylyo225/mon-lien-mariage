@@ -12,7 +12,7 @@ export const Route = createFileRoute("/dashboard")({
 
 const TITLES: Record<string, string> = {
   "/dashboard": "",
-  "/dashboard/ceremonies": "Mes cérémonies",
+  "/dashboard/ceremonies": "Mes étapes",
   "/dashboard/guests": "Mes invités",
   "/dashboard/preview": "Aperçu de ma page",
   "/dashboard/landing": "Ma page",
@@ -48,7 +48,7 @@ function DashboardLayout() {
 
   const title =
     TITLES[pathname] ??
-    (pathname.startsWith("/dashboard/ceremonies/") ? "Cérémonie" : "");
+    (pathname.startsWith("/dashboard/ceremonies/") ? "Étape" : "");
 
   const initial =
     (couple.brideName || account.email || "?").trim()[0]?.toUpperCase() ?? "?";
