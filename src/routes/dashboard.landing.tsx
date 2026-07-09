@@ -341,6 +341,8 @@ function LandingEditor() {
           </div>
         </div>
 
+        <StorySection couple={couple} updateCouple={updateCouple} />
+
         <div className="mt-6">
           <p className="mb-2 font-mono text-[10px] uppercase tracking-widest opacity-60">
             Couleur d'accent
