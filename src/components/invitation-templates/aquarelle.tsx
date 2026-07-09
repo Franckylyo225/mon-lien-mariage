@@ -174,7 +174,7 @@ export function AquarelleTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
               ~ {eventTypeMeta[couple.eventType ?? "mariage"].programTitle} ~
             </p>
           </div>
-          <CeremonyProgramTabs ceremonies={published} variant="warm" />
+          <CeremonyProgramTabs ceremonies={published} variant="terracotta" />
         </section>
 
         {rsvpSlot}
