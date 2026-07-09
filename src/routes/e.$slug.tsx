@@ -74,6 +74,9 @@ function PublicInvitationPage() {
     countdownUnits:
       ((w as { countdown_units?: string[] | null }).countdown_units as Couple["countdownUnits"]) ??
       ["days", "hours", "minutes", "seconds"],
+    countdownStyle:
+      ((w as { countdown_style?: Record<string, unknown> | null }).countdown_style as Couple["countdownStyle"]) ??
+      {},
     practicalInfoEnabled:
       (w as { practical_info_enabled?: boolean | null }).practical_info_enabled ?? false,
     practicalParking:
