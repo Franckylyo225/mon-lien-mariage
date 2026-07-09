@@ -123,6 +123,10 @@ export interface Couple {
   practicalAccommodation?: string;
   practicalContactName?: string;
   practicalContactPhone?: string;
+  storyEnabled?: boolean;
+  storyTitle?: string;
+  storyBody?: string;
+  storyImages?: string[];
 }
 
 
