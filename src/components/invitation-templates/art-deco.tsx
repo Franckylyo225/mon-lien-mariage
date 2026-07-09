@@ -56,6 +56,19 @@ export function ArtDecoTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps)
           </div>
         ) : null}
 
+        <div className="mt-8">
+          <Countdown
+            targetDate={couple.weddingDate}
+            tone={{
+              cellBg: "bg-[#1a0f1a]/60",
+              cellBorder: "border border-[#c9a84c]/40",
+              numberClass: "text-3xl font-serif italic text-[#f0d78c]",
+              labelClass:
+                "font-mono text-[9px] uppercase tracking-[0.3em] text-[#c9a84c]",
+            }}
+          />
+        </div>
+
         <p className="mt-10 text-center font-serif italic leading-relaxed text-[#f0d78c]/80">
           {couple.introMessage}
         </p>
@@ -73,12 +86,15 @@ export function ArtDecoTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps)
 
         {rsvpSlot}
 
+        <TemplateBottomSections couple={couple} ceremonies={published} accent="#c9a84c" />
+
         <footer className="pt-14 text-center">
           <span className="text-[#c9a84c]">◆ ◆ ◆</span>
           <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.5em] text-[#c9a84c]/70">
             {couple.hashtag ?? `${couple.brideName[0]} & ${couple.groomName[0]}`}
           </p>
         </footer>
+
       </article>
     </main>
   );
