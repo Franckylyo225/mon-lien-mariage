@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useWedding, type ThemeId } from "@/lib/wedding-store";
-import { THEMES, THEME_FAMILIES, BACKGROUNDS } from "@/lib/wedding-theme";
+import { THEMES, THEME_FAMILIES } from "@/lib/wedding-theme";
+import { ThemeThumbnail } from "@/components/editor/ThemeThumbnail";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/onboarding/theme")({
@@ -9,9 +10,6 @@ export const Route = createFileRoute("/onboarding/theme")({
   component: Step3,
 });
 
-function bgHex(slug: string): string {
-  return BACKGROUNDS.find((b) => b.slug === slug)?.hex ?? "#F5EFE7";
-}
 
 function Step3() {
   const { couple, updateCouple, setOnboardingStep } = useWedding();
@@ -52,28 +50,8 @@ function Step3() {
                       )}
                       style={active ? { borderColor: t.defaultAccent } : undefined}
                     >
-                      <div
-                        className="flex h-40 w-32 flex-col items-center justify-center px-3 text-center"
-                        style={{ background: bgHex(t.defaultBg) }}
-                      >
-                        <p
-                          className="mb-1 font-mono text-[8px] uppercase tracking-[0.25em]"
-                          style={{ color: t.defaultAccent }}
-                        >
-                          Save the date
-                        </p>
-                        <p
-                          className="text-base leading-tight italic"
-                          style={{ fontFamily: t.fontHeading, color: "#1A1A1A" }}
-                        >
-                          Aïcha
-                          <br />&amp;<br />
-                          Kouamé
-                        </p>
-                        <span
-                          className="mt-2 block h-px w-6"
-                          style={{ background: t.defaultAccent }}
-                        />
+                      <div className="w-32">
+                        <ThemeThumbnail theme={slug} />
                       </div>
                       <div className="border-t border-border bg-background px-3 py-1.5">
                         <p className="truncate text-[11px] font-medium">{t.name}</p>
