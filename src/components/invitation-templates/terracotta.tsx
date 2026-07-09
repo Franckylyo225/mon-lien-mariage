@@ -82,6 +82,8 @@ export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
 
         {rsvpSlot}
 
+        <GallerySection couple={couple} accent={accent} />
+
         <TemplateBottomSections couple={couple} ceremonies={published} accent={accent} />
 
         <footer className="pt-16 text-center font-mono text-[9px] uppercase tracking-[0.3em] opacity-40">
