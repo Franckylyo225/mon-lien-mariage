@@ -240,6 +240,9 @@ export type Database = {
           custom_info_title: string | null
           dress_code_note: string | null
           event_type: string
+          gallery_enabled: boolean | null
+          gallery_images: string[] | null
+          gallery_title: string | null
           groom_name: string
           has_envelope_animation: boolean
           hashtag: string | null
@@ -283,6 +286,9 @@ export type Database = {
           custom_info_title?: string | null
           dress_code_note?: string | null
           event_type?: string
+          gallery_enabled?: boolean | null
+          gallery_images?: string[] | null
+          gallery_title?: string | null
           groom_name?: string
           has_envelope_animation?: boolean
           hashtag?: string | null
@@ -326,6 +332,9 @@ export type Database = {
           custom_info_title?: string | null
           dress_code_note?: string | null
           event_type?: string
+          gallery_enabled?: boolean | null
+          gallery_images?: string[] | null
+          gallery_title?: string | null
           groom_name?: string
           has_envelope_animation?: boolean
           hashtag?: string | null

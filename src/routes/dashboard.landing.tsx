@@ -342,6 +342,7 @@ function LandingEditor() {
         </div>
 
         <StorySection couple={couple} updateCouple={updateCouple} />
+        <GalleryEditor couple={couple} updateCouple={updateCouple} />
 
         <div className="mt-6">
           <p className="mb-2 font-mono text-[10px] uppercase tracking-widest opacity-60">
@@ -531,4 +532,103 @@ function StorySection({
     </div>
   );
 }
+
+function GalleryEditor({
+  couple,
+  updateCouple,
+}: {
+  couple: Couple;
+  updateCouple: (patch: Partial<Couple>) => Promise<void>;
+}) {
+  const enabled = couple.galleryEnabled ?? false;
+  const images = couple.galleryImages ?? [];
+
+  const updateImage = (i: number, url: string) => {
+    const next = [...images];
+    next[i] = url;
+    updateCouple({ galleryImages: next });
+  };
+  const addImage = () => updateCouple({ galleryImages: [...images, ""] });
+  const removeImage = (i: number) =>
+    updateCouple({ galleryImages: images.filter((_, idx) => idx !== i) });
+
+  return (
+    <div className="mt-8 border-t border-border pt-6">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <p className="font-mono text-[10px] uppercase tracking-widest opacity-60">
+          Galerie photos
+        </p>
+        <label className="inline-flex cursor-pointer items-center gap-2 text-xs">
+          <input
+            type="checkbox"
+            checked={enabled}
+            onChange={(e) => updateCouple({ galleryEnabled: e.target.checked })}
+            className="size-4 accent-primary"
+          />
+          <span className="opacity-70">Afficher ce bloc</span>
+        </label>
+      </div>
+
+      {enabled && (
+        <div className="space-y-3">
+          <Field
+            label="Titre du bloc"
+            value={couple.galleryTitle ?? ""}
+            placeholder="Galerie"
+            onChange={(v) => updateCouple({ galleryTitle: v })}
+          />
+
+          <div>
+            <div className="mb-2 flex items-center justify-between">
+              <label className="font-mono text-[10px] uppercase tracking-widest opacity-60">
+                Images ({images.length})
+              </label>
+              <button
+                type="button"
+                onClick={addImage}
+                className="rounded-full border border-input px-3 py-1 text-xs hover:bg-accent"
+              >
+                + Ajouter
+              </button>
+            </div>
+            <div className="space-y-2">
+              {images.length === 0 && (
+                <p className="text-xs opacity-60">
+                  Aucune image. Ajoutez plusieurs URLs pour composer une grille.
+                </p>
+              )}
+              {images.map((url, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={url}
+                    placeholder="https://…"
+                    onChange={(e) => updateImage(i, e.target.value)}
+                    className="flex-1 rounded-full border border-input bg-background px-4 py-2 text-sm focus:border-primary focus:outline-none"
+                  />
+                  {url && (
+                    <img
+                      src={url}
+                      alt=""
+                      className="size-10 rounded-lg object-cover ring-1 ring-border"
+                    />
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => removeImage(i)}
+                    className="rounded-full border border-input px-3 py-2 text-xs hover:bg-destructive/10"
+                    aria-label="Retirer"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 
