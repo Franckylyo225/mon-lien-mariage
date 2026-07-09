@@ -179,7 +179,7 @@ export function AquarelleTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
 
         {rsvpSlot}
 
-        <GallerySection couple={couple} accent={accent} />
+        <GallerySection couple={couple} accent={accent} layout="masonry" />
 
         <TemplateBottomSections
           couple={couple}

@@ -82,7 +82,7 @@ export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
 
         {rsvpSlot}
 
-        <GallerySection couple={couple} accent={accent} />
+        <GallerySection couple={couple} accent={accent} layout="masonry" />
 
         <TemplateBottomSections couple={couple} ceremonies={published} accent={accent} />
 

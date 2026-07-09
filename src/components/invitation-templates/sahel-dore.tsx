@@ -146,7 +146,7 @@ export function SahelDoreTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
 
         {rsvpSlot}
 
-        <GallerySection couple={couple} accent={accent} />
+        <GallerySection couple={couple} accent={accent} layout="frames" />
 
         <TemplateBottomSections
           couple={couple}

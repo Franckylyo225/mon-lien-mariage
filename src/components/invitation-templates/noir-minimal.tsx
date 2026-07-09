@@ -71,7 +71,7 @@ export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
 
         {rsvpSlot}
 
-        <GallerySection couple={couple} accent="#f5f3ee" />
+        <GallerySection couple={couple} accent="#f5f3ee" layout="mosaic" />
 
         <TemplateBottomSections couple={couple} ceremonies={published} accent="#f5f3ee" />
 

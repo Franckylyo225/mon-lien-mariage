@@ -217,7 +217,7 @@ export function PapierKraftTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
 
         {rsvpSlot}
 
-        <GallerySection couple={couple} accent={accent} />
+        <GallerySection couple={couple} accent={accent} layout="polaroid" />
 
         <TemplateBottomSections
           couple={couple}

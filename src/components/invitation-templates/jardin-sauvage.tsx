@@ -138,7 +138,7 @@ export function JardinSauvageTemplate({ couple, ceremonies, rsvpSlot }: Template
 
         {rsvpSlot}
 
-        <GallerySection couple={couple} accent={accent} />
+        <GallerySection couple={couple} accent={accent} layout="masonry" />
 
         <TemplateBottomSections
           couple={couple}

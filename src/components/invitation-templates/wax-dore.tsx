@@ -127,7 +127,7 @@ export function WaxDoreTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps)
 
         {rsvpSlot}
 
-        <GallerySection couple={couple} accent={accent} />
+        <GallerySection couple={couple} accent={accent} layout="frames" />
 
         <TemplateBottomSections
           couple={couple}

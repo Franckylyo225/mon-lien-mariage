@@ -136,7 +136,7 @@ export function RoseEleganceTemplate({ couple, ceremonies, rsvpSlot }: TemplateP
 
         {rsvpSlot}
 
-        <GallerySection couple={couple} accent={accent} />
+        <GallerySection couple={couple} accent={accent} layout="masonry" />
 
         <TemplateBottomSections
           couple={couple}
