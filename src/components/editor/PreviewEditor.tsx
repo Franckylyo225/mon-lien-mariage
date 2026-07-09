@@ -213,7 +213,7 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
         weddingId={weddingId}
         currentUrl={couple.heroImageUrl}
         onUploaded={(url) => updateCouple({ heroImageUrl: url })}
-        onRemove={() => updateCouple({ heroImageUrl: undefined })}
+        onRemove={() => updateCouple({ heroImageUrl: "" })}
       />
     </>
   );
