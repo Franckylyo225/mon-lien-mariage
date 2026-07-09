@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
 import { useWedding, type TemplateId, type EventType } from "@/lib/wedding-store";
 import { templateMeta, templateOrder, eventTypeMeta, eventTypeOrder } from "@/lib/ceremony-meta";
 
@@ -288,28 +287,6 @@ function Field({
   );
 }
 
-function MiniStat({
-  label,
-  value,
-  tone,
-}: {
-  label: string;
-  value: number;
-  tone?: "primary";
-}) {
-  return (
-    <div className="rounded-2xl border border-border bg-card p-4">
-      <p className="font-mono text-[9px] uppercase tracking-widest opacity-50">{label}</p>
-      <p
-        className={
-          "mt-1 font-mono text-2xl " +
-          (tone === "primary" ? "text-primary" : "text-foreground")
-        }
-      >
-        {value}
-      </p>
-    </div>
-  );
-}
+
 
 
