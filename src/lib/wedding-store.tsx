@@ -384,6 +384,8 @@ function rowToCouple(w: WeddingRow): Couple {
     eventType: ((w.event_type as EventType) ?? "mariage"),
 
     accent: w.accent ?? undefined,
+    accentColor: w.accent_color ?? undefined,
+    backgroundBase: (w.background_base as BackgroundBase | null) ?? undefined,
     hashtag: w.hashtag ?? undefined,
     slug: w.slug ?? undefined,
     isPublished: !!w.is_published,
