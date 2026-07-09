@@ -45,16 +45,19 @@ export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
           </div>
         </header>
 
-        <div className="mt-10">
-          <Countdown
-            targetDate={couple.weddingDate}
-            tone={{
-              cellBg: "bg-white",
-              cellBorder: "ring-1 ring-[#4a2a20]/10",
-              numberClass: `text-3xl font-serif italic`,
-            }}
-          />
-        </div>
+        {(couple.countdownEnabled ?? true) && (
+          <div className="mt-10">
+            <Countdown
+              targetDate={couple.weddingDate}
+              units={couple.countdownUnits}
+              tone={{
+                cellBg: "bg-white",
+                cellBorder: "ring-1 ring-[#4a2a20]/10",
+                numberClass: `text-3xl font-serif italic`,
+              }}
+            />
+          </div>
+        )}
 
         <p className="mt-12 text-pretty text-center text-sm italic leading-relaxed opacity-80">
           {couple.introMessage}

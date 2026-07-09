@@ -34,18 +34,21 @@ export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
           </p>
         </div>
 
-        <div className="mt-10">
-          <Countdown
-            targetDate={couple.weddingDate}
-            tone={{
-              cellBg: "bg-[#f5f3ee]/5",
-              cellBorder: "border border-[#f5f3ee]/15",
-              numberClass: "text-3xl font-medium tracking-tight text-[#f5f3ee]",
-              labelClass:
-                "font-mono text-[9px] uppercase tracking-[0.3em] text-[#f5f3ee]/50",
-            }}
-          />
-        </div>
+        {(couple.countdownEnabled ?? true) && (
+          <div className="mt-10">
+            <Countdown
+              targetDate={couple.weddingDate}
+              units={couple.countdownUnits}
+              tone={{
+                cellBg: "bg-[#f5f3ee]/5",
+                cellBorder: "border border-[#f5f3ee]/15",
+                numberClass: "text-3xl font-medium tracking-tight text-[#f5f3ee]",
+                labelClass:
+                  "font-mono text-[9px] uppercase tracking-[0.3em] text-[#f5f3ee]/50",
+              }}
+            />
+          </div>
+        )}
 
         <p className="mt-12 text-center text-sm leading-relaxed text-[#f5f3ee]/70">
           {couple.introMessage}

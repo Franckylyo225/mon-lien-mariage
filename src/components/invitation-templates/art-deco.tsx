@@ -57,18 +57,21 @@ export function ArtDecoTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps)
           </div>
         ) : null}
 
-        <div className="mt-8">
-          <Countdown
-            targetDate={couple.weddingDate}
-            tone={{
-              cellBg: "bg-[#1a0f1a]/60",
-              cellBorder: "border border-[#c9a84c]/40",
-              numberClass: "text-3xl font-serif italic text-[#f0d78c]",
-              labelClass:
-                "font-mono text-[9px] uppercase tracking-[0.3em] text-[#c9a84c]",
-            }}
-          />
-        </div>
+        {(couple.countdownEnabled ?? true) && (
+          <div className="mt-8">
+            <Countdown
+              targetDate={couple.weddingDate}
+              units={couple.countdownUnits}
+              tone={{
+                cellBg: "bg-[#1a0f1a]/60",
+                cellBorder: "border border-[#c9a84c]/40",
+                numberClass: "text-3xl font-serif italic text-[#f0d78c]",
+                labelClass:
+                  "font-mono text-[9px] uppercase tracking-[0.3em] text-[#c9a84c]",
+              }}
+            />
+          </div>
+        )}
 
         <p className="mt-10 text-center font-serif italic leading-relaxed text-[#f0d78c]/80">
           {couple.introMessage}

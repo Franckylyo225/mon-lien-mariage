@@ -4,10 +4,11 @@ import { useWedding } from "@/lib/wedding-store";
 import { useAutosave } from "@/hooks/use-autosave";
 import { SaveIndicator } from "./SaveIndicator";
 import { HeroPhotoSheet } from "./HeroPhotoSheet";
-import { Lock, Type, Users, Calendar, X, Pencil, ImageIcon } from "lucide-react";
+import { Lock, Type, Users, Calendar, X, Pencil, ImageIcon, Timer } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type Sheet = null | "caption" | "names" | "date" | "hero";
+type CountdownUnit = "days" | "hours" | "minutes" | "seconds";
+type Sheet = null | "caption" | "names" | "date" | "hero" | "countdown";
 
 const CAPTION_SUGGESTIONS = [
   "Ils se disent oui",
@@ -32,6 +33,28 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
   const [groom, setGroom] = useState(couple.groomName);
   const [date, setDate] = useState(couple.weddingDate);
   const [city, setCity] = useState(couple.city);
+  const countdownEnabled = couple.countdownEnabled ?? true;
+  const countdownUnits: CountdownUnit[] =
+    couple.countdownUnits && couple.countdownUnits.length > 0
+      ? couple.countdownUnits
+      : ["days", "hours", "minutes", "seconds"];
+
+  // Detect if the wedding date is in the past (for auto-hide messaging)
+  const weddingPast = (() => {
+    if (!couple.weddingDate) return false;
+    const ms = new Date(couple.weddingDate + "T00:00:00").getTime();
+    return Number.isFinite(ms) && ms > 0 && Date.now() >= ms;
+  })();
+
+  const toggleUnit = (u: CountdownUnit) => {
+    const next = countdownUnits.includes(u)
+      ? countdownUnits.filter((x) => x !== u)
+      : [...countdownUnits, u];
+    // Keep canonical order
+    const order: CountdownUnit[] = ["days", "hours", "minutes", "seconds"];
+    const ordered = order.filter((o) => next.includes(o));
+    persist({ countdownUnits: ordered });
+  };
 
   const persist = (patch: Parameters<typeof updateCouple>[0]) => {
     schedule(async () => {
@@ -93,6 +116,20 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
               label="Date & lieu"
               value={`${date || "—"} · ${city}`}
               onClick={() => setSheet("date")}
+            />
+            <EditChip
+              icon={<Timer className="size-4" />}
+              label="Compte à rebours"
+              value={
+                weddingPast
+                  ? "Masqué (date passée)"
+                  : !countdownEnabled
+                    ? "Désactivé"
+                    : countdownUnits
+                        .map((u) => ({ days: "J", hours: "H", minutes: "M", seconds: "S" })[u])
+                        .join(" · ")
+              }
+              onClick={() => setSheet("countdown")}
             />
           </div>
         </div>
@@ -205,6 +242,111 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
             }}
           />
         </div>
+      </BottomSheet>
+
+      {/* Countdown sheet */}
+      <BottomSheet
+        open={sheet === "countdown"}
+        onOpenChange={(o) => !o && setSheet(null)}
+        title="Compte à rebours"
+      >
+        {weddingPast ? (
+          <div className="rounded-xl border border-muted bg-muted/40 p-4 text-sm">
+            <Timer className="mb-2 size-4" />
+            La date du mariage est passée. Le compte à rebours est
+            automatiquement masqué sur votre page.
+          </div>
+        ) : (
+          <div className="space-y-5">
+            {/* Toggle */}
+            <label className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background px-4 py-3">
+              <div>
+                <p className="text-sm font-medium">Afficher le compte à rebours</p>
+                <p className="text-[11px] opacity-60">
+                  Il s'affiche au-dessus de votre message d'accueil.
+                </p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={countdownEnabled}
+                onClick={() => persist({ countdownEnabled: !countdownEnabled })}
+                className={cn(
+                  "relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors",
+                  countdownEnabled ? "bg-primary" : "bg-muted",
+                )}
+              >
+                <span
+                  className={cn(
+                    "inline-block size-5 rounded-full bg-background shadow transition-transform",
+                    countdownEnabled ? "translate-x-5" : "translate-x-0.5",
+                  )}
+                />
+              </button>
+            </label>
+
+            {/* Units */}
+            <div
+              className={cn(
+                "space-y-2 transition-opacity",
+                !countdownEnabled && "pointer-events-none opacity-40",
+              )}
+            >
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                Unités affichées
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                {(
+                  [
+                    { u: "days", label: "Jours" },
+                    { u: "hours", label: "Heures" },
+                    { u: "minutes", label: "Minutes" },
+                    { u: "seconds", label: "Secondes" },
+                  ] as { u: CountdownUnit; label: string }[]
+                ).map(({ u, label }) => {
+                  const active = countdownUnits.includes(u);
+                  const isLast = active && countdownUnits.length === 1;
+                  return (
+                    <button
+                      key={u}
+                      type="button"
+                      disabled={isLast}
+                      onClick={() => toggleUnit(u)}
+                      className={cn(
+                        "flex items-center justify-between rounded-xl border px-3 py-3 text-left text-sm transition",
+                        active
+                          ? "border-foreground bg-foreground text-background"
+                          : "border-border bg-background",
+                        isLast && "cursor-not-allowed opacity-70",
+                      )}
+                    >
+                      <span>{label}</span>
+                      <span
+                        className={cn(
+                          "grid size-5 place-items-center rounded-full border text-[10px]",
+                          active
+                            ? "border-background/30 bg-background/10"
+                            : "border-border",
+                        )}
+                      >
+                        {active ? "✓" : ""}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+              {countdownUnits.length === 1 && (
+                <p className="text-[11px] opacity-60">
+                  Au moins une unité doit rester affichée.
+                </p>
+              )}
+            </div>
+
+            <p className="text-[11px] opacity-60">
+              Le compte à rebours disparaîtra automatiquement le jour du mariage.
+            </p>
+          </div>
+        )}
       </BottomSheet>
 
       <HeroPhotoSheet
