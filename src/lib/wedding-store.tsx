@@ -374,6 +374,7 @@ function rowToCouple(w: WeddingRow): Couple {
     contactPhone: w.contact_phone ?? undefined,
     contactEmail: w.contact_email ?? undefined,
     dressCodeNote: w.dress_code_note ?? undefined,
+    dressCodeColors: w.dress_code_colors ?? [],
     customInfoTitle: w.custom_info_title ?? undefined,
     customInfoBody: w.custom_info_body ?? undefined,
     caption: w.caption ?? undefined,
