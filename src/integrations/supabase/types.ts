@@ -224,8 +224,14 @@ export type Database = {
           accent: string | null
           bride_name: string
           city: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
           couple_story: string | null
           created_at: string
+          custom_info_body: string | null
+          custom_info_title: string | null
+          dress_code_note: string | null
           groom_name: string
           has_envelope_animation: boolean
           hashtag: string | null
@@ -247,8 +253,14 @@ export type Database = {
           accent?: string | null
           bride_name?: string
           city?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           couple_story?: string | null
           created_at?: string
+          custom_info_body?: string | null
+          custom_info_title?: string | null
+          dress_code_note?: string | null
           groom_name?: string
           has_envelope_animation?: boolean
           hashtag?: string | null
@@ -270,8 +282,14 @@ export type Database = {
           accent?: string | null
           bride_name?: string
           city?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           couple_story?: string | null
           created_at?: string
+          custom_info_body?: string | null
+          custom_info_title?: string | null
+          dress_code_note?: string | null
           groom_name?: string
           has_envelope_animation?: boolean
           hashtag?: string | null
