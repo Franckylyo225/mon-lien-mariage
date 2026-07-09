@@ -229,6 +229,7 @@ export type Database = {
           contact_name: string | null
           contact_phone: string | null
           countdown_enabled: boolean
+          countdown_style: Json
           countdown_units: string[]
           couple_story: string | null
           created_at: string
@@ -267,6 +268,7 @@ export type Database = {
           contact_name?: string | null
           contact_phone?: string | null
           countdown_enabled?: boolean
+          countdown_style?: Json
           countdown_units?: string[]
           couple_story?: string | null
           created_at?: string
@@ -305,6 +307,7 @@ export type Database = {
           contact_name?: string | null
           contact_phone?: string | null
           countdown_enabled?: boolean
+          countdown_style?: Json
           countdown_units?: string[]
           couple_story?: string | null
           created_at?: string

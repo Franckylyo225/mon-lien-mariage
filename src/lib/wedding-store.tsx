@@ -112,6 +112,12 @@ export interface Couple {
   caption?: string;
   countdownEnabled?: boolean;
   countdownUnits?: Array<"days" | "hours" | "minutes" | "seconds">;
+  countdownStyle?: {
+    color?: "auto" | "ivoire" | "noir" | "accent";
+    size?: "sm" | "md" | "lg";
+    font?: "serif" | "sans" | "mono";
+    animation?: "none" | "pulse" | "flip";
+  };
   practicalInfoEnabled?: boolean;
   practicalParking?: string;
   practicalAccommodation?: string;
