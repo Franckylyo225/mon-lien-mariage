@@ -8,8 +8,6 @@ import {
   IconUsersGroup,
   IconEye,
   IconEyeFilled,
-  IconShare,
-  IconShare3,
 } from "@tabler/icons-react";
 import type { Icon } from "@tabler/icons-react";
 
