@@ -47,18 +47,21 @@ export function BotaniqueDoreTemplate({ couple, ceremonies, rsvpSlot }: Template
           />
         ) : null}
 
-        <div className="mt-8">
-          <Countdown
-            targetDate={couple.weddingDate}
-            tone={{
-              cellBg: "bg-[#faf6ec]",
-              cellBorder: "border border-[#c9a84c]/30",
-              numberClass: "text-3xl font-serif italic text-[#3d4a2d]",
-              labelClass:
-                "font-mono text-[9px] uppercase tracking-[0.25em] text-[#c9a84c]",
-            }}
-          />
-        </div>
+        {(couple.countdownEnabled ?? true) && (
+          <div className="mt-8">
+            <Countdown
+              targetDate={couple.weddingDate}
+              units={couple.countdownUnits}
+              tone={{
+                cellBg: "bg-[#faf6ec]",
+                cellBorder: "border border-[#c9a84c]/30",
+                numberClass: "text-3xl font-serif italic text-[#3d4a2d]",
+                labelClass:
+                  "font-mono text-[9px] uppercase tracking-[0.25em] text-[#c9a84c]",
+              }}
+            />
+          </div>
+        )}
 
         <p className="mt-10 text-center font-serif italic leading-relaxed opacity-80">
           {couple.introMessage}
