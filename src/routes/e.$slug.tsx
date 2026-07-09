@@ -160,7 +160,7 @@ function PublicInvitationPage() {
         ceremonies={ceremonies}
         rsvpSlot={
           <TemplateRsvpForm
-            tone={templateRsvpTone[coupleTheme.templateId]}
+            tone={rsvpToneForTheme(coupleTheme.theme)}
             weddingId={w.id}
             ceremonies={ceremonies}
           />
