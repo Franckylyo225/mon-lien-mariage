@@ -30,6 +30,7 @@ interface PhotoGridSheetProps {
   images: string[];
   onImagesChange: (next: string[]) => void;
   maxImages?: number;
+  extraControls?: React.ReactNode;
 }
 
 export function PhotoGridSheet({
@@ -46,6 +47,7 @@ export function PhotoGridSheet({
   images,
   onImagesChange,
   maxImages = 12,
+  extraControls,
 }: PhotoGridSheetProps) {
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -184,6 +186,9 @@ export function PhotoGridSheet({
               />
             </div>
           )}
+
+          {extraControls}
+
 
           <div>
             <div className="mb-2 flex items-center justify-between">

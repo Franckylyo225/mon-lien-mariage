@@ -127,6 +127,11 @@ export interface Couple {
   storyTitle?: string;
   storyBody?: string;
   storyImages?: string[];
+  storyStyle?: {
+    font?: "serif" | "sans" | "script" | "mono" | "display";
+    size?: "sm" | "md" | "lg";
+    align?: "left" | "center";
+  };
   galleryEnabled?: boolean;
   galleryTitle?: string;
   galleryImages?: string[];
@@ -327,6 +332,7 @@ type WeddingRow = {
   story_title: string | null;
   story_body: string | null;
   story_images: string[] | null;
+  story_style: Record<string, unknown> | null;
   gallery_enabled: boolean | null;
   gallery_title: string | null;
   gallery_images: string[] | null;
@@ -377,6 +383,7 @@ function rowToCouple(w: WeddingRow): Couple {
     storyTitle: w.story_title ?? undefined,
     storyBody: w.story_body ?? undefined,
     storyImages: w.story_images ?? [],
+    storyStyle: (w.story_style as Couple["storyStyle"]) ?? {},
     galleryEnabled: w.gallery_enabled ?? false,
     galleryTitle: w.gallery_title ?? undefined,
     galleryImages: w.gallery_images ?? [],
@@ -422,6 +429,7 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.storyTitle !== undefined) r.story_title = p.storyTitle || null;
   if (p.storyBody !== undefined) r.story_body = p.storyBody || null;
   if (p.storyImages !== undefined) r.story_images = p.storyImages ?? [];
+  if (p.storyStyle !== undefined) r.story_style = p.storyStyle ?? {};
   if (p.galleryEnabled !== undefined) r.gallery_enabled = p.galleryEnabled;
   if (p.galleryTitle !== undefined) r.gallery_title = p.galleryTitle || null;
   if (p.galleryImages !== undefined) r.gallery_images = p.galleryImages ?? [];

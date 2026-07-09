@@ -263,6 +263,7 @@ export type Database = {
           story_body: string | null
           story_enabled: boolean | null
           story_images: string[] | null
+          story_style: Json
           story_title: string | null
           template_id: string
           theme: string
@@ -309,6 +310,7 @@ export type Database = {
           story_body?: string | null
           story_enabled?: boolean | null
           story_images?: string[] | null
+          story_style?: Json
           story_title?: string | null
           template_id?: string
           theme?: string
@@ -355,6 +357,7 @@ export type Database = {
           story_body?: string | null
           story_enabled?: boolean | null
           story_images?: string[] | null
+          story_style?: Json
           story_title?: string | null
           template_id?: string
           theme?: string

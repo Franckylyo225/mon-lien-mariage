@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
-import { useWedding } from "@/lib/wedding-store";
+import { useWedding, type Couple } from "@/lib/wedding-store";
 import { useAutosave } from "@/hooks/use-autosave";
 import { SaveIndicator } from "./SaveIndicator";
 import { HeroPhotoSheet } from "./HeroPhotoSheet";
@@ -649,7 +649,16 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
         images={couple.storyImages ?? []}
         onImagesChange={(next) => persist({ storyImages: next })}
         maxImages={8}
+        extraControls={
+          <StoryStyleControls
+            style={couple.storyStyle ?? {}}
+            onChange={(patch) =>
+              persist({ storyStyle: { ...(couple.storyStyle ?? {}), ...patch } })
+            }
+          />
+        }
       />
+
 
       <PhotoGridSheet
         open={sheet === "gallery"}
@@ -682,6 +691,86 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
     </>
   );
 }
+
+type StoryStyle = NonNullable<Couple["storyStyle"]>;
+
+function StoryStyleControls({
+  style,
+  onChange,
+}: {
+  style: StoryStyle;
+  onChange: (patch: Partial<StoryStyle>) => void;
+}) {
+  const font = style.font ?? "serif";
+  const size = style.size ?? "md";
+  const align = style.align ?? "center";
+
+  return (
+    <div className="space-y-3 rounded-xl border border-border p-3">
+      <p className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+        Style du texte
+      </p>
+
+      <StyleRow label="Police">
+        {(
+          [
+            { v: "serif", label: "Serif", cls: "font-serif italic" },
+            { v: "display", label: "Display", cls: "font-serif tracking-tight" },
+            { v: "sans", label: "Sans", cls: "font-sans" },
+            { v: "mono", label: "Mono", cls: "font-mono uppercase tracking-widest text-[10px]" },
+            { v: "script", label: "Script", cls: "font-serif italic tracking-wide" },
+          ] as const
+        ).map((o) => (
+          <StylePill
+            key={o.v}
+            active={font === o.v}
+            onClick={() => onChange({ font: o.v })}
+            className={o.cls}
+          >
+            {o.label}
+          </StylePill>
+        ))}
+      </StyleRow>
+
+      <StyleRow label="Taille">
+        {(
+          [
+            { v: "sm", label: "S" },
+            { v: "md", label: "M" },
+            { v: "lg", label: "L" },
+          ] as const
+        ).map((o) => (
+          <StylePill
+            key={o.v}
+            active={size === o.v}
+            onClick={() => onChange({ size: o.v })}
+          >
+            {o.label}
+          </StylePill>
+        ))}
+      </StyleRow>
+
+      <StyleRow label="Alignement">
+        {(
+          [
+            { v: "center", label: "Centré" },
+            { v: "left", label: "Gauche" },
+          ] as const
+        ).map((o) => (
+          <StylePill
+            key={o.v}
+            active={align === o.v}
+            onClick={() => onChange({ align: o.v })}
+          >
+            {o.label}
+          </StylePill>
+        ))}
+      </StyleRow>
+    </div>
+  );
+}
+
+
 
 function EditChip({
   icon,

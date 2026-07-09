@@ -588,14 +588,31 @@ export function OurStorySection({
   const images = (couple.storyImages ?? []).filter((u) => u && u.trim().length > 0);
   if (!body && images.length === 0) return null;
 
+  const style = couple.storyStyle ?? {};
+  const font = style.font ?? "serif";
+  const size = style.size ?? "md";
+  const align = style.align ?? "center";
+
+  const fontClass = {
+    serif: "font-serif italic",
+    sans: "font-sans",
+    script: "font-serif italic tracking-wide",
+    mono: "font-mono uppercase tracking-[0.2em]",
+    display: "font-serif tracking-tight",
+  }[font];
+  const titleSizeClass = { sm: "text-xl", md: "text-2xl", lg: "text-3xl sm:text-4xl" }[size];
+  const bodySizeClass = { sm: "text-[13px]", md: "text-sm", lg: "text-base" }[size];
+  const alignClass = align === "left" ? "text-left" : "text-center";
+  const dividerAlign = align === "left" ? "ml-0" : "mx-auto";
+
   return (
     <section className="mt-14">
-      <div className="mb-6 text-center">
+      <div className={"mb-6 " + alignClass}>
         <span
-          className="mx-auto mb-3 block h-px w-10"
+          className={"mb-3 block h-px w-10 " + dividerAlign}
           style={{ backgroundColor: (accent ?? "#999") + "80" }}
         />
-        <h2 className="font-serif text-2xl italic">{title}</h2>
+        <h2 className={fontClass + " " + titleSizeClass}>{title}</h2>
       </div>
 
       {images.length > 0 && (
@@ -632,7 +649,7 @@ export function OurStorySection({
       )}
 
       {body && (
-        <p className="whitespace-pre-line text-pretty text-center text-sm leading-relaxed opacity-80">
+        <p className={"whitespace-pre-line text-pretty leading-relaxed opacity-80 " + bodySizeClass + " " + alignClass}>
           {body}
         </p>
       )}
