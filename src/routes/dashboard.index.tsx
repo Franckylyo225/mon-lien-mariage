@@ -87,6 +87,14 @@ function DashboardHome() {
         <Metric label="Invités" value={guests.length} to="/dashboard/guests" />
       </section>
 
+      <Link
+        to="/dashboard/stats"
+        className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3 transition active:bg-secondary/60"
+      >
+        <span className="text-[13px]">Statistiques RSVP</span>
+        <IconChevronRight size={16} className="text-muted-foreground" />
+      </Link>
+
       {/* Checklist */}
       {todo.length > 0 ? (
         <section>

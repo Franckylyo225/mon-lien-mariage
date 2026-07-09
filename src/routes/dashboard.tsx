@@ -21,6 +21,7 @@ const TITLES: Record<string, string> = {
   "/dashboard/landing": "Ma page",
   "/dashboard/invites": "Invitations",
   "/dashboard/share": "Liens & Partages",
+  "/dashboard/stats": "Statistiques RSVP",
 };
 
 function DashboardLayout() {
