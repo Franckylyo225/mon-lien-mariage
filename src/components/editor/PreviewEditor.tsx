@@ -30,6 +30,7 @@ type Sheet =
   | "hero"
   | "countdown"
   | "practical"
+  | "registry"
   | "story"
   | "gallery";
 
