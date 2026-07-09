@@ -55,15 +55,21 @@ export function TropicalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
           </div>
         </header>
 
-        <section className="mt-10 rounded-3xl bg-[#e88b62] p-6 text-center text-[#0d3b2e]">
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-70">
+        <div className="mt-10 rounded-3xl bg-[#e88b62] p-4 text-[#0d3b2e]">
+          <p className="mb-2 text-center font-mono text-[10px] uppercase tracking-[0.3em] opacity-70">
             Plus que
           </p>
-          <p className="font-serif text-6xl italic leading-none">{days}</p>
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-70">
-            jours au paradis
-          </p>
-        </section>
+          <Countdown
+            targetDate={couple.weddingDate}
+            tone={{
+              cellBg: "bg-[#0d3b2e]/10",
+              cellBorder: "border border-[#0d3b2e]/20",
+              numberClass: "text-3xl font-serif italic text-[#0d3b2e]",
+              labelClass:
+                "font-mono text-[9px] uppercase tracking-[0.25em] text-[#0d3b2e]/70",
+            }}
+          />
+        </div>
 
         <p className="mt-10 text-center font-serif italic leading-relaxed text-[#f4e4c1]/90">
           {couple.introMessage}
@@ -80,9 +86,12 @@ export function TropicalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
 
         {rsvpSlot}
 
+        <TemplateBottomSections couple={couple} ceremonies={published} accent="#e88b62" />
+
         <footer className="pt-16 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-[#e88b62]/70">
           {couple.hashtag ?? `${couple.brideName} & ${couple.groomName}`}
         </footer>
+
       </article>
     </main>
   );
