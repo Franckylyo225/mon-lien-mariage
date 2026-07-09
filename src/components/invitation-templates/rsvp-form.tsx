@@ -578,11 +578,9 @@ function Chip({
 }
 
 /**
- * Set a CSS custom property that Tailwind arbitrary placeholder styling could
- * hook into. We inline the color directly on the element via a wrapping
- * data attribute so no global CSS is required.
+ * Inline CSS variable read by the `[data-rsvp-input]::placeholder` rule in
+ * src/styles.css so each input inherits the themed placeholder color.
  */
 function placeholderVar(color: string): React.CSSProperties {
-  // React types don't include the custom property, so cast.
-  return { ["--tw-placeholder-color" as never]: color } as React.CSSProperties;
+  return { ["--rsvp-placeholder" as never]: color } as React.CSSProperties;
 }
