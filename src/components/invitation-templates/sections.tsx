@@ -779,6 +779,7 @@ export function GallerySection({
   couple: Couple;
   accent?: string;
 }) {
+  const [lightbox, setLightbox] = useState<number | null>(null);
   if (!couple.galleryEnabled) return null;
   const images = (couple.galleryImages ?? []).filter((u) => u && u.trim().length > 0);
   if (images.length === 0) return null;
@@ -795,15 +796,31 @@ export function GallerySection({
       </div>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
         {images.map((src, i) => (
-          <img
+          <button
             key={i}
-            src={src}
-            alt=""
-            loading="lazy"
-            className="aspect-square w-full rounded-xl object-cover shadow-sm ring-1 ring-black/5"
-          />
+            type="button"
+            onClick={() => setLightbox(i)}
+            aria-label={`Agrandir l'image ${i + 1}`}
+            className="group relative overflow-hidden rounded-xl shadow-sm ring-1 ring-black/5 transition active:scale-[0.98]"
+          >
+            <img
+              src={src}
+              alt=""
+              loading="lazy"
+              className="aspect-square w-full object-cover transition group-hover:brightness-95"
+            />
+          </button>
         ))}
       </div>
+
+      {lightbox !== null && (
+        <ImageLightbox
+          images={images}
+          index={lightbox}
+          onClose={() => setLightbox(null)}
+          onChange={setLightbox}
+        />
+      )}
     </section>
   );
 }
