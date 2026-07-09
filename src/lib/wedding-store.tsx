@@ -239,6 +239,7 @@ const demoCeremonies = (): Ceremony[] => [
     timeStart: "19:00",
     timeEnd: "02:00",
     venue: "Les Jardins de Cocody, Riviera Golf",
+    mapsUrl: "https://maps.google.com/?q=Riviera+Golf+Cocody",
     dressCode: "Cocktail chic — accent doré",
     color: "#d97757",
     capacity: 300,
