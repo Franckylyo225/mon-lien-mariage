@@ -171,6 +171,7 @@ export type Database = {
           ceremony_id: string | null
           companions: number
           created_at: string
+          dietary_notes: string | null
           guest_email: string | null
           guest_name: string
           guest_phone: string | null
@@ -184,6 +185,7 @@ export type Database = {
           ceremony_id?: string | null
           companions?: number
           created_at?: string
+          dietary_notes?: string | null
           guest_email?: string | null
           guest_name: string
           guest_phone?: string | null
@@ -197,6 +199,7 @@ export type Database = {
           ceremony_id?: string | null
           companions?: number
           created_at?: string
+          dietary_notes?: string | null
           guest_email?: string | null
           guest_name?: string
           guest_phone?: string | null
