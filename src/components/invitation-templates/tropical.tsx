@@ -96,6 +96,8 @@ export function TropicalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
 
         {rsvpSlot}
 
+        <GallerySection couple={couple} accent="#e88b62" />
+
         <TemplateBottomSections couple={couple} ceremonies={published} accent="#e88b62" />
 
         <footer className="pt-16 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-[#e88b62]/70">
