@@ -55,12 +55,19 @@ function PublicInvitationPage() {
     heroImageUrl: w.hero_image_url ?? undefined,
     templateId: (w.template_id as TemplateId) ?? "terracotta",
     theme: (w.theme as ThemeId) ?? "rose-elegance",
+    eventType: ((w as { event_type?: string }).event_type as EventType) ?? "mariage",
     accent: w.accent ?? undefined,
     hashtag: w.hashtag ?? undefined,
     slug: w.slug ?? undefined,
     isPublished: true,
     isLocked: true,
     hasEnvelopeAnimation: !!w.has_envelope_animation,
+    contactName: (w as { contact_name?: string | null }).contact_name ?? undefined,
+    contactPhone: (w as { contact_phone?: string | null }).contact_phone ?? undefined,
+    contactEmail: (w as { contact_email?: string | null }).contact_email ?? undefined,
+    dressCodeNote: (w as { dress_code_note?: string | null }).dress_code_note ?? undefined,
+    customInfoTitle: (w as { custom_info_title?: string | null }).custom_info_title ?? undefined,
+    customInfoBody: (w as { custom_info_body?: string | null }).custom_info_body ?? undefined,
   };
 
   const ceremonies: Ceremony[] = (data.ceremonies ?? []).map((c) => ({
