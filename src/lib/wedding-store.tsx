@@ -108,6 +108,7 @@ export interface Couple {
   contactPhone?: string;
   contactEmail?: string;
   dressCodeNote?: string;
+  dressCodeColors?: string[];
   customInfoTitle?: string;
   customInfoBody?: string;
   caption?: string;
