@@ -85,7 +85,7 @@ export function BotaniqueDoreTemplate({ couple, ceremonies, rsvpSlot }: Template
 
         {rsvpSlot}
 
-        <GallerySection couple={couple} accent="#c9a84c" />
+        <GallerySection couple={couple} accent="#c9a84c" layout="masonry" />
 
         <TemplateBottomSections couple={couple} ceremonies={published} accent="#c9a84c" />
 

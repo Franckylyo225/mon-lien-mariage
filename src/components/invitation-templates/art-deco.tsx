@@ -96,7 +96,7 @@ export function ArtDecoTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps)
 
         {rsvpSlot}
 
-        <GallerySection couple={couple} accent="#c9a84c" />
+        <GallerySection couple={couple} accent="#c9a84c" layout="mosaic" />
 
         <TemplateBottomSections couple={couple} ceremonies={published} accent="#c9a84c" />
 

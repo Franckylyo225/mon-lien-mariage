@@ -772,12 +772,16 @@ export function OurStorySection({
   );
 }
 
+export type GalleryLayout = "grid" | "masonry" | "mosaic" | "polaroid" | "frames";
+
 export function GallerySection({
   couple,
   accent,
+  layout = "grid",
 }: {
   couple: Couple;
   accent?: string;
+  layout?: GalleryLayout;
 }) {
   const [lightbox, setLightbox] = useState<number | null>(null);
   if (!couple.galleryEnabled) return null;
@@ -785,33 +789,30 @@ export function GallerySection({
   if (images.length === 0) return null;
   const title = couple.galleryTitle?.trim() || "Galerie";
 
+  const open = (i: number) => setLightbox(i);
+  const accentSoft = (accent ?? "#999") + "80";
+
   return (
     <section className="mt-14">
       <div className="mb-6 text-center">
         <span
           className="mx-auto mb-3 block h-px w-10"
-          style={{ backgroundColor: (accent ?? "#999") + "80" }}
+          style={{ backgroundColor: accentSoft }}
         />
         <h2 className="font-serif text-2xl italic">{title}</h2>
       </div>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-        {images.map((src, i) => (
-          <button
-            key={i}
-            type="button"
-            onClick={() => setLightbox(i)}
-            aria-label={`Agrandir l'image ${i + 1}`}
-            className="group relative overflow-hidden rounded-xl shadow-sm ring-1 ring-black/5 transition active:scale-[0.98]"
-          >
-            <img
-              src={src}
-              alt=""
-              loading="lazy"
-              className="aspect-square w-full object-cover transition group-hover:brightness-95"
-            />
-          </button>
-        ))}
-      </div>
+
+      {layout === "masonry" ? (
+        <MasonryLayout images={images} onOpen={open} />
+      ) : layout === "mosaic" ? (
+        <MosaicLayout images={images} onOpen={open} accent={accent} />
+      ) : layout === "polaroid" ? (
+        <PolaroidLayout images={images} onOpen={open} accent={accent} />
+      ) : layout === "frames" ? (
+        <FramesLayout images={images} onOpen={open} accent={accent} />
+      ) : (
+        <GridLayout images={images} onOpen={open} />
+      )}
 
       {lightbox !== null && (
         <ImageLightbox
@@ -824,5 +825,205 @@ export function GallerySection({
     </section>
   );
 }
+
+function galleryButton(extra = "") {
+  return (
+    "group relative block w-full overflow-hidden transition active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-current/40 " +
+    extra
+  );
+}
+
+function GridLayout({
+  images,
+  onOpen,
+}: {
+  images: string[];
+  onOpen: (i: number) => void;
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+      {images.map((src, i) => (
+        <button
+          key={i}
+          type="button"
+          onClick={() => onOpen(i)}
+          aria-label={`Agrandir l'image ${i + 1}`}
+          className={galleryButton("rounded-xl shadow-sm ring-1 ring-black/5")}
+        >
+          <img
+            src={src}
+            alt=""
+            loading="lazy"
+            className="aspect-square w-full object-cover transition group-hover:brightness-95"
+          />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function MasonryLayout({
+  images,
+  onOpen,
+}: {
+  images: string[];
+  onOpen: (i: number) => void;
+}) {
+  // Varied heights via a repeating pattern for a natural, hand-composed feel.
+  const spans = ["aspect-[3/4]", "aspect-square", "aspect-[4/5]", "aspect-[3/5]"];
+  return (
+    <div className="columns-2 gap-2 sm:columns-3 [column-fill:_balance]">
+      {images.map((src, i) => (
+        <button
+          key={i}
+          type="button"
+          onClick={() => onOpen(i)}
+          aria-label={`Agrandir l'image ${i + 1}`}
+          className={galleryButton(
+            "mb-2 break-inside-avoid rounded-2xl shadow-sm ring-1 ring-black/5",
+          )}
+        >
+          <img
+            src={src}
+            alt=""
+            loading="lazy"
+            className={
+              "w-full object-cover transition group-hover:brightness-95 " +
+              spans[i % spans.length]
+            }
+          />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function MosaicLayout({
+  images,
+  onOpen,
+  accent,
+}: {
+  images: string[];
+  onOpen: (i: number) => void;
+  accent?: string;
+}) {
+  const [hero, ...rest] = images;
+  return (
+    <div className="space-y-2">
+      <button
+        type="button"
+        onClick={() => onOpen(0)}
+        aria-label="Agrandir l'image 1"
+        className={galleryButton(
+          "rounded-2xl shadow-md ring-1 ring-black/10",
+        )}
+        style={{ boxShadow: `0 10px 30px -18px ${(accent ?? "#000") + "55"}` }}
+      >
+        <img
+          src={hero}
+          alt=""
+          loading="lazy"
+          className="aspect-[16/10] w-full object-cover transition group-hover:brightness-95"
+        />
+      </button>
+      {rest.length > 0 && (
+        <div className="grid grid-cols-3 gap-2">
+          {rest.map((src, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => onOpen(i + 1)}
+              aria-label={`Agrandir l'image ${i + 2}`}
+              className={galleryButton("rounded-xl shadow-sm ring-1 ring-black/5")}
+            >
+              <img
+                src={src}
+                alt=""
+                loading="lazy"
+                className="aspect-square w-full object-cover transition group-hover:brightness-95"
+              />
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PolaroidLayout({
+  images,
+  onOpen,
+  accent,
+}: {
+  images: string[];
+  onOpen: (i: number) => void;
+  accent?: string;
+}) {
+  // Slight alternating tilt for a scrapbook / polaroid vibe. Kept modest to
+  // stay inside the mobile viewport width and never overflow.
+  const tilts = ["-rotate-2", "rotate-1", "-rotate-1", "rotate-2"];
+  return (
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+      {images.map((src, i) => (
+        <button
+          key={i}
+          type="button"
+          onClick={() => onOpen(i)}
+          aria-label={`Agrandir l'image ${i + 1}`}
+          className={galleryButton(
+            "origin-center rounded-sm bg-white p-2 pb-6 shadow-md transition hover:rotate-0 " +
+              tilts[i % tilts.length],
+          )}
+          style={{ boxShadow: `0 10px 24px -14px ${(accent ?? "#000") + "66"}` }}
+        >
+          <img
+            src={src}
+            alt=""
+            loading="lazy"
+            className="aspect-square w-full object-cover"
+          />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function FramesLayout({
+  images,
+  onOpen,
+  accent,
+}: {
+  images: string[];
+  onOpen: (i: number) => void;
+  accent?: string;
+}) {
+  // Ornate double-frame effect using accent color rings.
+  const frameStyle = {
+    boxShadow: `0 0 0 2px ${accent ?? "#c9a84c"}, 0 0 0 4px rgba(255,255,255,0.7), 0 0 0 6px ${(accent ?? "#c9a84c") + "88"}`,
+  } as const;
+  return (
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+      {images.map((src, i) => (
+        <button
+          key={i}
+          type="button"
+          onClick={() => onOpen(i)}
+          aria-label={`Agrandir l'image ${i + 1}`}
+          className={galleryButton("rounded-sm")}
+          style={frameStyle}
+        >
+          <img
+            src={src}
+            alt=""
+            loading="lazy"
+            className="aspect-[4/5] w-full object-cover transition group-hover:brightness-95"
+          />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+
 
 

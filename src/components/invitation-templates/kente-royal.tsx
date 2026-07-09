@@ -147,7 +147,7 @@ export function KenteRoyalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
 
         {rsvpSlot}
 
-        <GallerySection couple={couple} accent={accent} />
+        <GallerySection couple={couple} accent={accent} layout="frames" />
 
         <TemplateBottomSections
           couple={couple}

@@ -96,7 +96,7 @@ export function TropicalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
 
         {rsvpSlot}
 
-        <GallerySection couple={couple} accent="#e88b62" />
+        <GallerySection couple={couple} accent="#e88b62" layout="frames" />
 
         <TemplateBottomSections couple={couple} ceremonies={published} accent="#e88b62" />
 
