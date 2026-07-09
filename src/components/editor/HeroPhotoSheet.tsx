@@ -323,6 +323,3 @@ function loadImage(src: string): Promise<HTMLImageElement> {
     img.src = src;
   });
 }
-
-// silence unused import warning in linting configs
-export const __cn = cn;
