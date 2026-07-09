@@ -339,6 +339,10 @@ type WeddingRow = {
   practical_accommodation: string | null;
   practical_contact_name: string | null;
   practical_contact_phone: string | null;
+  registry_enabled: boolean | null;
+  registry_title: string | null;
+  registry_note: string | null;
+  registry_stores: Array<{ name: string; url?: string }> | null;
   story_enabled: boolean | null;
   story_title: string | null;
   story_body: string | null;
