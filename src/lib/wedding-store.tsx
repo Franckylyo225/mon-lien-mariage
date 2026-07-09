@@ -109,6 +109,7 @@ export interface Couple {
   dressCodeNote?: string;
   customInfoTitle?: string;
   customInfoBody?: string;
+  caption?: string;
 }
 
 
@@ -291,6 +292,7 @@ type WeddingRow = {
   dress_code_note: string | null;
   custom_info_title: string | null;
   custom_info_body: string | null;
+  caption: string | null;
 };
 
 
@@ -320,6 +322,7 @@ function rowToCouple(w: WeddingRow): Couple {
     dressCodeNote: w.dress_code_note ?? undefined,
     customInfoTitle: w.custom_info_title ?? undefined,
     customInfoBody: w.custom_info_body ?? undefined,
+    caption: w.caption ?? undefined,
   };
 }
 
@@ -349,6 +352,7 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.dressCodeNote !== undefined) r.dress_code_note = p.dressCodeNote;
   if (p.customInfoTitle !== undefined) r.custom_info_title = p.customInfoTitle;
   if (p.customInfoBody !== undefined) r.custom_info_body = p.customInfoBody;
+  if (p.caption !== undefined) r.caption = p.caption || null;
   return r;
 }
 
