@@ -12,6 +12,7 @@ import {
   type ThemeFamilyId,
 } from "@/lib/wedding-theme";
 import { Check } from "lucide-react";
+import { ThemeThumbnail } from "./ThemeThumbnail";
 
 interface ThemeSheetProps {
   open: boolean;
