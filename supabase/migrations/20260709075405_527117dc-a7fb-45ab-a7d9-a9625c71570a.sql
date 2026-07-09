@@ -1,0 +1,1 @@
+ALTER TABLE public.weddings ADD COLUMN IF NOT EXISTS event_type text NOT NULL DEFAULT 'mariage';
