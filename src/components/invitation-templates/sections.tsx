@@ -473,3 +473,62 @@ export function TemplateBottomSections({
     </>
   );
 }
+
+export function OurStorySection({
+  couple,
+  accent,
+}: {
+  couple: Couple;
+  accent?: string;
+}) {
+  if (couple.storyEnabled === false) return null;
+  const title = couple.storyTitle?.trim() || "Notre Histoire";
+  const body = couple.storyBody?.trim();
+  const images = (couple.storyImages ?? []).filter((u) => u && u.trim().length > 0);
+  if (!body && images.length === 0) return null;
+
+  return (
+    <section className="mt-14">
+      <div className="mb-6 text-center">
+        <span
+          className="mx-auto mb-3 block h-px w-10"
+          style={{ backgroundColor: (accent ?? "#999") + "80" }}
+        />
+        <h2 className="font-serif text-2xl italic">{title}</h2>
+      </div>
+
+      {images.length > 0 && (
+        <div
+          className={
+            "mb-6 grid gap-3 " +
+            (images.length === 1
+              ? "grid-cols-1"
+              : images.length === 2
+                ? "grid-cols-2"
+                : "grid-cols-2 sm:grid-cols-3")
+          }
+        >
+          {images.map((src, i) => (
+            <img
+              key={i}
+              src={src}
+              alt=""
+              loading="lazy"
+              className={
+                "w-full rounded-2xl object-cover shadow-sm ring-1 ring-black/5 " +
+                (images.length === 1 ? "aspect-[4/3]" : "aspect-square")
+              }
+            />
+          ))}
+        </div>
+      )}
+
+      {body && (
+        <p className="whitespace-pre-line text-pretty text-center text-sm leading-relaxed opacity-80">
+          {body}
+        </p>
+      )}
+    </section>
+  );
+}
+
