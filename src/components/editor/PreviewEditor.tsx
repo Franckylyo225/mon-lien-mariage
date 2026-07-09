@@ -790,7 +790,7 @@ function EditChip({
     <button
       type="button"
       onClick={onClick}
-      className="flex min-w-[9rem] shrink-0 flex-col items-start gap-0.5 rounded-xl border border-dashed border-border bg-background px-3 py-2 text-left transition active:scale-[0.97]"
+      className="flex min-w-[9rem] shrink-0 flex-col items-start gap-0.5 rounded-xl border border-dashed border-background/20 bg-foreground px-3 py-2 text-left text-background transition active:scale-[0.97]"
     >
       <span className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.2em] opacity-60">
         {icon}
