@@ -49,6 +49,7 @@ export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
           <div className="mt-10">
             <Countdown
               targetDate={couple.weddingDate}
+            style={couple.countdownStyle}
               units={couple.countdownUnits}
               tone={{
                 cellBg: "bg-white",

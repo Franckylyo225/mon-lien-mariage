@@ -72,6 +72,17 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
     couple.countdownUnits && couple.countdownUnits.length > 0
       ? couple.countdownUnits
       : ["days", "hours", "minutes", "seconds"];
+  const countdownStyle = couple.countdownStyle ?? {};
+  const styleColor = countdownStyle.color ?? "auto";
+  const styleSize = countdownStyle.size ?? "md";
+  const styleFont = countdownStyle.font ?? "serif";
+  const styleAnimation = countdownStyle.animation ?? "none";
+
+  const updateCountdownStyle = (
+    patch: Partial<NonNullable<typeof couple.countdownStyle>>,
+  ) => {
+    persist({ countdownStyle: { ...countdownStyle, ...patch } });
+  };
 
   // Detect if the wedding date is in the past (for auto-hide messaging)
   const weddingPast = (() => {
@@ -389,6 +400,91 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
               )}
             </div>
 
+            {/* Style controls */}
+            <div
+              className={cn(
+                "space-y-4 rounded-xl border border-border p-3 transition-opacity",
+                !countdownEnabled && "pointer-events-none opacity-40",
+              )}
+            >
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                Style
+              </p>
+
+              <StyleRow label="Couleur">
+                {(
+                  [
+                    { v: "auto", label: "Auto" },
+                    { v: "ivoire", label: "Ivoire" },
+                    { v: "noir", label: "Noir" },
+                  ] as const
+                ).map((o) => (
+                  <StylePill
+                    key={o.v}
+                    active={styleColor === o.v}
+                    onClick={() => updateCountdownStyle({ color: o.v })}
+                  >
+                    {o.label}
+                  </StylePill>
+                ))}
+              </StyleRow>
+
+              <StyleRow label="Taille">
+                {(
+                  [
+                    { v: "sm", label: "S" },
+                    { v: "md", label: "M" },
+                    { v: "lg", label: "L" },
+                  ] as const
+                ).map((o) => (
+                  <StylePill
+                    key={o.v}
+                    active={styleSize === o.v}
+                    onClick={() => updateCountdownStyle({ size: o.v })}
+                  >
+                    {o.label}
+                  </StylePill>
+                ))}
+              </StyleRow>
+
+              <StyleRow label="Typographie">
+                {(
+                  [
+                    { v: "serif", label: "Serif", cls: "font-serif italic" },
+                    { v: "sans", label: "Sans", cls: "font-sans" },
+                    { v: "mono", label: "Mono", cls: "font-mono" },
+                  ] as const
+                ).map((o) => (
+                  <StylePill
+                    key={o.v}
+                    active={styleFont === o.v}
+                    onClick={() => updateCountdownStyle({ font: o.v })}
+                    className={o.cls}
+                  >
+                    {o.label}
+                  </StylePill>
+                ))}
+              </StyleRow>
+
+              <StyleRow label="Animation">
+                {(
+                  [
+                    { v: "none", label: "Aucune" },
+                    { v: "pulse", label: "Pulse" },
+                    { v: "flip", label: "Flip" },
+                  ] as const
+                ).map((o) => (
+                  <StylePill
+                    key={o.v}
+                    active={styleAnimation === o.v}
+                    onClick={() => updateCountdownStyle({ animation: o.v })}
+                  >
+                    {o.label}
+                  </StylePill>
+                ))}
+              </StyleRow>
+            </div>
+
             <p className="text-[11px] opacity-60">
               Le compte à rebours disparaîtra automatiquement le jour du mariage.
             </p>
@@ -562,5 +658,44 @@ function Field({
         className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
       />
     </div>
+  );
+}
+
+function StyleRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <span className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+        {label}
+      </span>
+      <div className="flex flex-wrap items-center justify-end gap-1.5">{children}</div>
+    </div>
+  );
+}
+
+function StylePill({
+  active,
+  onClick,
+  className,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "rounded-full border px-3 py-1.5 text-xs transition",
+        active
+          ? "border-foreground bg-foreground text-background"
+          : "border-border bg-background hover:border-foreground/40",
+        className,
+      )}
+    >
+      {children}
+    </button>
   );
 }
