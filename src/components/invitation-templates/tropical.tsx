@@ -63,6 +63,7 @@ export function TropicalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
             </p>
             <Countdown
               targetDate={couple.weddingDate}
+            style={couple.countdownStyle}
               units={couple.countdownUnits}
               tone={{
                 cellBg: "bg-[#0d3b2e]/10",

@@ -38,6 +38,7 @@ export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
           <div className="mt-10">
             <Countdown
               targetDate={couple.weddingDate}
+            style={couple.countdownStyle}
               units={couple.countdownUnits}
               tone={{
                 cellBg: "bg-[#f5f3ee]/5",

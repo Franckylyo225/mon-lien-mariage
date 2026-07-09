@@ -51,6 +51,7 @@ export function BotaniqueDoreTemplate({ couple, ceremonies, rsvpSlot }: Template
           <div className="mt-8">
             <Countdown
               targetDate={couple.weddingDate}
+            style={couple.countdownStyle}
               units={couple.countdownUnits}
               tone={{
                 cellBg: "bg-[#faf6ec]",

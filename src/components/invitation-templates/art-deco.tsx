@@ -61,6 +61,7 @@ export function ArtDecoTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps)
           <div className="mt-8">
             <Countdown
               targetDate={couple.weddingDate}
+            style={couple.countdownStyle}
               units={couple.countdownUnits}
               tone={{
                 cellBg: "bg-[#1a0f1a]/60",
