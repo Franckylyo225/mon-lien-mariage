@@ -31,6 +31,9 @@ export type TemplateId =
 
 export type ThemeId = "rose-elegance" | "ivoire-epure" | "wax-dore";
 
+export type EventType = "mariage" | "dot" | "traditionnel" | "autre";
+
+
 export type RSVPStatus = "confirmé" | "en_attente" | "décliné" | "sans_reponse";
 
 export type GuestSource = "manuel" | "csv" | "auto" | "qr_signup";
