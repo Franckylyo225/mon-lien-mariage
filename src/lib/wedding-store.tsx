@@ -304,6 +304,11 @@ type WeddingRow = {
   caption: string | null;
   countdown_enabled: boolean | null;
   countdown_units: string[] | null;
+  practical_info_enabled: boolean | null;
+  practical_parking: string | null;
+  practical_accommodation: string | null;
+  practical_contact_name: string | null;
+  practical_contact_phone: string | null;
 };
 
 
@@ -341,6 +346,11 @@ function rowToCouple(w: WeddingRow): Couple {
       "minutes",
       "seconds",
     ],
+    practicalInfoEnabled: w.practical_info_enabled ?? false,
+    practicalParking: w.practical_parking ?? undefined,
+    practicalAccommodation: w.practical_accommodation ?? undefined,
+    practicalContactName: w.practical_contact_name ?? undefined,
+    practicalContactPhone: w.practical_contact_phone ?? undefined,
   };
 }
 
