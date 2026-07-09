@@ -20,7 +20,7 @@ function PreviewPage() {
   return (
     <div className="relative -mx-4 -my-8 sm:-mx-8">
       {/* Bandeau sticky "Aperçu privé" */}
-      <div className="sticky top-14 z-20 mx-auto -mt-4 flex max-w-2xl items-center justify-between gap-2 rounded-b-xl border-x border-b border-primary/20 bg-primary/10 px-3 py-1.5 backdrop-blur sm:top-[72px] sm:mt-0 sm:gap-3 sm:rounded-full sm:border sm:px-4 sm:py-2 sm:shadow-sm">
+      <div className="sticky top-14 z-20 mx-auto flex max-w-2xl items-center justify-between gap-2 rounded-b-xl border-x border-b border-primary/20 bg-primary/10 px-3 py-1.5 backdrop-blur sm:top-[72px] sm:-mt-4 sm:gap-3 sm:rounded-full sm:border sm:px-4 sm:py-2 sm:shadow-sm">
         <div className="flex items-center gap-2">
           <span className="grid size-5 place-items-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground sm:size-6">
             👁
