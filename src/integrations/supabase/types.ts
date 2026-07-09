@@ -174,6 +174,7 @@ export type Database = {
           guest_email: string | null
           guest_name: string
           guest_phone: string | null
+          guest_type: string | null
           id: string
           message: string | null
           wedding_id: string
@@ -186,6 +187,7 @@ export type Database = {
           guest_email?: string | null
           guest_name: string
           guest_phone?: string | null
+          guest_type?: string | null
           id?: string
           message?: string | null
           wedding_id: string
@@ -198,6 +200,7 @@ export type Database = {
           guest_email?: string | null
           guest_name?: string
           guest_phone?: string | null
+          guest_type?: string | null
           id?: string
           message?: string | null
           wedding_id?: string
