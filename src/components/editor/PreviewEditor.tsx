@@ -66,11 +66,26 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
   const [practicalContactPhone, setPracticalContactPhone] = useState(
     couple.practicalContactPhone ?? "",
   );
+  const [dressCodeNote, setDressCodeNote] = useState(couple.dressCodeNote ?? "");
+  const initialColors = [
+    couple.dressCodeColors?.[0] ?? "",
+    couple.dressCodeColors?.[1] ?? "",
+    couple.dressCodeColors?.[2] ?? "",
+  ];
+  const [dressColors, setDressColors] = useState<string[]>(initialColors);
+  const setDressColor = (i: number, v: string) => {
+    const next = [...dressColors];
+    next[i] = v;
+    setDressColors(next);
+    const cleaned = next.map((c) => c.trim()).filter((c) => c.length > 0);
+    persist({ dressCodeColors: cleaned });
+  };
   const practicalEnabled = couple.practicalInfoEnabled ?? false;
   const practicalFilledCount = [
     practicalParking,
     practicalAccommodation,
     practicalContactName || practicalContactPhone,
+    dressCodeNote || dressColors.some((c) => c.trim().length > 0) ? "x" : "",
   ].filter((v) => v && v.trim().length > 0).length;
   const countdownEnabled = couple.countdownEnabled ?? true;
   const countdownUnits: CountdownUnit[] =
