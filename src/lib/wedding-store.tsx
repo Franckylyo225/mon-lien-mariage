@@ -407,6 +407,7 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.brideName !== undefined) r.bride_name = p.brideName;
   if (p.groomName !== undefined) r.groom_name = p.groomName;
   if (p.weddingDate !== undefined) r.wedding_date = p.weddingDate || null;
+  if (p.rsvpDeadline !== undefined) r.rsvp_deadline = p.rsvpDeadline || null;
   if (p.city !== undefined) r.city = p.city;
   if (p.introMessage !== undefined) r.intro_message = p.introMessage;
   if (p.coupleStory !== undefined) r.couple_story = p.coupleStory;
