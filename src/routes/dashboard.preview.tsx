@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
 import { useWedding } from "@/lib/wedding-store";
 import { templateComponents, templateRsvpTone } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
 import { PreviewEditor } from "@/components/editor/PreviewEditor";
+import { useEditMode } from "@/lib/edit-mode";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/dashboard/preview")({
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/dashboard/preview")({
 function PreviewPage() {
   const { couple, ceremonies, weddingId } = useWedding();
   const Template = templateComponents[couple.templateId];
-  const [mode, setMode] = useState<"preview" | "edit">("preview");
+  const { mode, toggle } = useEditMode();
 
   return (
     <div className="relative -mx-4 -my-8 sm:-mx-8">
