@@ -22,7 +22,7 @@ interface EditorProps {
 }
 
 export function PreviewEditor({ mode, onToggle }: EditorProps) {
-  const { couple, updateCouple } = useWedding();
+  const { couple, updateCouple, weddingId } = useWedding();
   const [sheet, setSheet] = useState<Sheet>(null);
   const { status, schedule } = useAutosave(500);
 
