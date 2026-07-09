@@ -143,7 +143,7 @@ function PublicInvitationPage() {
   // Override couple.accent with resolved accent so templates that read couple.accent
   // reflect the user's chosen colour.
   const coupleTheme: Couple = { ...couple, accent: resolved.accent };
-  const Template = templateComponents[coupleTheme.templateId];
+  const Template = componentForTheme(coupleTheme.theme);
 
   return (
     <div className="relative" data-theme={coupleTheme.theme} style={{ backgroundColor: resolved.bg }}>
