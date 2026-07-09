@@ -74,6 +74,16 @@ function PublicInvitationPage() {
     countdownUnits:
       ((w as { countdown_units?: string[] | null }).countdown_units as Couple["countdownUnits"]) ??
       ["days", "hours", "minutes", "seconds"],
+    practicalInfoEnabled:
+      (w as { practical_info_enabled?: boolean | null }).practical_info_enabled ?? false,
+    practicalParking:
+      (w as { practical_parking?: string | null }).practical_parking ?? undefined,
+    practicalAccommodation:
+      (w as { practical_accommodation?: string | null }).practical_accommodation ?? undefined,
+    practicalContactName:
+      (w as { practical_contact_name?: string | null }).practical_contact_name ?? undefined,
+    practicalContactPhone:
+      (w as { practical_contact_phone?: string | null }).practical_contact_phone ?? undefined,
   };
 
   const ceremonies: Ceremony[] = (data.ceremonies ?? []).map((c) => ({

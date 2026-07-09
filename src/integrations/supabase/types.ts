@@ -246,6 +246,11 @@ export type Database = {
           is_published: boolean
           onboarding_step: number
           owner_id: string
+          practical_accommodation: string | null
+          practical_contact_name: string | null
+          practical_contact_phone: string | null
+          practical_info_enabled: boolean
+          practical_parking: string | null
           published_at: string | null
           slug: string | null
           template_id: string
@@ -279,6 +284,11 @@ export type Database = {
           is_published?: boolean
           onboarding_step?: number
           owner_id: string
+          practical_accommodation?: string | null
+          practical_contact_name?: string | null
+          practical_contact_phone?: string | null
+          practical_info_enabled?: boolean
+          practical_parking?: string | null
           published_at?: string | null
           slug?: string | null
           template_id?: string
@@ -312,6 +322,11 @@ export type Database = {
           is_published?: boolean
           onboarding_step?: number
           owner_id?: string
+          practical_accommodation?: string | null
+          practical_contact_name?: string | null
+          practical_contact_phone?: string | null
+          practical_info_enabled?: boolean
+          practical_parking?: string | null
           published_at?: string | null
           slug?: string | null
           template_id?: string

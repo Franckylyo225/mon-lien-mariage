@@ -112,6 +112,11 @@ export interface Couple {
   caption?: string;
   countdownEnabled?: boolean;
   countdownUnits?: Array<"days" | "hours" | "minutes" | "seconds">;
+  practicalInfoEnabled?: boolean;
+  practicalParking?: string;
+  practicalAccommodation?: string;
+  practicalContactName?: string;
+  practicalContactPhone?: string;
 }
 
 
@@ -299,6 +304,11 @@ type WeddingRow = {
   caption: string | null;
   countdown_enabled: boolean | null;
   countdown_units: string[] | null;
+  practical_info_enabled: boolean | null;
+  practical_parking: string | null;
+  practical_accommodation: string | null;
+  practical_contact_name: string | null;
+  practical_contact_phone: string | null;
 };
 
 
@@ -336,6 +346,11 @@ function rowToCouple(w: WeddingRow): Couple {
       "minutes",
       "seconds",
     ],
+    practicalInfoEnabled: w.practical_info_enabled ?? false,
+    practicalParking: w.practical_parking ?? undefined,
+    practicalAccommodation: w.practical_accommodation ?? undefined,
+    practicalContactName: w.practical_contact_name ?? undefined,
+    practicalContactPhone: w.practical_contact_phone ?? undefined,
   };
 }
 
@@ -368,6 +383,11 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.caption !== undefined) r.caption = p.caption || null;
   if (p.countdownEnabled !== undefined) r.countdown_enabled = p.countdownEnabled;
   if (p.countdownUnits !== undefined) r.countdown_units = p.countdownUnits;
+  if (p.practicalInfoEnabled !== undefined) r.practical_info_enabled = p.practicalInfoEnabled;
+  if (p.practicalParking !== undefined) r.practical_parking = p.practicalParking || null;
+  if (p.practicalAccommodation !== undefined) r.practical_accommodation = p.practicalAccommodation || null;
+  if (p.practicalContactName !== undefined) r.practical_contact_name = p.practicalContactName || null;
+  if (p.practicalContactPhone !== undefined) r.practical_contact_phone = p.practicalContactPhone || null;
   return r;
 }
 
