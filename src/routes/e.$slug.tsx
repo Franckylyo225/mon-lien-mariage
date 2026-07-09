@@ -5,7 +5,8 @@ import { getPublicWedding } from "@/lib/public-wedding.functions";
 import { templateComponents, templateRsvpTone } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
 import { EnvelopeAnimation } from "@/components/envelope-animation";
-import type { Ceremony, Couple, EventType, TemplateId, ThemeId } from "@/lib/wedding-store";
+import type { BackgroundBase, Ceremony, Couple, EventType, TemplateId, ThemeId } from "@/lib/wedding-store";
+import { resolveTheme, themeCssString } from "@/lib/wedding-theme";
 
 const publicWeddingQuery = (slug: string) =>
   queryOptions({
