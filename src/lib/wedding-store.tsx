@@ -310,6 +310,7 @@ type WeddingRow = {
   caption: string | null;
   countdown_enabled: boolean | null;
   countdown_units: string[] | null;
+  countdown_style: Record<string, unknown> | null;
   practical_info_enabled: boolean | null;
   practical_parking: string | null;
   practical_accommodation: string | null;
@@ -352,6 +353,7 @@ function rowToCouple(w: WeddingRow): Couple {
       "minutes",
       "seconds",
     ],
+    countdownStyle: (w.countdown_style as Couple["countdownStyle"]) ?? {},
     practicalInfoEnabled: w.practical_info_enabled ?? false,
     practicalParking: w.practical_parking ?? undefined,
     practicalAccommodation: w.practical_accommodation ?? undefined,
@@ -389,6 +391,7 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.caption !== undefined) r.caption = p.caption || null;
   if (p.countdownEnabled !== undefined) r.countdown_enabled = p.countdownEnabled;
   if (p.countdownUnits !== undefined) r.countdown_units = p.countdownUnits;
+  if (p.countdownStyle !== undefined) r.countdown_style = p.countdownStyle ?? {};
   if (p.practicalInfoEnabled !== undefined) r.practical_info_enabled = p.practicalInfoEnabled;
   if (p.practicalParking !== undefined) r.practical_parking = p.practicalParking || null;
   if (p.practicalAccommodation !== undefined) r.practical_accommodation = p.practicalAccommodation || null;
