@@ -60,6 +60,7 @@ function Step1() {
             type="date"
             value={weddingDate}
             onChange={(e) => setDate(e.target.value)}
+            placeholder="JJ/MM/AAAA"
             className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring"
           />
         </Field>

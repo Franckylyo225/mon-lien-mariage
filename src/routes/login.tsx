@@ -75,6 +75,7 @@ function LoginPage() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            placeholder="Votre mot de passe"
             className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring"
           />
         </Field>
