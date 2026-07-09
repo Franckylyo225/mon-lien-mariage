@@ -33,6 +33,28 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
   const [groom, setGroom] = useState(couple.groomName);
   const [date, setDate] = useState(couple.weddingDate);
   const [city, setCity] = useState(couple.city);
+  const countdownEnabled = couple.countdownEnabled ?? true;
+  const countdownUnits: CountdownUnit[] =
+    couple.countdownUnits && couple.countdownUnits.length > 0
+      ? couple.countdownUnits
+      : ["days", "hours", "minutes", "seconds"];
+
+  // Detect if the wedding date is in the past (for auto-hide messaging)
+  const weddingPast = (() => {
+    if (!couple.weddingDate) return false;
+    const ms = new Date(couple.weddingDate + "T00:00:00").getTime();
+    return Number.isFinite(ms) && ms > 0 && Date.now() >= ms;
+  })();
+
+  const toggleUnit = (u: CountdownUnit) => {
+    const next = countdownUnits.includes(u)
+      ? countdownUnits.filter((x) => x !== u)
+      : [...countdownUnits, u];
+    // Keep canonical order
+    const order: CountdownUnit[] = ["days", "hours", "minutes", "seconds"];
+    const ordered = order.filter((o) => next.includes(o));
+    persist({ countdownUnits: ordered });
+  };
 
   const persist = (patch: Parameters<typeof updateCouple>[0]) => {
     schedule(async () => {
