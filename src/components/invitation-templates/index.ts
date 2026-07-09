@@ -19,6 +19,9 @@ import { SahelDoreTemplate } from "./sahel-dore";
 import { BleuNuitTemplate } from "./bleu-nuit";
 import { ManuscritTemplate } from "./manuscrit";
 import { MonochromeTemplate } from "./monochrome";
+import { AquarelleTemplate } from "./aquarelle";
+import { ConfettiTemplate } from "./confetti";
+import { PapierKraftTemplate } from "./papier-kraft";
 
 export const templateComponents: Record<TemplateId, ComponentType<TemplateProps>> = {
   terracotta: TerracottaTemplate,
@@ -58,6 +61,9 @@ const themeComponents: Partial<Record<ThemeId, ComponentType<TemplateProps>>> = 
   "bleu-nuit": BleuNuitTemplate,
   manuscrit: ManuscritTemplate,
   monochrome: MonochromeTemplate,
+  aquarelle: AquarelleTemplate,
+  confetti: ConfettiTemplate,
+  "papier-kraft": PapierKraftTemplate,
 };
 
 const themeRsvpTone: Partial<
@@ -75,6 +81,9 @@ const themeRsvpTone: Partial<
   "bleu-nuit": "dark",
   manuscrit: "dark",
   monochrome: "dark",
+  aquarelle: "warm",
+  confetti: "tropical",
+  "papier-kraft": "warm",
 };
 
 export function componentForTheme(theme: ThemeId): ComponentType<TemplateProps> {
