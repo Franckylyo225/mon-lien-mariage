@@ -88,87 +88,8 @@ function LandingEditor() {
         </div>
       </section>
 
-      {/* Public link + QR */}
-      <section className="grid gap-4 rounded-3xl border border-border bg-card p-6 md:grid-cols-[1fr_auto]">
-        <div className="space-y-4">
-          <div>
-            <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest opacity-60">
-              Lien public
-            </label>
-            <div className="flex gap-2">
-              <input
-                readOnly
-                value={publicUrl}
-                className="min-w-0 flex-1 rounded-full border border-input bg-background px-4 py-3 text-xs focus:outline-none"
-              />
-              <button
-                onClick={handleCopy}
-                className="shrink-0 rounded-full bg-foreground px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-background transition hover:opacity-90"
-              >
-                {copied ? "Copié ✓" : "Copier"}
-              </button>
-            </div>
-          </div>
 
-          <div>
-            <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest opacity-60">
-              Adresse personnalisée
-            </label>
-            <div className="flex items-center rounded-full border border-input bg-background px-4 py-2 text-sm">
-              <span className="opacity-50">monmariage.ci/</span>
-              <input
-                value={slug}
-                onChange={(e) =>
-                  setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))
-                }
-                className="min-w-0 flex-1 bg-transparent px-1 focus:outline-none"
-              />
-            </div>
-          </div>
 
-          <div className="flex flex-wrap gap-2">
-            <a
-              href={`https://wa.me/?text=${encodeURIComponent(
-                `Vous êtes convié·e au mariage de ${couple.brideName} & ${couple.groomName} — voir l'invitation : ${publicUrl}`,
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full bg-primary px-4 py-2.5 font-mono text-[10px] uppercase tracking-widest text-primary-foreground transition hover:opacity-90"
-            >
-              Partager WhatsApp
-            </a>
-            <a
-              href={qrUrl}
-              download={`qr-${slug}.png`}
-              className="rounded-full border border-border px-4 py-2.5 font-mono text-[10px] uppercase tracking-widest transition hover:bg-accent/20"
-            >
-              Télécharger le QR
-            </a>
-            <a
-              href="/invitation"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full border border-border px-4 py-2.5 font-mono text-[10px] uppercase tracking-widest transition hover:bg-accent/20"
-            >
-              Aperçu ↗
-            </a>
-          </div>
-        </div>
-
-        <div className="flex flex-col items-center justify-center rounded-2xl bg-background p-4 ring-1 ring-border">
-          <img src={qrUrl} alt={`QR code pour ${publicUrl}`} className="size-40 rounded-lg" />
-          <p className="mt-2 font-mono text-[9px] uppercase tracking-widest opacity-60">
-            Scannez-moi
-          </p>
-        </div>
-      </section>
-
-      {/* Live stats mini */}
-      <section className="grid grid-cols-3 gap-3">
-        <MiniStat label="Confirmés" value={stats.confirmés} tone="primary" />
-        <MiniStat label="En attente" value={stats.en_attente} />
-        <MiniStat label="Étapes publiées" value={publishedCount} />
-      </section>
 
       {/* Content editor */}
       <section className="rounded-3xl border border-border bg-card p-6">
