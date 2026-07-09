@@ -1108,7 +1108,498 @@ function BookCoverDecor({ color, initials, name, align }: { color: string; initi
   );
 }
 
-/* -------- Color helpers -------- */
+/* ==================================================
+ * EFFECT — Enveloppe Sceau Sauge (réf. vidéo 2)
+ * Enveloppe ivoire richement gaufrée, gros sceau de cire vert sauge
+ * avec monogramme script, texte "Requests the pleasure of your company".
+ * ================================================== */
+
+function EnvelopeWaxSage({ couple, onDone }: { couple: Couple; onDone: () => void }) {
+  const [opened, setOpened] = useState(false);
+  const { a, b } = initials(couple);
+  const monogram = a; // gros initial script, comme la vidéo
+  const sage = "#8FA37A";
+  const duration = 3000;
+
+  useEffect(() => {
+    if (!opened) return;
+    const t = setTimeout(onDone, duration);
+    return () => clearTimeout(t);
+  }, [opened, onDone]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden"
+      style={{ background: "radial-gradient(ellipse at 50% 40%, #f8f2e2 0%, #ebe0c8 55%, #7a2a2a 200%)" }}
+      onClick={() => !opened && setOpened(true)}
+    >
+      <style>{`
+        @keyframes ws-flap { 0%{transform:rotateX(0)} 100%{transform:rotateX(-172deg)} }
+        @keyframes ws-card { 0%{transform:translateY(20px) scale(.96);opacity:0} 55%{opacity:1} 100%{transform:translateY(-40px) scale(1);opacity:1} }
+        @keyframes ws-seal-fall { 0%{transform:translate(0,0) rotate(0);opacity:1} 100%{transform:translate(-14px,120px) rotate(-18deg);opacity:0} }
+        @keyframes ws-pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.03)} }
+        @keyframes ws-out { to { opacity: 0; transform: scale(1.04); } }
+        @keyframes ws-cursor { 0%,50%{transform:translate(0,0);opacity:.9} 25%{transform:translate(0,-4px);opacity:1} 75%{transform:translate(0,-2px);opacity:.6} 100%{transform:translate(0,0);opacity:0} }
+        .ws-flap { transform-origin: top center; transform-style: preserve-3d; backface-visibility: hidden; }
+      `}</style>
+
+      {/* Bordure bordeaux comme dans la vidéo (cadre autour du visuel) */}
+      <div className="pointer-events-none absolute inset-0" style={{ boxShadow: "inset 0 0 0 6px #6b1520" }} />
+
+      <div
+        className="relative flex flex-col items-center"
+        style={{ perspective: 1200, animation: opened ? `ws-out 500ms ease forwards ${duration - 500}ms` : undefined }}
+      >
+        <div className="relative mx-auto" style={{ width: 320, height: 460 }}>
+          {/* Dos de l'enveloppe */}
+          <div
+            className="absolute inset-0 rounded-[4px]"
+            style={{
+              background: "linear-gradient(155deg, #f6ecd6 0%, #ecdfc2 55%, #ddc9a2 100%)",
+              boxShadow: "0 30px 60px -20px rgba(80,50,20,0.5), inset 0 0 0 1px rgba(150,120,70,0.35)",
+            }}
+          />
+          {/* Gaufrage floral dense sur tout le dos */}
+          <div className="absolute inset-0 overflow-hidden rounded-[4px]">
+            <SageEmboss />
+          </div>
+
+          {/* Carte intérieure */}
+          <div
+            className="absolute inset-[16px] flex flex-col items-center justify-center rounded-[3px] px-6 text-center"
+            style={{
+              background: "#faf3df",
+              boxShadow: "inset 0 0 0 1px rgba(150,120,70,0.35)",
+              animation: opened ? "ws-card 1000ms cubic-bezier(.2,.7,.2,1) 650ms both" : undefined,
+              opacity: opened ? undefined : 0,
+              zIndex: 1,
+            }}
+          >
+            <p className="font-mono text-[9px] uppercase tracking-[0.4em]" style={{ color: darken(sage, 0.3) }}>
+              Requests the pleasure of your company
+            </p>
+            <p className="mt-5 font-serif text-3xl italic" style={{ color: "#3b2a1a" }}>{couple.brideName}</p>
+            <p className="my-1 font-serif italic opacity-70">&amp;</p>
+            <p className="font-serif text-3xl italic" style={{ color: "#3b2a1a" }}>{couple.groomName}</p>
+            <span className="mt-4 block h-px w-10" style={{ background: sage }} />
+            <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.3em]" style={{ color: "#6b4a2a" }}>
+              {formatDate(couple.weddingDate)}
+            </p>
+            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.3em] opacity-70" style={{ color: "#6b4a2a" }}>
+              {couple.city}
+            </p>
+          </div>
+
+          {/* Rabat triangulaire */}
+          <div
+            className="ws-flap absolute inset-x-0 top-0"
+            style={{
+              height: 260,
+              animation: opened ? "ws-flap 900ms cubic-bezier(.6,.05,.3,1) 250ms forwards" : undefined,
+              zIndex: 2,
+            }}
+          >
+            <svg viewBox="0 0 320 260" width="100%" height="100%" style={{ overflow: "visible" }}>
+              <defs>
+                <linearGradient id="ws-flap-fill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#f8efd6" />
+                  <stop offset="100%" stopColor="#e6d5b0" />
+                </linearGradient>
+              </defs>
+              <polygon points="0,0 320,0 160,240" fill="url(#ws-flap-fill)" stroke="rgba(120,90,50,0.35)" strokeWidth="0.8" />
+            </svg>
+            <div className="pointer-events-none absolute inset-0" style={{ clipPath: "polygon(0 0, 100% 0, 50% 92%)" }}>
+              <SageEmboss compact />
+            </div>
+          </div>
+
+          {/* Gros sceau de cire sauge — centré sur le rabat */}
+          <div
+            className="absolute left-1/2 -translate-x-1/2"
+            style={{
+              top: 175,
+              zIndex: 3,
+              filter: "drop-shadow(0 8px 14px rgba(60,50,20,0.45))",
+              animation: opened
+                ? "ws-seal-fall 700ms ease forwards"
+                : "ws-pulse 2.4s ease infinite",
+            }}
+          >
+            <BigWaxSeal color={sage} letter={monogram} />
+          </div>
+
+          {/* Petit indicateur curseur (comme la vidéo) */}
+          {!opened && (
+            <div
+              className="pointer-events-none absolute left-1/2 -translate-x-1/2"
+              style={{ top: 230, zIndex: 4, animation: "ws-cursor 1.6s ease infinite" }}
+            >
+              <svg width="18" height="22" viewBox="0 0 18 22" fill="#fff" stroke="#3b2a1a" strokeWidth="1">
+                <path d="M2 2 L2 16 L6 12 L9 20 L12 19 L9 11 L14 11 Z" />
+              </svg>
+            </div>
+          )}
+        </div>
+
+        {!opened && (
+          <p className="mt-8 font-serif text-lg italic" style={{ color: darken(sage, 0.35), letterSpacing: "0.02em" }}>
+            Requests the pleasure of your company
+          </p>
+        )}
+      </div>
+
+      <SkipButton onClick={onDone} />
+    </div>
+  );
+}
+
+function SageEmboss({ compact = false }: { compact?: boolean }) {
+  // motif dense gaufré — fleurs, feuilles, arabesques
+  const stroke = "rgba(255,255,255,0.9)";
+  const shadow = "rgba(150,110,60,0.4)";
+  return (
+    <svg viewBox="0 0 320 460" width="100%" height="100%" className="absolute inset-0" style={{ mixBlendMode: "multiply" }}>
+      <defs>
+        <filter id="ws-shadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="0.4" />
+          <feOffset dx="0.5" dy="0.7" result="off" />
+          <feFlood floodColor={shadow} floodOpacity="1" />
+          <feComposite in2="off" operator="in" />
+          <feComposite in="SourceGraphic" operator="over" />
+        </filter>
+        <pattern id="ws-flora" x="0" y="0" width="80" height="90" patternUnits="userSpaceOnUse">
+          <g fill="none" stroke={stroke} strokeWidth="0.9" strokeLinecap="round">
+            {/* fleur 5 pétales */}
+            <g transform="translate(20,20)">
+              {[0, 72, 144, 216, 288].map((r) => (
+                <ellipse key={r} cx="0" cy="-7" rx="3.5" ry="6.5" transform={`rotate(${r})`} />
+              ))}
+              <circle r="2" fill={stroke} stroke="none" />
+            </g>
+            {/* feuille */}
+            <path d="M55 15 Q65 25 60 45 Q55 35 45 40" />
+            <path d="M55 15 L60 45" />
+            {/* rose */}
+            <g transform="translate(60,70)">
+              <circle r="3" />
+              <circle r="6" />
+              <circle r="9" />
+            </g>
+            {/* brindille */}
+            <path d="M8 55 Q18 65 14 85" />
+            <path d="M14 62 q6 -2 10 -6" />
+            <path d="M12 72 q-6 -2 -10 -6" />
+            {/* petits points */}
+            <circle cx="38" cy="55" r="1" fill={stroke} stroke="none" />
+            <circle cx="70" cy="35" r="1" fill={stroke} stroke="none" />
+          </g>
+        </pattern>
+      </defs>
+      <rect width="100%" height={compact ? "260" : "100%"} fill="url(#ws-flora)" filter="url(#ws-shadow)" opacity="0.85" />
+    </svg>
+  );
+}
+
+function BigWaxSeal({ color, letter }: { color: string; letter: string }) {
+  // sceau organique ~140px, monogramme script central
+  const path =
+    "M70 4 C50 6 30 16 18 34 C6 52 4 74 14 92 C24 110 46 122 70 122 C94 122 116 110 126 92 C136 74 134 52 122 34 C110 16 90 2 70 4 Z";
+  return (
+    <svg width="140" height="126" viewBox="0 0 140 126" style={{ overflow: "visible" }}>
+      <defs>
+        <radialGradient id="ws-seal-grad" cx="38%" cy="30%" r="75%">
+          <stop offset="0%" stopColor={lighten(color, 0.35)} />
+          <stop offset="45%" stopColor={color} />
+          <stop offset="100%" stopColor={darken(color, 0.45)} />
+        </radialGradient>
+        <radialGradient id="ws-seal-hl" cx="35%" cy="28%" r="30%">
+          <stop offset="0%" stopColor="rgba(255,255,255,0.7)" />
+          <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+        </radialGradient>
+      </defs>
+      <path d={path} fill={`url(#ws-seal-grad)`} stroke={darken(color, 0.5)} strokeWidth="0.8" />
+      {/* rebord intérieur gravé */}
+      <path
+        d="M70 14 C52 16 34 26 26 42 C18 58 18 74 26 88 C34 104 52 114 70 114 C88 114 106 104 114 88 C122 74 122 58 114 42 C106 26 88 12 70 14 Z"
+        fill="none"
+        stroke={darken(color, 0.35)}
+        strokeWidth="0.6"
+        opacity="0.6"
+      />
+      <ellipse cx="52" cy="34" rx="26" ry="16" fill="url(#ws-seal-hl)" />
+      {/* Monogramme script — double-layer pour effet gravé */}
+      <text
+        x="70" y="82" textAnchor="middle"
+        fontFamily="'Cormorant Garamond', 'Playfair Display', serif"
+        fontStyle="italic" fontWeight="500" fontSize="66"
+        fill={darken(color, 0.55)}
+      >
+        {letter}
+      </text>
+      <text
+        x="70" y="80" textAnchor="middle"
+        fontFamily="'Cormorant Garamond', 'Playfair Display', serif"
+        fontStyle="italic" fontWeight="500" fontSize="66"
+        fill={lighten(color, 0.3)} opacity="0.5"
+      >
+        {letter}
+      </text>
+      {/* micro-coulures */}
+      <path d="M26 96 q3 10 -2 14" stroke={darken(color, 0.4)} strokeWidth="0.7" fill="none" opacity="0.6" />
+      <path d="M114 98 q-3 10 2 14" stroke={darken(color, 0.4)} strokeWidth="0.7" fill="none" opacity="0.6" />
+    </svg>
+  );
+}
+
+/* ==================================================
+ * EFFECT — Enveloppe Nuit Nacrée (réf. vidéo 1)
+ * Enveloppe bleu nuit avec motif chérubins en watermark,
+ * sceau nacré en coquillage au centre. Sur tap → coquillage
+ * s'estompe, rabat s'ouvre, invitation apparaît.
+ * ================================================== */
+
+function EnvelopeNavyPearl({ couple, onDone }: { couple: Couple; onDone: () => void }) {
+  const [opened, setOpened] = useState(false);
+  const duration = 3000;
+
+  useEffect(() => {
+    if (!opened) return;
+    const t = setTimeout(onDone, duration);
+    return () => clearTimeout(t);
+  }, [opened, onDone]);
+
+  const navy = "#0f2338";
+  const navyLight = "#1a3350";
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden"
+      style={{ background: "radial-gradient(ellipse at 50% 40%, #182b45 0%, #0a1626 70%, #050a12 100%)" }}
+      onClick={() => !opened && setOpened(true)}
+    >
+      <style>{`
+        @keyframes np-flap { 0%{transform:rotateX(0)} 100%{transform:rotateX(-172deg)} }
+        @keyframes np-card { 0%{transform:translateY(20px) scale(.96);opacity:0} 55%{opacity:1} 100%{transform:translateY(-40px) scale(1);opacity:1} }
+        @keyframes np-shell-out { 0%{transform:scale(1) rotate(0);opacity:1} 100%{transform:scale(1.4) rotate(-8deg);opacity:0} }
+        @keyframes np-pulse { 0%,100%{transform:scale(1);filter:drop-shadow(0 6px 14px rgba(0,0,0,0.5))} 50%{transform:scale(1.04);filter:drop-shadow(0 10px 22px rgba(200,220,255,0.35))} }
+        @keyframes np-out { to { opacity: 0; transform: scale(1.04); } }
+        .np-flap { transform-origin: top center; transform-style: preserve-3d; backface-visibility: hidden; }
+      `}</style>
+
+      {/* Cadre bordeaux */}
+      <div className="pointer-events-none absolute inset-0" style={{ boxShadow: "inset 0 0 0 6px #6b1520" }} />
+
+      <div
+        className="relative flex flex-col items-center"
+        style={{ perspective: 1200, animation: opened ? `np-out 500ms ease forwards ${duration - 500}ms` : undefined }}
+      >
+        <div className="relative mx-auto" style={{ width: 320, height: 460 }}>
+          {/* Dos bleu nuit */}
+          <div
+            className="absolute inset-0 rounded-[4px]"
+            style={{
+              background: `linear-gradient(155deg, ${navyLight} 0%, ${navy} 55%, #081524 100%)`,
+              boxShadow: "0 30px 60px -20px rgba(0,0,0,0.7), inset 0 0 0 1px rgba(180,200,230,0.15)",
+            }}
+          />
+          {/* Motif chérubins watermark */}
+          <div className="absolute inset-0 overflow-hidden rounded-[4px]">
+            <CherubPattern />
+          </div>
+
+          {/* Carte intérieure (crème pâle) */}
+          <div
+            className="absolute inset-[16px] flex flex-col items-center justify-center rounded-[3px] px-6 text-center"
+            style={{
+              background: "#f4ecd8",
+              boxShadow: "inset 0 0 0 1px rgba(120,90,50,0.35)",
+              animation: opened ? "np-card 1000ms cubic-bezier(.2,.7,.2,1) 650ms both" : undefined,
+              opacity: opened ? undefined : 0,
+              zIndex: 1,
+            }}
+          >
+            <p className="font-mono text-[9px] uppercase tracking-[0.4em]" style={{ color: navy }}>
+              Save the date
+            </p>
+            <p className="mt-5 font-serif text-3xl italic" style={{ color: navy }}>{couple.brideName}</p>
+            <p className="my-1 font-serif italic opacity-70">&amp;</p>
+            <p className="font-serif text-3xl italic" style={{ color: navy }}>{couple.groomName}</p>
+            <span className="mt-4 block h-px w-10" style={{ background: navy, opacity: 0.5 }} />
+            <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.3em]" style={{ color: navy, opacity: 0.85 }}>
+              {formatDate(couple.weddingDate)}
+            </p>
+            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.3em] opacity-60" style={{ color: navy }}>
+              {couple.city}
+            </p>
+          </div>
+
+          {/* Rabat triangulaire */}
+          <div
+            className="np-flap absolute inset-x-0 top-0"
+            style={{
+              height: 260,
+              animation: opened ? "np-flap 900ms cubic-bezier(.6,.05,.3,1) 350ms forwards" : undefined,
+              zIndex: 2,
+            }}
+          >
+            <svg viewBox="0 0 320 260" width="100%" height="100%" style={{ overflow: "visible" }}>
+              <defs>
+                <linearGradient id="np-flap-fill" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={navyLight} />
+                  <stop offset="100%" stopColor="#0b1a2c"/>
+                </linearGradient>
+              </defs>
+              <polygon points="0,0 320,0 160,240" fill="url(#np-flap-fill)" stroke="rgba(180,200,230,0.2)" strokeWidth="0.8" />
+            </svg>
+            <div className="pointer-events-none absolute inset-0" style={{ clipPath: "polygon(0 0, 100% 0, 50% 92%)" }}>
+              <CherubPattern compact />
+            </div>
+          </div>
+
+          {/* Sceau nacré coquillage */}
+          <div
+            className="absolute left-1/2 -translate-x-1/2"
+            style={{
+              top: 195,
+              zIndex: 3,
+              animation: opened ? "np-shell-out 600ms ease forwards" : "np-pulse 2.6s ease infinite",
+            }}
+          >
+            <PearlShell />
+          </div>
+        </div>
+
+        {!opened && (
+          <p className="mt-8 font-serif text-base italic" style={{ color: "#e0d5b5", letterSpacing: "0.15em" }}>
+            Tap to open
+          </p>
+        )}
+      </div>
+
+      <SkipButton onClick={onDone} />
+    </div>
+  );
+}
+
+function CherubPattern({ compact = false }: { compact?: boolean }) {
+  // Petit chérubin volant tenant une lettre — répété en watermark léger
+  const stroke = "rgba(200,220,255,0.28)";
+  return (
+    <svg viewBox="0 0 320 460" width="100%" height="100%" className="absolute inset-0">
+      <defs>
+        <pattern id="np-cherub" x="0" y="0" width="90" height="80" patternUnits="userSpaceOnUse">
+          <g fill="none" stroke={stroke} strokeWidth="0.7" strokeLinecap="round" strokeLinejoin="round">
+            {/* corps chérubin stylisé */}
+            <g transform="translate(20,30)">
+              <circle cx="8" cy="0" r="3.5" />
+              {/* ailes */}
+              <path d="M2 2 Q-6 0 -10 6 Q-4 4 2 6" />
+              <path d="M14 2 Q22 0 26 6 Q20 4 14 6" />
+              {/* corps + bras tenant lettre */}
+              <path d="M4 4 Q8 12 12 4" />
+              <path d="M6 8 Q8 14 12 12" />
+              {/* petite lettre (enveloppe) */}
+              <rect x="10" y="10" width="8" height="5" rx="0.5" />
+              <path d="M10 10 L14 13 L18 10" />
+              {/* jambe */}
+              <path d="M9 12 Q9 18 6 20" />
+            </g>
+            {/* second chérubin décalé */}
+            <g transform="translate(65,60)">
+              <circle cx="0" cy="0" r="3" />
+              <path d="M-4 2 Q-10 0 -12 4" />
+              <path d="M4 2 Q10 0 12 4" />
+              <rect x="2" y="8" width="7" height="4" rx="0.5" />
+              <path d="M2 8 L5.5 10.5 L9 8" />
+            </g>
+          </g>
+        </pattern>
+      </defs>
+      <rect width="100%" height={compact ? "260" : "100%"} fill="url(#np-cherub)" />
+    </svg>
+  );
+}
+
+function PearlShell() {
+  // Coquillage nacré (éventail avec cannelures), rendu SVG avec dégradés iridescents
+  return (
+    <svg width="120" height="110" viewBox="0 0 120 110" style={{ overflow: "visible" }}>
+      <defs>
+        <radialGradient id="np-pearl" cx="50%" cy="25%" r="80%">
+          <stop offset="0%" stopColor="#ffffff" />
+          <stop offset="30%" stopColor="#f5eee0" />
+          <stop offset="55%" stopColor="#e8d9c0" />
+          <stop offset="80%" stopColor="#c9b89a" />
+          <stop offset="100%" stopColor="#8a7860" />
+        </radialGradient>
+        <linearGradient id="np-iri" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="rgba(255,220,240,0.6)" />
+          <stop offset="50%" stopColor="rgba(200,230,255,0.4)" />
+          <stop offset="100%" stopColor="rgba(255,240,200,0.5)" />
+        </linearGradient>
+        <filter id="np-shell-shadow" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+          <feOffset dx="0" dy="4" result="off" />
+          <feFlood floodColor="#000" floodOpacity="0.5" />
+          <feComposite in2="off" operator="in" />
+          <feComposite in="SourceGraphic" operator="over" />
+        </filter>
+      </defs>
+      <g filter="url(#np-shell-shadow)">
+        {/* silhouette du coquillage — éventail arrondi */}
+        <path
+          d="M60 6 C36 10 14 32 12 62 C10 82 22 96 44 100 C52 101 68 101 76 100 C98 96 110 82 108 62 C106 32 84 10 60 6 Z"
+          fill="url(#np-pearl)"
+          stroke="#8a7860"
+          strokeWidth="0.6"
+        />
+        {/* voile iridescent */}
+        <path
+          d="M60 6 C36 10 14 32 12 62 C10 82 22 96 44 100 C52 101 68 101 76 100 C98 96 110 82 108 62 C106 32 84 10 60 6 Z"
+          fill="url(#np-iri)"
+          opacity="0.55"
+        />
+        {/* cannelures (rayons) */}
+        {Array.from({ length: 13 }).map((_, i) => {
+          const angle = -75 + i * 12.5;
+          const rad = (angle * Math.PI) / 180;
+          const x = 60 + Math.sin(rad) * 52;
+          const y = 20 + Math.cos(rad) * 78;
+          return (
+            <path
+              key={i}
+              d={`M60 20 Q${60 + Math.sin(rad) * 25} ${20 + Math.cos(rad) * 40} ${x} ${y}`}
+              stroke="rgba(120,100,70,0.35)"
+              strokeWidth="0.7"
+              fill="none"
+            />
+          );
+        })}
+        {/* petites bosses le long de chaque rayon (relief) */}
+        {Array.from({ length: 13 }).map((_, i) => {
+          const angle = -75 + i * 12.5;
+          const rad = (angle * Math.PI) / 180;
+          return (
+            <g key={i}>
+              {[0.35, 0.55, 0.75, 0.9].map((t, j) => {
+                const cx = 60 + Math.sin(rad) * 60 * t;
+                const cy = 20 + Math.cos(rad) * 82 * t;
+                return <circle key={j} cx={cx} cy={cy} r="1.2" fill="rgba(255,255,255,0.55)" />;
+              })}
+            </g>
+          );
+        })}
+        {/* charnière au sommet */}
+        <ellipse cx="60" cy="14" rx="8" ry="4" fill="#a89880" />
+        <ellipse cx="60" cy="12" rx="6" ry="2" fill="rgba(255,255,255,0.6)" />
+        {/* reflet global */}
+        <ellipse cx="44" cy="34" rx="18" ry="10" fill="rgba(255,255,255,0.35)" />
+      </g>
+    </svg>
+  );
+}
+
+
 
 function parseHex(hex: string): [number, number, number] {
   const h = hex.replace("#", "");
