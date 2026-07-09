@@ -6,6 +6,8 @@ import { BottomNav } from "@/components/mobile-shell/BottomNav";
 import { SideDrawer } from "@/components/mobile-shell/SideDrawer";
 import { Fab } from "@/components/mobile-shell/Fab";
 import { EditModeProvider, useEditMode } from "@/lib/edit-mode";
+import { PageChromeProvider, usePageChrome } from "@/lib/page-chrome";
+import { AutosaveProvider } from "@/lib/autosave-context";
 
 export const Route = createFileRoute("/dashboard")({
   component: DashboardLayout,
@@ -68,21 +70,25 @@ function DashboardLayout() {
 
   return (
     <EditModeProvider>
-      <DashboardChrome
-        title={title}
-        initial={initial}
-        coupleInitials={coupleInitials}
-        coupleLabel={coupleLabel}
-        email={account.email}
-        hasNotifications={hasNotifications}
-        isPublished={couple.isPublished}
-        drawerOpen={drawerOpen}
-        setDrawerOpen={setDrawerOpen}
-        onSignOut={async () => {
-          await signOut();
-          navigate({ to: "/", replace: true });
-        }}
-      />
+      <AutosaveProvider>
+        <PageChromeProvider>
+          <DashboardChrome
+            title={title}
+            initial={initial}
+            coupleInitials={coupleInitials}
+            coupleLabel={coupleLabel}
+            email={account.email}
+            hasNotifications={hasNotifications}
+            isPublished={couple.isPublished}
+            drawerOpen={drawerOpen}
+            setDrawerOpen={setDrawerOpen}
+            onSignOut={async () => {
+              await signOut();
+              navigate({ to: "/", replace: true });
+            }}
+          />
+        </PageChromeProvider>
+      </AutosaveProvider>
     </EditModeProvider>
   );
 }
@@ -111,6 +117,7 @@ function DashboardChrome({
   onSignOut: () => Promise<void>;
 }) {
   const { mode } = useEditMode();
+  const { centerNode, actionBarNode } = usePageChrome();
   const editing = mode === "edit";
 
   return (
@@ -120,7 +127,9 @@ function DashboardChrome({
         initial={initial}
         onOpenDrawer={() => setDrawerOpen(true)}
         hasNotifications={hasNotifications}
+        centerContent={centerNode}
       />
+      {actionBarNode}
 
       <main className={`mx-auto max-w-xl px-4 pt-4 ${editing ? "pb-4" : "pb-24"}`}>
         <Outlet />

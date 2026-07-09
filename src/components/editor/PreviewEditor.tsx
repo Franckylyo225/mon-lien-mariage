@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { useWedding, type Couple } from "@/lib/wedding-store";
-import { useAutosave } from "@/hooks/use-autosave";
+import { useAutosaveContext } from "@/lib/autosave-context";
 import { SaveIndicator } from "./SaveIndicator";
 import { HeroPhotoSheet } from "./HeroPhotoSheet";
 import { PhotoGridSheet } from "./PhotoGridSheet";
@@ -12,7 +12,6 @@ import {
   Users,
   Calendar,
   X,
-  Pencil,
   ImageIcon,
   Timer,
   Info,
@@ -46,13 +45,14 @@ const CAPTION_SUGGESTIONS = [
 
 interface EditorProps {
   mode: "preview" | "edit";
-  onToggle: () => void;
+  /** Kept for API compatibility; the toggle now lives in the sticky action bar. */
+  onToggle?: () => void;
 }
 
-export function PreviewEditor({ mode, onToggle }: EditorProps) {
+export function PreviewEditor({ mode }: EditorProps) {
   const { couple, updateCouple, weddingId } = useWedding();
   const [sheet, setSheet] = useState<Sheet>(null);
-  const { status, schedule } = useAutosave(500);
+  const { status, schedule } = useAutosaveContext();
 
   // Local drafts (updated live in UI, persisted debounced)
   const [caption, setCaption] = useState(couple.caption ?? "");
@@ -164,29 +164,8 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
 
   return (
     <>
-      {/* Floating action button top-right */}
-      <button
-        type="button"
-        onClick={onToggle}
-        className={cn(
-          "fixed right-4 top-20 z-30 inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 font-mono text-[10px] uppercase tracking-[0.2em] shadow-lg transition-all",
-          mode === "edit"
-            ? "bg-foreground text-background"
-            : "bg-background text-foreground ring-1 ring-border",
-        )}
-      >
-        {mode === "edit" ? (
-          <>
-            <X className="size-3.5" />
-            Terminer
-          </>
-        ) : (
-          <>
-            <Pencil className="size-3.5" />
-            Modifier
-          </>
-        )}
-      </button>
+
+
 
       {/* Bottom edit bar (edit mode only) */}
       {mode === "edit" && (
