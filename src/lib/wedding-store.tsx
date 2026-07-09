@@ -332,6 +332,7 @@ type WeddingRow = {
   story_title: string | null;
   story_body: string | null;
   story_images: string[] | null;
+  story_style: Record<string, unknown> | null;
   gallery_enabled: boolean | null;
   gallery_title: string | null;
   gallery_images: string[] | null;
