@@ -79,6 +79,8 @@ export function TropicalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
           </div>
         )}
 
+        <OurStorySection couple={couple} accent="#e88b62" />
+
         <p className="mt-10 text-center font-serif italic leading-relaxed text-[#f4e4c1]/90">
           {couple.introMessage}
         </p>
