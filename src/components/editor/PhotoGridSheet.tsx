@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import imageCompression from "browser-image-compression";
 import { supabase } from "@/integrations/supabase/client";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
@@ -51,6 +51,20 @@ export function PhotoGridSheet({
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Local drafts so typing feels instant; parent persists debounced.
+  const [titleDraft, setTitleDraft] = useState(titleField?.value ?? "");
+  const [bodyDraft, setBodyDraft] = useState(bodyField?.value ?? "");
+
+  // Sync from parent when the sheet (re)opens or the underlying value changes
+  // from outside (e.g. after initial load).
+  useEffect(() => {
+    if (open) {
+      setTitleDraft(titleField?.value ?? "");
+      setBodyDraft(bodyField?.value ?? "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   const handleFiles = async (files: FileList) => {
     if (!weddingId) {
@@ -142,9 +156,12 @@ export function PhotoGridSheet({
               </label>
               <input
                 type="text"
-                value={titleField.value}
+                value={titleDraft}
                 placeholder={titleField.placeholder}
-                onChange={(e) => titleField.onChange(e.target.value)}
+                onChange={(e) => {
+                  setTitleDraft(e.target.value);
+                  titleField.onChange(e.target.value);
+                }}
                 className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
               />
             </div>
@@ -156,10 +173,13 @@ export function PhotoGridSheet({
                 {bodyField.label}
               </label>
               <textarea
-                value={bodyField.value}
+                value={bodyDraft}
                 rows={5}
                 placeholder={bodyField.placeholder}
-                onChange={(e) => bodyField.onChange(e.target.value)}
+                onChange={(e) => {
+                  setBodyDraft(e.target.value);
+                  bodyField.onChange(e.target.value);
+                }}
                 className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
               />
             </div>
