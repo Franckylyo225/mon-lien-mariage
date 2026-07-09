@@ -946,6 +946,13 @@ export function PreviewEditor({ mode }: EditorProps) {
         couple={couple}
         onPatch={(patch) => persist(patch)}
       />
+
+      <OpeningEffectSheet
+        open={sheet === "opening"}
+        onOpenChange={(o) => !o && setSheet(null)}
+        couple={couple}
+        onPatch={(patch) => persist(patch)}
+      />
     </>
   );
 }
