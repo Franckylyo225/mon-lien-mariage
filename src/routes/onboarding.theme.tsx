@@ -1,45 +1,17 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useWedding, type ThemeId } from "@/lib/wedding-store";
+import { THEMES, THEME_FAMILIES, BACKGROUNDS } from "@/lib/wedding-theme";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/onboarding/theme")({
-  head: () => ({ meta: [{ title: "Étape 3 / 4 — Choisissez une ambiance" }] }),
+  head: () => ({ meta: [{ title: "Étape 3 / 4 — Choisissez un thème" }] }),
   component: Step3,
 });
 
-const themes: {
-  id: ThemeId;
-  name: string;
-  desc: string;
-  swatch: string[];
-  bg: string;
-  fg: string;
-}[] = [
-  {
-    id: "rose-elegance",
-    name: "Rose Élégance",
-    desc: "Bordeaux et rose poudré, serif classique.",
-    swatch: ["#993556", "#FBEAF0", "#FAFAF9"],
-    bg: "#FAFAF9",
-    fg: "#993556",
-  },
-  {
-    id: "ivoire-epure",
-    name: "Ivoire Épuré",
-    desc: "Ivoire, noir et or, minimaliste.",
-    swatch: ["#111111", "#C9A84C", "#F8F5EF"],
-    bg: "#F8F5EF",
-    fg: "#111111",
-  },
-  {
-    id: "wax-dore",
-    name: "Wax Doré",
-    desc: "Ambre et terracotta, esprit africain.",
-    swatch: ["#B85C1E", "#E8CBA0", "#FAF3E7"],
-    bg: "#FAF3E7",
-    fg: "#B85C1E",
-  },
-];
+function bgHex(slug: string): string {
+  return BACKGROUNDS.find((b) => b.slug === slug)?.hex ?? "#F5EFE7";
+}
 
 function Step3() {
   const { couple, updateCouple, setOnboardingStep } = useWedding();
@@ -49,62 +21,73 @@ function Step3() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-serif text-4xl italic">Choisissez une ambiance</h1>
+        <h1 className="font-serif text-4xl italic">Choisissez un thème</h1>
         <p className="mt-3 text-sm text-muted-foreground">
-          Vous pourrez la changer à tout moment.
+          Vous pourrez le changer à tout moment.
         </p>
       </div>
 
-      <div className="space-y-3">
-        {themes.map((t) => {
-          const active = selected === t.id;
-          return (
-            <button
-              type="button"
-              key={t.id}
-              onClick={() => {
-                setSelected(t.id);
-                updateCouple({ theme: t.id });
-              }}
-              className={
-                "flex w-full items-center gap-4 rounded-lg border-2 p-4 text-left transition " +
-                (active ? "border-primary" : "border-border hover:border-muted-foreground/40")
-              }
-            >
-              <div
-                className="grid size-16 shrink-0 place-items-center rounded-md"
-                style={{ backgroundColor: t.bg }}
-              >
-                <span className="font-serif text-2xl italic" style={{ color: t.fg }}>
-                  Aa
-                </span>
+      <div className="space-y-6">
+        {THEME_FAMILIES.map((fam) => (
+          <section key={fam.id} className="space-y-2">
+            <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+              {fam.label}
+            </p>
+            <div className="-mx-4 overflow-x-auto px-4">
+              <div className="flex gap-3 pb-2">
+                {fam.themes.map((slug) => {
+                  const t = THEMES[slug];
+                  const active = selected === slug;
+                  return (
+                    <button
+                      type="button"
+                      key={slug}
+                      onClick={() => {
+                        setSelected(slug);
+                        updateCouple({ theme: slug });
+                      }}
+                      className={cn(
+                        "shrink-0 flex flex-col overflow-hidden rounded-2xl border-2 text-left transition",
+                        active ? "shadow-md" : "border-border hover:border-muted-foreground/40",
+                      )}
+                      style={active ? { borderColor: t.defaultAccent } : undefined}
+                    >
+                      <div
+                        className="flex h-40 w-32 flex-col items-center justify-center px-3 text-center"
+                        style={{ background: bgHex(t.defaultBg) }}
+                      >
+                        <p
+                          className="mb-1 font-mono text-[8px] uppercase tracking-[0.25em]"
+                          style={{ color: t.defaultAccent }}
+                        >
+                          Save the date
+                        </p>
+                        <p
+                          className="text-base leading-tight italic"
+                          style={{ fontFamily: t.fontHeading, color: "#1A1A1A" }}
+                        >
+                          Aïcha
+                          <br />&amp;<br />
+                          Kouamé
+                        </p>
+                        <span
+                          className="mt-2 block h-px w-6"
+                          style={{ background: t.defaultAccent }}
+                        />
+                      </div>
+                      <div className="border-t border-border bg-background px-3 py-1.5">
+                        <p className="truncate text-[11px] font-medium">{t.name}</p>
+                        <p className="truncate font-mono text-[8px] uppercase tracking-widest opacity-50">
+                          {t.mood}
+                        </p>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <p className="font-medium">{t.name}</p>
-                  <div className="flex gap-1">
-                    {t.swatch.map((c) => (
-                      <span
-                        key={c}
-                        className="size-3 rounded-full ring-1 ring-border"
-                        style={{ backgroundColor: c }}
-                      />
-                    ))}
-                  </div>
-                </div>
-                <p className="mt-1 text-xs text-muted-foreground">{t.desc}</p>
-              </div>
-              <span
-                className={
-                  "grid size-6 shrink-0 place-items-center rounded-full border-2 " +
-                  (active ? "border-primary bg-primary text-primary-foreground" : "border-border")
-                }
-              >
-                {active ? "✓" : ""}
-              </span>
-            </button>
-          );
-        })}
+            </div>
+          </section>
+        ))}
       </div>
 
       <button

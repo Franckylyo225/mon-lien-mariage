@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo } from "react";
 import { useWedding } from "@/lib/wedding-store";
-import { templateComponents, templateRsvpTone } from "@/components/invitation-templates";
+import { componentForTheme, rsvpToneForTheme } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
 import { PreviewEditor } from "@/components/editor/PreviewEditor";
 import { useEditMode } from "@/lib/edit-mode";
@@ -32,7 +32,7 @@ function PreviewPage() {
   }, [resolved]);
 
   const coupleTheme = { ...couple, accent: resolved.accent };
-  const Template = templateComponents[coupleTheme.templateId];
+  const Template = componentForTheme(coupleTheme.theme);
 
   return (
     <div className="relative -mx-4 -my-8 sm:-mx-8">
@@ -93,7 +93,7 @@ function PreviewPage() {
           ceremonies={ceremonies}
           rsvpSlot={
             <TemplateRsvpForm
-              tone={templateRsvpTone[coupleTheme.templateId]}
+              tone={rsvpToneForTheme(coupleTheme.theme)}
               weddingId={coupleTheme.isPublished && weddingId ? weddingId : undefined}
               ceremonies={ceremonies}
             />

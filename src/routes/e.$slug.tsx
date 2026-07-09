@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { getPublicWedding } from "@/lib/public-wedding.functions";
-import { templateComponents, templateRsvpTone } from "@/components/invitation-templates";
+import { componentForTheme, rsvpToneForTheme } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
 import { EnvelopeAnimation } from "@/components/envelope-animation";
 import type { BackgroundBase, Ceremony, Couple, EventType, TemplateId, ThemeId } from "@/lib/wedding-store";
@@ -143,7 +143,7 @@ function PublicInvitationPage() {
   // Override couple.accent with resolved accent so templates that read couple.accent
   // reflect the user's chosen colour.
   const coupleTheme: Couple = { ...couple, accent: resolved.accent };
-  const Template = templateComponents[coupleTheme.templateId];
+  const Template = componentForTheme(coupleTheme.theme);
 
   return (
     <div className="relative" data-theme={coupleTheme.theme} style={{ backgroundColor: resolved.bg }}>
@@ -160,7 +160,7 @@ function PublicInvitationPage() {
         ceremonies={ceremonies}
         rsvpSlot={
           <TemplateRsvpForm
-            tone={templateRsvpTone[coupleTheme.templateId]}
+            tone={rsvpToneForTheme(coupleTheme.theme)}
             weddingId={w.id}
             ceremonies={ceremonies}
           />

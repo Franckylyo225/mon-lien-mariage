@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
-import type { TemplateId } from "@/lib/wedding-store";
+import type { TemplateId, ThemeId } from "@/lib/wedding-store";
+import { templateForTheme } from "@/lib/wedding-theme";
 import type { TemplateProps } from "./types";
 import { TerracottaTemplate } from "./terracotta";
 import { NoirMinimalTemplate } from "./noir-minimal";
@@ -25,3 +26,18 @@ export const templateRsvpTone: Record<
   tropical: "tropical",
   "art-deco": "deco",
 };
+
+/**
+ * Phase 1: theme drives the rendered page. The dynamic loader picks the
+ * template component + RSVP tone from the current theme slug.
+ * Phase 3 will replace individual templates with per-theme designs.
+ */
+export function componentForTheme(theme: ThemeId): ComponentType<TemplateProps> {
+  return templateComponents[templateForTheme(theme)];
+}
+
+export function rsvpToneForTheme(
+  theme: ThemeId,
+): "warm" | "dark" | "gold" | "tropical" | "deco" {
+  return templateRsvpTone[templateForTheme(theme)];
+}

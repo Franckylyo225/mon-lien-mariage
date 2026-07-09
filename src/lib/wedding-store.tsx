@@ -30,12 +30,26 @@ export type TemplateId =
   | "art-deco";
 
 export type ThemeId =
+  // Classiques élégants
   | "rose-elegance"
   | "ivoire-epure"
-  | "wax-dore"
+  | "or-antique"
+  // Botaniques
   | "vert-sauge"
+  | "jardin-sauvage"
+  | "terracotta-boheme"
+  // Héritage africain
+  | "wax-dore"
+  | "kente-royal"
+  | "sahel-dore"
+  // Modernes éditoriaux
   | "bleu-nuit"
-  | "or-antique";
+  | "manuscrit"
+  | "monochrome"
+  // Illustrés
+  | "aquarelle"
+  | "confetti"
+  | "papier-kraft";
 
 export type BackgroundBase = "ivoire" | "creme" | "blanc" | "gris";
 
