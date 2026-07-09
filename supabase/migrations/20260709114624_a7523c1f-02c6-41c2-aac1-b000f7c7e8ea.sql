@@ -1,0 +1,1 @@
+ALTER TABLE public.weddings ADD COLUMN IF NOT EXISTS dress_code_colors text[] NOT NULL DEFAULT '{}';
