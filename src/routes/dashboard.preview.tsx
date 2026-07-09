@@ -32,7 +32,7 @@ function PreviewPage() {
   }, [resolved]);
 
   const coupleTheme = { ...couple, accent: resolved.accent };
-  const Template = templateComponents[coupleTheme.templateId];
+  const Template = componentForTheme(coupleTheme.theme);
 
   return (
     <div className="relative -mx-4 -my-8 sm:-mx-8">
