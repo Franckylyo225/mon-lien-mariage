@@ -44,10 +44,7 @@ export type CountdownStyle = NonNullable<Couple["countdownStyle"]>;
 
 // Full-tone overrides applied when the user picks a color scheme.
 // null means "keep the template-provided tone".
-function colorPresetTone(
-  preset: CountdownStyle["color"],
-  accent?: string,
-): CountdownTone | null {
+function colorPresetTone(preset: CountdownStyle["color"]): CountdownTone | null {
   switch (preset) {
     case "ivoire":
       return {
@@ -65,20 +62,11 @@ function colorPresetTone(
         labelClass: "font-mono text-[9px] uppercase tracking-[0.25em] text-white/50",
         separatorClass: "opacity-30",
       };
-    case "accent": {
-      const c = accent || "#993556";
-      return {
-        cellBg: `bg-[${c}]/15`,
-        cellBorder: `border border-[${c}]/40`,
-        numberClass: `text-3xl font-serif tracking-tight text-[${c}]`,
-        labelClass: `font-mono text-[9px] uppercase tracking-[0.25em] text-[${c}]/70`,
-        separatorClass: "opacity-30",
-      };
-    }
     default:
       return null;
   }
 }
+
 
 const SIZE_CLASSES: Record<NonNullable<CountdownStyle["size"]>, { number: string; label: string; pad: string }> = {
   sm: { number: "text-xl", label: "text-[8px]", pad: "px-2 py-2.5" },
