@@ -81,6 +81,9 @@ const themeRsvpTone: Partial<
   "bleu-nuit": "dark",
   manuscrit: "dark",
   monochrome: "dark",
+  aquarelle: "warm",
+  confetti: "tropical",
+  "papier-kraft": "warm",
 };
 
 export function componentForTheme(theme: ThemeId): ComponentType<TemplateProps> {
