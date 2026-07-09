@@ -197,7 +197,8 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
           <button
             type="button"
             onClick={restoreDefaults}
-            className="w-full py-2 text-center font-mono text-[10px] uppercase tracking-widest opacity-60 transition hover:opacity-100"
+            disabled={!couple.accentColor && !couple.backgroundBase}
+            className="w-full rounded-full border border-border bg-background py-3 text-center font-mono text-[11px] uppercase tracking-widest transition hover:border-foreground/40 hover:bg-muted/40 disabled:cursor-not-allowed disabled:opacity-40"
           >
             Restaurer les valeurs du thème
           </button>
