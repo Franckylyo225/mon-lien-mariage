@@ -308,13 +308,55 @@ function ShareUnlocked({
             />
             <p className="mt-1 text-[10px] opacity-50">{shareDesc.length}/200</p>
           </div>
-          <Field
-            label="Image du partage (URL)"
-            value={shareImage}
-            onChange={setShareImage}
-            placeholder="https://…"
-            hint="Idéalement 1200×630 px"
-          />
+          <div>
+            <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest opacity-60">
+              Image du partage
+            </label>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) void handleImageFile(f);
+                e.target.value = "";
+              }}
+            />
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                className="rounded-full border border-border bg-background px-4 py-2.5 text-xs transition hover:border-primary/50 hover:bg-primary/5 disabled:opacity-40"
+              >
+                {uploading
+                  ? "Envoi en cours…"
+                  : shareImage
+                    ? "Changer l'image"
+                    : "Choisir une image"}
+              </button>
+              {shareImage ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShareImage("");
+                    void updateCouple({ shareImageUrl: undefined });
+                  }}
+                  disabled={uploading}
+                  className="rounded-full border border-border bg-background px-4 py-2.5 text-xs opacity-70 transition hover:opacity-100 disabled:opacity-30"
+                >
+                  Retirer
+                </button>
+              ) : null}
+            </div>
+            <p className="mt-1 text-[10px] opacity-50">
+              Idéalement 1200×630 px. Sinon, l'image de couverture est utilisée.
+            </p>
+            {uploadError ? (
+              <p className="mt-1 text-[10px] text-destructive">{uploadError}</p>
+            ) : null}
+          </div>
           <button
             onClick={saveShare}
             className="w-full rounded-full bg-primary py-3 font-mono text-[10px] uppercase tracking-widest text-primary-foreground transition hover:opacity-90"
