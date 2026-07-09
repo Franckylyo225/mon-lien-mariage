@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { useWedding, guestStats, type TemplateId } from "@/lib/wedding-store";
-import { templateMeta, templateOrder } from "@/lib/ceremony-meta";
+import { useWedding, guestStats, type TemplateId, type EventType } from "@/lib/wedding-store";
+import { templateMeta, templateOrder, eventTypeMeta, eventTypeOrder } from "@/lib/ceremony-meta";
+
 
 export const Route = createFileRoute("/dashboard/landing")({
   head: () => ({
