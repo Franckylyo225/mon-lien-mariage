@@ -4,11 +4,28 @@ import { useWedding } from "@/lib/wedding-store";
 import { useAutosave } from "@/hooks/use-autosave";
 import { SaveIndicator } from "./SaveIndicator";
 import { HeroPhotoSheet } from "./HeroPhotoSheet";
-import { Lock, Type, Users, Calendar, X, Pencil, ImageIcon, Timer } from "lucide-react";
+import {
+  Lock,
+  Type,
+  Users,
+  Calendar,
+  X,
+  Pencil,
+  ImageIcon,
+  Timer,
+  Info,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type CountdownUnit = "days" | "hours" | "minutes" | "seconds";
-type Sheet = null | "caption" | "names" | "date" | "hero" | "countdown";
+type Sheet =
+  | null
+  | "caption"
+  | "names"
+  | "date"
+  | "hero"
+  | "countdown"
+  | "practical";
 
 const CAPTION_SUGGESTIONS = [
   "Ils se disent oui",
