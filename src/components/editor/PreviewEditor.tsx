@@ -400,6 +400,91 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
               )}
             </div>
 
+            {/* Style controls */}
+            <div
+              className={cn(
+                "space-y-4 rounded-xl border border-border p-3 transition-opacity",
+                !countdownEnabled && "pointer-events-none opacity-40",
+              )}
+            >
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                Style
+              </p>
+
+              <StyleRow label="Couleur">
+                {(
+                  [
+                    { v: "auto", label: "Auto" },
+                    { v: "ivoire", label: "Ivoire" },
+                    { v: "noir", label: "Noir" },
+                  ] as const
+                ).map((o) => (
+                  <StylePill
+                    key={o.v}
+                    active={styleColor === o.v}
+                    onClick={() => updateCountdownStyle({ color: o.v })}
+                  >
+                    {o.label}
+                  </StylePill>
+                ))}
+              </StyleRow>
+
+              <StyleRow label="Taille">
+                {(
+                  [
+                    { v: "sm", label: "S" },
+                    { v: "md", label: "M" },
+                    { v: "lg", label: "L" },
+                  ] as const
+                ).map((o) => (
+                  <StylePill
+                    key={o.v}
+                    active={styleSize === o.v}
+                    onClick={() => updateCountdownStyle({ size: o.v })}
+                  >
+                    {o.label}
+                  </StylePill>
+                ))}
+              </StyleRow>
+
+              <StyleRow label="Typographie">
+                {(
+                  [
+                    { v: "serif", label: "Serif", cls: "font-serif italic" },
+                    { v: "sans", label: "Sans", cls: "font-sans" },
+                    { v: "mono", label: "Mono", cls: "font-mono" },
+                  ] as const
+                ).map((o) => (
+                  <StylePill
+                    key={o.v}
+                    active={styleFont === o.v}
+                    onClick={() => updateCountdownStyle({ font: o.v })}
+                    className={o.cls}
+                  >
+                    {o.label}
+                  </StylePill>
+                ))}
+              </StyleRow>
+
+              <StyleRow label="Animation">
+                {(
+                  [
+                    { v: "none", label: "Aucune" },
+                    { v: "pulse", label: "Pulse" },
+                    { v: "flip", label: "Flip" },
+                  ] as const
+                ).map((o) => (
+                  <StylePill
+                    key={o.v}
+                    active={styleAnimation === o.v}
+                    onClick={() => updateCountdownStyle({ animation: o.v })}
+                  >
+                    {o.label}
+                  </StylePill>
+                ))}
+              </StyleRow>
+            </div>
+
             <p className="text-[11px] opacity-60">
               Le compte à rebours disparaîtra automatiquement le jour du mariage.
             </p>
