@@ -106,6 +106,8 @@ export interface Couple {
   templateId: TemplateId;
   theme: ThemeId;
   accent?: string;
+  accentColor?: string;
+  backgroundBase?: BackgroundBase;
   hashtag?: string;
   slug?: string;
   isPublished: boolean;
