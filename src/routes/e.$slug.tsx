@@ -119,6 +119,9 @@ function PublicInvitationPage() {
     registryStores:
       ((w as { registry_stores?: Array<{ name: string; url?: string }> | null }).registry_stores as Couple["registryStores"]) ??
       [],
+    hasOpeningEffect: !!(w as { has_opening_effect?: boolean | null }).has_opening_effect,
+    openingEffectSlug:
+      ((w as { opening_effect_slug?: string | null }).opening_effect_slug as Couple["openingEffectSlug"]) ?? undefined,
   };
 
   const ceremonies: Ceremony[] = (data.ceremonies ?? []).map((c) => ({
