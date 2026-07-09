@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useMemo } from "react";
 import { useWedding } from "@/lib/wedding-store";
 import { templateComponents, templateRsvpTone } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
 import { PreviewEditor } from "@/components/editor/PreviewEditor";
 import { useEditMode } from "@/lib/edit-mode";
 import { cn } from "@/lib/utils";
+import { applyThemeVars, resolveTheme } from "@/lib/wedding-theme";
 
 export const Route = createFileRoute("/dashboard/preview")({
   head: () => ({
