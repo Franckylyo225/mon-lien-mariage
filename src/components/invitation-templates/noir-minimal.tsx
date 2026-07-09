@@ -1,6 +1,7 @@
-import { formatFrenchDate, daysUntil } from "@/lib/wedding-store";
+import { formatFrenchDate } from "@/lib/wedding-store";
 import type { TemplateProps } from "./types";
 import { CeremonyProgramTabs } from "./program-tabs";
+import { Countdown, TemplateBottomSections } from "./sections";
 
 export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
   const published = ceremonies.filter((c) => c.status === "publiée");
