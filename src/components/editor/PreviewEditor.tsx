@@ -193,6 +193,12 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
         <div className="fixed inset-x-0 bottom-4 z-30 mx-auto flex max-w-xl justify-center px-4">
           <div className="flex w-full items-center gap-2 overflow-x-auto rounded-2xl border border-background/20 bg-foreground/95 p-2 shadow-lg backdrop-blur">
             <EditChip
+              icon={<Palette className="size-4" />}
+              label="Thème & couleurs"
+              value={themeChipValue(couple)}
+              onClick={() => setSheet("theme")}
+            />
+            <EditChip
               icon={<ImageIcon className="size-4" />}
               label="Photo couverture"
               value={couple.heroImageUrl ? "Photo choisie" : "Ajouter"}
