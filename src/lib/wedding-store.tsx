@@ -125,6 +125,10 @@ export interface Couple {
   practicalAccommodation?: string;
   practicalContactName?: string;
   practicalContactPhone?: string;
+  registryEnabled?: boolean;
+  registryTitle?: string;
+  registryNote?: string;
+  registryStores?: Array<{ name: string; url?: string }>;
   storyEnabled?: boolean;
   storyTitle?: string;
   storyBody?: string;
