@@ -223,6 +223,7 @@ const demoCeremonies = (): Ceremony[] => [
     timeStart: "11:30",
     timeEnd: "13:00",
     venue: "Hôtel de Ville, Cocody",
+    mapsUrl: "https://maps.google.com/?q=Mairie+de+Cocody+Abidjan",
     dressCode: "Elégance Riviera",
     color: "#8b6f5e",
     capacity: 60,
