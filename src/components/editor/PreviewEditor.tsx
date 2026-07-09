@@ -4,6 +4,7 @@ import { useWedding } from "@/lib/wedding-store";
 import { useAutosave } from "@/hooks/use-autosave";
 import { SaveIndicator } from "./SaveIndicator";
 import { HeroPhotoSheet } from "./HeroPhotoSheet";
+import { PhotoGridSheet } from "./PhotoGridSheet";
 import {
   Lock,
   Type,
@@ -14,6 +15,8 @@ import {
   ImageIcon,
   Timer,
   Info,
+  BookHeart,
+  Images,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -25,7 +28,9 @@ type Sheet =
   | "date"
   | "hero"
   | "countdown"
-  | "practical";
+  | "practical"
+  | "story"
+  | "gallery";
 
 const CAPTION_SUGGESTIONS = [
   "Ils se disent oui",
