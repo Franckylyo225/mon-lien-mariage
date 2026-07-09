@@ -124,7 +124,7 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
 
       {/* Bottom edit bar (edit mode only) */}
       {mode === "edit" && (
-        <div className="fixed inset-x-0 bottom-20 z-30 mx-auto flex max-w-xl justify-center px-4 pb-2">
+        <div className="fixed inset-x-0 bottom-4 z-30 mx-auto flex max-w-xl justify-center px-4">
           <div className="flex w-full items-center gap-2 overflow-x-auto rounded-2xl border border-border bg-background/95 p-2 shadow-lg backdrop-blur">
             <EditChip
               icon={<ImageIcon className="size-4" />}
@@ -138,13 +138,14 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
               value={caption || "Ils se disent oui"}
               onClick={() => setSheet("caption")}
             />
-            <EditChip
-              icon={<Users className="size-4" />}
-              label="Prénoms"
-              value={`${bride} & ${groom}`}
-              locked={couple.isLocked}
-              onClick={() => setSheet("names")}
-            />
+            {!couple.isLocked && (
+              <EditChip
+                icon={<Users className="size-4" />}
+                label="Prénoms"
+                value={`${bride} & ${groom}`}
+                onClick={() => setSheet("names")}
+              />
+            )}
             <EditChip
               icon={<Calendar className="size-4" />}
               label="Date & lieu"
