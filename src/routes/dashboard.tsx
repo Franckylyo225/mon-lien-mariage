@@ -70,21 +70,25 @@ function DashboardLayout() {
 
   return (
     <EditModeProvider>
-      <DashboardChrome
-        title={title}
-        initial={initial}
-        coupleInitials={coupleInitials}
-        coupleLabel={coupleLabel}
-        email={account.email}
-        hasNotifications={hasNotifications}
-        isPublished={couple.isPublished}
-        drawerOpen={drawerOpen}
-        setDrawerOpen={setDrawerOpen}
-        onSignOut={async () => {
-          await signOut();
-          navigate({ to: "/", replace: true });
-        }}
-      />
+      <AutosaveProvider>
+        <PageChromeProvider>
+          <DashboardChrome
+            title={title}
+            initial={initial}
+            coupleInitials={coupleInitials}
+            coupleLabel={coupleLabel}
+            email={account.email}
+            hasNotifications={hasNotifications}
+            isPublished={couple.isPublished}
+            drawerOpen={drawerOpen}
+            setDrawerOpen={setDrawerOpen}
+            onSignOut={async () => {
+              await signOut();
+              navigate({ to: "/", replace: true });
+            }}
+          />
+        </PageChromeProvider>
+      </AutosaveProvider>
     </EditModeProvider>
   );
 }
@@ -113,6 +117,7 @@ function DashboardChrome({
   onSignOut: () => Promise<void>;
 }) {
   const { mode } = useEditMode();
+  const { centerNode, actionBarNode } = usePageChrome();
   const editing = mode === "edit";
 
   return (
@@ -122,7 +127,9 @@ function DashboardChrome({
         initial={initial}
         onOpenDrawer={() => setDrawerOpen(true)}
         hasNotifications={hasNotifications}
+        centerContent={centerNode}
       />
+      {actionBarNode}
 
       <main className={`mx-auto max-w-xl px-4 pt-4 ${editing ? "pb-4" : "pb-24"}`}>
         <Outlet />
