@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo } from "react";
 import { useWedding } from "@/lib/wedding-store";
-import { componentForTheme, rsvpToneForTheme } from "@/components/invitation-templates";
+import { componentForTheme } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
 import { PreviewEditor } from "@/components/editor/PreviewEditor";
 import { useEditMode } from "@/lib/edit-mode";
@@ -93,7 +93,7 @@ function PreviewPage() {
           ceremonies={ceremonies}
           rsvpSlot={
             <TemplateRsvpForm
-              tone={rsvpToneForTheme(coupleTheme.theme)}
+              theme={coupleTheme.theme}
               weddingId={coupleTheme.isPublished && weddingId ? weddingId : undefined}
               ceremonies={ceremonies}
             />

@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { getPublicWedding } from "@/lib/public-wedding.functions";
-import { componentForTheme, rsvpToneForTheme } from "@/components/invitation-templates";
+import { componentForTheme } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
 import { EnvelopeAnimation } from "@/components/envelope-animation";
 import type { BackgroundBase, Ceremony, Couple, EventType, TemplateId, ThemeId } from "@/lib/wedding-store";
@@ -160,7 +160,7 @@ function PublicInvitationPage() {
         ceremonies={ceremonies}
         rsvpSlot={
           <TemplateRsvpForm
-            tone={rsvpToneForTheme(coupleTheme.theme)}
+            theme={coupleTheme.theme}
             weddingId={w.id}
             ceremonies={ceremonies}
           />
