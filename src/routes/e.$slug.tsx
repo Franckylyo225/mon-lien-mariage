@@ -77,6 +77,8 @@ function PublicInvitationPage() {
     theme: (w.theme as ThemeId) ?? "rose-elegance",
     eventType: ((w as { event_type?: string }).event_type as EventType) ?? "mariage",
     accent: w.accent ?? undefined,
+    accentColor: (w as { accent_color?: string | null }).accent_color ?? undefined,
+    backgroundBase: ((w as { background_base?: string | null }).background_base as BackgroundBase | null) ?? undefined,
     hashtag: w.hashtag ?? undefined,
     slug: w.slug ?? undefined,
     isPublished: true,
