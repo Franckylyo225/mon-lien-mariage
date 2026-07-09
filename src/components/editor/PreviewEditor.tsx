@@ -46,10 +46,11 @@ const CAPTION_SUGGESTIONS = [
 
 interface EditorProps {
   mode: "preview" | "edit";
-  onToggle: () => void;
+  /** Kept for API compatibility; the toggle now lives in the sticky action bar. */
+  onToggle?: () => void;
 }
 
-export function PreviewEditor({ mode, onToggle }: EditorProps) {
+export function PreviewEditor({ mode }: EditorProps) {
   const { couple, updateCouple, weddingId } = useWedding();
   const [sheet, setSheet] = useState<Sheet>(null);
   const { status, schedule } = useAutosaveContext();
