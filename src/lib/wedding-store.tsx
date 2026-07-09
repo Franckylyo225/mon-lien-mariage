@@ -454,6 +454,10 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.practicalAccommodation !== undefined) r.practical_accommodation = p.practicalAccommodation || null;
   if (p.practicalContactName !== undefined) r.practical_contact_name = p.practicalContactName || null;
   if (p.practicalContactPhone !== undefined) r.practical_contact_phone = p.practicalContactPhone || null;
+  if (p.registryEnabled !== undefined) r.registry_enabled = p.registryEnabled;
+  if (p.registryTitle !== undefined) r.registry_title = p.registryTitle || null;
+  if (p.registryNote !== undefined) r.registry_note = p.registryNote || null;
+  if (p.registryStores !== undefined) r.registry_stores = p.registryStores ?? [];
   if (p.storyEnabled !== undefined) r.story_enabled = p.storyEnabled;
   if (p.storyTitle !== undefined) r.story_title = p.storyTitle || null;
   if (p.storyBody !== undefined) r.story_body = p.storyBody || null;
