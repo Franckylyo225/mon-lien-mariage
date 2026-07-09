@@ -305,6 +305,8 @@ function rowToCouple(w: WeddingRow): Couple {
     heroImageUrl: w.hero_image_url ?? undefined,
     templateId: (w.template_id as TemplateId) ?? "terracotta",
     theme: (w.theme as ThemeId) ?? "rose-elegance",
+    eventType: ((w.event_type as EventType) ?? "mariage"),
+
     accent: w.accent ?? undefined,
     hashtag: w.hashtag ?? undefined,
     slug: w.slug ?? undefined,
