@@ -58,6 +58,8 @@ export function ArtDecoTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps)
           </div>
         ) : null}
 
+        <ScrollIndicator accent="#c9a84c" />
+
         {(couple.countdownEnabled ?? true) && (
           <div className="mt-8">
             <Countdown

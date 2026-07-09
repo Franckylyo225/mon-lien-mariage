@@ -46,6 +46,8 @@ export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
           </div>
         </header>
 
+        <ScrollIndicator accent={accent} />
+
         {(couple.countdownEnabled ?? true) && (
           <div className="mt-10">
             <Countdown

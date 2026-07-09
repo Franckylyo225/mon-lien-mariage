@@ -57,6 +57,8 @@ export function TropicalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
           </div>
         </header>
 
+        <ScrollIndicator accent="#e88b62" />
+
         {(couple.countdownEnabled ?? true) && (
           <div className="mt-10 rounded-3xl bg-[#e88b62] p-4 text-[#0d3b2e]">
             <p className="mb-2 text-center font-mono text-[10px] uppercase tracking-[0.3em] opacity-70">
