@@ -254,6 +254,18 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
               onClick={() => setSheet("gallery")}
             />
             <EditChip
+              icon={<Gift className="size-4" />}
+              label="Liste de mariage"
+              value={
+                !registryEnabled
+                  ? "Désactivée"
+                  : registryStoreCount === 0
+                    ? "À compléter"
+                    : `${registryStoreCount} magasin${registryStoreCount > 1 ? "s" : ""}`
+              }
+              onClick={() => setSheet("registry")}
+            />
+            <EditChip
               icon={<Info className="size-4" />}
               label="Infos pratiques"
               value={
