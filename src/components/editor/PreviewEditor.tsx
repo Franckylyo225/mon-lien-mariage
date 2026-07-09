@@ -5,6 +5,7 @@ import { useAutosave } from "@/hooks/use-autosave";
 import { SaveIndicator } from "./SaveIndicator";
 import { HeroPhotoSheet } from "./HeroPhotoSheet";
 import { PhotoGridSheet } from "./PhotoGridSheet";
+import { ThemeSheet } from "./ThemeSheet";
 import {
   Lock,
   Type,
@@ -18,6 +19,7 @@ import {
   BookHeart,
   Images,
   Gift,
+  Palette,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
