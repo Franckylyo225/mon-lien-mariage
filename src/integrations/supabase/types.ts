@@ -223,6 +223,7 @@ export type Database = {
         Row: {
           accent: string | null
           bride_name: string
+          caption: string | null
           city: string | null
           contact_email: string | null
           contact_name: string | null
@@ -253,6 +254,7 @@ export type Database = {
         Insert: {
           accent?: string | null
           bride_name?: string
+          caption?: string | null
           city?: string | null
           contact_email?: string | null
           contact_name?: string | null
@@ -283,6 +285,7 @@ export type Database = {
         Update: {
           accent?: string | null
           bride_name?: string
+          caption?: string | null
           city?: string | null
           contact_email?: string | null
           contact_name?: string | null
