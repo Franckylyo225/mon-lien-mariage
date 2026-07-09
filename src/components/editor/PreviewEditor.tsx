@@ -194,6 +194,30 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
               }
               onClick={() => setSheet("practical")}
             />
+            <EditChip
+              icon={<BookHeart className="size-4" />}
+              label="Notre histoire"
+              value={
+                couple.storyEnabled === false
+                  ? "Désactivé"
+                  : (couple.storyImages?.length ?? 0) === 0 && !couple.storyBody
+                    ? "À compléter"
+                    : `${couple.storyImages?.length ?? 0} photo${(couple.storyImages?.length ?? 0) > 1 ? "s" : ""}`
+              }
+              onClick={() => setSheet("story")}
+            />
+            <EditChip
+              icon={<Images className="size-4" />}
+              label="Galerie"
+              value={
+                !(couple.galleryEnabled ?? false)
+                  ? "Désactivée"
+                  : (couple.galleryImages?.length ?? 0) === 0
+                    ? "À compléter"
+                    : `${couple.galleryImages?.length ?? 0} photo${(couple.galleryImages?.length ?? 0) > 1 ? "s" : ""}`
+              }
+              onClick={() => setSheet("gallery")}
+            />
           </div>
         </div>
       )}
