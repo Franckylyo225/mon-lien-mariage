@@ -352,6 +352,7 @@ function rowToCouple(w: WeddingRow): Couple {
     brideName: w.bride_name ?? "",
     groomName: w.groom_name ?? "",
     weddingDate: w.wedding_date ?? "",
+    rsvpDeadline: w.rsvp_deadline ?? undefined,
     city: w.city ?? "Abidjan",
     introMessage: w.intro_message ?? "",
     coupleStory: w.couple_story ?? undefined,
