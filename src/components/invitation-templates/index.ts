@@ -13,6 +13,9 @@ import { OrAntiqueTemplate } from "./or-antique";
 import { VertSaugeTemplate } from "./vert-sauge";
 import { JardinSauvageTemplate } from "./jardin-sauvage";
 import { TerracottaBohemeTemplate } from "./terracotta-boheme";
+import { WaxDoreTemplate } from "./wax-dore";
+import { KenteRoyalTemplate } from "./kente-royal";
+import { SahelDoreTemplate } from "./sahel-dore";
 
 export const templateComponents: Record<TemplateId, ComponentType<TemplateProps>> = {
   terracotta: TerracottaTemplate,
@@ -46,6 +49,9 @@ const themeComponents: Partial<Record<ThemeId, ComponentType<TemplateProps>>> = 
   "vert-sauge": VertSaugeTemplate,
   "jardin-sauvage": JardinSauvageTemplate,
   "terracotta-boheme": TerracottaBohemeTemplate,
+  "wax-dore": WaxDoreTemplate,
+  "kente-royal": KenteRoyalTemplate,
+  "sahel-dore": SahelDoreTemplate,
 };
 
 const themeRsvpTone: Partial<
@@ -57,6 +63,9 @@ const themeRsvpTone: Partial<
   "vert-sauge": "gold",
   "jardin-sauvage": "gold",
   "terracotta-boheme": "warm",
+  "wax-dore": "warm",
+  "kente-royal": "deco",
+  "sahel-dore": "gold",
 };
 
 export function componentForTheme(theme: ThemeId): ComponentType<TemplateProps> {
