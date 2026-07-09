@@ -3,7 +3,8 @@ export type GuestType =
   | "parent_marie"
   | "ami_mariee"
   | "ami_marie"
-  | "collegue"
+  | "collegue_mariee"
+  | "collegue_marie"
   | "autre";
 
 export const guestTypeOrder: GuestType[] = [
@@ -11,7 +12,8 @@ export const guestTypeOrder: GuestType[] = [
   "parent_marie",
   "ami_mariee",
   "ami_marie",
-  "collegue",
+  "collegue_mariee",
+  "collegue_marie",
   "autre",
 ];
 
@@ -34,8 +36,8 @@ export const guestTypeMeta: Record<
     ring: "#C4D6EA",
   },
   ami_mariee: {
-    label: "Amie de la mariée",
-    short: "Amie mariée",
+    label: "Ami de la mariée",
+    short: "Ami mariée",
     bg: "#EFE7F5",
     fg: "#523278",
     ring: "#D8C6E5",
@@ -47,11 +49,18 @@ export const guestTypeMeta: Record<
     fg: "#265B3B",
     ring: "#C4E1CE",
   },
-  collegue: {
-    label: "Collègue",
-    short: "Collègue",
+  collegue_mariee: {
+    label: "Collègue de la mariée",
+    short: "Collègue mariée",
     bg: "#F5EEE0",
     fg: "#6E5322",
+    ring: "#E4D3AC",
+  },
+  collegue_marie: {
+    label: "Collègue du marié",
+    short: "Collègue marié",
+    bg: "#F0E6D8",
+    fg: "#6B4A22",
     ring: "#E4D3AC",
   },
   autre: {
