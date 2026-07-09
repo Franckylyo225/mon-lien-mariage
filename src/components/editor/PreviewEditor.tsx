@@ -3,10 +3,11 @@ import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { useWedding } from "@/lib/wedding-store";
 import { useAutosave } from "@/hooks/use-autosave";
 import { SaveIndicator } from "./SaveIndicator";
-import { Lock, Type, Users, Calendar, X, Pencil } from "lucide-react";
+import { HeroPhotoSheet } from "./HeroPhotoSheet";
+import { Lock, Type, Users, Calendar, X, Pencil, ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type Sheet = null | "caption" | "names" | "date";
+type Sheet = null | "caption" | "names" | "date" | "hero";
 
 const CAPTION_SUGGESTIONS = [
   "Ils se disent oui",
@@ -21,7 +22,7 @@ interface EditorProps {
 }
 
 export function PreviewEditor({ mode, onToggle }: EditorProps) {
-  const { couple, updateCouple } = useWedding();
+  const { couple, updateCouple, weddingId } = useWedding();
   const [sheet, setSheet] = useState<Sheet>(null);
   const { status, schedule } = useAutosave(500);
 
@@ -68,6 +69,12 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
       {mode === "edit" && (
         <div className="fixed inset-x-0 bottom-20 z-30 mx-auto flex max-w-xl justify-center px-4 pb-2">
           <div className="flex w-full items-center gap-2 overflow-x-auto rounded-2xl border border-border bg-background/95 p-2 shadow-lg backdrop-blur">
+            <EditChip
+              icon={<ImageIcon className="size-4" />}
+              label="Photo couverture"
+              value={couple.heroImageUrl ? "Photo choisie" : "Ajouter"}
+              onClick={() => setSheet("hero")}
+            />
             <EditChip
               icon={<Type className="size-4" />}
               label="Petit texte"
@@ -199,6 +206,15 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
           />
         </div>
       </BottomSheet>
+
+      <HeroPhotoSheet
+        open={sheet === "hero"}
+        onOpenChange={(o) => !o && setSheet(null)}
+        weddingId={weddingId}
+        currentUrl={couple.heroImageUrl}
+        onUploaded={(url) => updateCouple({ heroImageUrl: url })}
+        onRemove={() => updateCouple({ heroImageUrl: "" })}
+      />
     </>
   );
 }

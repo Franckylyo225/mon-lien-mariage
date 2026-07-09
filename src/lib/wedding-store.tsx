@@ -334,7 +334,7 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.city !== undefined) r.city = p.city;
   if (p.introMessage !== undefined) r.intro_message = p.introMessage;
   if (p.coupleStory !== undefined) r.couple_story = p.coupleStory;
-  if (p.heroImageUrl !== undefined) r.hero_image_url = p.heroImageUrl;
+  if (p.heroImageUrl !== undefined) r.hero_image_url = p.heroImageUrl || null;
   if (p.templateId !== undefined) r.template_id = p.templateId;
   if (p.theme !== undefined) r.theme = p.theme;
   if (p.eventType !== undefined) r.event_type = p.eventType;
