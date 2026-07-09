@@ -145,6 +145,17 @@ function LandingEditor() {
             value={couple.city}
             onChange={(v) => updateCouple({ city: v })}
           />
+          <div className="sm:col-span-2">
+            <Field
+              label="Date limite de réponse (RSVP)"
+              type="date"
+              value={couple.rsvpDeadline ?? ""}
+              onChange={(v) => updateCouple({ rsvpDeadline: v })}
+            />
+            <p className="mt-1 text-xs opacity-60">
+              Vos invités doivent confirmer leur présence avant cette date.
+            </p>
+          </div>
           <Field
             label="Hashtag"
             value={couple.hashtag ?? ""}
