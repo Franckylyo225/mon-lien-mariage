@@ -117,6 +117,20 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
               value={`${date || "—"} · ${city}`}
               onClick={() => setSheet("date")}
             />
+            <EditChip
+              icon={<Timer className="size-4" />}
+              label="Compte à rebours"
+              value={
+                weddingPast
+                  ? "Masqué (date passée)"
+                  : !countdownEnabled
+                    ? "Désactivé"
+                    : countdownUnits
+                        .map((u) => ({ days: "J", hours: "H", minutes: "M", seconds: "S" })[u])
+                        .join(" · ")
+              }
+              onClick={() => setSheet("countdown")}
+            />
           </div>
         </div>
       )}
