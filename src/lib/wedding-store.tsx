@@ -162,7 +162,15 @@ const defaultCouple = (): Couple => ({
   hashtag: "#AichaEtStephane2027",
   isPublished: false,
   isLocked: false,
+  contactName: "Mariam Diabaté",
+  contactPhone: "+225 07 08 09 10 11",
+  contactEmail: "contact@aicha-stephane.ci",
+  dressCodeNote: "Élégance Riviera — accents dorés et terracotta bienvenus.",
+  customInfoTitle: "Bon à savoir",
+  customInfoBody:
+    "Un service de navette gratuit sera disponible depuis l'hôtel Ivoire à partir de 18h30.",
 });
+
 
 const defaultAccount = (): Account => ({
   email: null,
