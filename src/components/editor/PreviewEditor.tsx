@@ -206,6 +206,15 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
           />
         </div>
       </BottomSheet>
+
+      <HeroPhotoSheet
+        open={sheet === "hero"}
+        onOpenChange={(o) => !o && setSheet(null)}
+        weddingId={weddingId}
+        currentUrl={couple.heroImageUrl}
+        onUploaded={(url) => updateCouple({ heroImageUrl: url })}
+        onRemove={() => updateCouple({ heroImageUrl: undefined })}
+      />
     </>
   );
 }
