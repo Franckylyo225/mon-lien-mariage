@@ -581,6 +581,7 @@ export function OurStorySection({
   couple: Couple;
   accent?: string;
 }) {
+  const [lightbox, setLightbox] = useState<number | null>(null);
   if (couple.storyEnabled === false) return null;
   const title = couple.storyTitle?.trim() || "Notre Histoire";
   const body = couple.storyBody?.trim();
@@ -609,16 +610,23 @@ export function OurStorySection({
           }
         >
           {images.map((src, i) => (
-            <img
+            <button
               key={i}
-              src={src}
-              alt=""
-              loading="lazy"
-              className={
-                "w-full rounded-2xl object-cover shadow-sm ring-1 ring-black/5 " +
-                (images.length === 1 ? "aspect-[4/3]" : "aspect-square")
-              }
-            />
+              type="button"
+              onClick={() => setLightbox(i)}
+              aria-label={`Agrandir l'image ${i + 1}`}
+              className="group relative overflow-hidden rounded-2xl shadow-sm ring-1 ring-black/5 transition active:scale-[0.98]"
+            >
+              <img
+                src={src}
+                alt=""
+                loading="lazy"
+                className={
+                  "w-full object-cover transition group-hover:brightness-95 " +
+                  (images.length === 1 ? "aspect-[4/3]" : "aspect-square")
+                }
+              />
+            </button>
           ))}
         </div>
       )}
@@ -627,6 +635,15 @@ export function OurStorySection({
         <p className="whitespace-pre-line text-pretty text-center text-sm leading-relaxed opacity-80">
           {body}
         </p>
+      )}
+
+      {lightbox !== null && (
+        <ImageLightbox
+          images={images}
+          index={lightbox}
+          onClose={() => setLightbox(null)}
+          onChange={setLightbox}
+        />
       )}
     </section>
   );
