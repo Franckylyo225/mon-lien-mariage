@@ -20,23 +20,23 @@ function PreviewPage() {
   return (
     <div className="relative -mx-4 -my-8 sm:-mx-8">
       {/* Bandeau sticky "Aperçu privé" */}
-      <div className="sticky top-[110px] z-20 mx-auto flex max-w-2xl items-center justify-between gap-3 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 shadow-sm backdrop-blur">
+      <div className="sticky top-0 z-20 mx-auto -mt-4 flex max-w-2xl items-center justify-between gap-2 rounded-b-xl border-x border-b border-primary/20 bg-primary/10 px-3 py-1.5 backdrop-blur sm:top-[72px] sm:mt-0 sm:gap-3 sm:rounded-full sm:border sm:px-4 sm:py-2 sm:shadow-sm">
         <div className="flex items-center gap-2">
-          <span className="grid size-6 place-items-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+          <span className="grid size-5 place-items-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground sm:size-6">
             👁
           </span>
           <div className="min-w-0">
             <p className="font-mono text-[10px] uppercase tracking-widest text-primary">
               Aperçu privé
             </p>
-            <p className="truncate text-[11px] opacity-70">
+            <p className="hidden truncate text-[11px] opacity-70 sm:block">
               Cette page n'est pas encore visible par vos invités.
             </p>
           </div>
         </div>
         <Link
           to="/publish"
-          className="shrink-0 rounded-full bg-primary px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest text-primary-foreground transition hover:opacity-90"
+          className="shrink-0 rounded-full bg-primary px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest text-primary-foreground transition hover:opacity-90 sm:px-3 sm:py-1.5"
         >
           Publier
         </Link>
