@@ -244,6 +244,111 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
         </div>
       </BottomSheet>
 
+      {/* Countdown sheet */}
+      <BottomSheet
+        open={sheet === "countdown"}
+        onOpenChange={(o) => !o && setSheet(null)}
+        title="Compte à rebours"
+      >
+        {weddingPast ? (
+          <div className="rounded-xl border border-muted bg-muted/40 p-4 text-sm">
+            <Timer className="mb-2 size-4" />
+            La date du mariage est passée. Le compte à rebours est
+            automatiquement masqué sur votre page.
+          </div>
+        ) : (
+          <div className="space-y-5">
+            {/* Toggle */}
+            <label className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background px-4 py-3">
+              <div>
+                <p className="text-sm font-medium">Afficher le compte à rebours</p>
+                <p className="text-[11px] opacity-60">
+                  Il s'affiche au-dessus de votre message d'accueil.
+                </p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={countdownEnabled}
+                onClick={() => persist({ countdownEnabled: !countdownEnabled })}
+                className={cn(
+                  "relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors",
+                  countdownEnabled ? "bg-primary" : "bg-muted",
+                )}
+              >
+                <span
+                  className={cn(
+                    "inline-block size-5 rounded-full bg-background shadow transition-transform",
+                    countdownEnabled ? "translate-x-5" : "translate-x-0.5",
+                  )}
+                />
+              </button>
+            </label>
+
+            {/* Units */}
+            <div
+              className={cn(
+                "space-y-2 transition-opacity",
+                !countdownEnabled && "pointer-events-none opacity-40",
+              )}
+            >
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                Unités affichées
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                {(
+                  [
+                    { u: "days", label: "Jours" },
+                    { u: "hours", label: "Heures" },
+                    { u: "minutes", label: "Minutes" },
+                    { u: "seconds", label: "Secondes" },
+                  ] as { u: CountdownUnit; label: string }[]
+                ).map(({ u, label }) => {
+                  const active = countdownUnits.includes(u);
+                  const isLast = active && countdownUnits.length === 1;
+                  return (
+                    <button
+                      key={u}
+                      type="button"
+                      disabled={isLast}
+                      onClick={() => toggleUnit(u)}
+                      className={cn(
+                        "flex items-center justify-between rounded-xl border px-3 py-3 text-left text-sm transition",
+                        active
+                          ? "border-foreground bg-foreground text-background"
+                          : "border-border bg-background",
+                        isLast && "cursor-not-allowed opacity-70",
+                      )}
+                    >
+                      <span>{label}</span>
+                      <span
+                        className={cn(
+                          "grid size-5 place-items-center rounded-full border text-[10px]",
+                          active
+                            ? "border-background/30 bg-background/10"
+                            : "border-border",
+                        )}
+                      >
+                        {active ? "✓" : ""}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+              {countdownUnits.length === 1 && (
+                <p className="text-[11px] opacity-60">
+                  Au moins une unité doit rester affichée.
+                </p>
+              )}
+            </div>
+
+            <p className="text-[11px] opacity-60">
+              Le compte à rebours disparaîtra automatiquement le jour du mariage.
+            </p>
+          </div>
+        )}
+      </BottomSheet>
+
       <HeroPhotoSheet
         open={sheet === "hero"}
         onOpenChange={(o) => !o && setSheet(null)}
