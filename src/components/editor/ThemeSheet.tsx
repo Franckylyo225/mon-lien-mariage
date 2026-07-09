@@ -109,31 +109,7 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
                   )}
                   style={active ? { borderColor: t.defaultAccent } : undefined}
                 >
-                  <div
-                    className="flex aspect-[3/4] flex-col items-center justify-center px-2 text-center"
-                    style={{ background: bgHex(t.defaultBg) }}
-                  >
-                    <p
-                      className="mb-1 font-mono text-[7px] uppercase tracking-[0.25em]"
-                      style={{ color: t.defaultAccent }}
-                    >
-                      Save the date
-                    </p>
-                    <p
-                      className="text-[13px] leading-tight italic"
-                      style={{ fontFamily: t.fontHeading, color: "#1A1A1A" }}
-                    >
-                      Aïcha
-                      <br />
-                      &amp;
-                      <br />
-                      Kouamé
-                    </p>
-                    <span
-                      className="mt-1.5 block h-px w-6"
-                      style={{ background: t.defaultAccent }}
-                    />
-                  </div>
+                  <ThemeThumbnail theme={slug} />
                   <div className="flex flex-col gap-0.5 border-t border-border bg-background px-2 py-1.5">
                     <div className="flex items-center justify-between gap-1">
                       <span className="truncate text-[10px] font-medium">{t.name}</span>
