@@ -1,74 +1,78 @@
+# Effets d'ouverture animés — 6 concepts
 
-# Personnalisation thème & couleurs
+## Périmètre
 
-Bottom sheet dans l'éditeur inline pour choisir un thème (6 au total), une couleur d'accent (12 curées) et un fond (4 curés), avec aperçu en direct via CSS variables.
+Remplacer l'actuelle `EnvelopeAnimation` (unique) par un **système d'effets** sélectionnable, joué à la première visite d'une invitation publique.
 
-## 1. Base de données
+## Modèle de données
 
-Migration `weddings` :
-- `accent_color text` (défaut null — hérite du thème)
-- `background_base text` (défaut null — hérite du thème)
+Migration SQL sur `public.weddings` :
+- `has_opening_effect boolean DEFAULT false`
+- `opening_effect_slug text CHECK (... IN (6 slugs))`
 
-Le champ `theme` existant accepte 3 nouveaux slugs : `vert-sauge`, `bleu-nuit`, `or-antique`. Contrainte CHECK mise à jour pour valider les 6 thèmes et les 4 fonds.
+Conserver `has_envelope_animation` pour rétrocompat (mappé vers `envelope-royal` si `has_opening_effect` est faux mais `has_envelope_animation` vrai).
 
-Rétrocompatibilité : les valeurs NULL restent valides, le rendu tombe sur les défauts du thème.
+Étendre `getPublicWedding` + type `Couple` (champs `hasOpeningEffect`, `openingEffectSlug`).
 
-## 2. Configuration des thèmes (fichier `src/lib/wedding-theme.ts`)
+## Architecture front
 
-Nouveau module central exportant :
-- `THEMES` : 6 entrées `{ slug, name, fontHeading, fontBody, defaultAccent, defaultBg, pattern? }`
-- `ACCENTS` : les 12 couleurs curées (nom + hex)
-- `BACKGROUNDS` : les 4 fonds (slug + hex)
-- `resolveTheme(couple)` : retourne les valeurs finales `{ bg, accent, textPrimary, textSecondary, border, surface, fontHeading, fontBody }`
-- `applyThemeVars(root, resolved)` : écrit toutes les CSS variables sur l'élément racine
+Nouveau dossier `src/components/opening-effects/` :
 
-Les couleurs de texte secondaire, bordure, surface sont dérivées de manière cohérente (fond clair → texte foncé, surface blanche).
+```
+opening-effects/
+  index.tsx              // <OpeningEffect slug=... couple=... onDone=... />
+  shared/
+    useOpeningLifecycle.ts   // sessionStorage flag, reduced-motion, skip button, fade sortie
+    OpeningShell.tsx         // fond plein écran + bouton Passer + gestion durée
+  effects/
+    EnvelopeRoyal.tsx        // Effet 1 (tap-to-open)
+    EnvelopeFloral.tsx       // Effet 2 (variation Effet 1 + fleurs SVG)
+    GrandPortal.tsx          // Effet 3 (deux battants + nœud)
+    CinemaCurtain.tsx        // Effet 4 (velours)
+    FallingPetals.tsx        // Effet 5 (36 pétales CSS)
+    BookOpen.tsx             // Effet 6 (livre 3D)
+  thumbnails/                // mini-SVG 6 vignettes (paywall + éditeur)
+```
 
-## 3. Store & mappers
+Règles communes centralisées dans `useOpeningLifecycle` :
+- `sessionStorage['opening_seen_' + slug]` → skip si présent
+- `prefers-reduced-motion` → afficher juste 1s de frame finale
+- Bouton **Passer** apparaît après 1,5s
+- Fade-in de la page à la fin (400ms)
+- Durée max 5s
 
-`src/lib/wedding-store.tsx` :
-- Ajout à `Couple` : `accentColor?: string`, `backgroundBase?: "ivoire" | "creme" | "blanc" | "gris"`
-- Nouveau slug `ThemeId` étendu aux 6 thèmes
-- `rowToCouple` / `coupleToRow` gèrent les 2 nouvelles colonnes
+Aucune librairie ajoutée : CSS + SVG + framer-motion (déjà présent si utilisé, sinon fallback CSS keyframes inline). Je vérifie et j'utilise CSS pur si framer-motion absent.
 
-`src/lib/public-wedding.functions.ts` : ajout des champs dans la sélection et le mapper public.
+## Intégration `/e/:slug`
 
-## 4. CSS variables & rendu
+Dans `src/routes/e.$slug.tsx` : remplacer le bloc `EnvelopeAnimation` par `<OpeningEffect slug={couple.openingEffectSlug ?? 'envelope-royal'} couple={couple} enabled={couple.hasOpeningEffect || couple.hasEnvelopeAnimation} />`.
 
-Les templates lisent des CSS variables au lieu de valeurs hardcodées :
-- `--wedding-bg`, `--wedding-accent`, `--wedding-text-primary`, `--wedding-text-secondary`, `--wedding-border`, `--wedding-surface`, `--wedding-font-heading`, `--wedding-font-body`
+## Éditeur
 
-Application :
-- **Éditeur (`/dashboard/preview`)** : `useEffect` sur le wrapper de `PreviewPage` — met à jour les vars en fonction de `couple.theme / accentColor / backgroundBase`.
-- **Page publique (`/e/:slug`)** : balise `<style>` inline dans `head()` (via `createFileRoute.head`) pour éviter le FOUC, en utilisant `loaderData`.
+Dans l'éditeur "Ma page" (`PreviewEditor` / sheet dédié) : nouveau composant `OpeningEffectSheet` avec grille 2×3 des vignettes, sélection radio, aperçu plein écran en modal (réutilise `<OpeningEffect>`).
 
-Composants qui adoptent l'accent : sceau enveloppe, compte à rebours, boutons RSVP, icônes cérémonie, séparateurs. Le corps de texte reste `--wedding-text-primary`.
+**Paywall** : pour l'instant, pas de logique de paiement dans cette annexe — j'ajoute juste l'UI (badge « 990 FCFA », vignettes grisées si `has_opening_effect=false`) et un bouton "Débloquer" qui bascule `has_opening_effect=true` (à câbler ensuite au provider de paiement).
 
-## 5. Bottom sheet "Thème & couleurs"
+## Ordre d'implémentation
 
-Nouveau composant `ThemeSheet` dans `src/components/editor/ThemeSheet.tsx`, appelé depuis `PreviewEditor.tsx` (nouveau bouton palette dans les contrôles globaux).
+1. Migration SQL + types
+2. `useOpeningLifecycle` + `OpeningShell`
+3. Effets 1, 4, 5 (les plus simples / prioritaires)
+4. Effets 2, 3, 6
+5. Vignettes SVG
+6. Sheet éditeur + modal d'aperçu
+7. Intégration dans `/e/:slug`
+8. Vérif Playwright mobile 375×812
 
-Structure :
-- Hauteur 60vh, drag pour aller à 85vh (comportement identique aux autres sheets)
-- Deux onglets : **Thème** / **Couleurs**
+## Hors périmètre
 
-**Onglet Thème** : grille 2×3 des 6 thèmes, chaque carte rend en direct un mini-preview (couple names dans la typo du thème, fond du thème, trait d'accent) — pas d'images statiques, on rend en HTML/CSS pour rester léger et à jour. Tap = applique thème + reset `accentColor` / `backgroundBase` à null.
+- Intégration paiement réelle (juste UI paywall)
+- Son
+- Personnalisation fine des couleurs par effet
 
-**Onglet Couleurs** :
-- Section "Couleur d'accent" : grille 6×2 de pastilles 44 px avec nom en 9 px
-- Section "Fond" : grille 2×2 de tuiles avec "Aa" central
-- Bouton texte "Restaurer les valeurs du thème" en bas (remet `accentColor` et `backgroundBase` à null)
+## Question avant de démarrer
 
-Live update : chaque changement met à jour les CSS variables via `applyThemeVars` immédiatement, puis debounce 500 ms sur la sauvegarde Supabase (via `useAutosave` déjà en place).
+Ce chantier est **conséquent** (~15-20 fichiers, 1 migration, refonte de l'ouverture). Confirmes-tu :
 
-Indicateur discret en bas du sheet : "Vos changements sont visibles en direct ci-dessus".
-
-## 6. Priorités & hors périmètre
-
-Hors périmètre (conforme à l'annexe §14) : roue chromatique libre, changement de typo, palette dynamique par thème (§11 phase 2 non implémentée), miniatures PNG statiques (rendu HTML à la place).
-
-## Détails techniques
-
-- Validation côté serveur : dans `coupleToRow`, si `accentColor` fourni, vérifier qu'il appartient aux 12 hex ; idem `backgroundBase` parmi les 4 slugs. Sinon reset à null.
-- Templates existants (terracotta / noir-minimal / etc.) : refactor progressif — les couleurs hardcodées les plus visibles (hero background, accent boutons) passent en `var(--wedding-*)` avec fallback à la valeur actuelle. Pas de refonte complète des 5 templates.
-- Le sceau d'enveloppe (`envelope-animation.tsx`) utilise déjà `couple.accent` — remplacé par `var(--wedding-accent)`.
+1. Je livre les **6 effets d'un coup** dans ce turn, ou seulement les **3 prioritaires** (Enveloppe Royale, Rideau de Gala, Pétales) et les 3 autres dans un turn suivant ?
+2. Le sheet éditeur / paywall UI : à inclure maintenant ou après validation visuelle des effets ?
