@@ -136,6 +136,15 @@
   animation: slideUp 0.8s var(--ease-out-expo) both;
 }
 
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@utility animate-pulse-dot {
+  animation: pulseDot 2s ease-in-out infinite;
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
