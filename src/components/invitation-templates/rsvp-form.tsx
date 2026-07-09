@@ -346,7 +346,7 @@ function RsvpModal({
           </h4>
 
           <div className="mt-6 space-y-3">
-            <input
+            <input data-rsvp-input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Votre nom complet"
@@ -356,7 +356,7 @@ function RsvpModal({
               }
               style={{ ...inputStyle, ...placeholderVar(d.placeholderInk) }}
             />
-            <input
+            <input data-rsvp-input
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="Téléphone WhatsApp (optionnel)"
@@ -491,7 +491,7 @@ function RsvpModal({
                 );
               })}
             </div>
-            <textarea
+            <textarea data-rsvp-input
               value={dietaryDetail}
               onChange={(e) => setDietaryDetail(e.target.value.slice(0, 300))}
               placeholder="Précisez si besoin (ex. allergie aux arachides, sans porc, etc.)"
@@ -504,7 +504,7 @@ function RsvpModal({
             </p>
           </div>
 
-          <textarea
+          <textarea data-rsvp-input
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Un mot pour les mariés (optionnel)"
