@@ -290,6 +290,12 @@ function rowToCouple(w: WeddingRow): Couple {
     isLocked: !!w.is_locked,
     publishedAt: w.published_at ?? undefined,
     hasEnvelopeAnimation: !!w.has_envelope_animation,
+    contactName: w.contact_name ?? undefined,
+    contactPhone: w.contact_phone ?? undefined,
+    contactEmail: w.contact_email ?? undefined,
+    dressCodeNote: w.dress_code_note ?? undefined,
+    customInfoTitle: w.custom_info_title ?? undefined,
+    customInfoBody: w.custom_info_body ?? undefined,
   };
 }
 
