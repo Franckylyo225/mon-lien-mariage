@@ -19,7 +19,7 @@ export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
         ) : null}
 
         <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-[#f5f3ee]/50">
-          Save — the — date
+          {couple.caption || "Save — the — date"}
         </p>
         <div className="mt-12 border-y border-[#f5f3ee]/15 py-16">
           <h1 className="text-center text-6xl font-medium leading-[0.9] tracking-tight sm:text-8xl">

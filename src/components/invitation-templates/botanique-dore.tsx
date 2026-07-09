@@ -18,7 +18,7 @@ export function BotaniqueDoreTemplate({ couple, ceremonies, rsvpSlot }: Template
           <Corner className="absolute bottom-3 right-3 rotate-180" />
 
           <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#c9a84c]">
-            Faire — part
+            {couple.caption || "Faire — part"}
           </p>
           <p className="mt-8 font-serif text-lg italic opacity-70">
             Nous avons l'honneur de vous convier au mariage de

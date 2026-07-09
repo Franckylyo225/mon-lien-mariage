@@ -68,6 +68,7 @@ function PublicInvitationPage() {
     dressCodeNote: (w as { dress_code_note?: string | null }).dress_code_note ?? undefined,
     customInfoTitle: (w as { custom_info_title?: string | null }).custom_info_title ?? undefined,
     customInfoBody: (w as { custom_info_body?: string | null }).custom_info_body ?? undefined,
+    caption: (w as { caption?: string | null }).caption ?? undefined,
   };
 
   const ceremonies: Ceremony[] = (data.ceremonies ?? []).map((c) => ({

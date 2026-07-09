@@ -26,7 +26,7 @@ export function ArtDecoTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps)
             <circle cx="50" cy="50" r="4" fill="currentColor" />
           </svg>
           <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.5em] text-[#c9a84c]">
-            The wedding of
+            {couple.caption || "The wedding of"}
           </p>
           <h1 className="mt-6 font-serif text-5xl italic leading-none">
             <span className="block">{couple.brideName}</span>
