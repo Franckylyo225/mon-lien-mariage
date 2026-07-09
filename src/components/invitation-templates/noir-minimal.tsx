@@ -71,6 +71,8 @@ export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
 
         {rsvpSlot}
 
+        <GallerySection couple={couple} accent="#f5f3ee" />
+
         <TemplateBottomSections couple={couple} ceremonies={published} accent="#f5f3ee" />
 
         <footer className="mt-16 border-t border-[#f5f3ee]/15 pt-8 text-center font-mono text-[10px] uppercase tracking-[0.4em] text-[#f5f3ee]/40">
