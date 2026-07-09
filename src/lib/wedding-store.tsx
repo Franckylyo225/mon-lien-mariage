@@ -383,6 +383,7 @@ function rowToCouple(w: WeddingRow): Couple {
     storyTitle: w.story_title ?? undefined,
     storyBody: w.story_body ?? undefined,
     storyImages: w.story_images ?? [],
+    storyStyle: (w.story_style as Couple["storyStyle"]) ?? {},
     galleryEnabled: w.gallery_enabled ?? false,
     galleryTitle: w.gallery_title ?? undefined,
     galleryImages: w.gallery_images ?? [],
