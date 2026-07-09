@@ -593,15 +593,18 @@ export function OurStorySection({
   const size = style.size ?? "md";
   const align = style.align ?? "center";
 
-  const fontClass = {
+  const bodyFontClass = {
     serif: "font-serif italic",
     sans: "font-sans",
     script: "font-serif italic tracking-wide",
     mono: "font-mono uppercase tracking-[0.2em]",
     display: "font-serif tracking-tight",
   }[font];
-  const titleSizeClass = { sm: "text-xl", md: "text-2xl", lg: "text-3xl sm:text-4xl" }[size];
-  const bodySizeClass = { sm: "text-[13px]", md: "text-sm", lg: "text-base" }[size];
+  const bodySizeClass = {
+    sm: "text-[13px]",
+    md: "text-[15px]",
+    lg: "text-lg sm:text-xl",
+  }[size];
   const alignClass = align === "left" ? "text-left" : "text-center";
   const dividerAlign = align === "left" ? "ml-0" : "mx-auto";
 
@@ -612,7 +615,7 @@ export function OurStorySection({
           className={"mb-3 block h-px w-10 " + dividerAlign}
           style={{ backgroundColor: (accent ?? "#999") + "80" }}
         />
-        <h2 className={fontClass + " " + titleSizeClass}>{title}</h2>
+        <h2 className="font-serif text-2xl italic">{title}</h2>
       </div>
 
       {images.length > 0 && (
@@ -649,7 +652,16 @@ export function OurStorySection({
       )}
 
       {body && (
-        <p className={"whitespace-pre-line text-pretty leading-relaxed opacity-80 " + bodySizeClass + " " + alignClass}>
+        <p
+          className={
+            "whitespace-pre-line text-pretty leading-relaxed opacity-80 " +
+            bodyFontClass +
+            " " +
+            bodySizeClass +
+            " " +
+            alignClass
+          }
+        >
           {body}
         </p>
       )}
