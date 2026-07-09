@@ -187,6 +187,9 @@ export function PhotoGridSheet({
             </div>
           )}
 
+          {extraControls}
+
+
           <div>
             <div className="mb-2 flex items-center justify-between">
               <label className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
