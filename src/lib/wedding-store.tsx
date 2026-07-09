@@ -135,6 +135,9 @@ export interface Couple {
   galleryEnabled?: boolean;
   galleryTitle?: string;
   galleryImages?: string[];
+  shareTitle?: string;
+  shareDescription?: string;
+  shareImageUrl?: string;
 }
 
 
@@ -336,6 +339,9 @@ type WeddingRow = {
   gallery_enabled: boolean | null;
   gallery_title: string | null;
   gallery_images: string[] | null;
+  share_title: string | null;
+  share_description: string | null;
+  share_image_url: string | null;
 };
 
 
@@ -387,6 +393,9 @@ function rowToCouple(w: WeddingRow): Couple {
     galleryEnabled: w.gallery_enabled ?? false,
     galleryTitle: w.gallery_title ?? undefined,
     galleryImages: w.gallery_images ?? [],
+    shareTitle: w.share_title ?? undefined,
+    shareDescription: w.share_description ?? undefined,
+    shareImageUrl: w.share_image_url ?? undefined,
   };
 }
 
@@ -433,6 +442,9 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.galleryEnabled !== undefined) r.gallery_enabled = p.galleryEnabled;
   if (p.galleryTitle !== undefined) r.gallery_title = p.galleryTitle || null;
   if (p.galleryImages !== undefined) r.gallery_images = p.galleryImages ?? [];
+  if (p.shareTitle !== undefined) r.share_title = p.shareTitle || null;
+  if (p.shareDescription !== undefined) r.share_description = p.shareDescription || null;
+  if (p.shareImageUrl !== undefined) r.share_image_url = p.shareImageUrl || null;
   return r;
 }
 
