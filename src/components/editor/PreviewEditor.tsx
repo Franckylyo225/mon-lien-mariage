@@ -731,6 +731,141 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
         </div>
       </BottomSheet>
 
+      {/* Registry sheet */}
+      <BottomSheet
+        open={sheet === "registry"}
+        onOpenChange={(o) => !o && setSheet(null)}
+        title="Liste de mariage"
+      >
+        <div className="space-y-5">
+          <label className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background px-4 py-3">
+            <div>
+              <p className="text-sm font-medium">Afficher cette section</p>
+              <p className="text-[11px] opacity-60">
+                Indiquez le ou les magasins où vos invités peuvent consulter votre liste.
+              </p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={registryEnabled}
+              onClick={() => persist({ registryEnabled: !registryEnabled })}
+              className={cn(
+                "relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors",
+                registryEnabled ? "bg-primary" : "bg-muted",
+              )}
+            >
+              <span
+                className={cn(
+                  "inline-block size-5 rounded-full bg-background shadow transition-transform",
+                  registryEnabled ? "translate-x-5" : "translate-x-0.5",
+                )}
+              />
+            </button>
+          </label>
+
+          <div
+            className={cn(
+              "space-y-4 transition-opacity",
+              !registryEnabled && "pointer-events-none opacity-40",
+            )}
+          >
+            <Field
+              label="Titre du bloc"
+              value={registryTitle}
+              onChange={(v) => {
+                setRegistryTitle(v);
+                persist({ registryTitle: v });
+              }}
+            />
+
+            <div>
+              <label className="mb-2 block font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                Message (facultatif)
+              </label>
+              <textarea
+                value={registryNote}
+                rows={2}
+                maxLength={280}
+                placeholder="Ex : votre présence est notre plus beau cadeau. Pour ceux qui souhaitent, notre liste est disponible chez :"
+                onChange={(e) => {
+                  setRegistryNote(e.target.value);
+                  persist({ registryNote: e.target.value });
+                }}
+                className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                Magasins
+              </p>
+              {registryStores.length === 0 ? (
+                <p className="text-[11px] opacity-60">
+                  Ajoutez un premier magasin ci-dessous.
+                </p>
+              ) : (
+                registryStores.map((s, i) => (
+                  <div
+                    key={i}
+                    className="space-y-2 rounded-xl border border-dashed border-border p-3"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                        Magasin {i + 1}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => removeStore(i)}
+                        className="rounded-full p-1 text-xs opacity-60 transition hover:bg-muted hover:opacity-100"
+                        aria-label="Supprimer ce magasin"
+                      >
+                        <X className="size-3.5" />
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      value={s.name ?? ""}
+                      placeholder="Nom (ex : Galeries Lafayette)"
+                      maxLength={80}
+                      onChange={(e) => updateStore(i, { name: e.target.value })}
+                      className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                    />
+                    <input
+                      type="url"
+                      value={s.url ?? ""}
+                      placeholder="Lien (facultatif) — https://…"
+                      maxLength={300}
+                      onChange={(e) => updateStore(i, { url: e.target.value })}
+                      className="w-full rounded-xl border border-border bg-background px-4 py-3 font-mono text-[12px] outline-none focus:ring-2 focus:ring-primary/40"
+                    />
+                  </div>
+                ))
+              )}
+
+              <button
+                type="button"
+                onClick={addStore}
+                disabled={registryStores.length >= 6}
+                className={cn(
+                  "w-full rounded-xl border border-dashed border-border bg-background px-4 py-3 text-sm transition",
+                  registryStores.length >= 6
+                    ? "cursor-not-allowed opacity-50"
+                    : "hover:border-foreground/40 hover:bg-muted",
+                )}
+              >
+                + Ajouter un magasin
+              </button>
+              <p className="text-[11px] opacity-60">
+                Jusqu'à 6 magasins. Les entrées sans nom ne sont pas affichées.
+              </p>
+            </div>
+          </div>
+        </div>
+      </BottomSheet>
+
+
+
       <PhotoGridSheet
         open={sheet === "story"}
         onOpenChange={(o) => !o && setSheet(null)}
