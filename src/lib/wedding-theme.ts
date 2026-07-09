@@ -134,7 +134,7 @@ export interface ResolvedTheme {
 export function resolveTheme(couple: Pick<Couple, "theme" | "accentColor" | "backgroundBase" | "accent">): ResolvedTheme {
   const themeSlug: ThemeId = THEMES[couple.theme] ? couple.theme : "rose-elegance";
   const theme = THEMES[themeSlug];
-  const bgSlug: BackgroundSlug = (couple.backgroundBase && BG_SLUGS.has(couple.backgroundBase))
+  const bgSlug: BackgroundSlug = isValidBgSlug(couple.backgroundBase)
     ? couple.backgroundBase
     : theme.defaultBg;
   const accent = (couple.accentColor && /^#[0-9A-Fa-f]{6}$/.test(couple.accentColor))
