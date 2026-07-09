@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MapPin, Phone, Mail, User, Shirt, Sparkles } from "lucide-react";
+import { MapPin, Phone, Mail, User, Shirt, Sparkles, Car, BedDouble, LifeBuoy } from "lucide-react";
 import type { Ceremony, Couple } from "@/lib/wedding-store";
 
 // ---------- Countdown (D / H / M / S) ----------
@@ -284,6 +284,96 @@ export function CustomInfoSection({
   );
 }
 
+// ---------- Practical info (opt-in) ----------
+
+export function PracticalInfoSection({
+  couple,
+  accent,
+}: {
+  couple: Couple;
+  accent?: string;
+}) {
+  if (!couple.practicalInfoEnabled) return null;
+  const parking = couple.practicalParking?.trim();
+  const accommodation = couple.practicalAccommodation?.trim();
+  const contactName = couple.practicalContactName?.trim();
+  const contactPhone = couple.practicalContactPhone?.trim();
+  const hasContact = !!(contactName || contactPhone);
+  if (!parking && !accommodation && !hasContact) return null;
+
+  return (
+    <section className="mt-14">
+      <SectionTitle eyebrow="Bon à savoir" title="Infos pratiques" accent={accent} />
+      <ul className="mt-6 space-y-3">
+        {parking ? (
+          <li className="flex items-start gap-3 rounded-2xl border border-current/10 bg-white/5 p-4">
+            <span
+              className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full"
+              style={{ backgroundColor: (accent ?? "#999") + "22", color: accent }}
+            >
+              <Car className="size-4" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-60">
+                Parking
+              </p>
+              <p className="mt-1 whitespace-pre-line text-sm leading-relaxed opacity-90">
+                {parking}
+              </p>
+            </div>
+          </li>
+        ) : null}
+        {accommodation ? (
+          <li className="flex items-start gap-3 rounded-2xl border border-current/10 bg-white/5 p-4">
+            <span
+              className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full"
+              style={{ backgroundColor: (accent ?? "#999") + "22", color: accent }}
+            >
+              <BedDouble className="size-4" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-60">
+                Hébergement
+              </p>
+              <p className="mt-1 whitespace-pre-line text-sm leading-relaxed opacity-90">
+                {accommodation}
+              </p>
+            </div>
+          </li>
+        ) : null}
+        {hasContact ? (
+          <li className="flex items-start gap-3 rounded-2xl border border-current/10 bg-white/5 p-4">
+            <span
+              className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full"
+              style={{ backgroundColor: (accent ?? "#999") + "22", color: accent }}
+            >
+              <LifeBuoy className="size-4" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-60">
+                Contact référent
+              </p>
+              {contactName ? (
+                <p className="mt-1 font-serif text-base italic">{contactName}</p>
+              ) : null}
+              {contactPhone ? (
+                <a
+                  href={`tel:${contactPhone.replace(/\s+/g, "")}`}
+                  className="mt-1 inline-flex items-center gap-2 text-sm underline underline-offset-4"
+                  style={{ color: accent }}
+                >
+                  <Phone className="size-4" />
+                  {contactPhone}
+                </a>
+              ) : null}
+            </div>
+          </li>
+        ) : null}
+      </ul>
+    </section>
+  );
+}
+
 // ---------- Combined bottom block ----------
 
 export function TemplateBottomSections({
@@ -298,6 +388,7 @@ export function TemplateBottomSections({
   return (
     <>
       <LocationsSection ceremonies={ceremonies} accent={accent} />
+      <PracticalInfoSection couple={couple} accent={accent} />
       <ContactSection couple={couple} accent={accent} />
       <DressCodeSection note={couple.dressCodeNote} accent={accent} />
       <CustomInfoSection
