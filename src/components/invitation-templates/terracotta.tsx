@@ -63,6 +63,8 @@ export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
           </div>
         )}
 
+        <OurStorySection couple={couple} accent={accent} />
+
         <p className="mt-12 text-pretty text-center text-sm italic leading-relaxed opacity-80">
           {couple.introMessage}
         </p>
