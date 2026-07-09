@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useWedding, type ThemeId } from "@/lib/wedding-store";
-import { THEMES, THEME_FAMILIES, BACKGROUNDS } from "@/lib/wedding-theme";
+import { THEMES, THEME_FAMILIES } from "@/lib/wedding-theme";
+import { ThemeThumbnail } from "@/components/editor/ThemeThumbnail";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/onboarding/theme")({
