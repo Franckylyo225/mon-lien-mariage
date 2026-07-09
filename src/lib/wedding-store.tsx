@@ -263,7 +263,14 @@ type WeddingRow = {
   published_at: string | null;
   has_envelope_animation: boolean;
   onboarding_step: number;
+  contact_name: string | null;
+  contact_phone: string | null;
+  contact_email: string | null;
+  dress_code_note: string | null;
+  custom_info_title: string | null;
+  custom_info_body: string | null;
 };
+
 
 function rowToCouple(w: WeddingRow): Couple {
   return {
