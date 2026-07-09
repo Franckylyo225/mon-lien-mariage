@@ -88,6 +88,7 @@ export interface Couple {
   brideName: string;
   groomName: string;
   weddingDate: string;
+  rsvpDeadline?: string;
   city: string;
   introMessage: string;
   heroImageUrl?: string;
@@ -300,6 +301,7 @@ type WeddingRow = {
   bride_name: string;
   groom_name: string;
   wedding_date: string | null;
+  rsvp_deadline: string | null;
   city: string | null;
   intro_message: string | null;
   couple_story: string | null;
@@ -350,6 +352,7 @@ function rowToCouple(w: WeddingRow): Couple {
     brideName: w.bride_name ?? "",
     groomName: w.groom_name ?? "",
     weddingDate: w.wedding_date ?? "",
+    rsvpDeadline: w.rsvp_deadline ?? undefined,
     city: w.city ?? "Abidjan",
     introMessage: w.intro_message ?? "",
     coupleStory: w.couple_story ?? undefined,
@@ -404,6 +407,7 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.brideName !== undefined) r.bride_name = p.brideName;
   if (p.groomName !== undefined) r.groom_name = p.groomName;
   if (p.weddingDate !== undefined) r.wedding_date = p.weddingDate || null;
+  if (p.rsvpDeadline !== undefined) r.rsvp_deadline = p.rsvpDeadline || null;
   if (p.city !== undefined) r.city = p.city;
   if (p.introMessage !== undefined) r.intro_message = p.introMessage;
   if (p.coupleStory !== undefined) r.couple_story = p.coupleStory;
