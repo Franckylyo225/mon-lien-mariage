@@ -317,6 +317,12 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.isLocked !== undefined) r.is_locked = p.isLocked;
   if (p.publishedAt !== undefined) r.published_at = p.publishedAt;
   if (p.hasEnvelopeAnimation !== undefined) r.has_envelope_animation = p.hasEnvelopeAnimation;
+  if (p.contactName !== undefined) r.contact_name = p.contactName;
+  if (p.contactPhone !== undefined) r.contact_phone = p.contactPhone;
+  if (p.contactEmail !== undefined) r.contact_email = p.contactEmail;
+  if (p.dressCodeNote !== undefined) r.dress_code_note = p.dressCodeNote;
+  if (p.customInfoTitle !== undefined) r.custom_info_title = p.customInfoTitle;
+  if (p.customInfoBody !== undefined) r.custom_info_body = p.customInfoBody;
   return r;
 }
 
