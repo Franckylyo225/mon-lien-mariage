@@ -156,9 +156,12 @@ export function PhotoGridSheet({
               </label>
               <input
                 type="text"
-                value={titleField.value}
+                value={titleDraft}
                 placeholder={titleField.placeholder}
-                onChange={(e) => titleField.onChange(e.target.value)}
+                onChange={(e) => {
+                  setTitleDraft(e.target.value);
+                  titleField.onChange(e.target.value);
+                }}
                 className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
               />
             </div>
@@ -170,10 +173,13 @@ export function PhotoGridSheet({
                 {bodyField.label}
               </label>
               <textarea
-                value={bodyField.value}
+                value={bodyDraft}
                 rows={5}
                 placeholder={bodyField.placeholder}
-                onChange={(e) => bodyField.onChange(e.target.value)}
+                onChange={(e) => {
+                  setBodyDraft(e.target.value);
+                  bodyField.onChange(e.target.value);
+                }}
                 className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
               />
             </div>
