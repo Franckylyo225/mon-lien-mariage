@@ -98,7 +98,14 @@ export interface Couple {
   isLocked: boolean;
   publishedAt?: string;
   hasEnvelopeAnimation?: boolean;
+  contactName?: string;
+  contactPhone?: string;
+  contactEmail?: string;
+  dressCodeNote?: string;
+  customInfoTitle?: string;
+  customInfoBody?: string;
 }
+
 
 export interface Account {
   email: string | null;
