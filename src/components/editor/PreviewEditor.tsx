@@ -1276,6 +1276,22 @@ function EffectThumbnail({ slug, accent }: { slug: OpeningEffectSlug; accent: st
   return (
     <div className="grid aspect-video place-items-center overflow-hidden rounded-md" style={{ background: bg }}>
       <svg viewBox="0 0 80 50" width="100%" height="100%">
+        {slug === "envelope-wax-sage" && (
+          <g>
+            <rect x="10" y="14" width="60" height="30" rx="2" fill="#f0e4c8" stroke="#8b6b3a" strokeWidth="0.5" />
+            <polygon points="10,14 70,14 40,32" fill="#e6d5b0" stroke="#8b6b3a" strokeWidth="0.4" />
+            <circle cx="40" cy="26" r="7" fill="#8FA37A" stroke="#4c5e3d" strokeWidth="0.5" />
+            <text x="40" y="29" textAnchor="middle" fontSize="7" fontStyle="italic" fill="#2f3d24" fontFamily="serif">R</text>
+          </g>
+        )}
+        {slug === "envelope-navy-pearl" && (
+          <g>
+            <rect x="10" y="14" width="60" height="30" rx="2" fill="#0f2338" stroke="#6b1520" strokeWidth="0.5" />
+            <polygon points="10,14 70,14 40,32" fill="#1a3350" stroke="#6b1520" strokeWidth="0.4" />
+            <ellipse cx="40" cy="26" rx="6" ry="5" fill="#f0e6d0" stroke="#8a7860" strokeWidth="0.4" />
+            <ellipse cx="38" cy="24" rx="2.5" ry="1.5" fill="#fff" opacity="0.7" />
+          </g>
+        )}
         {slug === "envelope-royal" && (
           <g>
             <rect x="10" y="14" width="60" height="30" rx="2" fill="#E1D3B8" stroke="#7A5C2E" strokeWidth="0.6" />
