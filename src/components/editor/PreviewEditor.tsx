@@ -164,29 +164,11 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
 
   return (
     <>
-      {/* Floating action button top-right */}
-      <button
-        type="button"
-        onClick={onToggle}
-        className={cn(
-          "fixed right-4 top-20 z-30 inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 font-mono text-[10px] uppercase tracking-[0.2em] shadow-lg transition-all",
-          mode === "edit"
-            ? "bg-foreground text-background"
-            : "bg-background text-foreground ring-1 ring-border",
-        )}
-      >
-        {mode === "edit" ? (
-          <>
-            <X className="size-3.5" />
-            Terminer
-          </>
-        ) : (
-          <>
-            <Pencil className="size-3.5" />
-            Modifier
-          </>
-        )}
-      </button>
+      {/* The Modifier/Terminer toggle now lives in the sticky PageActionBar
+         rendered by the dashboard chrome. `onToggle` remains part of the
+         component signature for API compatibility. */}
+      {void onToggle}
+
 
       {/* Bottom edit bar (edit mode only) */}
       {mode === "edit" && (
