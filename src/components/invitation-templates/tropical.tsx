@@ -56,21 +56,24 @@ export function TropicalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
           </div>
         </header>
 
-        <div className="mt-10 rounded-3xl bg-[#e88b62] p-4 text-[#0d3b2e]">
-          <p className="mb-2 text-center font-mono text-[10px] uppercase tracking-[0.3em] opacity-70">
-            Plus que
-          </p>
-          <Countdown
-            targetDate={couple.weddingDate}
-            tone={{
-              cellBg: "bg-[#0d3b2e]/10",
-              cellBorder: "border border-[#0d3b2e]/20",
-              numberClass: "text-3xl font-serif italic text-[#0d3b2e]",
-              labelClass:
-                "font-mono text-[9px] uppercase tracking-[0.25em] text-[#0d3b2e]/70",
-            }}
-          />
-        </div>
+        {(couple.countdownEnabled ?? true) && (
+          <div className="mt-10 rounded-3xl bg-[#e88b62] p-4 text-[#0d3b2e]">
+            <p className="mb-2 text-center font-mono text-[10px] uppercase tracking-[0.3em] opacity-70">
+              Plus que
+            </p>
+            <Countdown
+              targetDate={couple.weddingDate}
+              units={couple.countdownUnits}
+              tone={{
+                cellBg: "bg-[#0d3b2e]/10",
+                cellBorder: "border border-[#0d3b2e]/20",
+                numberClass: "text-3xl font-serif italic text-[#0d3b2e]",
+                labelClass:
+                  "font-mono text-[9px] uppercase tracking-[0.25em] text-[#0d3b2e]/70",
+              }}
+            />
+          </div>
+        )}
 
         <p className="mt-10 text-center font-serif italic leading-relaxed text-[#f4e4c1]/90">
           {couple.introMessage}
