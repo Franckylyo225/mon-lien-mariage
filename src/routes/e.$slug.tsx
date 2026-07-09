@@ -69,6 +69,11 @@ function PublicInvitationPage() {
     customInfoTitle: (w as { custom_info_title?: string | null }).custom_info_title ?? undefined,
     customInfoBody: (w as { custom_info_body?: string | null }).custom_info_body ?? undefined,
     caption: (w as { caption?: string | null }).caption ?? undefined,
+    countdownEnabled:
+      (w as { countdown_enabled?: boolean | null }).countdown_enabled ?? true,
+    countdownUnits:
+      ((w as { countdown_units?: string[] | null }).countdown_units as Couple["countdownUnits"]) ??
+      ["days", "hours", "minutes", "seconds"],
   };
 
   const ceremonies: Ceremony[] = (data.ceremonies ?? []).map((c) => ({
