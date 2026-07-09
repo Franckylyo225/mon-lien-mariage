@@ -210,27 +210,63 @@ export const THEME_FAMILIES: ThemeFamilyDef[] = [
   { id: "illustres", label: "Illustrés", themes: ["aquarelle", "confetti", "papier-kraft"] },
 ];
 
-// ---- Mapping theme → template component (Phase 1 skeleton) ----
-// Every theme currently resolves to one of the 5 existing template
-// components while its distinctive design is being built. Phase 3 replaces
-// these mappings one theme at a time.
+// ---- Mapping theme → template component (Phase 2) ----
+//
+// Les 5 templates existants sont ré-affectés selon leur "registre visuel",
+// pas leur nom historique. Chaque thème est classé dans un registre puis
+// mappé sur le template qui l'incarne le mieux, en attendant que la Phase 3
+// livre un design dédié par thème.
+//
+// Registres → template :
+//   • "warm-classic"   → terracotta      (chaleureux, ivoire/brique, classique)
+//   • "editorial-dark" → noir-minimal    (minimal, éditorial, typographique)
+//   • "botanical"      → botanique-dore  (végétal, doré, feuillages)
+//   • "painted"        → tropical        (illustré, peint, exubérant)
+//                        ⚠ tropical est ici REPURPOSÉ : on n'utilise plus
+//                        son imaginaire palmiers/exotique mais uniquement
+//                        sa capacité à porter des thèmes illustrés et
+//                        colorés (aquarelle, confetti). Aucune icône
+//                        tropicale ne sera exposée à l'utilisateur.
+//   • "ornamental"     → art-deco        (ornements géométriques, luxe)
+//                        ⚠ art-deco est REPURPOSÉ comme socle "ornemental
+//                        / géométrique / doré" pour porter les thèmes
+//                        héritage (wax, kente) et les vintage luxueux
+//                        (or antique). Les motifs déco génériques sont
+//                        neutralisés par les tokens de thème (accent,
+//                        typo, fond) jusqu'à leur design dédié en Phase 3.
 export const THEME_TO_TEMPLATE: Record<ThemeId, TemplateId> = {
-  "rose-elegance": "terracotta",
-  "ivoire-epure": "noir-minimal",
-  "or-antique": "art-deco",
-  "vert-sauge": "botanique-dore",
-  "jardin-sauvage": "botanique-dore",
-  "terracotta-boheme": "terracotta",
-  "wax-dore": "terracotta",
-  "kente-royal": "art-deco",
-  "sahel-dore": "botanique-dore",
-  "bleu-nuit": "noir-minimal",
-  manuscrit: "noir-minimal",
-  monochrome: "noir-minimal",
-  aquarelle: "tropical",
-  confetti: "tropical",
-  "papier-kraft": "art-deco",
+  // Classiques
+  "rose-elegance": "terracotta",     // warm-classic
+  "ivoire-epure": "noir-minimal",    // editorial-dark (minimal éditorial)
+  "or-antique": "art-deco",          // ornamental (luxe vintage doré)
+
+  // Botaniques
+  "vert-sauge": "botanique-dore",    // botanical
+  "jardin-sauvage": "botanique-dore",// botanical
+  "terracotta-boheme": "terracotta", // warm-classic
+
+  // Héritage africain
+  "wax-dore": "art-deco",            // ornamental (motifs wax, or)
+  "kente-royal": "art-deco",         // ornamental (royal, géométrique)
+  "sahel-dore": "botanique-dore",    // botanical (afro-contemporain épuré)
+
+  // Modernes éditoriaux
+  "bleu-nuit": "noir-minimal",       // editorial-dark
+  manuscrit: "noir-minimal",         // editorial-dark (magazine)
+  monochrome: "noir-minimal",        // editorial-dark (brutaliste)
+
+  // Illustrés
+  aquarelle: "tropical",             // painted (peint, romantique)
+  confetti: "tropical",              // painted (festif, illustré)
+  "papier-kraft": "terracotta",      // warm-classic (vintage postal chaleureux)
 };
+
+// Répartition résultante (15 thèmes / 5 templates) :
+//   terracotta      : 3  (rose-elegance, terracotta-boheme, papier-kraft)
+//   noir-minimal    : 4  (ivoire-epure, bleu-nuit, manuscrit, monochrome)
+//   botanique-dore  : 3  (vert-sauge, jardin-sauvage, sahel-dore)
+//   tropical        : 2  (aquarelle, confetti)
+//   art-deco        : 3  (or-antique, wax-dore, kente-royal)
 
 export interface AccentDef {
   name: string;
