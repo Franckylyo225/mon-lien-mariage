@@ -414,6 +414,9 @@ function rowToCouple(w: WeddingRow): Couple {
     isLocked: !!w.is_locked,
     publishedAt: w.published_at ?? undefined,
     hasEnvelopeAnimation: !!w.has_envelope_animation,
+    hasOpeningEffect: !!(w as { has_opening_effect?: boolean | null }).has_opening_effect,
+    openingEffectSlug:
+      ((w as { opening_effect_slug?: string | null }).opening_effect_slug as Couple["openingEffectSlug"]) ?? undefined,
     contactName: w.contact_name ?? undefined,
     contactPhone: w.contact_phone ?? undefined,
     contactEmail: w.contact_email ?? undefined,
