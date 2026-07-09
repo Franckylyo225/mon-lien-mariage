@@ -127,6 +127,9 @@ export interface Couple {
   storyTitle?: string;
   storyBody?: string;
   storyImages?: string[];
+  galleryEnabled?: boolean;
+  galleryTitle?: string;
+  galleryImages?: string[];
 }
 
 
