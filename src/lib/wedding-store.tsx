@@ -112,6 +112,11 @@ export interface Couple {
   caption?: string;
   countdownEnabled?: boolean;
   countdownUnits?: Array<"days" | "hours" | "minutes" | "seconds">;
+  practicalInfoEnabled?: boolean;
+  practicalParking?: string;
+  practicalAccommodation?: string;
+  practicalContactName?: string;
+  practicalContactPhone?: string;
 }
 
 
