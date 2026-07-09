@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { MapPin, Phone, Mail, User, Shirt, Sparkles, Car, BedDouble, LifeBuoy, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { MapPin, Phone, Mail, User, Shirt, Sparkles, Car, BedDouble, LifeBuoy, Gift, X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Ceremony, Couple } from "@/lib/wedding-store";
 
 function ImageLightbox({
@@ -576,6 +576,73 @@ export function PracticalInfoSection({
 
 // ---------- Combined bottom block ----------
 
+export function RegistrySection({
+  couple,
+  accent,
+}: {
+  couple: Couple;
+  accent?: string;
+}) {
+  if (!couple.registryEnabled) return null;
+  const stores = (couple.registryStores ?? []).filter(
+    (s) => s && s.name && s.name.trim().length > 0,
+  );
+  const note = couple.registryNote?.trim();
+  if (stores.length === 0 && !note) return null;
+  const title = couple.registryTitle?.trim() || "Liste de mariage";
+
+  return (
+    <section className="mt-14">
+      <SectionTitle eyebrow="Vos cadeaux" title={title} accent={accent} />
+      <div className="mt-6 rounded-2xl border border-current/10 bg-white/5 p-5">
+        <div className="flex items-start gap-3">
+          <span
+            className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full"
+            style={{ backgroundColor: (accent ?? "#999") + "22", color: accent }}
+          >
+            <Gift className="size-4" />
+          </span>
+          <div className="min-w-0 flex-1 space-y-3">
+            {note ? (
+              <p className="whitespace-pre-line text-sm italic leading-relaxed opacity-90">
+                {note}
+              </p>
+            ) : null}
+            {stores.length > 0 ? (
+              <ul className="space-y-2">
+                {stores.map((s, i) => {
+                  const url = s.url?.trim();
+                  return (
+                    <li
+                      key={i}
+                      className="flex items-center justify-between gap-3 rounded-xl border border-current/10 bg-white/5 px-3 py-2"
+                    >
+                      <span className="min-w-0 flex-1 truncate font-serif text-base italic">
+                        {s.name}
+                      </span>
+                      {url ? (
+                        <a
+                          href={/^https?:\/\//i.test(url) ? url : `https://${url}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="shrink-0 font-mono text-[10px] uppercase tracking-[0.25em] underline underline-offset-4"
+                          style={{ color: accent }}
+                        >
+                          Visiter →
+                        </a>
+                      ) : null}
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function TemplateBottomSections({
   couple,
   ceremonies,
@@ -588,6 +655,7 @@ export function TemplateBottomSections({
   return (
     <>
       <LocationsSection ceremonies={ceremonies} accent={accent} />
+      <RegistrySection couple={couple} accent={accent} />
       <PracticalInfoSection couple={couple} accent={accent} />
       <ContactSection couple={couple} accent={accent} />
       <DressCodeSection note={couple.dressCodeNote} colors={couple.dressCodeColors} accent={accent} />

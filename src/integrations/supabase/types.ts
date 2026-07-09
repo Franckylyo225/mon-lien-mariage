@@ -263,6 +263,10 @@ export type Database = {
           practical_info_enabled: boolean
           practical_parking: string | null
           published_at: string | null
+          registry_enabled: boolean
+          registry_note: string | null
+          registry_stores: Json
+          registry_title: string | null
           rsvp_deadline: string | null
           share_description: string | null
           share_image_url: string | null
@@ -315,6 +319,10 @@ export type Database = {
           practical_info_enabled?: boolean
           practical_parking?: string | null
           published_at?: string | null
+          registry_enabled?: boolean
+          registry_note?: string | null
+          registry_stores?: Json
+          registry_title?: string | null
           rsvp_deadline?: string | null
           share_description?: string | null
           share_image_url?: string | null
@@ -367,6 +375,10 @@ export type Database = {
           practical_info_enabled?: boolean
           practical_parking?: string | null
           published_at?: string | null
+          registry_enabled?: boolean
+          registry_note?: string | null
+          registry_stores?: Json
+          registry_title?: string | null
           rsvp_deadline?: string | null
           share_description?: string | null
           share_image_url?: string | null

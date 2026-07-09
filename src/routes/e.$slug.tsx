@@ -106,6 +106,15 @@ function PublicInvitationPage() {
       (w as { practical_contact_name?: string | null }).practical_contact_name ?? undefined,
     practicalContactPhone:
       (w as { practical_contact_phone?: string | null }).practical_contact_phone ?? undefined,
+    registryEnabled:
+      (w as { registry_enabled?: boolean | null }).registry_enabled ?? false,
+    registryTitle:
+      (w as { registry_title?: string | null }).registry_title ?? undefined,
+    registryNote:
+      (w as { registry_note?: string | null }).registry_note ?? undefined,
+    registryStores:
+      ((w as { registry_stores?: Array<{ name: string; url?: string }> | null }).registry_stores as Couple["registryStores"]) ??
+      [],
   };
 
   const ceremonies: Ceremony[] = (data.ceremonies ?? []).map((c) => ({

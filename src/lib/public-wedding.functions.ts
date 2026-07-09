@@ -17,7 +17,7 @@ export const getPublicWedding = createServerFn({ method: "GET" })
     const { data: wedding, error } = await supabase
       .from("weddings")
       .select(
-        "id, bride_name, groom_name, wedding_date, city, intro_message, couple_story, hero_image_url, template_id, theme, event_type, accent, hashtag, slug, is_published, has_envelope_animation, contact_name, contact_phone, contact_email, dress_code_note, dress_code_colors, custom_info_title, custom_info_body, caption, countdown_enabled, countdown_units, countdown_style, practical_info_enabled, practical_parking, practical_accommodation, practical_contact_name, practical_contact_phone, share_title, share_description, share_image_url",
+        "id, bride_name, groom_name, wedding_date, city, intro_message, couple_story, hero_image_url, template_id, theme, event_type, accent, hashtag, slug, is_published, has_envelope_animation, contact_name, contact_phone, contact_email, dress_code_note, dress_code_colors, custom_info_title, custom_info_body, caption, countdown_enabled, countdown_units, countdown_style, practical_info_enabled, practical_parking, practical_accommodation, practical_contact_name, practical_contact_phone, registry_enabled, registry_title, registry_note, registry_stores, share_title, share_description, share_image_url",
       )
       .eq("slug", data.slug)
       .eq("is_published", true)
