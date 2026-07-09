@@ -77,6 +77,8 @@ export function ArtDecoTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps)
           </div>
         )}
 
+        <OurStorySection couple={couple} accent="#c9a84c" />
+
         <p className="mt-10 text-center font-serif italic leading-relaxed text-[#f0d78c]/80">
           {couple.introMessage}
         </p>
