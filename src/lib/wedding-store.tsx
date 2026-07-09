@@ -301,6 +301,7 @@ type WeddingRow = {
   bride_name: string;
   groom_name: string;
   wedding_date: string | null;
+  rsvp_deadline: string | null;
   city: string | null;
   intro_message: string | null;
   couple_story: string | null;
