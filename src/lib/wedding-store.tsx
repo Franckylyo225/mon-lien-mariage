@@ -201,6 +201,7 @@ const demoCeremonies = (): Ceremony[] => [
     timeStart: "09:00",
     timeEnd: "13:00",
     venue: "Concession familiale, Yopougon",
+    mapsUrl: "https://maps.google.com/?q=Yopougon+Abidjan",
     dressCode: "Tenue traditionnelle exigée",
     color: "#993556",
     capacity: 80,
