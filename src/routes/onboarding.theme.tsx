@@ -10,9 +10,6 @@ export const Route = createFileRoute("/onboarding/theme")({
   component: Step3,
 });
 
-function bgHex(slug: string): string {
-  return BACKGROUNDS.find((b) => b.slug === slug)?.hex ?? "#F5EFE7";
-}
 
 function Step3() {
   const { couple, updateCouple, setOnboardingStep } = useWedding();
