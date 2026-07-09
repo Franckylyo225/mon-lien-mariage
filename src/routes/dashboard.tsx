@@ -6,6 +6,8 @@ import { BottomNav } from "@/components/mobile-shell/BottomNav";
 import { SideDrawer } from "@/components/mobile-shell/SideDrawer";
 import { Fab } from "@/components/mobile-shell/Fab";
 import { EditModeProvider, useEditMode } from "@/lib/edit-mode";
+import { PageChromeProvider, usePageChrome } from "@/lib/page-chrome";
+import { AutosaveProvider } from "@/lib/autosave-context";
 
 export const Route = createFileRoute("/dashboard")({
   component: DashboardLayout,
