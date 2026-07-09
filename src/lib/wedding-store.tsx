@@ -356,6 +356,8 @@ type WeddingRow = {
   is_locked: boolean;
   published_at: string | null;
   has_envelope_animation: boolean;
+  has_opening_effect?: boolean | null;
+  opening_effect_slug?: string | null;
   onboarding_step: number;
   contact_name: string | null;
   contact_phone: string | null;
