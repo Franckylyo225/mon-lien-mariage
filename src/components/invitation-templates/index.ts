@@ -16,6 +16,9 @@ import { TerracottaBohemeTemplate } from "./terracotta-boheme";
 import { WaxDoreTemplate } from "./wax-dore";
 import { KenteRoyalTemplate } from "./kente-royal";
 import { SahelDoreTemplate } from "./sahel-dore";
+import { BleuNuitTemplate } from "./bleu-nuit";
+import { ManuscritTemplate } from "./manuscrit";
+import { MonochromeTemplate } from "./monochrome";
 
 export const templateComponents: Record<TemplateId, ComponentType<TemplateProps>> = {
   terracotta: TerracottaTemplate,
@@ -52,6 +55,9 @@ const themeComponents: Partial<Record<ThemeId, ComponentType<TemplateProps>>> = 
   "wax-dore": WaxDoreTemplate,
   "kente-royal": KenteRoyalTemplate,
   "sahel-dore": SahelDoreTemplate,
+  "bleu-nuit": BleuNuitTemplate,
+  manuscrit: ManuscritTemplate,
+  monochrome: MonochromeTemplate,
 };
 
 const themeRsvpTone: Partial<
@@ -66,6 +72,9 @@ const themeRsvpTone: Partial<
   "wax-dore": "warm",
   "kente-royal": "deco",
   "sahel-dore": "gold",
+  "bleu-nuit": "dark",
+  manuscrit: "dark",
+  monochrome: "dark",
 };
 
 export function componentForTheme(theme: ThemeId): ComponentType<TemplateProps> {
