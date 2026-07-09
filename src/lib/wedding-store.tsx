@@ -110,6 +110,8 @@ export interface Couple {
   customInfoTitle?: string;
   customInfoBody?: string;
   caption?: string;
+  countdownEnabled?: boolean;
+  countdownUnits?: Array<"days" | "hours" | "minutes" | "seconds">;
 }
 
 
@@ -293,6 +295,8 @@ type WeddingRow = {
   custom_info_title: string | null;
   custom_info_body: string | null;
   caption: string | null;
+  countdown_enabled: boolean | null;
+  countdown_units: string[] | null;
 };
 
 
@@ -323,6 +327,13 @@ function rowToCouple(w: WeddingRow): Couple {
     customInfoTitle: w.custom_info_title ?? undefined,
     customInfoBody: w.custom_info_body ?? undefined,
     caption: w.caption ?? undefined,
+    countdownEnabled: w.countdown_enabled ?? true,
+    countdownUnits: (w.countdown_units as Couple["countdownUnits"]) ?? [
+      "days",
+      "hours",
+      "minutes",
+      "seconds",
+    ],
   };
 }
 
@@ -353,6 +364,8 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.customInfoTitle !== undefined) r.custom_info_title = p.customInfoTitle;
   if (p.customInfoBody !== undefined) r.custom_info_body = p.customInfoBody;
   if (p.caption !== undefined) r.caption = p.caption || null;
+  if (p.countdownEnabled !== undefined) r.countdown_enabled = p.countdownEnabled;
+  if (p.countdownUnits !== undefined) r.countdown_units = p.countdownUnits;
   return r;
 }
 
