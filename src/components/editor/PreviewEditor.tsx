@@ -1142,3 +1142,190 @@ function StylePill({
     </button>
   );
 }
+
+function OpeningEffectSheet({
+  open,
+  onOpenChange,
+  couple,
+  onPatch,
+}: {
+  open: boolean;
+  onOpenChange: (o: boolean) => void;
+  couple: Couple;
+  onPatch: (patch: Partial<Couple>) => void;
+}) {
+  const [previewSlug, setPreviewSlug] = useState<OpeningEffectSlug | null>(null);
+  const purchased = couple.hasOpeningEffect || couple.hasEnvelopeAnimation;
+  const currentSlug: OpeningEffectSlug | null =
+    couple.openingEffectSlug ?? (couple.hasEnvelopeAnimation ? "envelope-royal" : null);
+
+  return (
+    <>
+      <BottomSheet open={open} onOpenChange={onOpenChange} title="Effet d'ouverture">
+        {!purchased && (
+          <div className="mb-4 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-sm">
+            <p className="font-medium">Option premium — 990 FCFA</p>
+            <p className="mt-1 text-xs opacity-80">
+              Débloquez une animation d'ouverture spectaculaire pour vos invités.
+              Un choix à faire une seule fois, changeable à volonté ensuite.
+            </p>
+            <button
+              type="button"
+              onClick={() => onPatch({ hasOpeningEffect: true, openingEffectSlug: currentSlug ?? "envelope-royal" })}
+              className="mt-3 rounded-full bg-amber-500 px-4 py-1.5 text-xs font-medium text-white"
+            >
+              Débloquer — 990 FCFA
+            </button>
+          </div>
+        )}
+
+        <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+          6 effets disponibles
+        </p>
+
+        <div className="grid grid-cols-2 gap-2">
+          {OPENING_EFFECT_SLUGS.map((slug) => {
+            const active = currentSlug === slug;
+            return (
+              <div
+                key={slug}
+                className={cn(
+                  "flex flex-col gap-2 rounded-xl border p-3 transition",
+                  active
+                    ? "border-foreground bg-foreground/5"
+                    : "border-border bg-background",
+                  !purchased && "opacity-60",
+                )}
+              >
+                <EffectThumbnail slug={slug} accent={couple.accent ?? "#993556"} />
+                <p className="text-xs font-medium">{OPENING_EFFECT_LABELS[slug]}</p>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    disabled={!purchased}
+                    onClick={() => onPatch({ openingEffectSlug: slug, hasOpeningEffect: true })}
+                    className={cn(
+                      "flex-1 rounded-full px-2 py-1 text-[10px] font-medium uppercase tracking-wider transition",
+                      active
+                        ? "bg-foreground text-background"
+                        : "border border-border hover:border-foreground/40",
+                      !purchased && "cursor-not-allowed",
+                    )}
+                  >
+                    {active ? "Sélectionné" : "Choisir"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPreviewSlug(slug)}
+                    className="rounded-full border border-border px-2 py-1 text-[10px] uppercase tracking-wider hover:border-foreground/40"
+                  >
+                    Aperçu
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {purchased && (
+          <div className="mt-4 rounded-xl border border-border bg-muted/30 p-3">
+            <label className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-medium">Activer sur ma page publique</p>
+                <p className="text-[11px] opacity-60">
+                  L'animation joue à la première visite de chaque invité.
+                </p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={!!couple.hasOpeningEffect}
+                onClick={() => onPatch({ hasOpeningEffect: !couple.hasOpeningEffect })}
+                className={cn(
+                  "relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors",
+                  couple.hasOpeningEffect ? "bg-primary" : "bg-muted",
+                )}
+              >
+                <span
+                  className={cn(
+                    "inline-block size-5 rounded-full bg-background shadow transition-transform",
+                    couple.hasOpeningEffect ? "translate-x-5" : "translate-x-0.5",
+                  )}
+                />
+              </button>
+            </label>
+          </div>
+        )}
+      </BottomSheet>
+
+      {previewSlug && (
+        <OpeningEffect
+          slug={previewSlug}
+          couple={couple}
+          forcePlay
+          onDone={() => setPreviewSlug(null)}
+        />
+      )}
+    </>
+  );
+}
+
+function EffectThumbnail({ slug, accent }: { slug: OpeningEffectSlug; accent: string }) {
+  // Compact SVG illustrations per effect
+  const bg = "#F5F1EB";
+  return (
+    <div className="grid aspect-video place-items-center overflow-hidden rounded-md" style={{ background: bg }}>
+      <svg viewBox="0 0 80 50" width="100%" height="100%">
+        {slug === "envelope-royal" && (
+          <g>
+            <rect x="10" y="14" width="60" height="30" rx="2" fill="#E1D3B8" stroke="#7A5C2E" strokeWidth="0.6" />
+            <polygon points="10,14 70,14 40,32" fill="#C7B48F" />
+            <ellipse cx="40" cy="22" rx="7" ry="5" fill={accent} />
+          </g>
+        )}
+        {slug === "envelope-floral" && (
+          <g>
+            <rect x="10" y="14" width="60" height="30" rx="2" fill="#F7EFE4" stroke="#B48C5A" strokeWidth="0.5" />
+            <polygon points="10,14 70,14 40,32" fill="#EAD9C0" />
+            <circle cx="40" cy="22" r="5" fill={accent} />
+            <circle cx="18" cy="10" r="3" fill="#E8B4B8" />
+            <circle cx="64" cy="12" r="3" fill="#B8CDB3" />
+          </g>
+        )}
+        {slug === "grand-portal" && (
+          <g>
+            <rect x="6" y="6" width="34" height="38" fill={accent} opacity="0.5" />
+            <rect x="40" y="6" width="34" height="38" fill={accent} opacity="0.5" />
+            <line x1="40" y1="6" x2="40" y2="44" stroke="#C8973A" strokeWidth="0.6" />
+            <circle cx="40" cy="25" r="4" fill={accent} />
+          </g>
+        )}
+        {slug === "cinema-curtain" && (
+          <g>
+            <rect x="0" y="4" width="80" height="2" fill="#C8973A" />
+            {Array.from({ length: 8 }).map((_, i) => (
+              <rect key={i} x={i * 5} y="6" width="4" height="38" fill={i % 2 ? "#993556" : "#7a2842"} />
+            ))}
+            {Array.from({ length: 8 }).map((_, i) => (
+              <rect key={i} x={40 + i * 5} y="6" width="4" height="38" fill={i % 2 ? "#993556" : "#7a2842"} />
+            ))}
+          </g>
+        )}
+        {slug === "falling-petals" && (
+          <g>
+            {[[15,10],[30,20],[50,15],[65,25],[20,35],[45,38],[60,8],[70,40]].map(([x,y],i)=>(
+              <ellipse key={i} cx={x} cy={y} rx="2.5" ry="4" fill={accent} opacity={0.6 + (i%3)*0.15} />
+            ))}
+          </g>
+        )}
+        {slug === "book-open" && (
+          <g>
+            <rect x="12" y="10" width="28" height="30" fill={accent} opacity="0.7" transform="rotate(-8 26 25)" />
+            <rect x="40" y="10" width="28" height="30" fill={accent} opacity="0.7" transform="rotate(8 54 25)" />
+            <rect x="30" y="12" width="20" height="26" fill="#fff" />
+          </g>
+        )}
+      </svg>
+    </div>
+  );
+}
