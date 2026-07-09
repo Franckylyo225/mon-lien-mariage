@@ -1,7 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
+import imageCompression from "browser-image-compression";
 import { useWedding, slugify } from "@/lib/wedding-store";
 import { checkSlugAvailability } from "@/lib/public-wedding.functions";
+import { supabase } from "@/integrations/supabase/client";
+
+const SIGNED_URL_EXPIRY = 60 * 60 * 24 * 365 * 10;
 
 export const Route = createFileRoute("/dashboard/share")({
   head: () => ({
