@@ -130,6 +130,8 @@ export interface Couple {
   hasEnvelopeAnimation?: boolean;
   hasOpeningEffect?: boolean;
   openingEffectSlug?:
+    | "envelope-wax-sage"
+    | "envelope-navy-pearl"
     | "envelope-royal"
     | "envelope-floral"
     | "grand-portal"
