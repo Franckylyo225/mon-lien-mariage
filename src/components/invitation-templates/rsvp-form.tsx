@@ -10,8 +10,6 @@ interface Props {
   ceremonies?: Ceremony[];
 }
 
-type Choice = "confirmé" | "décliné";
-
 const toneClasses: Record<
   Props["tone"],
   {
@@ -106,7 +104,6 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
   const [phone, setPhone] = useState("");
   const [guestType, setGuestType] = useState<GuestType | "">("");
   const [plus, setPlus] = useState(0);
-  const [attending, setAttending] = useState<Choice | "">("");
   const [message, setMessage] = useState("");
   const [done, setDone] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -125,9 +122,8 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
     () =>
       name.trim().length > 1 &&
       guestType !== "" &&
-      attending !== "" &&
       !submitting,
-    [name, guestType, attending, submitting],
+    [name, guestType, submitting],
   );
 
   const reset = () => {
@@ -136,7 +132,6 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
     setPhone("");
     setGuestType("");
     setPlus(0);
-    setAttending("");
     setMessage("");
     setError(null);
   };
@@ -155,8 +150,8 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
         guest_name: name.trim(),
         guest_phone: phone.trim() || null,
         guest_type: guestType || null,
-        attending: attending === "confirmé",
-        companions: attending === "confirmé" ? plus : 0,
+        attending: true,
+        companions: plus,
         message: message.trim() || null,
       }));
       const { error: err } = await supabase.from("rsvps").insert(rows as never);
@@ -204,7 +199,7 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
               t.button
             }
           >
-            {done ? "Modifier ma réponse" : "Répondre (RSVP)"}
+            {done ? "Modifier ma réponse" : "Je serai présent(e)"}
           </button>
         )}
       </section>
@@ -222,8 +217,6 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
               setGuestType={setGuestType}
               plus={plus}
               setPlus={setPlus}
-              attending={attending}
-              setAttending={setAttending}
               message={message}
               setMessage={setMessage}
               submitting={submitting}
@@ -253,8 +246,6 @@ interface ModalProps {
   setGuestType: (v: GuestType) => void;
   plus: number;
   setPlus: (fn: (v: number) => number) => void;
-  attending: Choice | "";
-  setAttending: (v: Choice) => void;
   message: string;
   setMessage: (v: string) => void;
   submitting: boolean;
@@ -275,8 +266,6 @@ function RsvpModal({
   setGuestType,
   plus,
   setPlus,
-  attending,
-  setAttending,
   message,
   setMessage,
   submitting,
@@ -285,8 +274,6 @@ function RsvpModal({
   onClose,
   onSubmit,
 }: ModalProps) {
-  const confirmed = attending === "confirmé";
-
   return (
     <div
       className="fixed inset-0 z-[100] flex items-end justify-center bg-black/60 backdrop-blur-sm sm:items-center"
@@ -350,31 +337,7 @@ function RsvpModal({
           </div>
         </div>
 
-        <div className="mt-6 space-y-3">
-          <p className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-60">
-            Serez-vous présent·e ?
-          </p>
-          <div className="flex gap-2">
-            {(["confirmé", "décliné"] as const).map((s) => {
-              const active = attending === s;
-              return (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => setAttending(s)}
-                  className={
-                    "flex-1 rounded-full px-3 py-2 font-mono text-[10px] uppercase tracking-widest transition " +
-                    (active ? t.active : t.inactive)
-                  }
-                >
-                  {s === "confirmé" ? "Je viens" : "Je ne viens pas"}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {confirmed && published.length > 0 && (
+        {published.length > 0 && (
           <div className="mt-4 rounded-2xl border border-current/10 p-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-60">
               Événements
@@ -398,32 +361,30 @@ function RsvpModal({
           </div>
         )}
 
-        {confirmed && (
-          <div className="mt-6 flex items-center justify-between rounded-full border border-current/15 px-4 py-2">
-            <span className="font-mono text-[10px] uppercase tracking-widest opacity-60">
-              Accompagnants
+        <div className="mt-6 flex items-center justify-between rounded-full border border-current/15 px-4 py-2">
+          <span className="font-mono text-[10px] uppercase tracking-widest opacity-60">
+            Accompagnants
+          </span>
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => setPlus((v) => Math.max(0, v - 1))}
+              className="grid size-8 place-items-center rounded-full border border-current/30 text-lg"
+            >
+              −
+            </button>
+            <span className="font-mono text-lg">
+              {plus.toString().padStart(2, "0")}
             </span>
-            <div className="flex items-center gap-4">
-              <button
-                type="button"
-                onClick={() => setPlus((v) => Math.max(0, v - 1))}
-                className="grid size-8 place-items-center rounded-full border border-current/30 text-lg"
-              >
-                −
-              </button>
-              <span className="font-mono text-lg">
-                {plus.toString().padStart(2, "0")}
-              </span>
-              <button
-                type="button"
-                onClick={() => setPlus((v) => Math.min(9, v + 1))}
-                className="grid size-8 place-items-center rounded-full border border-current/30 text-lg"
-              >
-                +
-              </button>
-            </div>
+            <button
+              type="button"
+              onClick={() => setPlus((v) => Math.min(9, v + 1))}
+              className="grid size-8 place-items-center rounded-full border border-current/30 text-lg"
+            >
+              +
+            </button>
           </div>
-        )}
+        </div>
 
         <textarea
           value={message}
@@ -447,7 +408,7 @@ function RsvpModal({
             t.disabled
           }
         >
-          {submitting ? "Envoi…" : "Envoyer ma réponse"}
+          {submitting ? "Envoi…" : "Confirmer ma venue"}
         </button>
       </div>
     </div>
