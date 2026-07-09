@@ -17,6 +17,7 @@ import {
   Info,
   BookHeart,
   Images,
+  Gift,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
