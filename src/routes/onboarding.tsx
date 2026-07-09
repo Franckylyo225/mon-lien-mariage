@@ -7,10 +7,10 @@ export const Route = createFileRoute("/onboarding")({
 });
 
 const stepPaths = [
-  "/onboarding/couple",
-  "/onboarding/ceremonies",
+  "/onboarding/prenoms",
+  "/onboarding/evenement",
+  "/onboarding/dates",
   "/onboarding/theme",
-  "/onboarding/guests",
 ] as const;
 
 function OnboardingLayout() {
