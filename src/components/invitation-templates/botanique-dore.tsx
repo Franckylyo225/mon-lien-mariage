@@ -67,6 +67,8 @@ export function BotaniqueDoreTemplate({ couple, ceremonies, rsvpSlot }: Template
           </div>
         )}
 
+        <OurStorySection couple={couple} accent="#c9a84c" />
+
         <p className="mt-10 text-center font-serif italic leading-relaxed opacity-80">
           {couple.introMessage}
         </p>
