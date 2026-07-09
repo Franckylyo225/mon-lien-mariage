@@ -66,7 +66,7 @@ export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
               className="mx-auto mb-3 block h-px w-10"
               style={{ backgroundColor: accent + "80" }}
             />
-            <h2 className="font-serif text-2xl italic">Le Programme</h2>
+            <h2 className="font-serif text-2xl italic">{eventTypeMeta[couple.eventType ?? "mariage"].programTitle}</h2>
           </div>
           <CeremonyProgramTabs ceremonies={published} variant="terracotta" accent={accent} />
         </section>
