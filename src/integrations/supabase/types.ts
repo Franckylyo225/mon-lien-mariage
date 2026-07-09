@@ -238,6 +238,7 @@ export type Database = {
           created_at: string
           custom_info_body: string | null
           custom_info_title: string | null
+          dress_code_colors: string[]
           dress_code_note: string | null
           event_type: string
           gallery_enabled: boolean | null
@@ -289,6 +290,7 @@ export type Database = {
           created_at?: string
           custom_info_body?: string | null
           custom_info_title?: string | null
+          dress_code_colors?: string[]
           dress_code_note?: string | null
           event_type?: string
           gallery_enabled?: boolean | null
@@ -340,6 +342,7 @@ export type Database = {
           created_at?: string
           custom_info_body?: string | null
           custom_info_title?: string | null
+          dress_code_colors?: string[]
           dress_code_note?: string | null
           event_type?: string
           gallery_enabled?: boolean | null

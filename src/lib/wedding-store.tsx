@@ -108,6 +108,7 @@ export interface Couple {
   contactPhone?: string;
   contactEmail?: string;
   dressCodeNote?: string;
+  dressCodeColors?: string[];
   customInfoTitle?: string;
   customInfoBody?: string;
   caption?: string;
@@ -322,6 +323,7 @@ type WeddingRow = {
   contact_phone: string | null;
   contact_email: string | null;
   dress_code_note: string | null;
+  dress_code_colors: string[] | null;
   custom_info_title: string | null;
   custom_info_body: string | null;
   caption: string | null;
@@ -372,6 +374,7 @@ function rowToCouple(w: WeddingRow): Couple {
     contactPhone: w.contact_phone ?? undefined,
     contactEmail: w.contact_email ?? undefined,
     dressCodeNote: w.dress_code_note ?? undefined,
+    dressCodeColors: w.dress_code_colors ?? [],
     customInfoTitle: w.custom_info_title ?? undefined,
     customInfoBody: w.custom_info_body ?? undefined,
     caption: w.caption ?? undefined,
@@ -427,6 +430,7 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.contactPhone !== undefined) r.contact_phone = p.contactPhone;
   if (p.contactEmail !== undefined) r.contact_email = p.contactEmail;
   if (p.dressCodeNote !== undefined) r.dress_code_note = p.dressCodeNote;
+  if (p.dressCodeColors !== undefined) r.dress_code_colors = p.dressCodeColors ?? [];
   if (p.customInfoTitle !== undefined) r.custom_info_title = p.customInfoTitle;
   if (p.customInfoBody !== undefined) r.custom_info_body = p.customInfoBody;
   if (p.caption !== undefined) r.caption = p.caption || null;

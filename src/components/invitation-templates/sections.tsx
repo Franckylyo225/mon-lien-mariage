@@ -414,18 +414,44 @@ export function ContactSection({
 
 export function DressCodeSection({
   note,
+  colors,
   accent,
 }: {
   note?: string;
+  colors?: string[];
   accent?: string;
 }) {
-  if (!note) return null;
+  const swatches = (colors ?? []).filter((c) => c && c.trim().length > 0).slice(0, 3);
+  if (!note && swatches.length === 0) return null;
   return (
     <section className="mt-14">
       <SectionTitle eyebrow="Tenue" title="Dress code" accent={accent} />
       <div className="mt-6 flex items-start gap-3 rounded-2xl border border-current/10 bg-white/5 p-5">
         <Shirt className="mt-0.5 size-5 shrink-0" style={{ color: accent }} />
-        <p className="text-sm italic leading-relaxed opacity-90">{note}</p>
+        <div className="min-w-0 flex-1 space-y-3">
+          {note ? (
+            <p className="text-sm italic leading-relaxed opacity-90">{note}</p>
+          ) : null}
+          {swatches.length > 0 ? (
+            <div className="flex flex-wrap items-center gap-2">
+              {swatches.map((c, i) => (
+                <span
+                  key={`${c}-${i}`}
+                  className="inline-flex items-center gap-2 rounded-full border border-current/15 bg-white/5 px-2.5 py-1"
+                >
+                  <span
+                    className="size-4 rounded-full ring-1 ring-current/20"
+                    style={{ backgroundColor: c }}
+                    aria-hidden
+                  />
+                  <span className="font-mono text-[10px] uppercase tracking-widest opacity-70">
+                    {c}
+                  </span>
+                </span>
+              ))}
+            </div>
+          ) : null}
+        </div>
       </div>
     </section>
   );
@@ -564,7 +590,7 @@ export function TemplateBottomSections({
       <LocationsSection ceremonies={ceremonies} accent={accent} />
       <PracticalInfoSection couple={couple} accent={accent} />
       <ContactSection couple={couple} accent={accent} />
-      <DressCodeSection note={couple.dressCodeNote} accent={accent} />
+      <DressCodeSection note={couple.dressCodeNote} colors={couple.dressCodeColors} accent={accent} />
       <CustomInfoSection
         title={couple.customInfoTitle}
         body={couple.customInfoBody}
