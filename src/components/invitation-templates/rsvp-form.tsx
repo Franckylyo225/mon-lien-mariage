@@ -96,6 +96,16 @@ const toneClasses: Record<
   },
 };
 
+const DIETARY_TAGS = [
+  "Végétarien",
+  "Végétalien",
+  "Sans gluten",
+  "Sans lactose",
+  "Halal",
+  "Casher",
+  "Allergie",
+] as const;
+
 export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
   const t = toneClasses[tone];
   const published = ceremonies.filter((c) => c.status === "publiée");
@@ -105,6 +115,8 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
   const [guestType, setGuestType] = useState<GuestType | "">("");
   const [plus, setPlus] = useState(0);
   const [message, setMessage] = useState("");
+  const [dietaryTags, setDietaryTags] = useState<string[]>([]);
+  const [dietaryDetail, setDietaryDetail] = useState("");
   const [done, setDone] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -126,6 +138,19 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
     [name, guestType, submitting],
   );
 
+  const toggleTag = (tag: string) =>
+    setDietaryTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
+    );
+
+  const composedDietary = useMemo(() => {
+    const parts: string[] = [];
+    if (dietaryTags.length > 0) parts.push(dietaryTags.join(", "));
+    const detail = dietaryDetail.trim();
+    if (detail) parts.push(detail);
+    return parts.join(" — ").slice(0, 500);
+  }, [dietaryTags, dietaryDetail]);
+
   const reset = () => {
     setDone(false);
     setName("");
@@ -133,6 +158,8 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
     setGuestType("");
     setPlus(0);
     setMessage("");
+    setDietaryTags([]);
+    setDietaryDetail("");
     setError(null);
   };
 
@@ -153,6 +180,7 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
         attending: true,
         companions: plus,
         message: message.trim() || null,
+        dietary_notes: composedDietary || null,
       }));
       const { error: err } = await supabase.from("rsvps").insert(rows as never);
       if (err) throw err;
