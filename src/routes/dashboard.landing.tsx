@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { useWedding, guestStats, type TemplateId, type EventType, type Couple } from "@/lib/wedding-store";
+import { useWedding, guestStats, type TemplateId, type EventType } from "@/lib/wedding-store";
 import { templateMeta, templateOrder, eventTypeMeta, eventTypeOrder } from "@/lib/ceremony-meta";
 
 
