@@ -99,7 +99,8 @@ export function Countdown({
   style?: CountdownStyle;
   accent?: string;
 }) {
-  const preset = colorPresetTone(style?.color, accent);
+  void accent;
+  const preset = colorPresetTone(style?.color);
   const t = preset ? { ...defaultTone, ...preset } : { ...defaultTone, ...tone };
 
   const size = SIZE_CLASSES[style?.size ?? "md"];
