@@ -938,8 +938,29 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
         onUploaded={(url) => updateCouple({ heroImageUrl: url })}
         onRemove={() => updateCouple({ heroImageUrl: "" })}
       />
+
+      <ThemeSheet
+        open={sheet === "theme"}
+        onOpenChange={(o) => !o && setSheet(null)}
+        couple={couple}
+        onPatch={(patch) => persist(patch)}
+      />
     </>
   );
+}
+
+function themeChipValue(couple: Couple): string {
+  const theme = couple.theme ?? "rose-elegance";
+  const themeName = ({
+    "rose-elegance": "Rose Élégance",
+    "ivoire-epure": "Ivoire Épuré",
+    "wax-dore": "Wax Doré",
+    "vert-sauge": "Vert Sauge",
+    "bleu-nuit": "Bleu Nuit",
+    "or-antique": "Or Antique",
+  } as Record<string, string>)[theme] ?? "Personnalisé";
+  const custom = couple.accentColor || couple.backgroundBase ? " ●" : "";
+  return `${themeName}${custom}`;
 }
 
 type StoryStyle = NonNullable<Couple["storyStyle"]>;
