@@ -1,6 +1,106 @@
-import { useEffect, useState } from "react";
-import { MapPin, Phone, Mail, User, Shirt, Sparkles, Car, BedDouble, LifeBuoy } from "lucide-react";
+import { useEffect, useState, useCallback } from "react";
+import { MapPin, Phone, Mail, User, Shirt, Sparkles, Car, BedDouble, LifeBuoy, X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Ceremony, Couple } from "@/lib/wedding-store";
+
+function ImageLightbox({
+  images,
+  index,
+  onClose,
+  onChange,
+}: {
+  images: string[];
+  index: number;
+  onClose: () => void;
+  onChange: (i: number) => void;
+}) {
+  const prev = useCallback(
+    () => onChange((index - 1 + images.length) % images.length),
+    [index, images.length, onChange],
+  );
+  const next = useCallback(
+    () => onChange((index + 1) % images.length),
+    [index, images.length, onChange],
+  );
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      else if (e.key === "ArrowLeft") prev();
+      else if (e.key === "ArrowRight") next();
+    };
+    window.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [onClose, prev, next]);
+
+  const multiple = images.length > 1;
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 animate-fade-in"
+      onClick={onClose}
+    >
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+        aria-label="Fermer"
+        className="absolute right-4 top-[max(1rem,env(safe-area-inset-top))] z-10 flex size-11 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur transition hover:bg-white/20"
+      >
+        <X className="size-5" />
+      </button>
+
+      {multiple && (
+        <>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              prev();
+            }}
+            aria-label="Précédente"
+            className="absolute left-3 top-1/2 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur transition hover:bg-white/20"
+          >
+            <ChevronLeft className="size-5" />
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              next();
+            }}
+            aria-label="Suivante"
+            className="absolute right-3 top-1/2 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur transition hover:bg-white/20"
+          >
+            <ChevronRight className="size-5" />
+          </button>
+        </>
+      )}
+
+      <img
+        src={images[index]}
+        alt=""
+        onClick={(e) => e.stopPropagation()}
+        className="max-h-[92vh] max-w-[94vw] select-none object-contain"
+      />
+
+      {multiple && (
+        <div className="absolute bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 rounded-full bg-white/10 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-white/80 backdrop-blur">
+          {index + 1} / {images.length}
+        </div>
+      )}
+    </div>
+  );
+}
+
 
 // ---------- Countdown (D / H / M / S) ----------
 
@@ -481,6 +581,7 @@ export function OurStorySection({
   couple: Couple;
   accent?: string;
 }) {
+  const [lightbox, setLightbox] = useState<number | null>(null);
   if (couple.storyEnabled === false) return null;
   const title = couple.storyTitle?.trim() || "Notre Histoire";
   const body = couple.storyBody?.trim();
@@ -509,16 +610,23 @@ export function OurStorySection({
           }
         >
           {images.map((src, i) => (
-            <img
+            <button
               key={i}
-              src={src}
-              alt=""
-              loading="lazy"
-              className={
-                "w-full rounded-2xl object-cover shadow-sm ring-1 ring-black/5 " +
-                (images.length === 1 ? "aspect-[4/3]" : "aspect-square")
-              }
-            />
+              type="button"
+              onClick={() => setLightbox(i)}
+              aria-label={`Agrandir l'image ${i + 1}`}
+              className="group relative overflow-hidden rounded-2xl shadow-sm ring-1 ring-black/5 transition active:scale-[0.98]"
+            >
+              <img
+                src={src}
+                alt=""
+                loading="lazy"
+                className={
+                  "w-full object-cover transition group-hover:brightness-95 " +
+                  (images.length === 1 ? "aspect-[4/3]" : "aspect-square")
+                }
+              />
+            </button>
           ))}
         </div>
       )}
@@ -527,6 +635,15 @@ export function OurStorySection({
         <p className="whitespace-pre-line text-pretty text-center text-sm leading-relaxed opacity-80">
           {body}
         </p>
+      )}
+
+      {lightbox !== null && (
+        <ImageLightbox
+          images={images}
+          index={lightbox}
+          onClose={() => setLightbox(null)}
+          onChange={setLightbox}
+        />
       )}
     </section>
   );
