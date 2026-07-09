@@ -54,6 +54,8 @@ export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
           </div>
         )}
 
+        <OurStorySection couple={couple} accent="#f5f3ee" />
+
         <p className="mt-12 text-center text-sm leading-relaxed text-[#f5f3ee]/70">
           {couple.introMessage}
         </p>
