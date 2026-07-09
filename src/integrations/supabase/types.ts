@@ -251,6 +251,7 @@ export type Database = {
           gallery_title: string | null
           groom_name: string
           has_envelope_animation: boolean
+          has_opening_effect: boolean
           hashtag: string | null
           hero_image_url: string | null
           id: string
@@ -258,6 +259,7 @@ export type Database = {
           is_locked: boolean
           is_published: boolean
           onboarding_step: number
+          opening_effect_slug: string | null
           owner_id: string
           practical_accommodation: string | null
           practical_contact_name: string | null
@@ -309,6 +311,7 @@ export type Database = {
           gallery_title?: string | null
           groom_name?: string
           has_envelope_animation?: boolean
+          has_opening_effect?: boolean
           hashtag?: string | null
           hero_image_url?: string | null
           id?: string
@@ -316,6 +319,7 @@ export type Database = {
           is_locked?: boolean
           is_published?: boolean
           onboarding_step?: number
+          opening_effect_slug?: string | null
           owner_id: string
           practical_accommodation?: string | null
           practical_contact_name?: string | null
@@ -367,6 +371,7 @@ export type Database = {
           gallery_title?: string | null
           groom_name?: string
           has_envelope_animation?: boolean
+          has_opening_effect?: boolean
           hashtag?: string | null
           hero_image_url?: string | null
           id?: string
@@ -374,6 +379,7 @@ export type Database = {
           is_locked?: boolean
           is_published?: boolean
           onboarding_step?: number
+          opening_effect_slug?: string | null
           owner_id?: string
           practical_accommodation?: string | null
           practical_contact_name?: string | null
