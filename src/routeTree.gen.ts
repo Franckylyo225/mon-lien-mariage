@@ -19,6 +19,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as PublishSuccessRouteImport } from './routes/publish.success'
 import { Route as OnboardingThemeRouteImport } from './routes/onboarding.theme'
+import { Route as OnboardingPrenomsRouteImport } from './routes/onboarding.prenoms'
 import { Route as ESlugRouteImport } from './routes/e.$slug'
 import { Route as DashboardStatsRouteImport } from './routes/dashboard.stats'
 import { Route as DashboardShareRouteImport } from './routes/dashboard.share'
@@ -78,6 +79,11 @@ const PublishSuccessRoute = PublishSuccessRouteImport.update({
 const OnboardingThemeRoute = OnboardingThemeRouteImport.update({
   id: '/theme',
   path: '/theme',
+  getParentRoute: () => OnboardingRoute,
+} as any)
+const OnboardingPrenomsRoute = OnboardingPrenomsRouteImport.update({
+  id: '/prenoms',
+  path: '/prenoms',
   getParentRoute: () => OnboardingRoute,
 } as any)
 const ESlugRoute = ESlugRouteImport.update({
@@ -147,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/stats': typeof DashboardStatsRoute
   '/e/$slug': typeof ESlugRoute
+  '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
   '/publish/success': typeof PublishSuccessRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -168,6 +175,7 @@ export interface FileRoutesByTo {
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/stats': typeof DashboardStatsRoute
   '/e/$slug': typeof ESlugRoute
+  '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
   '/publish/success': typeof PublishSuccessRoute
   '/dashboard': typeof DashboardIndexRoute
@@ -191,6 +199,7 @@ export interface FileRoutesById {
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/stats': typeof DashboardStatsRoute
   '/e/$slug': typeof ESlugRoute
+  '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
   '/publish/success': typeof PublishSuccessRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -215,6 +224,7 @@ export interface FileRouteTypes {
     | '/dashboard/share'
     | '/dashboard/stats'
     | '/e/$slug'
+    | '/onboarding/prenoms'
     | '/onboarding/theme'
     | '/publish/success'
     | '/dashboard/'
@@ -236,6 +246,7 @@ export interface FileRouteTypes {
     | '/dashboard/share'
     | '/dashboard/stats'
     | '/e/$slug'
+    | '/onboarding/prenoms'
     | '/onboarding/theme'
     | '/publish/success'
     | '/dashboard'
@@ -258,6 +269,7 @@ export interface FileRouteTypes {
     | '/dashboard/share'
     | '/dashboard/stats'
     | '/e/$slug'
+    | '/onboarding/prenoms'
     | '/onboarding/theme'
     | '/publish/success'
     | '/dashboard/'
@@ -346,6 +358,13 @@ declare module '@tanstack/react-router' {
       path: '/theme'
       fullPath: '/onboarding/theme'
       preLoaderRoute: typeof OnboardingThemeRouteImport
+      parentRoute: typeof OnboardingRoute
+    }
+    '/onboarding/prenoms': {
+      id: '/onboarding/prenoms'
+      path: '/prenoms'
+      fullPath: '/onboarding/prenoms'
+      preLoaderRoute: typeof OnboardingPrenomsRouteImport
       parentRoute: typeof OnboardingRoute
     }
     '/e/$slug': {
@@ -471,10 +490,12 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 )
 
 interface OnboardingRouteChildren {
+  OnboardingPrenomsRoute: typeof OnboardingPrenomsRoute
   OnboardingThemeRoute: typeof OnboardingThemeRoute
 }
 
 const OnboardingRouteChildren: OnboardingRouteChildren = {
+  OnboardingPrenomsRoute: OnboardingPrenomsRoute,
   OnboardingThemeRoute: OnboardingThemeRoute,
 }
 
