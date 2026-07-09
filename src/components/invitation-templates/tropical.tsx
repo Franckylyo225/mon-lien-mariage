@@ -5,7 +5,7 @@ import { Countdown, TemplateBottomSections } from "./sections";
 
 export function TropicalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
   const published = ceremonies.filter((c) => c.status === "publiée");
-  const days = daysUntil(couple.weddingDate);
+
 
   return (
     <main className="min-h-screen bg-[#0d3b2e] text-[#f4e4c1]">
