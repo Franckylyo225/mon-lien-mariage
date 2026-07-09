@@ -4,6 +4,7 @@ import { useWedding } from "@/lib/wedding-store";
 import { useAutosave } from "@/hooks/use-autosave";
 import { SaveIndicator } from "./SaveIndicator";
 import { HeroPhotoSheet } from "./HeroPhotoSheet";
+import { PhotoGridSheet } from "./PhotoGridSheet";
 import {
   Lock,
   Type,
@@ -14,6 +15,8 @@ import {
   ImageIcon,
   Timer,
   Info,
+  BookHeart,
+  Images,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -25,7 +28,9 @@ type Sheet =
   | "date"
   | "hero"
   | "countdown"
-  | "practical";
+  | "practical"
+  | "story"
+  | "gallery";
 
 const CAPTION_SUGGESTIONS = [
   "Ils se disent oui",
@@ -188,6 +193,30 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
                     : `${practicalFilledCount} info${practicalFilledCount > 1 ? "s" : ""}`
               }
               onClick={() => setSheet("practical")}
+            />
+            <EditChip
+              icon={<BookHeart className="size-4" />}
+              label="Notre histoire"
+              value={
+                couple.storyEnabled === false
+                  ? "Désactivé"
+                  : (couple.storyImages?.length ?? 0) === 0 && !couple.storyBody
+                    ? "À compléter"
+                    : `${couple.storyImages?.length ?? 0} photo${(couple.storyImages?.length ?? 0) > 1 ? "s" : ""}`
+              }
+              onClick={() => setSheet("story")}
+            />
+            <EditChip
+              icon={<Images className="size-4" />}
+              label="Galerie"
+              value={
+                !(couple.galleryEnabled ?? false)
+                  ? "Désactivée"
+                  : (couple.galleryImages?.length ?? 0) === 0
+                    ? "À compléter"
+                    : `${couple.galleryImages?.length ?? 0} photo${(couple.galleryImages?.length ?? 0) > 1 ? "s" : ""}`
+              }
+              onClick={() => setSheet("gallery")}
             />
           </div>
         </div>
@@ -595,6 +624,52 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
           </div>
         </div>
       </BottomSheet>
+
+      <PhotoGridSheet
+        open={sheet === "story"}
+        onOpenChange={(o) => !o && setSheet(null)}
+        title="Notre histoire"
+        intro="Racontez votre rencontre en quelques mots et ajoutez vos plus belles photos."
+        weddingId={weddingId}
+        folder="story"
+        enabled={couple.storyEnabled ?? true}
+        onEnabledChange={(v) => persist({ storyEnabled: v })}
+        titleField={{
+          label: "Titre du bloc",
+          value: couple.storyTitle ?? "",
+          placeholder: "Notre Histoire",
+          onChange: (v) => persist({ storyTitle: v }),
+        }}
+        bodyField={{
+          label: "Texte",
+          value: couple.storyBody ?? "",
+          placeholder: "Notre première rencontre, notre demande…",
+          onChange: (v) => persist({ storyBody: v }),
+        }}
+        images={couple.storyImages ?? []}
+        onImagesChange={(next) => persist({ storyImages: next })}
+        maxImages={8}
+      />
+
+      <PhotoGridSheet
+        open={sheet === "gallery"}
+        onOpenChange={(o) => !o && setSheet(null)}
+        title="Galerie photos"
+        intro="Une grille de photos affichée après le RSVP."
+        weddingId={weddingId}
+        folder="gallery"
+        enabled={couple.galleryEnabled ?? false}
+        onEnabledChange={(v) => persist({ galleryEnabled: v })}
+        titleField={{
+          label: "Titre du bloc",
+          value: couple.galleryTitle ?? "",
+          placeholder: "Galerie",
+          onChange: (v) => persist({ galleryTitle: v }),
+        }}
+        images={couple.galleryImages ?? []}
+        onImagesChange={(next) => persist({ galleryImages: next })}
+        maxImages={20}
+      />
 
       <HeroPhotoSheet
         open={sheet === "hero"}
