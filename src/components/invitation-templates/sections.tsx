@@ -532,3 +532,40 @@ export function OurStorySection({
   );
 }
 
+export function GallerySection({
+  couple,
+  accent,
+}: {
+  couple: Couple;
+  accent?: string;
+}) {
+  if (!couple.galleryEnabled) return null;
+  const images = (couple.galleryImages ?? []).filter((u) => u && u.trim().length > 0);
+  if (images.length === 0) return null;
+  const title = couple.galleryTitle?.trim() || "Galerie";
+
+  return (
+    <section className="mt-14">
+      <div className="mb-6 text-center">
+        <span
+          className="mx-auto mb-3 block h-px w-10"
+          style={{ backgroundColor: (accent ?? "#999") + "80" }}
+        />
+        <h2 className="font-serif text-2xl italic">{title}</h2>
+      </div>
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+        {images.map((src, i) => (
+          <img
+            key={i}
+            src={src}
+            alt=""
+            loading="lazy"
+            className="aspect-square w-full rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+
