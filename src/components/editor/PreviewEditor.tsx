@@ -165,6 +165,18 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
               }
               onClick={() => setSheet("countdown")}
             />
+            <EditChip
+              icon={<Info className="size-4" />}
+              label="Infos pratiques"
+              value={
+                !practicalEnabled
+                  ? "Désactivé"
+                  : practicalFilledCount === 0
+                    ? "À compléter"
+                    : `${practicalFilledCount} info${practicalFilledCount > 1 ? "s" : ""}`
+              }
+              onClick={() => setSheet("practical")}
+            />
           </div>
         </div>
       )}
