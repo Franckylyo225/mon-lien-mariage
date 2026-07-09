@@ -4,6 +4,7 @@ import {
   IconUser,
   IconPalette,
   IconShare,
+  IconChartBar,
   IconCreditCard,
   IconHelpCircle,
   IconMessageCircle,
