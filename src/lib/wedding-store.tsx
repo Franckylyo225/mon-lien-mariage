@@ -275,6 +275,8 @@ type WeddingRow = {
   hero_image_url: string | null;
   template_id: string;
   theme: string;
+  event_type: string;
+
   accent: string | null;
   hashtag: string | null;
   slug: string | null;
