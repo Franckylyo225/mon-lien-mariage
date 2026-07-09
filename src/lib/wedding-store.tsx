@@ -323,6 +323,7 @@ type WeddingRow = {
   contact_phone: string | null;
   contact_email: string | null;
   dress_code_note: string | null;
+  dress_code_colors: string[] | null;
   custom_info_title: string | null;
   custom_info_body: string | null;
   caption: string | null;
