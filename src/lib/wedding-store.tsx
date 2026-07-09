@@ -429,6 +429,7 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.storyTitle !== undefined) r.story_title = p.storyTitle || null;
   if (p.storyBody !== undefined) r.story_body = p.storyBody || null;
   if (p.storyImages !== undefined) r.story_images = p.storyImages ?? [];
+  if (p.storyStyle !== undefined) r.story_style = p.storyStyle ?? {};
   if (p.galleryEnabled !== undefined) r.gallery_enabled = p.galleryEnabled;
   if (p.galleryTitle !== undefined) r.gallery_title = p.galleryTitle || null;
   if (p.galleryImages !== undefined) r.gallery_images = p.galleryImages ?? [];
