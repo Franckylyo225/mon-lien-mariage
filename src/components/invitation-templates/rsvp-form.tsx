@@ -1,99 +1,35 @@
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { supabase } from "@/integrations/supabase/client";
-import type { Ceremony } from "@/lib/wedding-store";
+import type { Ceremony, ThemeId } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
+import { resolveRsvpDesign, type RsvpDesign } from "@/lib/rsvp-design";
+import { RsvpOrnament } from "./rsvp-ornament";
+
+/**
+ * Public RSVP form.
+ *
+ * Prefers a per-theme design (`theme`) so the palette, typography and
+ * ornament match the invitation. Falls back to a neutral tone-based mapping
+ * for legacy callers that only know a template tone.
+ */
+type LegacyTone = "warm" | "dark" | "gold" | "tropical" | "deco";
 
 interface Props {
-  tone: "warm" | "dark" | "gold" | "tropical" | "deco";
+  theme?: ThemeId;
+  /** @deprecated Use `theme` for full per-theme styling. */
+  tone?: LegacyTone;
   weddingId?: string;
   ceremonies?: Ceremony[];
 }
 
-const toneClasses: Record<
-  Props["tone"],
-  {
-    wrapper: string;
-    title: string;
-    input: string;
-    button: string;
-    disabled: string;
-    active: string;
-    inactive: string;
-    successBg: string;
-    modalBg: string;
-    modalText: string;
-  }
-> = {
-  warm: {
-    wrapper: "bg-[#f4e2d4] text-[#4a2a20]",
-    title: "font-serif italic text-[#4a2a20]",
-    input:
-      "bg-white/70 border-[#4a2a20]/15 text-[#4a2a20] placeholder:text-[#4a2a20]/40 focus:border-[#d97757]",
-    button: "bg-[#d97757] text-white shadow-md shadow-[#d97757]/30 hover:opacity-90",
-    disabled: "disabled:opacity-40",
-    active: "bg-[#d97757] text-white",
-    inactive: "border border-[#4a2a20]/20 text-[#4a2a20]/80 hover:bg-white/60",
-    successBg: "bg-[#d97757]/15 text-[#4a2a20]",
-    modalBg: "bg-[#fbf1e8]",
-    modalText: "text-[#4a2a20]",
-  },
-  dark: {
-    wrapper: "bg-[#0d0d0d] text-[#f5f3ee] border border-[#f5f3ee]/10",
-    title: "font-sans font-medium tracking-tight text-[#f5f3ee]",
-    input:
-      "bg-[#1a1a1a] border-[#f5f3ee]/15 text-[#f5f3ee] placeholder:text-[#f5f3ee]/40 focus:border-[#f5f3ee]",
-    button: "bg-[#f5f3ee] text-[#0d0d0d] hover:opacity-90",
-    disabled: "disabled:opacity-40",
-    active: "bg-[#f5f3ee] text-[#0d0d0d]",
-    inactive: "border border-[#f5f3ee]/25 text-[#f5f3ee]/70 hover:bg-white/5",
-    successBg: "bg-[#1a1a1a] text-[#f5f3ee]",
-    modalBg: "bg-[#0d0d0d]",
-    modalText: "text-[#f5f3ee]",
-  },
-  gold: {
-    wrapper: "bg-[#f5f0e4] text-[#3d4a2d] border border-[#c9a84c]/30",
-    title: "font-serif italic text-[#3d4a2d]",
-    input:
-      "bg-white border-[#c9a84c]/40 text-[#3d4a2d] placeholder:text-[#3d4a2d]/40 focus:border-[#c9a84c]",
-    button: "bg-[#3d4a2d] text-[#f5f0e4] hover:opacity-90",
-    disabled: "disabled:opacity-40",
-    active: "bg-[#c9a84c] text-[#3d4a2d]",
-    inactive:
-      "border border-[#3d4a2d]/20 text-[#3d4a2d]/80 hover:bg-[#c9a84c]/10",
-    successBg: "bg-[#c9a84c]/20 text-[#3d4a2d]",
-    modalBg: "bg-[#faf5e8]",
-    modalText: "text-[#3d4a2d]",
-  },
-  tropical: {
-    wrapper: "bg-[#0d3b2e] text-[#f4e4c1] border border-[#e88b62]/30",
-    title: "font-serif italic text-[#f4e4c1]",
-    input:
-      "bg-[#1a4d3d] border-[#f4e4c1]/20 text-[#f4e4c1] placeholder:text-[#f4e4c1]/40 focus:border-[#e88b62]",
-    button: "bg-[#e88b62] text-[#0d3b2e] hover:opacity-90",
-    disabled: "disabled:opacity-40",
-    active: "bg-[#e88b62] text-[#0d3b2e]",
-    inactive:
-      "border border-[#f4e4c1]/30 text-[#f4e4c1]/80 hover:bg-[#f4e4c1]/10",
-    successBg: "bg-[#1a4d3d] text-[#f4e4c1]",
-    modalBg: "bg-[#0d3b2e]",
-    modalText: "text-[#f4e4c1]",
-  },
-  deco: {
-    wrapper:
-      "bg-gradient-to-br from-[#1a0f1a] to-[#2a1520] text-[#f0d78c] border border-[#c9a84c]/40",
-    title: "font-serif italic text-[#f0d78c]",
-    input:
-      "bg-[#1a0f1a] border-[#c9a84c]/40 text-[#f0d78c] placeholder:text-[#f0d78c]/40 focus:border-[#c9a84c]",
-    button: "bg-[#c9a84c] text-[#1a0f1a] hover:opacity-90",
-    disabled: "disabled:opacity-40",
-    active: "bg-[#c9a84c] text-[#1a0f1a]",
-    inactive:
-      "border border-[#c9a84c]/30 text-[#f0d78c]/80 hover:bg-[#c9a84c]/10",
-    successBg: "bg-[#1a0f1a] text-[#f0d78c]",
-    modalBg: "bg-gradient-to-br from-[#1a0f1a] to-[#2a1520]",
-    modalText: "text-[#f0d78c]",
-  },
+// Legacy tone → representative theme (kept only for invitation.tsx preview)
+const TONE_TO_THEME: Record<LegacyTone, ThemeId> = {
+  warm: "terracotta-boheme",
+  dark: "monochrome",
+  gold: "or-antique",
+  tropical: "confetti",
+  deco: "or-antique",
 };
 
 const DIETARY_TAGS = [
@@ -106,8 +42,11 @@ const DIETARY_TAGS = [
   "Allergie",
 ] as const;
 
-export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
-  const t = toneClasses[tone];
+export function TemplateRsvpForm({ theme, tone, weddingId, ceremonies = [] }: Props) {
+  const resolvedTheme: ThemeId | undefined =
+    theme ?? (tone ? TONE_TO_THEME[tone] : undefined);
+  const design = resolveRsvpDesign(resolvedTheme);
+
   const published = ceremonies.filter((c) => c.status === "publiée");
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
@@ -131,10 +70,7 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
   }, [open]);
 
   const canSubmit = useMemo(
-    () =>
-      name.trim().length > 1 &&
-      guestType !== "" &&
-      !submitting,
+    () => name.trim().length > 1 && guestType !== "" && !submitting,
     [name, guestType, submitting],
   );
 
@@ -199,14 +135,45 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
 
   return (
     <>
-      <section className={`mt-12 rounded-3xl p-8 text-center ${t.wrapper}`}>
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-60">
-          Votre présence
+      <section
+        className={
+          "relative mt-12 w-full max-w-full overflow-hidden px-5 py-8 text-center sm:px-8 sm:py-10 " +
+          design.wrapperRadius +
+          " " +
+          design.border1
+        }
+        style={{
+          background: design.bg,
+          color: design.ink,
+          borderColor: design.border,
+          fontFamily: design.bodyFont,
+        }}
+      >
+        <div className="mb-4">
+          <RsvpOrnament kind={design.ornament} color={design.accent} />
+        </div>
+
+        <p
+          className="text-[10px] uppercase tracking-[0.35em]"
+          style={{ color: design.accent, fontFamily: design.eyebrowFont }}
+        >
+          {design.eyebrow}
         </p>
-        <h3 className={`mt-3 text-2xl ${t.title}`}>
+
+        <h3
+          className={
+            "mt-3 break-words text-3xl leading-tight sm:text-4xl " +
+            (design.headingItalic ? "italic" : "")
+          }
+          style={{ fontFamily: design.headingFont, color: design.ink }}
+        >
           {done ? `Merci ${name.split(" ")[0] || ""} !` : "Confirmez votre venue"}
         </h3>
-        <p className="mx-auto mt-3 max-w-sm text-sm opacity-70">
+
+        <p
+          className="mx-auto mt-3 max-w-sm text-sm leading-relaxed"
+          style={{ color: design.mutedInk }}
+        >
           {noPublished
             ? "Les détails seront ajoutés bientôt. Repassez pour confirmer."
             : done
@@ -215,6 +182,7 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
                 : "Aperçu — la réponse n'a pas été enregistrée."
               : "Répondez en quelques secondes pour nous aider à préparer cette belle journée."}
         </p>
+
         {!noPublished && (
           <button
             type="button"
@@ -223,9 +191,15 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
               setOpen(true);
             }}
             className={
-              "mt-6 inline-flex items-center gap-2 rounded-full px-6 py-3 font-mono text-[11px] uppercase tracking-[0.25em] transition " +
-              t.button
+              "mt-6 inline-flex max-w-full items-center justify-center gap-2 px-6 py-3 text-[11px] uppercase tracking-[0.25em] transition hover:opacity-90 " +
+              design.fieldRadius
             }
+            style={{
+              background: design.accent,
+              color: design.accentInk,
+              fontFamily: design.eyebrowFont,
+              boxShadow: `0 10px 25px -12px ${design.accent}`,
+            }}
           >
             {done ? "Modifier ma réponse" : "Je serai présent(e)"}
           </button>
@@ -235,7 +209,7 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
       {open
         ? createPortal(
             <RsvpModal
-              t={t}
+              design={design}
               published={published}
               name={name}
               setName={setName}
@@ -268,7 +242,7 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
 }
 
 interface ModalProps {
-  t: (typeof toneClasses)[Props["tone"]];
+  design: RsvpDesign;
   published: Ceremony[];
   name: string;
   setName: (v: string) => void;
@@ -292,7 +266,7 @@ interface ModalProps {
 }
 
 function RsvpModal({
-  t,
+  design: d,
   published,
   name,
   setName,
@@ -314,175 +288,301 @@ function RsvpModal({
   onClose,
   onSubmit,
 }: ModalProps) {
+  const inputStyle: React.CSSProperties = {
+    background: d.inputBg,
+    borderColor: d.inputBorder,
+    color: d.inputInk,
+    fontFamily: d.bodyFont,
+  };
+
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/60 backdrop-blur-sm sm:items-center"
+      className="fixed inset-0 z-[100] flex items-end justify-center bg-black/60 p-0 backdrop-blur-sm sm:items-center sm:p-4"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`relative max-h-[92vh] w-full overflow-y-auto rounded-t-3xl sm:max-w-lg sm:rounded-3xl ${t.modalBg} ${t.modalText} p-6 sm:p-8`}
+        className={
+          "relative flex max-h-[92vh] w-full max-w-full flex-col overflow-hidden sm:max-w-lg " +
+          d.modalRadius
+        }
+        style={{
+          background: d.surface,
+          color: d.ink,
+          borderTop: `1px solid ${d.border}`,
+          fontFamily: d.bodyFont,
+        }}
       >
         <button
           type="button"
           onClick={onClose}
           aria-label="Fermer"
-          className="absolute right-4 top-4 grid size-9 place-items-center rounded-full border border-current/20 text-lg opacity-70 hover:opacity-100"
+          className="absolute right-4 top-4 z-10 grid size-9 shrink-0 place-items-center rounded-full text-lg opacity-70 hover:opacity-100"
+          style={{ border: `1px solid ${d.border}`, color: d.ink }}
         >
           ×
         </button>
 
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-60">
-          Répondre
-        </p>
-        <h4 className={`mt-2 text-2xl ${t.title}`}>Votre présence</h4>
-
-        <div className="mt-6 space-y-3">
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Votre nom complet"
-            className={`w-full rounded-full border px-4 py-3 text-sm focus:outline-none ${t.input}`}
+        <div className="overflow-y-auto overscroll-contain px-5 pb-8 pt-6 sm:px-7">
+          <RsvpOrnament
+            kind={d.ornament}
+            color={d.accent}
+            className="mx-auto block h-5 w-24"
           />
-          <input
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="Téléphone WhatsApp (optionnel)"
-            className={`w-full rounded-full border px-4 py-3 text-sm focus:outline-none ${t.input}`}
-          />
-        </div>
-
-        <div className="mt-6">
-          <p className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-60">
-            Vous êtes…
+          <p
+            className="mt-3 text-center text-[10px] uppercase tracking-[0.35em]"
+            style={{ color: d.accent, fontFamily: d.eyebrowFont }}
+          >
+            {d.eyebrow}
           </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {guestTypeOrder.map((g) => {
-              const meta = guestTypeMeta[g];
-              const active = guestType === g;
-              return (
-                <button
-                  key={g}
-                  type="button"
-                  onClick={() => setGuestType(g)}
-                  className={
-                    "rounded-full px-3 py-1.5 text-xs transition " +
-                    (active ? t.active : t.inactive)
-                  }
-                >
-                  {meta.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+          <h4
+            className={
+              "mt-2 text-center text-2xl sm:text-3xl " +
+              (d.headingItalic ? "italic" : "")
+            }
+            style={{ fontFamily: d.headingFont, color: d.ink }}
+          >
+            Votre présence
+          </h4>
 
-        {published.length > 0 && (
-          <div className="mt-4 rounded-2xl border border-current/10 p-4">
-            <p className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-60">
-              Événements
+          <div className="mt-6 space-y-3">
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Votre nom complet"
+              className={
+                "w-full max-w-full border px-4 py-3 text-sm outline-none " +
+                d.fieldRadius
+              }
+              style={{ ...inputStyle, ...placeholderVar(d.placeholderInk) }}
+            />
+            <input
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Téléphone WhatsApp (optionnel)"
+              className={
+                "w-full max-w-full border px-4 py-3 text-sm outline-none " +
+                d.fieldRadius
+              }
+              style={{ ...inputStyle, ...placeholderVar(d.placeholderInk) }}
+            />
+          </div>
+
+          <div className="mt-6">
+            <p
+              className="text-[10px] uppercase tracking-[0.25em]"
+              style={{ color: d.mutedInk, fontFamily: d.eyebrowFont }}
+            >
+              Vous êtes…
             </p>
-            <div className="mt-2 space-y-2">
-              {published.map((c) => (
-                <div key={c.id} className="flex items-center gap-3">
-                  <span
-                    className="size-2.5 shrink-0 rounded-full"
-                    style={{ backgroundColor: c.color }}
-                  />
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{c.name}</p>
-                    <p className="font-mono text-[9px] uppercase tracking-wider opacity-60">
-                      {c.timeStart} · {c.label}
-                    </p>
-                  </div>
-                </div>
-              ))}
+            <div className="mt-3 flex flex-wrap gap-2">
+              {guestTypeOrder.map((g) => {
+                const meta = guestTypeMeta[g];
+                const active = guestType === g;
+                return (
+                  <Chip
+                    key={g}
+                    active={active}
+                    design={d}
+                    onClick={() => setGuestType(g)}
+                  >
+                    {meta.label}
+                  </Chip>
+                );
+              })}
             </div>
           </div>
-        )}
 
-        <div className="mt-6 flex items-center justify-between rounded-full border border-current/15 px-4 py-2">
-          <span className="font-mono text-[10px] uppercase tracking-widest opacity-60">
-            Accompagnants
-          </span>
-          <div className="flex items-center gap-4">
-            <button
-              type="button"
-              onClick={() => setPlus((v) => Math.max(0, v - 1))}
-              className="grid size-8 place-items-center rounded-full border border-current/30 text-lg"
+          {published.length > 0 && (
+            <div
+              className="mt-4 max-w-full overflow-hidden p-4"
+              style={{
+                border: `1px solid ${d.border}`,
+                borderRadius: "1rem",
+                background: d.bg,
+              }}
             >
-              −
-            </button>
-            <span className="font-mono text-lg">
-              {plus.toString().padStart(2, "0")}
+              <p
+                className="text-[10px] uppercase tracking-[0.25em]"
+                style={{ color: d.mutedInk, fontFamily: d.eyebrowFont }}
+              >
+                Événements
+              </p>
+              <div className="mt-2 space-y-2">
+                {published.map((c) => (
+                  <div key={c.id} className="flex min-w-0 items-center gap-3">
+                    <span
+                      className="size-2.5 shrink-0 rounded-full"
+                      style={{ backgroundColor: c.color }}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium">{c.name}</p>
+                      <p
+                        className="truncate text-[9px] uppercase tracking-wider"
+                        style={{ color: d.mutedInk }}
+                      >
+                        {c.timeStart} · {c.label}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div
+            className={
+              "mt-6 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-2 " +
+              d.fieldRadius
+            }
+            style={{ border: `1px solid ${d.border}` }}
+          >
+            <span
+              className="min-w-0 truncate text-[10px] uppercase tracking-widest"
+              style={{ color: d.mutedInk, fontFamily: d.eyebrowFont }}
+            >
+              Accompagnants
             </span>
-            <button
-              type="button"
-              onClick={() => setPlus((v) => Math.min(9, v + 1))}
-              className="grid size-8 place-items-center rounded-full border border-current/30 text-lg"
+            <div className="flex shrink-0 items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setPlus((v) => Math.max(0, v - 1))}
+                className="grid size-8 place-items-center rounded-full text-lg"
+                style={{ border: `1px solid ${d.border}`, color: d.ink }}
+              >
+                −
+              </button>
+              <span
+                className="w-6 text-center text-lg tabular-nums"
+                style={{ fontFamily: d.eyebrowFont, color: d.ink }}
+              >
+                {plus.toString().padStart(2, "0")}
+              </span>
+              <button
+                type="button"
+                onClick={() => setPlus((v) => Math.min(9, v + 1))}
+                className="grid size-8 place-items-center rounded-full text-lg"
+                style={{ border: `1px solid ${d.border}`, color: d.ink }}
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <p
+              className="text-[10px] uppercase tracking-[0.25em]"
+              style={{ color: d.mutedInk, fontFamily: d.eyebrowFont }}
             >
-              +
-            </button>
+              Allergies ou régime alimentaire
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {DIETARY_TAGS.map((tag) => {
+                const active = dietaryTags.includes(tag);
+                return (
+                  <Chip
+                    key={tag}
+                    active={active}
+                    design={d}
+                    onClick={() => toggleTag(tag)}
+                  >
+                    {tag}
+                  </Chip>
+                );
+              })}
+            </div>
+            <textarea
+              value={dietaryDetail}
+              onChange={(e) => setDietaryDetail(e.target.value.slice(0, 300))}
+              placeholder="Précisez si besoin (ex. allergie aux arachides, sans porc, etc.)"
+              rows={2}
+              className="mt-3 w-full max-w-full resize-none rounded-2xl border px-4 py-3 text-sm outline-none"
+              style={{ ...inputStyle, ...placeholderVar(d.placeholderInk) }}
+            />
+            <p className="mt-1 text-[10px]" style={{ color: d.mutedInk }}>
+              {dietaryDetail.length}/300
+            </p>
           </div>
-        </div>
 
-        <div className="mt-6">
-          <p className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-60">
-            Allergies ou régime alimentaire
-          </p>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {DIETARY_TAGS.map((tag) => {
-              const active = dietaryTags.includes(tag);
-              return (
-                <button
-                  key={tag}
-                  type="button"
-                  onClick={() => toggleTag(tag)}
-                  className={
-                    "rounded-full px-3 py-1.5 text-xs transition " +
-                    (active ? t.active : t.inactive)
-                  }
-                >
-                  {tag}
-                </button>
-              );
-            })}
-          </div>
           <textarea
-            value={dietaryDetail}
-            onChange={(e) => setDietaryDetail(e.target.value.slice(0, 300))}
-            placeholder="Précisez si besoin (ex. allergie aux arachides, sans porc, etc.)"
-            rows={2}
-            className={`mt-3 w-full rounded-2xl border px-4 py-3 text-sm focus:outline-none ${t.input}`}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Un mot pour les mariés (optionnel)"
+            rows={3}
+            className="mt-4 w-full max-w-full resize-none rounded-2xl border px-4 py-3 text-sm outline-none"
+            style={{ ...inputStyle, ...placeholderVar(d.placeholderInk) }}
           />
-          <p className="mt-1 text-[10px] opacity-50">{dietaryDetail.length}/300</p>
+
+          {error ? (
+            <p className="mt-3 text-center text-xs text-red-500">{error}</p>
+          ) : null}
+
+          <button
+            disabled={!canSubmit}
+            onClick={onSubmit}
+            className={
+              "mt-6 w-full py-4 text-[11px] uppercase tracking-[0.25em] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 " +
+              d.fieldRadius
+            }
+            style={{
+              background: d.accent,
+              color: d.accentInk,
+              fontFamily: d.eyebrowFont,
+            }}
+          >
+            {submitting ? "Envoi…" : "Confirmer ma venue"}
+          </button>
         </div>
-
-        <textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Un mot pour les mariés (optionnel)"
-          rows={3}
-          className={`mt-4 w-full rounded-2xl border px-4 py-3 text-sm focus:outline-none ${t.input}`}
-        />
-
-        {error ? (
-          <p className="mt-3 text-center text-xs text-red-500">{error}</p>
-        ) : null}
-
-        <button
-          disabled={!canSubmit}
-          onClick={onSubmit}
-          className={
-            "mt-6 w-full rounded-full py-4 font-mono text-[11px] uppercase tracking-[0.25em] transition " +
-            t.button +
-            " disabled:cursor-not-allowed " +
-            t.disabled
-          }
-        >
-          {submitting ? "Envoi…" : "Confirmer ma venue"}
-        </button>
       </div>
     </div>
   );
+}
+
+function Chip({
+  children,
+  active,
+  design: d,
+  onClick,
+}: {
+  children: React.ReactNode;
+  active: boolean;
+  design: RsvpDesign;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={
+        "max-w-full break-words px-3 py-1.5 text-xs transition " + d.chipRadius
+      }
+      style={
+        active
+          ? {
+              background: d.accent,
+              color: d.accentInk,
+              border: `1px solid ${d.accent}`,
+              fontFamily: d.eyebrowFont,
+            }
+          : {
+              background: "transparent",
+              color: d.mutedInk,
+              border: `1px solid ${d.border}`,
+              fontFamily: d.eyebrowFont,
+            }
+      }
+    >
+      {children}
+    </button>
+  );
+}
+
+/**
+ * Set a CSS custom property that Tailwind arbitrary placeholder styling could
+ * hook into. We inline the color directly on the element via a wrapping
+ * data attribute so no global CSS is required.
+ */
+function placeholderVar(color: string): React.CSSProperties {
+  // React types don't include the custom property, so cast.
+  return { ["--tw-placeholder-color" as never]: color } as React.CSSProperties;
 }
