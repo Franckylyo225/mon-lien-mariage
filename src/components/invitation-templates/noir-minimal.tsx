@@ -35,6 +35,8 @@ export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
           </p>
         </div>
 
+        <ScrollIndicator accent="#f5f3ee" />
+
         {(couple.countdownEnabled ?? true) && (
           <div className="mt-10">
             <Countdown
