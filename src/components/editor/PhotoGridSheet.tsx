@@ -30,6 +30,7 @@ interface PhotoGridSheetProps {
   images: string[];
   onImagesChange: (next: string[]) => void;
   maxImages?: number;
+  extraControls?: React.ReactNode;
 }
 
 export function PhotoGridSheet({
