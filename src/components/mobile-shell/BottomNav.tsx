@@ -8,8 +8,6 @@ import {
   IconUsersGroup,
   IconEye,
   IconEyeFilled,
-  IconShare,
-  IconShare3,
 } from "@tabler/icons-react";
 import type { Icon } from "@tabler/icons-react";
 
@@ -32,9 +30,7 @@ export function BottomNav({ isPublished }: BottomNavProps) {
     { to: "/dashboard", label: "Accueil", Icon: IconHome, IconActive: IconHomeFilled, exact: true },
     { to: "/dashboard/ceremonies", label: "Étapes", Icon: IconCalendarEvent, IconActive: IconCalendarFilled },
     { to: "/dashboard/guests", label: "Invités", Icon: IconUsers, IconActive: IconUsersGroup },
-    isPublished
-      ? { to: "/dashboard/share", label: "Partager", Icon: IconShare, IconActive: IconShare3 }
-      : { to: "/dashboard/preview", label: "Aperçu", Icon: IconEye, IconActive: IconEyeFilled },
+    { to: "/dashboard/preview", label: "Ma page", Icon: IconEye, IconActive: IconEyeFilled },
   ];
 
   return (

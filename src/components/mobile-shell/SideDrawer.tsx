@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import {
   IconUser,
   IconPalette,
+  IconShare,
   IconCreditCard,
   IconHelpCircle,
   IconMessageCircle,
@@ -22,6 +23,7 @@ interface SideDrawerProps {
 const items = [
   { label: "Profil du couple", Icon: IconUser, to: "/dashboard" as const },
   { label: "Thème & apparence", Icon: IconPalette, to: "/dashboard/landing" as const },
+  { label: "Liens & partages", Icon: IconShare, to: "/dashboard/share" as const },
   { label: "Paiement & facture", Icon: IconCreditCard, to: "/publish" as const },
   { label: "Aide & FAQ", Icon: IconHelpCircle, to: "/dashboard" as const },
   { label: "Contacter le support", Icon: IconMessageCircle, to: "/dashboard" as const },
