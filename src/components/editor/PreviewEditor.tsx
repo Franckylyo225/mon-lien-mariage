@@ -141,7 +141,7 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
       {/* Bottom edit bar (edit mode only) */}
       {mode === "edit" && (
         <div className="fixed inset-x-0 bottom-4 z-30 mx-auto flex max-w-xl justify-center px-4">
-          <div className="flex w-full items-center gap-2 overflow-x-auto rounded-2xl border border-border bg-background/95 p-2 shadow-lg backdrop-blur">
+          <div className="flex w-full items-center gap-2 overflow-x-auto rounded-2xl border border-background/20 bg-foreground/95 p-2 shadow-lg backdrop-blur">
             <EditChip
               icon={<ImageIcon className="size-4" />}
               label="Photo couverture"
@@ -790,7 +790,7 @@ function EditChip({
     <button
       type="button"
       onClick={onClick}
-      className="flex min-w-[9rem] shrink-0 flex-col items-start gap-0.5 rounded-xl border border-dashed border-border bg-background px-3 py-2 text-left transition active:scale-[0.97]"
+      className="flex min-w-[9rem] shrink-0 flex-col items-start gap-0.5 rounded-xl border border-dashed border-background/20 bg-foreground px-3 py-2 text-left text-background transition active:scale-[0.97]"
     >
       <span className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.2em] opacity-60">
         {icon}
