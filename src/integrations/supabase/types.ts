@@ -259,6 +259,9 @@ export type Database = {
           practical_info_enabled: boolean
           practical_parking: string | null
           published_at: string | null
+          share_description: string | null
+          share_image_url: string | null
+          share_title: string | null
           slug: string | null
           story_body: string | null
           story_enabled: boolean | null
@@ -306,6 +309,9 @@ export type Database = {
           practical_info_enabled?: boolean
           practical_parking?: string | null
           published_at?: string | null
+          share_description?: string | null
+          share_image_url?: string | null
+          share_title?: string | null
           slug?: string | null
           story_body?: string | null
           story_enabled?: boolean | null
@@ -353,6 +359,9 @@ export type Database = {
           practical_info_enabled?: boolean
           practical_parking?: string | null
           published_at?: string | null
+          share_description?: string | null
+          share_image_url?: string | null
+          share_title?: string | null
           slug?: string | null
           story_body?: string | null
           story_enabled?: boolean | null

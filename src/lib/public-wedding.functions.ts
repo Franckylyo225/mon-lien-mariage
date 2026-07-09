@@ -17,7 +17,7 @@ export const getPublicWedding = createServerFn({ method: "GET" })
     const { data: wedding, error } = await supabase
       .from("weddings")
       .select(
-        "id, bride_name, groom_name, wedding_date, city, intro_message, couple_story, hero_image_url, template_id, theme, event_type, accent, hashtag, slug, is_published, has_envelope_animation, contact_name, contact_phone, contact_email, dress_code_note, custom_info_title, custom_info_body, caption, countdown_enabled, countdown_units, countdown_style, practical_info_enabled, practical_parking, practical_accommodation, practical_contact_name, practical_contact_phone",
+        "id, bride_name, groom_name, wedding_date, city, intro_message, couple_story, hero_image_url, template_id, theme, event_type, accent, hashtag, slug, is_published, has_envelope_animation, contact_name, contact_phone, contact_email, dress_code_note, custom_info_title, custom_info_body, caption, countdown_enabled, countdown_units, countdown_style, practical_info_enabled, practical_parking, practical_accommodation, practical_contact_name, practical_contact_phone, share_title, share_description, share_image_url",
       )
       .eq("slug", data.slug)
       .eq("is_published", true)
@@ -35,6 +35,36 @@ export const getPublicWedding = createServerFn({ method: "GET" })
       .order("sort_order");
 
     return { wedding, ceremonies: ceremonies ?? [] };
+  });
+
+const slugCheckSchema = z.object({
+  slug: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .min(2)
+    .max(60)
+    .regex(/^[a-z0-9][a-z0-9-]*$/),
+  excludeId: z.string().uuid().optional(),
+});
+
+export const checkSlugAvailability = createServerFn({ method: "GET" })
+  .inputValidator((input) => slugCheckSchema.parse(input))
+  .handler(async ({ data }) => {
+    const supabase = createClient<Database>(
+      process.env.SUPABASE_URL!,
+      process.env.SUPABASE_PUBLISHABLE_KEY!,
+      { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } },
+    );
+    // Reads only slug of published weddings; anon can read via existing public policy
+    const { data: rows, error } = await supabase
+      .from("weddings")
+      .select("id, slug")
+      .eq("slug", data.slug)
+      .limit(1);
+    if (error) return { available: true }; // fail-open on read errors
+    const taken = (rows ?? []).some((r) => r.id !== data.excludeId);
+    return { available: !taken };
   });
 
 const rsvpSchema = z.object({

@@ -23,6 +23,7 @@ import { Route as OnboardingGuestsRouteImport } from './routes/onboarding.guests
 import { Route as OnboardingCoupleRouteImport } from './routes/onboarding.couple'
 import { Route as OnboardingCeremoniesRouteImport } from './routes/onboarding.ceremonies'
 import { Route as ESlugRouteImport } from './routes/e.$slug'
+import { Route as DashboardShareRouteImport } from './routes/dashboard.share'
 import { Route as DashboardPreviewRouteImport } from './routes/dashboard.preview'
 import { Route as DashboardLandingRouteImport } from './routes/dashboard.landing'
 import { Route as DashboardInvitesRouteImport } from './routes/dashboard.invites'
@@ -101,6 +102,11 @@ const ESlugRoute = ESlugRouteImport.update({
   path: '/e/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardShareRoute = DashboardShareRouteImport.update({
+  id: '/share',
+  path: '/share',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardPreviewRoute = DashboardPreviewRouteImport.update({
   id: '/preview',
   path: '/preview',
@@ -150,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/invites': typeof DashboardInvitesRoute
   '/dashboard/landing': typeof DashboardLandingRoute
   '/dashboard/preview': typeof DashboardPreviewRoute
+  '/dashboard/share': typeof DashboardShareRoute
   '/e/$slug': typeof ESlugRoute
   '/onboarding/ceremonies': typeof OnboardingCeremoniesRoute
   '/onboarding/couple': typeof OnboardingCoupleRoute
@@ -172,6 +179,7 @@ export interface FileRoutesByTo {
   '/dashboard/invites': typeof DashboardInvitesRoute
   '/dashboard/landing': typeof DashboardLandingRoute
   '/dashboard/preview': typeof DashboardPreviewRoute
+  '/dashboard/share': typeof DashboardShareRoute
   '/e/$slug': typeof ESlugRoute
   '/onboarding/ceremonies': typeof OnboardingCeremoniesRoute
   '/onboarding/couple': typeof OnboardingCoupleRoute
@@ -196,6 +204,7 @@ export interface FileRoutesById {
   '/dashboard/invites': typeof DashboardInvitesRoute
   '/dashboard/landing': typeof DashboardLandingRoute
   '/dashboard/preview': typeof DashboardPreviewRoute
+  '/dashboard/share': typeof DashboardShareRoute
   '/e/$slug': typeof ESlugRoute
   '/onboarding/ceremonies': typeof OnboardingCeremoniesRoute
   '/onboarding/couple': typeof OnboardingCoupleRoute
@@ -221,6 +230,7 @@ export interface FileRouteTypes {
     | '/dashboard/invites'
     | '/dashboard/landing'
     | '/dashboard/preview'
+    | '/dashboard/share'
     | '/e/$slug'
     | '/onboarding/ceremonies'
     | '/onboarding/couple'
@@ -243,6 +253,7 @@ export interface FileRouteTypes {
     | '/dashboard/invites'
     | '/dashboard/landing'
     | '/dashboard/preview'
+    | '/dashboard/share'
     | '/e/$slug'
     | '/onboarding/ceremonies'
     | '/onboarding/couple'
@@ -266,6 +277,7 @@ export interface FileRouteTypes {
     | '/dashboard/invites'
     | '/dashboard/landing'
     | '/dashboard/preview'
+    | '/dashboard/share'
     | '/e/$slug'
     | '/onboarding/ceremonies'
     | '/onboarding/couple'
@@ -388,6 +400,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ESlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/share': {
+      id: '/dashboard/share'
+      path: '/share'
+      fullPath: '/dashboard/share'
+      preLoaderRoute: typeof DashboardShareRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/preview': {
       id: '/dashboard/preview'
       path: '/preview'
@@ -469,6 +488,7 @@ interface DashboardRouteChildren {
   DashboardInvitesRoute: typeof DashboardInvitesRoute
   DashboardLandingRoute: typeof DashboardLandingRoute
   DashboardPreviewRoute: typeof DashboardPreviewRoute
+  DashboardShareRoute: typeof DashboardShareRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
@@ -478,6 +498,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardInvitesRoute: DashboardInvitesRoute,
   DashboardLandingRoute: DashboardLandingRoute,
   DashboardPreviewRoute: DashboardPreviewRoute,
+  DashboardShareRoute: DashboardShareRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 
@@ -527,13 +548,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

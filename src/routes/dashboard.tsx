@@ -18,6 +18,7 @@ const TITLES: Record<string, string> = {
   "/dashboard/preview": "Aperçu de ma page",
   "/dashboard/landing": "Ma page",
   "/dashboard/invites": "Invitations",
+  "/dashboard/share": "Liens & Partages",
 };
 
 function DashboardLayout() {

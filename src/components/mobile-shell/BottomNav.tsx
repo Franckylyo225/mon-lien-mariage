@@ -33,7 +33,7 @@ export function BottomNav({ isPublished }: BottomNavProps) {
     { to: "/dashboard/ceremonies", label: "Étapes", Icon: IconCalendarEvent, IconActive: IconCalendarFilled },
     { to: "/dashboard/guests", label: "Invités", Icon: IconUsers, IconActive: IconUsersGroup },
     isPublished
-      ? { to: "/dashboard/preview", label: "Ma page", Icon: IconShare, IconActive: IconShare3 }
+      ? { to: "/dashboard/share", label: "Partager", Icon: IconShare, IconActive: IconShare3 }
       : { to: "/dashboard/preview", label: "Aperçu", Icon: IconEye, IconActive: IconEyeFilled },
   ];
 

@@ -15,21 +15,40 @@ const publicWeddingQuery = (slug: string) =>
   });
 
 export const Route = createFileRoute("/e/$slug")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `Invitation — ${params.slug}` },
-      {
-        name: "description",
-        content:
-          "Vous êtes convié·e à célébrer un mariage. Découvrez les étapes et confirmez votre présence.",
-      },
-      { property: "og:title", content: "Vous êtes convié·e" },
-      {
-        property: "og:description",
-        content: "Une invitation MonMariage.ci — cliquez pour découvrir.",
-      },
-    ],
-  }),
+  head: ({ params, loaderData }) => {
+    const w = (loaderData as { wedding?: Record<string, unknown> | null } | undefined)?.wedding;
+    const bride = (w?.bride_name as string | undefined) ?? "";
+    const groom = (w?.groom_name as string | undefined) ?? "";
+    const names = bride && groom ? `${bride} & ${groom}` : "";
+    const shareTitle =
+      (w?.share_title as string | undefined) ||
+      (names ? `${names} — Vous êtes convié·e` : `Invitation — ${params.slug}`);
+    const shareDesc =
+      (w?.share_description as string | undefined) ||
+      (w?.intro_message as string | undefined) ||
+      "Vous êtes convié·e à célébrer un mariage. Découvrez les étapes et confirmez votre présence.";
+    const shareImage =
+      (w?.share_image_url as string | undefined) ||
+      (w?.hero_image_url as string | undefined) ||
+      undefined;
+    const url = `/e/${params.slug}`;
+    const meta: Array<Record<string, string>> = [
+      { title: shareTitle },
+      { name: "description", content: shareDesc },
+      { property: "og:title", content: shareTitle },
+      { property: "og:description", content: shareDesc },
+      { property: "og:type", content: "article" },
+      { property: "og:url", content: url },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: shareTitle },
+      { name: "twitter:description", content: shareDesc },
+    ];
+    if (shareImage) {
+      meta.push({ property: "og:image", content: shareImage });
+      meta.push({ name: "twitter:image", content: shareImage });
+    }
+    return { meta, links: [{ rel: "canonical", href: url }] };
+  },
   loader: ({ context, params }) =>
     context.queryClient.ensureQueryData(publicWeddingQuery(params.slug)),
   component: PublicInvitationPage,
