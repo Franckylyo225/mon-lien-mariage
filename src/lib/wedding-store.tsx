@@ -326,6 +326,8 @@ type WeddingRow = {
   event_type: string;
 
   accent: string | null;
+  accent_color: string | null;
+  background_base: string | null;
   hashtag: string | null;
   slug: string | null;
   is_published: boolean;
