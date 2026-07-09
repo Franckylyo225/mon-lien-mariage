@@ -52,6 +52,20 @@ export function PhotoGridSheet({
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Local drafts so typing feels instant; parent persists debounced.
+  const [titleDraft, setTitleDraft] = useState(titleField?.value ?? "");
+  const [bodyDraft, setBodyDraft] = useState(bodyField?.value ?? "");
+
+  // Sync from parent when the sheet (re)opens or the underlying value changes
+  // from outside (e.g. after initial load).
+  useEffect(() => {
+    if (open) {
+      setTitleDraft(titleField?.value ?? "");
+      setBodyDraft(bodyField?.value ?? "");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
   const handleFiles = async (files: FileList) => {
     if (!weddingId) {
       setError("Terminez d'abord votre profil pour ajouter des photos.");
