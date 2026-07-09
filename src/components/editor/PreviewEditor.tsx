@@ -82,6 +82,36 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
     const cleaned = next.map((c) => c.trim()).filter((c) => c.length > 0);
     persist({ dressCodeColors: cleaned });
   };
+
+  // Registry (liste de mariage) drafts
+  const registryEnabled = couple.registryEnabled ?? false;
+  const [registryTitle, setRegistryTitle] = useState(couple.registryTitle ?? "");
+  const [registryNote, setRegistryNote] = useState(couple.registryNote ?? "");
+  const [registryStores, setRegistryStores] = useState<Array<{ name: string; url?: string }>>(
+    couple.registryStores ?? [],
+  );
+  const updateStore = (i: number, patch: Partial<{ name: string; url: string }>) => {
+    const next = registryStores.map((s, idx) => (idx === i ? { ...s, ...patch } : s));
+    setRegistryStores(next);
+    const cleaned = next
+      .map((s) => ({ name: (s.name ?? "").trim(), url: (s.url ?? "").trim() }))
+      .filter((s) => s.name.length > 0);
+    persist({ registryStores: cleaned });
+  };
+  const addStore = () => {
+    if (registryStores.length >= 6) return;
+    const next = [...registryStores, { name: "", url: "" }];
+    setRegistryStores(next);
+  };
+  const removeStore = (i: number) => {
+    const next = registryStores.filter((_, idx) => idx !== i);
+    setRegistryStores(next);
+    const cleaned = next
+      .map((s) => ({ name: (s.name ?? "").trim(), url: (s.url ?? "").trim() }))
+      .filter((s) => s.name.length > 0);
+    persist({ registryStores: cleaned });
+  };
+  const registryStoreCount = registryStores.filter((s) => (s.name ?? "").trim().length > 0).length;
   const practicalEnabled = couple.practicalInfoEnabled ?? false;
   const practicalFilledCount = [
     practicalParking,
