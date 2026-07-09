@@ -692,13 +692,7 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
   );
 }
 
-type StoryStyle = NonNullable<
-  ReturnType<typeof useWedding> extends { couple: infer C }
-    ? C extends { storyStyle?: infer S }
-      ? S
-      : never
-    : never
->;
+type StoryStyle = NonNullable<Couple["storyStyle"]>;
 
 function StoryStyleControls({
   style,
