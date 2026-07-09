@@ -41,10 +41,10 @@ function LoginPage() {
         .maybeSingle();
       const step = w?.onboarding_step ?? 0;
       const targets = [
-        "/onboarding/couple",
-        "/onboarding/ceremonies",
+        "/onboarding/prenoms",
+        "/onboarding/evenement",
+        "/onboarding/dates",
         "/onboarding/theme",
-        "/onboarding/guests",
       ] as const;
       if (step < 4) {
         navigate({ to: targets[step as 0 | 1 | 2 | 3] });

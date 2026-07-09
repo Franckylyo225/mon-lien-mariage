@@ -40,7 +40,7 @@ function SignupPage() {
       return;
     }
     if (data.session) {
-      navigate({ to: "/onboarding/couple" });
+      navigate({ to: "/onboarding/prenoms" });
     } else {
       setError(
         "Compte créé. Vérifiez votre email pour activer votre compte, puis connectez-vous.",

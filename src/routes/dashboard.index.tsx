@@ -1,76 +1,145 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  IconShare,
-  IconChevronRight,
-  IconCheck,
-} from "@tabler/icons-react";
+import { IconCheck, IconChevronRight, IconLock } from "@tabler/icons-react";
 import {
   useWedding,
   daysUntil,
   formatFrenchDate,
-  configProgress,
 } from "@/lib/wedding-store";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/dashboard/")({
-  head: () => ({ meta: [{ title: "Accueil — MonMariage.ci" }] }),
+  head: () => ({ meta: [{ title: "Tableau de bord — MonMariage.ci" }] }),
   component: DashboardHome,
 });
 
+type ChecklistItem = {
+  key: string;
+  label: string;
+  description: string;
+  done: boolean;
+  to?:
+    | "/onboarding/prenoms"
+    | "/dashboard/ceremonies"
+    | "/dashboard/guests"
+    | "/dashboard/landing"
+    | "/dashboard/preview"
+    | "/publish";
+  locked?: boolean;
+};
+
 function DashboardHome() {
   const { couple, ceremonies, guests } = useWedding();
+
+  // ---- 7 configuration criteria (1 point each)
+  const criteria = [
+    !!couple.brideName && !!couple.groomName,
+    !!couple.eventType,
+    !!couple.weddingDate,
+    !!couple.theme,
+    ceremonies.some((c) => c.date && c.venue),
+    !!couple.heroImageUrl,
+    guests.length >= 5,
+  ];
+  const done = criteria.filter(Boolean).length;
+  const total = criteria.length;
+  const pct = Math.round((done / total) * 100);
+
+  // ---- checklist items
+  const infosDone = criteria[0] && criteria[1] && criteria[2];
+  const themeDone = criteria[3];
+  const programmeDone = ceremonies.length > 0 && ceremonies.every((c) => c.date && c.venue);
+  const pageDone = !!couple.heroImageUrl;
+  const invitesDone = guests.length >= 5;
+  const canPublish = programmeDone && pageDone && invitesDone;
+  const publishDone = couple.isPublished;
+
+  const items: ChecklistItem[] = [
+    {
+      key: "infos",
+      label: "Informations de base",
+      description: "Prénoms, type, dates",
+      done: infosDone,
+      to: infosDone ? undefined : "/onboarding/prenoms",
+    },
+    {
+      key: "theme",
+      label: "Thème",
+      description: "Thème visuel de la page",
+      done: themeDone,
+      to: "/dashboard/landing",
+    },
+    {
+      key: "programme",
+      label: "Le programme",
+      description: "Dot, civil, réception et leurs détails",
+      done: programmeDone,
+      to: "/dashboard/ceremonies",
+    },
+    {
+      key: "page",
+      label: "La page d'invitation",
+      description: "Photos, textes, mise en page",
+      done: pageDone,
+      to: "/dashboard/landing",
+    },
+    {
+      key: "invites",
+      label: "Les invités",
+      description: "Votre liste de convives",
+      done: invitesDone,
+      to: "/dashboard/guests",
+    },
+    {
+      key: "publish",
+      label: "Publier et partager",
+      description: "Activer le lien et le QR code",
+      done: publishDone,
+      to: canPublish ? "/publish" : undefined,
+      locked: !canPublish,
+    },
+  ];
+
+  const completed = items.filter((i) => i.done);
+  const remaining = items.filter((i) => !i.done);
+  const allComplete = remaining.length === 0;
+
   const days = couple.weddingDate ? daysUntil(couple.weddingDate) : null;
-  const { pct, items } = configProgress({ couple, ceremonies, guests });
-  const todo = items.filter((i) => !i.done).slice(0, 4);
-  const done = items.filter((i) => i.done);
+  const brideName = couple.brideName || "Prénom A";
+  const groomName = couple.groomName || "Prénom B";
 
   return (
-    <div className="space-y-8 pt-2">
-      {couple.isPublished && couple.slug ? (
-        <div className="flex items-center justify-between gap-3 rounded-xl border border-[#059669]/25 bg-[#059669]/10 px-4 py-3">
-          <p className="text-[12px] text-[#065F46]">Votre mariage est publié</p>
+    <div className="space-y-8 pt-4">
+      {/* Bloc 1 — Identité */}
+      <section className="text-center">
+        <p className="font-serif text-[24px] italic leading-tight">
+          {brideName}
+          <span className="mx-1 text-primary">&amp;</span>
+          {groomName}
+        </p>
+        {couple.weddingDate ? (
+          <p className="mt-2 text-[12px] text-muted-foreground">
+            {formatFrenchDate(couple.weddingDate)}
+            {couple.city ? <> · {couple.city}</> : null}
+            {days !== null ? <> · <span className="text-primary">{days} jours</span></> : null}
+          </p>
+        ) : (
           <Link
-            to="/e/$slug"
-            params={{ slug: couple.slug }}
-            className="flex items-center gap-1 text-[11px] font-medium text-[#065F46] underline"
+            to="/onboarding/dates"
+            className="mt-2 inline-block text-[12px] italic text-muted-foreground underline"
           >
-            <IconShare size={14} /> Partager
+            Date à définir
           </Link>
-        </div>
-      ) : null}
-
-      {/* Prénoms */}
-      <section className="pt-4 text-center">
-        <p className="font-serif text-[42px] italic leading-tight">
-          {couple.brideName || "Prénom A"}
-        </p>
-        <p className="my-1 font-serif text-[22px] italic text-primary">&</p>
-        <p className="font-serif text-[42px] italic leading-tight">
-          {couple.groomName || "Prénom B"}
-        </p>
-        <p className="mt-5 text-[12px] text-muted-foreground">
-          {couple.weddingDate ? (
-            <>
-              {formatFrenchDate(couple.weddingDate)}
-              {days !== null ? (
-                <> · <span className="text-primary">{days} jours</span></>
-              ) : null}
-            </>
-          ) : (
-            <Link to="/dashboard/ceremonies" className="underline">
-              Date à définir
-            </Link>
-          )}
-        </p>
+        )}
       </section>
 
-      {/* Progress */}
+      {/* Bloc 2 — Progression */}
       <section>
         <div className="mb-2 flex items-center justify-between">
-          <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+          <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
             Configuration
           </p>
-          <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-foreground">
-            {pct}%
+          <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+            {done} / {total}
           </p>
         </div>
         <div className="h-1.5 overflow-hidden rounded-full bg-muted">
@@ -81,82 +150,87 @@ function DashboardHome() {
         </div>
       </section>
 
-      {/* Metrics */}
-      <section className="grid grid-cols-2 gap-3">
-        <Metric label="Étapes" value={ceremonies.length} to="/dashboard/ceremonies" />
-        <Metric label="Invités" value={guests.length} to="/dashboard/guests" />
-      </section>
-
-      <Link
-        to="/dashboard/stats"
-        className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3 transition active:bg-secondary/60"
-      >
-        <span className="text-[13px]">Statistiques RSVP</span>
-        <IconChevronRight size={16} className="text-muted-foreground" />
-      </Link>
-
-      {/* Checklist */}
-      {todo.length > 0 ? (
-        <section>
-          <h2 className="mb-3 text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-            À finaliser
-          </h2>
-          <ul className="divide-y divide-border/60 rounded-xl border border-border bg-card">
-            {todo.map((i) => (
-              <li key={i.label}>
-                <Link
-                  to={destFor(i.label)}
-                  className="flex items-center gap-3 px-4 py-3 transition active:bg-secondary/60"
-                >
-                  <span className="grid size-5 shrink-0 place-items-center rounded-full border border-border" />
-                  <span className="min-w-0 flex-1 text-[13px]">{i.label}</span>
-                  <IconChevronRight size={16} className="text-muted-foreground" />
-                </Link>
-              </li>
-            ))}
-
-            {done.slice(0, 2).map((i) => (
-              <li key={i.label} className="flex items-center gap-3 px-4 py-3">
-                <span className="grid size-5 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground">
-                  <IconCheck size={12} strokeWidth={3} />
-                </span>
-                <span className="min-w-0 flex-1 text-[13px] text-muted-foreground line-through">
-                  {i.label}
-                </span>
-              </li>
+      {/* Bloc 3 — Checklist */}
+      <section className="space-y-4">
+        {completed.length > 0 ? (
+          <ul className="divide-y divide-border/60 overflow-hidden rounded-xl border border-border bg-card/60">
+            {completed.map((i) => (
+              <ChecklistRow key={i.key} item={i} />
             ))}
           </ul>
-        </section>
-      ) : null}
+        ) : null}
 
-      {/* CTA */}
-      <Link
-        to="/dashboard/preview"
-        className="block w-full rounded-xl bg-foreground py-4 text-center text-[13px] font-medium text-background transition active:scale-[0.99]"
-      >
-        Voir ma page d'invitation
-      </Link>
+        {remaining.length > 0 ? (
+          <ul className="divide-y divide-border/60 overflow-hidden rounded-xl border border-border bg-card">
+            {remaining.map((i) => (
+              <ChecklistRow key={i.key} item={i} />
+            ))}
+          </ul>
+        ) : null}
+
+        {allComplete ? (
+          <div className="rounded-xl border border-border bg-card p-5 text-center">
+            <p className="font-serif text-xl italic">Tout est prêt</p>
+            <p className="mt-1 text-[12px] text-muted-foreground">
+              Publiez votre mariage !
+            </p>
+            <Link
+              to="/publish"
+              className="mt-4 block w-full rounded-lg bg-foreground py-3 text-[13px] font-medium text-background transition active:scale-[0.99]"
+            >
+              Publier
+            </Link>
+          </div>
+        ) : null}
+      </section>
     </div>
   );
 }
 
-function Metric({ label, value, to }: { label: string; value: number; to: string }) {
-  return (
-    <Link
-      to={to}
-      className="rounded-xl border border-border bg-card p-4 transition active:bg-secondary/60"
+function ChecklistRow({ item }: { item: ChecklistItem }) {
+  const inner = (
+    <div
+      className={cn(
+        "flex items-center gap-3 px-4 py-3.5",
+        !item.done && !item.locked && item.to && "transition active:bg-secondary/60",
+        item.done && "opacity-70",
+      )}
     >
-      <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-        {label}
-      </p>
-      <p className="mt-1 font-serif text-[22px] italic leading-none">{value}</p>
-    </Link>
+      <span
+        className={cn(
+          "grid size-5 shrink-0 place-items-center rounded-full",
+          item.done
+            ? "bg-foreground text-background"
+            : "border border-border",
+        )}
+      >
+        {item.done ? <IconCheck size={12} strokeWidth={3} /> : null}
+      </span>
+      <div className="min-w-0 flex-1">
+        <p
+          className={cn(
+            "text-[13px]",
+            item.done && "line-through text-muted-foreground",
+          )}
+        >
+          {item.label}
+        </p>
+        <p className="truncate text-[11px] text-muted-foreground">
+          {item.description}
+        </p>
+      </div>
+      {item.locked ? (
+        <IconLock size={16} className="text-muted-foreground" />
+      ) : item.to ? (
+        <IconChevronRight size={16} className="text-muted-foreground" />
+      ) : null}
+    </div>
+  );
+
+  if (item.locked || !item.to) return <li>{inner}</li>;
+  return (
+    <li>
+      <Link to={item.to}>{inner}</Link>
+    </li>
   );
 }
-
-function destFor(label: string) {
-  if (label.toLowerCase().includes("étape")) return "/dashboard/ceremonies" as const;
-  if (label.toLowerCase().includes("invités")) return "/dashboard/guests" as const;
-  return "/dashboard/landing" as const;
-}
-

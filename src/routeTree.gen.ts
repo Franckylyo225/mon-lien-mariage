@@ -19,9 +19,9 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as PublishSuccessRouteImport } from './routes/publish.success'
 import { Route as OnboardingThemeRouteImport } from './routes/onboarding.theme'
-import { Route as OnboardingGuestsRouteImport } from './routes/onboarding.guests'
-import { Route as OnboardingCoupleRouteImport } from './routes/onboarding.couple'
-import { Route as OnboardingCeremoniesRouteImport } from './routes/onboarding.ceremonies'
+import { Route as OnboardingPrenomsRouteImport } from './routes/onboarding.prenoms'
+import { Route as OnboardingEvenementRouteImport } from './routes/onboarding.evenement'
+import { Route as OnboardingDatesRouteImport } from './routes/onboarding.dates'
 import { Route as ESlugRouteImport } from './routes/e.$slug'
 import { Route as DashboardStatsRouteImport } from './routes/dashboard.stats'
 import { Route as DashboardShareRouteImport } from './routes/dashboard.share'
@@ -83,19 +83,19 @@ const OnboardingThemeRoute = OnboardingThemeRouteImport.update({
   path: '/theme',
   getParentRoute: () => OnboardingRoute,
 } as any)
-const OnboardingGuestsRoute = OnboardingGuestsRouteImport.update({
-  id: '/guests',
-  path: '/guests',
+const OnboardingPrenomsRoute = OnboardingPrenomsRouteImport.update({
+  id: '/prenoms',
+  path: '/prenoms',
   getParentRoute: () => OnboardingRoute,
 } as any)
-const OnboardingCoupleRoute = OnboardingCoupleRouteImport.update({
-  id: '/couple',
-  path: '/couple',
+const OnboardingEvenementRoute = OnboardingEvenementRouteImport.update({
+  id: '/evenement',
+  path: '/evenement',
   getParentRoute: () => OnboardingRoute,
 } as any)
-const OnboardingCeremoniesRoute = OnboardingCeremoniesRouteImport.update({
-  id: '/ceremonies',
-  path: '/ceremonies',
+const OnboardingDatesRoute = OnboardingDatesRouteImport.update({
+  id: '/dates',
+  path: '/dates',
   getParentRoute: () => OnboardingRoute,
 } as any)
 const ESlugRoute = ESlugRouteImport.update({
@@ -165,9 +165,9 @@ export interface FileRoutesByFullPath {
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/stats': typeof DashboardStatsRoute
   '/e/$slug': typeof ESlugRoute
-  '/onboarding/ceremonies': typeof OnboardingCeremoniesRoute
-  '/onboarding/couple': typeof OnboardingCoupleRoute
-  '/onboarding/guests': typeof OnboardingGuestsRoute
+  '/onboarding/dates': typeof OnboardingDatesRoute
+  '/onboarding/evenement': typeof OnboardingEvenementRoute
+  '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
   '/publish/success': typeof PublishSuccessRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -189,9 +189,9 @@ export interface FileRoutesByTo {
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/stats': typeof DashboardStatsRoute
   '/e/$slug': typeof ESlugRoute
-  '/onboarding/ceremonies': typeof OnboardingCeremoniesRoute
-  '/onboarding/couple': typeof OnboardingCoupleRoute
-  '/onboarding/guests': typeof OnboardingGuestsRoute
+  '/onboarding/dates': typeof OnboardingDatesRoute
+  '/onboarding/evenement': typeof OnboardingEvenementRoute
+  '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
   '/publish/success': typeof PublishSuccessRoute
   '/dashboard': typeof DashboardIndexRoute
@@ -215,9 +215,9 @@ export interface FileRoutesById {
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/stats': typeof DashboardStatsRoute
   '/e/$slug': typeof ESlugRoute
-  '/onboarding/ceremonies': typeof OnboardingCeremoniesRoute
-  '/onboarding/couple': typeof OnboardingCoupleRoute
-  '/onboarding/guests': typeof OnboardingGuestsRoute
+  '/onboarding/dates': typeof OnboardingDatesRoute
+  '/onboarding/evenement': typeof OnboardingEvenementRoute
+  '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
   '/publish/success': typeof PublishSuccessRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -242,9 +242,9 @@ export interface FileRouteTypes {
     | '/dashboard/share'
     | '/dashboard/stats'
     | '/e/$slug'
-    | '/onboarding/ceremonies'
-    | '/onboarding/couple'
-    | '/onboarding/guests'
+    | '/onboarding/dates'
+    | '/onboarding/evenement'
+    | '/onboarding/prenoms'
     | '/onboarding/theme'
     | '/publish/success'
     | '/dashboard/'
@@ -266,9 +266,9 @@ export interface FileRouteTypes {
     | '/dashboard/share'
     | '/dashboard/stats'
     | '/e/$slug'
-    | '/onboarding/ceremonies'
-    | '/onboarding/couple'
-    | '/onboarding/guests'
+    | '/onboarding/dates'
+    | '/onboarding/evenement'
+    | '/onboarding/prenoms'
     | '/onboarding/theme'
     | '/publish/success'
     | '/dashboard'
@@ -291,9 +291,9 @@ export interface FileRouteTypes {
     | '/dashboard/share'
     | '/dashboard/stats'
     | '/e/$slug'
-    | '/onboarding/ceremonies'
-    | '/onboarding/couple'
-    | '/onboarding/guests'
+    | '/onboarding/dates'
+    | '/onboarding/evenement'
+    | '/onboarding/prenoms'
     | '/onboarding/theme'
     | '/publish/success'
     | '/dashboard/'
@@ -384,25 +384,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingThemeRouteImport
       parentRoute: typeof OnboardingRoute
     }
-    '/onboarding/guests': {
-      id: '/onboarding/guests'
-      path: '/guests'
-      fullPath: '/onboarding/guests'
-      preLoaderRoute: typeof OnboardingGuestsRouteImport
+    '/onboarding/prenoms': {
+      id: '/onboarding/prenoms'
+      path: '/prenoms'
+      fullPath: '/onboarding/prenoms'
+      preLoaderRoute: typeof OnboardingPrenomsRouteImport
       parentRoute: typeof OnboardingRoute
     }
-    '/onboarding/couple': {
-      id: '/onboarding/couple'
-      path: '/couple'
-      fullPath: '/onboarding/couple'
-      preLoaderRoute: typeof OnboardingCoupleRouteImport
+    '/onboarding/evenement': {
+      id: '/onboarding/evenement'
+      path: '/evenement'
+      fullPath: '/onboarding/evenement'
+      preLoaderRoute: typeof OnboardingEvenementRouteImport
       parentRoute: typeof OnboardingRoute
     }
-    '/onboarding/ceremonies': {
-      id: '/onboarding/ceremonies'
-      path: '/ceremonies'
-      fullPath: '/onboarding/ceremonies'
-      preLoaderRoute: typeof OnboardingCeremoniesRouteImport
+    '/onboarding/dates': {
+      id: '/onboarding/dates'
+      path: '/dates'
+      fullPath: '/onboarding/dates'
+      preLoaderRoute: typeof OnboardingDatesRouteImport
       parentRoute: typeof OnboardingRoute
     }
     '/e/$slug': {
@@ -528,16 +528,16 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 )
 
 interface OnboardingRouteChildren {
-  OnboardingCeremoniesRoute: typeof OnboardingCeremoniesRoute
-  OnboardingCoupleRoute: typeof OnboardingCoupleRoute
-  OnboardingGuestsRoute: typeof OnboardingGuestsRoute
+  OnboardingDatesRoute: typeof OnboardingDatesRoute
+  OnboardingEvenementRoute: typeof OnboardingEvenementRoute
+  OnboardingPrenomsRoute: typeof OnboardingPrenomsRoute
   OnboardingThemeRoute: typeof OnboardingThemeRoute
 }
 
 const OnboardingRouteChildren: OnboardingRouteChildren = {
-  OnboardingCeremoniesRoute: OnboardingCeremoniesRoute,
-  OnboardingCoupleRoute: OnboardingCoupleRoute,
-  OnboardingGuestsRoute: OnboardingGuestsRoute,
+  OnboardingDatesRoute: OnboardingDatesRoute,
+  OnboardingEvenementRoute: OnboardingEvenementRoute,
+  OnboardingPrenomsRoute: OnboardingPrenomsRoute,
   OnboardingThemeRoute: OnboardingThemeRoute,
 }
 

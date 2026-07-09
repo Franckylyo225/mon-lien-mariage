@@ -3,41 +3,42 @@ import { useState } from "react";
 import { useWedding } from "@/lib/wedding-store";
 import { Field } from "./signup";
 
-export const Route = createFileRoute("/onboarding/couple")({
+export const Route = createFileRoute("/onboarding/prenoms")({
   head: () => ({ meta: [{ title: "Étape 1 / 4 — Vos prénoms" }] }),
-  component: Step1,
+  component: StepPrenoms,
 });
 
-function Step1() {
+function StepPrenoms() {
   const { couple, updateCouple, setOnboardingStep } = useWedding();
   const navigate = useNavigate();
   const [brideName, setBride] = useState(couple.brideName ?? "");
   const [groomName, setGroom] = useState(couple.groomName ?? "");
-  const [weddingDate, setDate] = useState(couple.weddingDate ?? "");
+
+  const valid = brideName.trim() && groomName.trim();
 
   return (
     <form
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
-        if (!brideName.trim() || !groomName.trim()) return;
-        updateCouple({ brideName: brideName.trim(), groomName: groomName.trim(), weddingDate });
-        setOnboardingStep(1);
-        navigate({ to: "/onboarding/ceremonies" });
+        if (!valid) return;
+        await updateCouple({
+          brideName: brideName.trim(),
+          groomName: groomName.trim(),
+        });
+        await setOnboardingStep(1);
+        navigate({ to: "/onboarding/evenement" });
       }}
       className="space-y-6"
     >
       <div>
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary">
-          Vos prénoms
-        </p>
-        <h1 className="mt-3 font-serif text-4xl italic">Qui se marie ?</h1>
+        <h1 className="font-serif text-4xl italic">Vos prénoms</h1>
         <p className="mt-3 text-sm text-muted-foreground">
-          Ces prénoms apparaîtront sur votre page d'invitation.
+          Ils apparaîtront en grand sur votre page d'invitation.
         </p>
       </div>
 
       <div className="space-y-4">
-        <Field label="Prénom marié·e A">
+        <Field label="Prénom marié(e) A">
           <input
             required
             value={brideName}
@@ -46,7 +47,7 @@ function Step1() {
             placeholder="Aïcha"
           />
         </Field>
-        <Field label="Prénom marié·e B">
+        <Field label="Prénom marié(e) B">
           <input
             required
             value={groomName}
@@ -55,20 +56,12 @@ function Step1() {
             placeholder="Kouamé"
           />
         </Field>
-        <Field label="Date du mariage (facultatif)">
-          <input
-            type="date"
-            value={weddingDate}
-            onChange={(e) => setDate(e.target.value)}
-            placeholder="JJ/MM/AAAA"
-            className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-          />
-        </Field>
       </div>
 
       <button
         type="submit"
-        className="w-full rounded-lg bg-primary px-4 py-3.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+        disabled={!valid}
+        className="w-full rounded-lg bg-primary px-4 py-3.5 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-40"
       >
         Continuer
       </button>
