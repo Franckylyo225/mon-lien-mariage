@@ -590,7 +590,7 @@ export function TemplateBottomSections({
       <LocationsSection ceremonies={ceremonies} accent={accent} />
       <PracticalInfoSection couple={couple} accent={accent} />
       <ContactSection couple={couple} accent={accent} />
-      <DressCodeSection note={couple.dressCodeNote} accent={accent} />
+      <DressCodeSection note={couple.dressCodeNote} colors={couple.dressCodeColors} accent={accent} />
       <CustomInfoSection
         title={couple.customInfoTitle}
         body={couple.customInfoBody}
