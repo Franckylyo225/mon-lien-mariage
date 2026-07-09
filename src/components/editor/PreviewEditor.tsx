@@ -660,3 +660,42 @@ function Field({
     </div>
   );
 }
+
+function StyleRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <span className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+        {label}
+      </span>
+      <div className="flex flex-wrap items-center justify-end gap-1.5">{children}</div>
+    </div>
+  );
+}
+
+function StylePill({
+  active,
+  onClick,
+  className,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "rounded-full border px-3 py-1.5 text-xs transition",
+        active
+          ? "border-foreground bg-foreground text-background"
+          : "border-border bg-background hover:border-foreground/40",
+        className,
+      )}
+    >
+      {children}
+    </button>
+  );
+}
