@@ -145,6 +145,14 @@
   animation: pulseDot 2s ease-in-out infinite;
 }
 
+/* Editable zone highlight — used in edit mode on preview page */
+@utility preview-editable {
+  outline: 1.5px dashed #D97706;
+  outline-offset: -4px;
+  border-radius: 4px;
+  transition: outline-color 200ms ease;
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
