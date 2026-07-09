@@ -649,7 +649,16 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
         images={couple.storyImages ?? []}
         onImagesChange={(next) => persist({ storyImages: next })}
         maxImages={8}
+        extraControls={
+          <StoryStyleControls
+            style={couple.storyStyle ?? {}}
+            onChange={(patch) =>
+              persist({ storyStyle: { ...(couple.storyStyle ?? {}), ...patch } })
+            }
+          />
+        }
       />
+
 
       <PhotoGridSheet
         open={sheet === "gallery"}
