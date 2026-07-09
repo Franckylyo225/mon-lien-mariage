@@ -1,14 +1,22 @@
-import { formatFrenchDate, daysUntil } from "@/lib/wedding-store";
+import { formatFrenchDate } from "@/lib/wedding-store";
 import type { TemplateProps } from "./types";
 import { CeremonyProgramTabs } from "./program-tabs";
+import { Countdown, TemplateBottomSections } from "./sections";
 
 export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
   const published = ceremonies.filter((c) => c.status === "publiée");
-  const days = daysUntil(couple.weddingDate);
 
   return (
     <main className="min-h-screen bg-[#0d0d0d] text-[#f5f3ee]">
       <article className="mx-auto max-w-2xl px-6 pb-24 pt-16 sm:px-10">
+        {couple.heroImageUrl ? (
+          <img
+            src={couple.heroImageUrl}
+            alt=""
+            className="mb-12 aspect-[16/10] w-full object-cover grayscale"
+          />
+        ) : null}
+
         <p className="font-mono text-[10px] uppercase tracking-[0.5em] text-[#f5f3ee]/50">
           Save — the — date
         </p>
@@ -20,25 +28,27 @@ export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
             </span>
             <span className="block">{couple.groomName}</span>
           </h1>
+          <p className="mt-6 text-center font-mono text-[10px] uppercase tracking-[0.4em] text-[#f5f3ee]/60">
+            {formatFrenchDate(couple.weddingDate)} · {couple.city}
+          </p>
         </div>
 
-        <div className="mt-10 grid grid-cols-3 gap-4 text-center">
-          <Kpi label="Jour J − " value={days} />
-          <Kpi label="Cérémonies" value={published.length} />
-          <Kpi label="Ville" value={couple.city} />
+        <div className="mt-10">
+          <Countdown
+            targetDate={couple.weddingDate}
+            tone={{
+              cellBg: "bg-[#f5f3ee]/5",
+              cellBorder: "border border-[#f5f3ee]/15",
+              numberClass: "text-3xl font-medium tracking-tight text-[#f5f3ee]",
+              labelClass:
+                "font-mono text-[9px] uppercase tracking-[0.3em] text-[#f5f3ee]/50",
+            }}
+          />
         </div>
 
         <p className="mt-12 text-center text-sm leading-relaxed text-[#f5f3ee]/70">
           {couple.introMessage}
         </p>
-
-        {couple.heroImageUrl ? (
-          <img
-            src={couple.heroImageUrl}
-            alt=""
-            className="mt-14 aspect-[16/10] w-full object-cover grayscale"
-          />
-        ) : null}
 
         <section className="mt-16">
           <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#f5f3ee]/50">
@@ -51,21 +61,13 @@ export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
 
         {rsvpSlot}
 
+        <TemplateBottomSections couple={couple} ceremonies={published} accent="#f5f3ee" />
+
         <footer className="mt-16 border-t border-[#f5f3ee]/15 pt-8 text-center font-mono text-[10px] uppercase tracking-[0.4em] text-[#f5f3ee]/40">
-          {formatFrenchDate(couple.weddingDate)}
+          {couple.hashtag ?? formatFrenchDate(couple.weddingDate)}
         </footer>
       </article>
     </main>
   );
 }
 
-function Kpi({ label, value }: { label: string; value: string | number }) {
-  return (
-    <div>
-      <p className="font-mono text-[10px] uppercase tracking-widest text-[#f5f3ee]/40">
-        {label}
-      </p>
-      <p className="mt-2 text-3xl font-medium tracking-tight">{value}</p>
-    </div>
-  );
-}

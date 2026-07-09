@@ -98,7 +98,14 @@ export interface Couple {
   isLocked: boolean;
   publishedAt?: string;
   hasEnvelopeAnimation?: boolean;
+  contactName?: string;
+  contactPhone?: string;
+  contactEmail?: string;
+  dressCodeNote?: string;
+  customInfoTitle?: string;
+  customInfoBody?: string;
 }
+
 
 export interface Account {
   email: string | null;
@@ -155,7 +162,15 @@ const defaultCouple = (): Couple => ({
   hashtag: "#AichaEtStephane2027",
   isPublished: false,
   isLocked: false,
+  contactName: "Mariam Diabaté",
+  contactPhone: "+225 07 08 09 10 11",
+  contactEmail: "contact@aicha-stephane.ci",
+  dressCodeNote: "Élégance Riviera — accents dorés et terracotta bienvenus.",
+  customInfoTitle: "Bon à savoir",
+  customInfoBody:
+    "Un service de navette gratuit sera disponible depuis l'hôtel Ivoire à partir de 18h30.",
 });
+
 
 const defaultAccount = (): Account => ({
   email: null,
@@ -186,6 +201,7 @@ const demoCeremonies = (): Ceremony[] => [
     timeStart: "09:00",
     timeEnd: "13:00",
     venue: "Concession familiale, Yopougon",
+    mapsUrl: "https://maps.google.com/?q=Yopougon+Abidjan",
     dressCode: "Tenue traditionnelle exigée",
     color: "#993556",
     capacity: 80,
@@ -207,6 +223,7 @@ const demoCeremonies = (): Ceremony[] => [
     timeStart: "11:30",
     timeEnd: "13:00",
     venue: "Hôtel de Ville, Cocody",
+    mapsUrl: "https://maps.google.com/?q=Mairie+de+Cocody+Abidjan",
     dressCode: "Elégance Riviera",
     color: "#8b6f5e",
     capacity: 60,
@@ -222,6 +239,7 @@ const demoCeremonies = (): Ceremony[] => [
     timeStart: "19:00",
     timeEnd: "02:00",
     venue: "Les Jardins de Cocody, Riviera Golf",
+    mapsUrl: "https://maps.google.com/?q=Riviera+Golf+Cocody",
     dressCode: "Cocktail chic — accent doré",
     color: "#d97757",
     capacity: 300,
@@ -256,7 +274,14 @@ type WeddingRow = {
   published_at: string | null;
   has_envelope_animation: boolean;
   onboarding_step: number;
+  contact_name: string | null;
+  contact_phone: string | null;
+  contact_email: string | null;
+  dress_code_note: string | null;
+  custom_info_title: string | null;
+  custom_info_body: string | null;
 };
+
 
 function rowToCouple(w: WeddingRow): Couple {
   return {
@@ -276,6 +301,12 @@ function rowToCouple(w: WeddingRow): Couple {
     isLocked: !!w.is_locked,
     publishedAt: w.published_at ?? undefined,
     hasEnvelopeAnimation: !!w.has_envelope_animation,
+    contactName: w.contact_name ?? undefined,
+    contactPhone: w.contact_phone ?? undefined,
+    contactEmail: w.contact_email ?? undefined,
+    dressCodeNote: w.dress_code_note ?? undefined,
+    customInfoTitle: w.custom_info_title ?? undefined,
+    customInfoBody: w.custom_info_body ?? undefined,
   };
 }
 
@@ -297,6 +328,12 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.isLocked !== undefined) r.is_locked = p.isLocked;
   if (p.publishedAt !== undefined) r.published_at = p.publishedAt;
   if (p.hasEnvelopeAnimation !== undefined) r.has_envelope_animation = p.hasEnvelopeAnimation;
+  if (p.contactName !== undefined) r.contact_name = p.contactName;
+  if (p.contactPhone !== undefined) r.contact_phone = p.contactPhone;
+  if (p.contactEmail !== undefined) r.contact_email = p.contactEmail;
+  if (p.dressCodeNote !== undefined) r.dress_code_note = p.dressCodeNote;
+  if (p.customInfoTitle !== undefined) r.custom_info_title = p.customInfoTitle;
+  if (p.customInfoBody !== undefined) r.custom_info_body = p.customInfoBody;
   return r;
 }
 

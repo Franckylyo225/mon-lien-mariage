@@ -1,11 +1,10 @@
-import { daysUntil, formatFrenchDate, nextCeremony } from "@/lib/wedding-store";
+import { formatFrenchDate } from "@/lib/wedding-store";
 import type { TemplateProps } from "./types";
 import { CeremonyProgramTabs } from "./program-tabs";
+import { Countdown, TemplateBottomSections } from "./sections";
 
 export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
   const published = ceremonies.filter((c) => c.status === "publiée");
-  const days = daysUntil(couple.weddingDate);
-  const upcoming = nextCeremony(published);
   const accent = couple.accent ?? "#d97757";
 
   return (
@@ -45,34 +44,16 @@ export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
           </div>
         </header>
 
-        <section className="mt-10 flex items-center justify-center gap-6 text-center">
-          <div>
-            <p className="font-serif text-4xl italic" style={{ color: accent }}>
-              {days}
-            </p>
-            <p className="font-mono text-[9px] uppercase tracking-[0.25em] opacity-60">
-              jours
-            </p>
-          </div>
-          <div className="h-10 w-px bg-[#4a2a20]/15" />
-          <div>
-            <p className="font-serif text-4xl italic">{published.length}</p>
-            <p className="font-mono text-[9px] uppercase tracking-[0.25em] opacity-60">
-              cérémonies
-            </p>
-          </div>
-          {upcoming ? (
-            <>
-              <div className="h-10 w-px bg-[#4a2a20]/15" />
-              <div>
-                <p className="font-serif text-4xl italic">{upcoming.timeStart}</p>
-                <p className="font-mono text-[9px] uppercase tracking-[0.25em] opacity-60">
-                  {upcoming.label}
-                </p>
-              </div>
-            </>
-          ) : null}
-        </section>
+        <div className="mt-10">
+          <Countdown
+            targetDate={couple.weddingDate}
+            tone={{
+              cellBg: "bg-white",
+              cellBorder: "ring-1 ring-[#4a2a20]/10",
+              numberClass: `text-3xl font-serif italic`,
+            }}
+          />
+        </div>
 
         <p className="mt-12 text-pretty text-center text-sm italic leading-relaxed opacity-80">
           {couple.introMessage}
@@ -90,6 +71,8 @@ export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
         </section>
 
         {rsvpSlot}
+
+        <TemplateBottomSections couple={couple} ceremonies={published} accent={accent} />
 
         <footer className="pt-16 text-center font-mono text-[9px] uppercase tracking-[0.3em] opacity-40">
           {couple.hashtag ?? `MonMariage — ${couple.brideName[0]}&${couple.groomName[0]}`}
