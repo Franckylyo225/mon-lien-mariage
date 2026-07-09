@@ -139,23 +139,28 @@ function PublicInvitationPage() {
     publicSlug: c.public_slug ?? "",
   }));
 
-  const Template = templateComponents[couple.templateId];
+  const resolved = resolveTheme(couple);
+  // Override couple.accent with resolved accent so templates that read couple.accent
+  // reflect the user's chosen colour.
+  const coupleTheme: Couple = { ...couple, accent: resolved.accent };
+  const Template = templateComponents[coupleTheme.templateId];
 
   return (
-    <div className="relative" data-theme={couple.theme}>
-      {couple.hasEnvelopeAnimation && !animPlayed ? (
+    <div className="relative" data-theme={coupleTheme.theme} style={{ backgroundColor: resolved.bg }}>
+      <style dangerouslySetInnerHTML={{ __html: `:root{${themeCssString(resolved)}}` }} />
+      {coupleTheme.hasEnvelopeAnimation && !animPlayed ? (
         <EnvelopeAnimation
-          brideName={couple.brideName}
-          groomName={couple.groomName}
+          brideName={coupleTheme.brideName}
+          groomName={coupleTheme.groomName}
           onDone={() => setAnimPlayed(true)}
         />
       ) : null}
       <Template
-        couple={couple}
+        couple={coupleTheme}
         ceremonies={ceremonies}
         rsvpSlot={
           <TemplateRsvpForm
-            tone={templateRsvpTone[couple.templateId]}
+            tone={templateRsvpTone[coupleTheme.templateId]}
             weddingId={w.id}
             ceremonies={ceremonies}
           />
@@ -164,6 +169,7 @@ function PublicInvitationPage() {
     </div>
   );
 }
+
 
 function NotFound() {
   return (
