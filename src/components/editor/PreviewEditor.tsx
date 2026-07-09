@@ -34,7 +34,8 @@ type Sheet =
   | "practical"
   | "registry"
   | "story"
-  | "gallery";
+  | "gallery"
+  | "theme";
 
 const CAPTION_SUGGESTIONS = [
   "Ils se disent oui",
