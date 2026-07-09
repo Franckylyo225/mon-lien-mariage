@@ -128,6 +128,14 @@ export interface Couple {
   isLocked: boolean;
   publishedAt?: string;
   hasEnvelopeAnimation?: boolean;
+  hasOpeningEffect?: boolean;
+  openingEffectSlug?:
+    | "envelope-royal"
+    | "envelope-floral"
+    | "grand-portal"
+    | "cinema-curtain"
+    | "falling-petals"
+    | "book-open";
   contactName?: string;
   contactPhone?: string;
   contactEmail?: string;
