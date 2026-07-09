@@ -72,6 +72,17 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
     couple.countdownUnits && couple.countdownUnits.length > 0
       ? couple.countdownUnits
       : ["days", "hours", "minutes", "seconds"];
+  const countdownStyle = couple.countdownStyle ?? {};
+  const styleColor = countdownStyle.color ?? "auto";
+  const styleSize = countdownStyle.size ?? "md";
+  const styleFont = countdownStyle.font ?? "serif";
+  const styleAnimation = countdownStyle.animation ?? "none";
+
+  const updateCountdownStyle = (
+    patch: Partial<NonNullable<typeof couple.countdownStyle>>,
+  ) => {
+    persist({ countdownStyle: { ...countdownStyle, ...patch } });
+  };
 
   // Detect if the wedding date is in the past (for auto-hide messaging)
   const weddingPast = (() => {
