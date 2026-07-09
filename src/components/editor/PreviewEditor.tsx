@@ -12,7 +12,6 @@ import {
   Users,
   Calendar,
   X,
-  Pencil,
   ImageIcon,
   Timer,
   Info,
