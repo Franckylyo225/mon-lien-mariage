@@ -280,6 +280,10 @@ interface ModalProps {
   setPlus: (fn: (v: number) => number) => void;
   message: string;
   setMessage: (v: string) => void;
+  dietaryTags: string[];
+  toggleTag: (tag: string) => void;
+  dietaryDetail: string;
+  setDietaryDetail: (v: string) => void;
   submitting: boolean;
   canSubmit: boolean;
   error: string | null;
