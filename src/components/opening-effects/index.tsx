@@ -114,6 +114,10 @@ export function OpeningEffect({ slug, couple, forcePlay, onDone }: Props) {
   }
 
   switch (slug) {
+    case "envelope-wax-sage":
+      return <EnvelopeWaxSage couple={couple} onDone={finish} />;
+    case "envelope-navy-pearl":
+      return <EnvelopeNavyPearl couple={couple} onDone={finish} />;
     case "envelope-royal":
       return <EnvelopeRoyal couple={couple} onDone={finish} />;
     case "envelope-floral":
