@@ -320,6 +320,10 @@ type WeddingRow = {
   practical_accommodation: string | null;
   practical_contact_name: string | null;
   practical_contact_phone: string | null;
+  story_enabled: boolean | null;
+  story_title: string | null;
+  story_body: string | null;
+  story_images: string[] | null;
 };
 
 
