@@ -151,4 +151,12 @@
   h1, h2, h3, h4 {
     font-family: var(--font-serif);
   }
+
+  /* Themed placeholder color for RSVP inputs — driven by the inline
+     `--rsvp-placeholder` variable set on each input. */
+  [data-rsvp-input]::placeholder,
+  [data-rsvp-input]::-webkit-input-placeholder {
+    color: var(--rsvp-placeholder, currentColor);
+    opacity: 1;
+  }
 }
