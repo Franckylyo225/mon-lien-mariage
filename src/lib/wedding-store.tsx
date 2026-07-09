@@ -92,6 +92,8 @@ export interface Couple {
   introMessage: string;
   heroImageUrl?: string;
   coupleStory?: string;
+  eventType?: EventType;
+
   templateId: TemplateId;
   theme: ThemeId;
   accent?: string;
