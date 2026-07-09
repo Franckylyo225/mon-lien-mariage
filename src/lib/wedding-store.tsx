@@ -88,6 +88,7 @@ export interface Couple {
   brideName: string;
   groomName: string;
   weddingDate: string;
+  rsvpDeadline?: string;
   city: string;
   introMessage: string;
   heroImageUrl?: string;
