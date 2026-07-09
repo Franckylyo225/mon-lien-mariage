@@ -179,6 +179,8 @@ const defaultCouple = (): Couple => ({
   customInfoTitle: "Bon à savoir",
   customInfoBody:
     "Un service de navette gratuit sera disponible depuis l'hôtel Ivoire à partir de 18h30.",
+  countdownEnabled: true,
+  countdownUnits: ["days", "hours", "minutes", "seconds"],
 });
 
 
