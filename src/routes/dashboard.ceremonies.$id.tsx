@@ -62,6 +62,7 @@ function EditCeremony() {
           <input
             value={form.name}
             onChange={(e) => patch("name", e.target.value)}
+            placeholder="Ex. Cérémonie du voile"
             className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm"
           />
         </Field>
@@ -99,6 +100,7 @@ function EditCeremony() {
           <input
             value={form.venue}
             onChange={(e) => patch("venue", e.target.value)}
+            placeholder="Ex. Salle des fêtes Le Pacha"
             className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm"
           />
         </Field>
@@ -106,6 +108,7 @@ function EditCeremony() {
           <textarea
             value={form.notes ?? ""}
             onChange={(e) => patch("notes", e.target.value)}
+            placeholder="Quartier, rue, point de repère…"
             rows={2}
             className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm"
           />
@@ -127,6 +130,7 @@ function EditCeremony() {
           <input
             value={form.dressCode ?? ""}
             onChange={(e) => patch("dressCode", e.target.value)}
+            placeholder="Ex. Tenue de soirée, Wax, Blanc & Or…"
             className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm"
           />
         </Field>
@@ -136,6 +140,7 @@ function EditCeremony() {
             min={0}
             value={form.capacity ?? ""}
             onChange={(e) => patch("capacity", e.target.value ? Number(e.target.value) : undefined)}
+            placeholder="Nombre de places"
             className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm"
           />
         </Field>

@@ -98,6 +98,7 @@ function QuickGuestModal({
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
+              placeholder="Prénom et nom"
               className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring"
             />
           </Field>
