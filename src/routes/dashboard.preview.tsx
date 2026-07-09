@@ -90,7 +90,7 @@ function PreviewPage() {
 
       <PreviewEditor
         mode={mode}
-        onToggle={() => setMode((m) => (m === "edit" ? "preview" : "edit"))}
+        onToggle={toggle}
       />
     </div>
   );
