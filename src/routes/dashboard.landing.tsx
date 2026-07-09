@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { useWedding, guestStats, type TemplateId, type EventType } from "@/lib/wedding-store";
+import { useState } from "react";
+import { useWedding, type TemplateId, type EventType } from "@/lib/wedding-store";
 import { templateMeta, templateOrder, eventTypeMeta, eventTypeOrder } from "@/lib/ceremony-meta";
 
 
@@ -21,8 +21,8 @@ export const Route = createFileRoute("/dashboard/landing")({
 const accentChoices = ["#d97757", "#c17c74", "#8b6f5e", "#4a6741", "#c9a84c", "#4c0519"];
 
 function LandingEditor() {
-  const { couple, updateCouple, ceremonies, guests } = useWedding();
-  const [slug, setSlug] = useState(
+  const { couple, updateCouple } = useWedding();
+  const [, setSlug] = useState(
     (couple.brideName + "-et-" + couple.groomName)
       .toLowerCase()
       .normalize("NFD")
@@ -30,30 +30,7 @@ function LandingEditor() {
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, ""),
   );
-  const [copied, setCopied] = useState(false);
-
-  const publicUrl = useMemo(() => {
-    const origin =
-      typeof window !== "undefined" ? window.location.origin : "https://monmariage.ci";
-    return `${origin}/invitation?c=${slug}`;
-  }, [slug]);
-
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=8&data=${encodeURIComponent(
-    publicUrl,
-  )}`;
-
-  const stats = guestStats(guests);
-  const publishedCount = ceremonies.filter((c) => c.status === "publiée").length;
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(publicUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      /* noop */
-    }
-  };
+  void setSlug;
 
   return (
     <div className="space-y-8">
