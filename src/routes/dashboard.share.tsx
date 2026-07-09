@@ -112,6 +112,43 @@ function ShareUnlocked({
     });
   };
 
+  // ---- Upload image de partage -----------------------------------
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  const handleImageFile = async (file: File) => {
+    if (!weddingId) return;
+    setUploading(true);
+    setUploadError(null);
+    try {
+      const compressed = await imageCompression(file, {
+        maxSizeMB: 1.2,
+        maxWidthOrHeight: 1600,
+        useWebWorker: true,
+        fileType: "image/webp",
+      });
+      const path = `${weddingId}/share/${crypto.randomUUID()}.webp`;
+      const { error: upErr } = await supabase.storage
+        .from("wedding-photos")
+        .upload(path, compressed, { contentType: "image/webp", upsert: false });
+      if (upErr) throw upErr;
+      const { data: signed, error: sErr } = await supabase.storage
+        .from("wedding-photos")
+        .createSignedUrl(path, SIGNED_URL_EXPIRY);
+      if (sErr || !signed?.signedUrl) throw sErr ?? new Error("URL introuvable");
+      setShareImage(signed.signedUrl);
+      await updateCouple({ shareImageUrl: signed.signedUrl });
+    } catch (err) {
+      console.error("[share upload]", err);
+      setUploadError(
+        err instanceof Error ? err.message : "Erreur pendant l'envoi. Réessayez.",
+      );
+    } finally {
+      setUploading(false);
+    }
+  };
+
   // ---- Adresse personnalisée --------------------------------------
   const [slugInput, setSlugInput] = useState(couple.slug ?? "");
   const [status, setStatus] = useState<"idle" | "checking" | "ok" | "taken" | "invalid">(
