@@ -1,0 +1,1 @@
+ALTER TABLE public.weddings ADD COLUMN IF NOT EXISTS story_style jsonb NOT NULL DEFAULT '{}'::jsonb;
