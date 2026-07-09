@@ -1,12 +1,19 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
 import { useWedding } from "@/lib/wedding-store";
 import { componentForTheme } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
 import { PreviewEditor } from "@/components/editor/PreviewEditor";
 import { useEditMode } from "@/lib/edit-mode";
+import { usePageChrome } from "@/lib/page-chrome";
+import { useAutosaveContext } from "@/lib/autosave-context";
 import { cn } from "@/lib/utils";
 import { applyThemeVars, resolveTheme } from "@/lib/wedding-theme";
+import {
+  PageStatusPill,
+  type PageStatus,
+} from "@/components/dashboard/PageStatusPill";
+import { PageActionBar } from "@/components/dashboard/PageActionBar";
 
 export const Route = createFileRoute("/dashboard/preview")({
   head: () => ({
@@ -21,6 +28,11 @@ export const Route = createFileRoute("/dashboard/preview")({
 function PreviewPage() {
   const { couple, ceremonies, weddingId } = useWedding();
   const { mode, toggle } = useEditMode();
+  const { setCenterNode, setActionBarNode } = usePageChrome();
+  const { status: saveStatus } = useAutosaveContext();
+  const navigate = useNavigate();
+
+  const [isPublishing, setIsPublishing] = useState(false);
 
   const resolved = useMemo(
     () => resolveTheme(couple),
@@ -31,61 +43,63 @@ function PreviewPage() {
     applyThemeVars(document.documentElement, resolved);
   }, [resolved]);
 
+  // Derive the status pill from mode + publish state.
+  const status: PageStatus = isPublishing
+    ? "publishing"
+    : mode === "edit"
+      ? "edit"
+      : couple.isPublished
+        ? "live"
+        : "draft";
+
+  // Inject header center + sticky action bar into the dashboard chrome.
+  useEffect(() => {
+    setCenterNode(<PageStatusPill status={status} />);
+    setActionBarNode(
+      <PageActionBar
+        mode={mode}
+        isPublished={couple.isPublished}
+        isPublishing={isPublishing}
+        saveStatus={saveStatus}
+        onEditToggle={toggle}
+        onPublish={() => {
+          setIsPublishing(true);
+          // Transitional visual, then hand off to the publish flow.
+          setTimeout(() => {
+            setIsPublishing(false);
+            navigate({ to: "/publish" });
+          }, 600);
+        }}
+        onShare={() => {
+          navigate({ to: "/dashboard/share" });
+        }}
+      />,
+    );
+    return () => {
+      setCenterNode(null);
+      setActionBarNode(null);
+    };
+  }, [
+    status,
+    mode,
+    couple.isPublished,
+    isPublishing,
+    saveStatus,
+    toggle,
+    navigate,
+    setCenterNode,
+    setActionBarNode,
+  ]);
+
   const coupleTheme = { ...couple, accent: resolved.accent };
   const Template = componentForTheme(coupleTheme.theme);
 
   return (
     <div className="relative -mx-4 -my-8 sm:-mx-8">
-      {/* Sticky banner */}
-      <div
-        className={cn(
-          "sticky top-14 z-20 mx-auto flex max-w-2xl items-center justify-between gap-2 rounded-b-xl border-x border-b px-3 py-1.5 backdrop-blur sm:top-[72px] sm:-mt-4 sm:gap-3 sm:rounded-full sm:border sm:px-4 sm:py-2 sm:shadow-sm transition-colors",
-          mode === "edit"
-            ? "border-muted bg-muted/80"
-            : "border-primary/20 bg-primary/10",
-        )}
-      >
-        <div className="flex min-w-0 items-center gap-2">
-          <span
-            className={cn(
-              "grid size-5 place-items-center rounded-full text-[10px] font-bold sm:size-6",
-              mode === "edit"
-                ? "bg-foreground text-background"
-                : "bg-primary text-primary-foreground",
-            )}
-          >
-            {mode === "edit" ? "✎" : "👁"}
-          </span>
-          <div className="min-w-0">
-            <p
-              className={cn(
-                "font-mono text-[10px] uppercase tracking-widest",
-                mode === "edit" ? "text-foreground" : "text-primary",
-              )}
-            >
-              {mode === "edit" ? "Mode édition" : "Aperçu privé"}
-            </p>
-            <p className="hidden truncate text-[11px] opacity-70 sm:block">
-              {mode === "edit"
-                ? "Vos modifications sont enregistrées automatiquement."
-                : "Cette page n'est pas encore visible par vos invités."}
-            </p>
-          </div>
-        </div>
-        {mode === "preview" && (
-          <Link
-            to="/publish"
-            className="shrink-0 rounded-full bg-primary px-2.5 py-1 font-mono text-[10px] uppercase tracking-widest text-primary-foreground transition hover:opacity-90 sm:px-3 sm:py-1.5"
-          >
-            Publier
-          </Link>
-        )}
-      </div>
-
       <div
         className={cn(
           "mt-4 transition-all",
-          mode === "edit" && "pb-40 [&_[data-editable]]:outline-dashed",
+          mode === "edit" && "pb-40 [&_[data-editable]]:preview-editable",
         )}
       >
         <Template
@@ -101,10 +115,7 @@ function PreviewPage() {
         />
       </div>
 
-      <PreviewEditor
-        mode={mode}
-        onToggle={toggle}
-      />
+      <PreviewEditor mode={mode} onToggle={toggle} />
     </div>
   );
 }
