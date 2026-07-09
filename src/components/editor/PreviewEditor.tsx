@@ -50,6 +50,23 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
   const [groom, setGroom] = useState(couple.groomName);
   const [date, setDate] = useState(couple.weddingDate);
   const [city, setCity] = useState(couple.city);
+  // Practical info drafts
+  const [practicalParking, setPracticalParking] = useState(couple.practicalParking ?? "");
+  const [practicalAccommodation, setPracticalAccommodation] = useState(
+    couple.practicalAccommodation ?? "",
+  );
+  const [practicalContactName, setPracticalContactName] = useState(
+    couple.practicalContactName ?? "",
+  );
+  const [practicalContactPhone, setPracticalContactPhone] = useState(
+    couple.practicalContactPhone ?? "",
+  );
+  const practicalEnabled = couple.practicalInfoEnabled ?? false;
+  const practicalFilledCount = [
+    practicalParking,
+    practicalAccommodation,
+    practicalContactName || practicalContactPhone,
+  ].filter((v) => v && v.trim().length > 0).length;
   const countdownEnabled = couple.countdownEnabled ?? true;
   const countdownUnits: CountdownUnit[] =
     couple.countdownUnits && couple.countdownUnits.length > 0
