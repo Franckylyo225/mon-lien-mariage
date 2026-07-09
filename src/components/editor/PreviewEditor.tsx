@@ -7,6 +7,12 @@ import { HeroPhotoSheet } from "./HeroPhotoSheet";
 import { PhotoGridSheet } from "./PhotoGridSheet";
 import { ThemeSheet } from "./ThemeSheet";
 import {
+  OpeningEffect,
+  OPENING_EFFECT_LABELS,
+  OPENING_EFFECT_SLUGS,
+  type OpeningEffectSlug,
+} from "@/components/opening-effects";
+import {
   Lock,
   Type,
   Users,
@@ -19,6 +25,7 @@ import {
   Images,
   Gift,
   Palette,
+  Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
