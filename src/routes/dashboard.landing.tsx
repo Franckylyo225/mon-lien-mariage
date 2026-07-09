@@ -22,15 +22,6 @@ const accentChoices = ["#d97757", "#c17c74", "#8b6f5e", "#4a6741", "#c9a84c", "#
 
 function LandingEditor() {
   const { couple, updateCouple } = useWedding();
-  const [, setSlug] = useState(
-    (couple.brideName + "-et-" + couple.groomName)
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, ""),
-  );
-  void setSlug;
 
   return (
     <div className="space-y-8">
@@ -40,10 +31,11 @@ function LandingEditor() {
         </p>
         <h1 className="mt-1 font-serif text-3xl italic">Ma page d'invitation</h1>
         <p className="mt-2 max-w-lg text-sm opacity-70">
-          Choisissez un modèle, personnalisez le contenu, puis partagez le lien
-          ou le QR code à vos invités.
+          Choisissez un modèle et personnalisez le contenu. Vous partagerez le
+          lien depuis l'onglet <em>Liens &amp; Partages</em> une fois publié.
         </p>
       </div>
+
 
       {/* Template picker */}
       <section className="rounded-3xl border border-border bg-card p-6">
