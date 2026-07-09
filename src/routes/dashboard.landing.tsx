@@ -197,7 +197,7 @@ function LandingEditor() {
       <section className="grid grid-cols-3 gap-3">
         <MiniStat label="Confirmés" value={stats.confirmés} tone="primary" />
         <MiniStat label="En attente" value={stats.en_attente} />
-        <MiniStat label="Cérémonies publiées" value={publishedCount} />
+        <MiniStat label="Étapes publiées" value={publishedCount} />
       </section>
 
       {/* Content editor */}

@@ -30,7 +30,7 @@ export function BottomNav({ isPublished }: BottomNavProps) {
 
   const tabs: Tab[] = [
     { to: "/dashboard", label: "Accueil", Icon: IconHome, IconActive: IconHomeFilled, exact: true },
-    { to: "/dashboard/ceremonies", label: "Cérémonies", Icon: IconCalendarEvent, IconActive: IconCalendarFilled },
+    { to: "/dashboard/ceremonies", label: "Étapes", Icon: IconCalendarEvent, IconActive: IconCalendarFilled },
     { to: "/dashboard/guests", label: "Invités", Icon: IconUsers, IconActive: IconUsersGroup },
     isPublished
       ? { to: "/dashboard/preview", label: "Ma page", Icon: IconShare, IconActive: IconShare3 }
