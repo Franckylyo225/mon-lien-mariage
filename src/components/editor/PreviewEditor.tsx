@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
-import { useWedding } from "@/lib/wedding-store";
+import { useWedding, type Couple } from "@/lib/wedding-store";
 import { useAutosave } from "@/hooks/use-autosave";
 import { SaveIndicator } from "./SaveIndicator";
 import { HeroPhotoSheet } from "./HeroPhotoSheet";
