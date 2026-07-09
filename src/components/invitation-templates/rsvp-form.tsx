@@ -231,8 +231,8 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
               error={error}
               onClose={() => setOpen(false)}
               onSubmit={async () => {
-                await submit();
-                if (!error) setOpen(false);
+                const ok = await submit();
+                if (ok) setOpen(false);
               }}
             />,
             document.body,
