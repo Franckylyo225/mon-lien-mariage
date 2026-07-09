@@ -21,6 +21,7 @@ import { Route as PublishSuccessRouteImport } from './routes/publish.success'
 import { Route as OnboardingThemeRouteImport } from './routes/onboarding.theme'
 import { Route as OnboardingPrenomsRouteImport } from './routes/onboarding.prenoms'
 import { Route as OnboardingEvenementRouteImport } from './routes/onboarding.evenement'
+import { Route as OnboardingDatesRouteImport } from './routes/onboarding.dates'
 import { Route as ESlugRouteImport } from './routes/e.$slug'
 import { Route as DashboardStatsRouteImport } from './routes/dashboard.stats'
 import { Route as DashboardShareRouteImport } from './routes/dashboard.share'
@@ -92,6 +93,11 @@ const OnboardingEvenementRoute = OnboardingEvenementRouteImport.update({
   path: '/evenement',
   getParentRoute: () => OnboardingRoute,
 } as any)
+const OnboardingDatesRoute = OnboardingDatesRouteImport.update({
+  id: '/dates',
+  path: '/dates',
+  getParentRoute: () => OnboardingRoute,
+} as any)
 const ESlugRoute = ESlugRouteImport.update({
   id: '/e/$slug',
   path: '/e/$slug',
@@ -159,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/stats': typeof DashboardStatsRoute
   '/e/$slug': typeof ESlugRoute
+  '/onboarding/dates': typeof OnboardingDatesRoute
   '/onboarding/evenement': typeof OnboardingEvenementRoute
   '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
@@ -182,6 +189,7 @@ export interface FileRoutesByTo {
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/stats': typeof DashboardStatsRoute
   '/e/$slug': typeof ESlugRoute
+  '/onboarding/dates': typeof OnboardingDatesRoute
   '/onboarding/evenement': typeof OnboardingEvenementRoute
   '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
@@ -207,6 +215,7 @@ export interface FileRoutesById {
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/stats': typeof DashboardStatsRoute
   '/e/$slug': typeof ESlugRoute
+  '/onboarding/dates': typeof OnboardingDatesRoute
   '/onboarding/evenement': typeof OnboardingEvenementRoute
   '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
@@ -233,6 +242,7 @@ export interface FileRouteTypes {
     | '/dashboard/share'
     | '/dashboard/stats'
     | '/e/$slug'
+    | '/onboarding/dates'
     | '/onboarding/evenement'
     | '/onboarding/prenoms'
     | '/onboarding/theme'
@@ -256,6 +266,7 @@ export interface FileRouteTypes {
     | '/dashboard/share'
     | '/dashboard/stats'
     | '/e/$slug'
+    | '/onboarding/dates'
     | '/onboarding/evenement'
     | '/onboarding/prenoms'
     | '/onboarding/theme'
@@ -280,6 +291,7 @@ export interface FileRouteTypes {
     | '/dashboard/share'
     | '/dashboard/stats'
     | '/e/$slug'
+    | '/onboarding/dates'
     | '/onboarding/evenement'
     | '/onboarding/prenoms'
     | '/onboarding/theme'
@@ -384,6 +396,13 @@ declare module '@tanstack/react-router' {
       path: '/evenement'
       fullPath: '/onboarding/evenement'
       preLoaderRoute: typeof OnboardingEvenementRouteImport
+      parentRoute: typeof OnboardingRoute
+    }
+    '/onboarding/dates': {
+      id: '/onboarding/dates'
+      path: '/dates'
+      fullPath: '/onboarding/dates'
+      preLoaderRoute: typeof OnboardingDatesRouteImport
       parentRoute: typeof OnboardingRoute
     }
     '/e/$slug': {
@@ -509,12 +528,14 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 )
 
 interface OnboardingRouteChildren {
+  OnboardingDatesRoute: typeof OnboardingDatesRoute
   OnboardingEvenementRoute: typeof OnboardingEvenementRoute
   OnboardingPrenomsRoute: typeof OnboardingPrenomsRoute
   OnboardingThemeRoute: typeof OnboardingThemeRoute
 }
 
 const OnboardingRouteChildren: OnboardingRouteChildren = {
+  OnboardingDatesRoute: OnboardingDatesRoute,
   OnboardingEvenementRoute: OnboardingEvenementRoute,
   OnboardingPrenomsRoute: OnboardingPrenomsRoute,
   OnboardingThemeRoute: OnboardingThemeRoute,
