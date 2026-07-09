@@ -127,6 +127,11 @@
   100% { transform: rotateX(-170deg); }
 }
 
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(6px); opacity: 1; }
+}
+
 @utility animate-reveal {
   animation: slideUp 0.8s var(--ease-out-expo) both;
 }

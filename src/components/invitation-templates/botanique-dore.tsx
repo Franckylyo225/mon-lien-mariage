@@ -3,6 +3,7 @@ import { eventTypeMeta } from "@/lib/ceremony-meta";
 import type { TemplateProps } from "./types";
 import { CeremonyProgramTabs } from "./program-tabs";
 import { Countdown, TemplateBottomSections } from "./sections";
+import { ScrollIndicator } from "./scroll-indicator";
 
 export function BotaniqueDoreTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
   const published = ceremonies.filter((c) => c.status === "publiée");
@@ -46,6 +47,8 @@ export function BotaniqueDoreTemplate({ couple, ceremonies, rsvpSlot }: Template
             className="mt-8 aspect-[4/5] w-full rounded-3xl object-cover ring-1 ring-[#c9a84c]/30"
           />
         ) : null}
+
+        <ScrollIndicator accent="#c9a84c" />
 
         {(couple.countdownEnabled ?? true) && (
           <div className="mt-8">

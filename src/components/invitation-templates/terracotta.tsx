@@ -3,6 +3,7 @@ import { eventTypeMeta } from "@/lib/ceremony-meta";
 import type { TemplateProps } from "./types";
 import { CeremonyProgramTabs } from "./program-tabs";
 import { Countdown, TemplateBottomSections } from "./sections";
+import { ScrollIndicator } from "./scroll-indicator";
 
 export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
   const published = ceremonies.filter((c) => c.status === "publiée");
@@ -44,6 +45,8 @@ export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
             </p>
           </div>
         </header>
+
+        <ScrollIndicator accent={accent} />
 
         {(couple.countdownEnabled ?? true) && (
           <div className="mt-10">
