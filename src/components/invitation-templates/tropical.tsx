@@ -44,9 +44,9 @@ export function TropicalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
               Un mariage sous les tropiques
             </p>
             <h1 className="font-serif text-5xl italic leading-none">
-              {couple.brideName}
-              <span className="mx-2 text-[#e88b62]">&</span>
-              {couple.groomName}
+              <span className="block">{couple.brideName}</span>
+              <span className="my-1 block text-[#e88b62]">&</span>
+              <span className="block">{couple.groomName}</span>
             </h1>
             <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.25em] opacity-80">
               {formatFrenchDate(couple.weddingDate)} · {couple.city}

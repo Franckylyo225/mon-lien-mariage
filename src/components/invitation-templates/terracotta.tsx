@@ -35,7 +35,9 @@ export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
               Ils se disent oui
             </p>
             <h1 className="text-balance font-serif text-[2.5rem] italic leading-none">
-              {couple.brideName} & {couple.groomName}
+              <span className="block">{couple.brideName}</span>
+              <span className="my-1 block text-base not-italic opacity-60">&</span>
+              <span className="block">{couple.groomName}</span>
             </h1>
             <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.25em] opacity-70">
               {formatFrenchDate(couple.weddingDate)} · {couple.city}
