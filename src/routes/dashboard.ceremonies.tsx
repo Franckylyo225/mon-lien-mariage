@@ -17,7 +17,7 @@ const typeOptions: { value: CeremonyType; label: string }[] = [
   { value: "dot", label: "Dot traditionnelle" },
   { value: "civil", label: "Mariage civil" },
   { value: "religieux", label: "Mariage religieux" },
-  { value: "traditionnel", label: "Cérémonie traditionnelle" },
+  { value: "traditionnel", label: "Étape traditionnelle" },
   { value: "diner", label: "Dîner / Réception" },
   { value: "anniversaire", label: "Anniversaire de mariage" },
   { value: "autre", label: "Autre" },
@@ -36,15 +36,15 @@ function CeremoniesPage() {
       <div className="flex items-end justify-between">
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-50">
-            {ceremonies.length} cérémonies
+            {ceremonies.length} étapes
           </p>
-          <h1 className="mt-1 font-serif text-3xl italic">Vos cérémonies</h1>
+          <h1 className="mt-1 font-serif text-3xl italic">Vos étapes</h1>
         </div>
         <button
           onClick={() => setCreating(true)}
           className="rounded-full bg-primary px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.2em] text-primary-foreground shadow-md shadow-primary/20 transition hover:opacity-90"
         >
-          + Cérémonie
+          + Étape
         </button>
       </div>
 
@@ -208,7 +208,7 @@ function CeremonySheet({
       >
         <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border sm:hidden" />
         <h3 className="font-serif text-xl italic">
-          {initial ? "Éditer la cérémonie" : "Nouvelle cérémonie"}
+          {initial ? "Éditer la étape" : "Nouvelle étape"}
         </h3>
 
         <div className="mt-4 space-y-3">
@@ -329,7 +329,7 @@ function CeremonySheet({
             <div className="mb-3 flex items-center justify-between">
               <div>
                 <p className="font-mono text-[10px] uppercase tracking-widest opacity-60">
-                  Programme de la cérémonie
+                  Programme de la étape
                 </p>
                 <p className="mt-0.5 text-[11px] opacity-60">
                   Les étapes affichées aux invités.

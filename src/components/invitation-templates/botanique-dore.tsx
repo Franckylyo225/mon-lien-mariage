@@ -1,4 +1,5 @@
 import { formatFrenchDate } from "@/lib/wedding-store";
+import { eventTypeMeta } from "@/lib/ceremony-meta";
 import type { TemplateProps } from "./types";
 import { CeremonyProgramTabs } from "./program-tabs";
 import { Countdown, TemplateBottomSections } from "./sections";
@@ -66,7 +67,7 @@ export function BotaniqueDoreTemplate({ couple, ceremonies, rsvpSlot }: Template
         <section className="mt-12">
           <div className="text-center">
             <span className="text-2xl text-[#c9a84c]">❦</span>
-            <h2 className="mt-1 font-serif text-2xl italic">Le programme</h2>
+            <h2 className="mt-1 font-serif text-2xl italic">{eventTypeMeta[couple.eventType ?? "mariage"].programTitle}</h2>
           </div>
           <div className="mt-8">
             <CeremonyProgramTabs ceremonies={published} variant="gold" />

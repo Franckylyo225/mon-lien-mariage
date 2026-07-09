@@ -120,7 +120,7 @@ function SuccessPage() {
           </p>
           <p className="mt-1">
             Les prénoms et la formule sont désormais verrouillés. Vous pouvez
-            toujours ajuster les cérémonies et gérer vos invités depuis le
+            toujours ajuster les étapes et gérer vos invités depuis le
             tableau de bord.
           </p>
         </div>

@@ -31,6 +31,9 @@ export type TemplateId =
 
 export type ThemeId = "rose-elegance" | "ivoire-epure" | "wax-dore";
 
+export type EventType = "mariage" | "dot" | "traditionnel" | "autre";
+
+
 export type RSVPStatus = "confirmé" | "en_attente" | "décliné" | "sans_reponse";
 
 export type GuestSource = "manuel" | "csv" | "auto" | "qr_signup";
@@ -89,6 +92,8 @@ export interface Couple {
   introMessage: string;
   heroImageUrl?: string;
   coupleStory?: string;
+  eventType?: EventType;
+
   templateId: TemplateId;
   theme: ThemeId;
   accent?: string;
@@ -158,6 +163,8 @@ const defaultCouple = (): Couple => ({
     "Sous le soleil d'Abidjan, nous scellons notre promesse. Nous vous invitons à célébrer cette union entourés de chaleur et de lumière.",
   templateId: "terracotta",
   theme: "rose-elegance",
+  eventType: "mariage",
+
   accent: "#993556",
   hashtag: "#AichaEtStephane2027",
   isPublished: false,
@@ -186,6 +193,8 @@ const emptyCouple = (): Couple => ({
   introMessage: "",
   templateId: "terracotta",
   theme: "rose-elegance",
+  eventType: "mariage",
+
   isPublished: false,
   isLocked: false,
 });
@@ -266,6 +275,8 @@ type WeddingRow = {
   hero_image_url: string | null;
   template_id: string;
   theme: string;
+  event_type: string;
+
   accent: string | null;
   hashtag: string | null;
   slug: string | null;
@@ -294,6 +305,8 @@ function rowToCouple(w: WeddingRow): Couple {
     heroImageUrl: w.hero_image_url ?? undefined,
     templateId: (w.template_id as TemplateId) ?? "terracotta",
     theme: (w.theme as ThemeId) ?? "rose-elegance",
+    eventType: ((w.event_type as EventType) ?? "mariage"),
+
     accent: w.accent ?? undefined,
     hashtag: w.hashtag ?? undefined,
     slug: w.slug ?? undefined,
@@ -321,6 +334,8 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.heroImageUrl !== undefined) r.hero_image_url = p.heroImageUrl;
   if (p.templateId !== undefined) r.template_id = p.templateId;
   if (p.theme !== undefined) r.theme = p.theme;
+  if (p.eventType !== undefined) r.event_type = p.eventType;
+
   if (p.accent !== undefined) r.accent = p.accent;
   if (p.hashtag !== undefined) r.hashtag = p.hashtag;
   if (p.slug !== undefined) r.slug = p.slug;
@@ -822,8 +837,8 @@ export function configProgress(state: {
   const items = [
     { label: "Prénoms du couple", done: !!couple.brideName && !!couple.groomName, weight: 15 },
     { label: "Date du mariage", done: !!couple.weddingDate, weight: 10 },
-    { label: "Au moins 1 cérémonie avec date et lieu", done: ceremonies.some((c) => c.date && c.venue), weight: 20 },
-    { label: "Toutes les cérémonies ont date et lieu", done: ceremonies.length > 0 && ceremonies.every((c) => c.date && c.venue), weight: 15 },
+    { label: "Au moins 1 étape avec date et lieu", done: ceremonies.some((c) => c.date && c.venue), weight: 20 },
+    { label: "Toutes les étapes ont date et lieu", done: ceremonies.length > 0 && ceremonies.every((c) => c.date && c.venue), weight: 15 },
     { label: "Au moins 5 invités", done: guests.length >= 5, weight: 15 },
     { label: "Photo du couple", done: !!couple.heroImageUrl, weight: 10 },
     { label: "Thème choisi", done: !!couple.theme, weight: 15 },

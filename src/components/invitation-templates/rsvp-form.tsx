@@ -139,7 +139,7 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
         <h3 className={`mt-3 text-2xl ${t.title}`}>Votre réponse est enregistrée</h3>
         <p className="mx-auto mt-3 max-w-sm text-sm opacity-70">
           {weddingId
-            ? "Un rappel vous sera envoyé quelques jours avant la cérémonie."
+            ? "Un rappel vous sera envoyé quelques jours avant la étape."
             : "Mode aperçu — cette réponse n'a pas été enregistrée."}
         </p>
         <button
@@ -161,7 +161,7 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
     return (
       <section className={`mt-12 rounded-3xl p-8 text-center ${t.wrapper}`}>
         <p className="text-sm opacity-70">
-          Les cérémonies seront ajoutées bientôt. Repassez ici pour confirmer votre présence.
+          Les étapes seront ajoutées bientôt. Repassez ici pour confirmer votre présence.
         </p>
       </section>
     );
@@ -171,7 +171,7 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
     <section className={`mt-12 rounded-3xl p-6 sm:p-8 ${t.wrapper}`}>
       <h4 className={`text-center text-xl ${t.title}`}>Votre présence</h4>
       <p className="mt-1 text-center text-xs opacity-60">
-        Répondez pour chaque cérémonie à laquelle vous êtes convié·e.
+        Répondez pour chaque étape à laquelle vous êtes convié·e.
       </p>
 
       <div className="mt-6 space-y-3">

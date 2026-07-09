@@ -83,7 +83,7 @@ function DashboardHome() {
 
       {/* Metrics */}
       <section className="grid grid-cols-2 gap-3">
-        <Metric label="Cérémonies" value={ceremonies.length} to="/dashboard/ceremonies" />
+        <Metric label="Étapes" value={ceremonies.length} to="/dashboard/ceremonies" />
         <Metric label="Invités" value={guests.length} to="/dashboard/guests" />
       </section>
 
@@ -147,7 +147,7 @@ function Metric({ label, value, to }: { label: string; value: number; to: string
 }
 
 function destFor(label: string) {
-  if (label.toLowerCase().includes("cérémonie")) return "/dashboard/ceremonies" as const;
+  if (label.toLowerCase().includes("étape")) return "/dashboard/ceremonies" as const;
   if (label.toLowerCase().includes("invités")) return "/dashboard/guests" as const;
   return "/dashboard/landing" as const;
 }

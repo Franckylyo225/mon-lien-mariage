@@ -1,4 +1,5 @@
 import { formatFrenchDate } from "@/lib/wedding-store";
+import { eventTypeMeta } from "@/lib/ceremony-meta";
 import type { TemplateProps } from "./types";
 import { CeremonyProgramTabs } from "./program-tabs";
 import { Countdown, TemplateBottomSections } from "./sections";
@@ -76,7 +77,7 @@ export function ArtDecoTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps)
         <section className="mt-14">
           <div className="text-center">
             <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#c9a84c]">
-              — Programme —
+              — {eventTypeMeta[couple.eventType ?? "mariage"].programTitle} —
             </p>
           </div>
           <div className="mt-8">

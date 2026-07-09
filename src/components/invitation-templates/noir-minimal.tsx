@@ -1,4 +1,5 @@
 import { formatFrenchDate } from "@/lib/wedding-store";
+import { eventTypeMeta } from "@/lib/ceremony-meta";
 import type { TemplateProps } from "./types";
 import { CeremonyProgramTabs } from "./program-tabs";
 import { Countdown, TemplateBottomSections } from "./sections";
@@ -52,7 +53,7 @@ export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
 
         <section className="mt-16">
           <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#f5f3ee]/50">
-            Programme
+            {eventTypeMeta[couple.eventType ?? "mariage"].programTitle}
           </p>
           <div className="mt-6">
             <CeremonyProgramTabs ceremonies={published} variant="noir" />

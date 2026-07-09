@@ -30,7 +30,7 @@ function GuestsPage() {
       <header className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="text-xs text-muted-foreground">
-            {guests.length} invités · {totalCeremonies} cérémonies couvertes
+            {guests.length} invités · {totalCeremonies} étapes couvertes
           </p>
           <h1 className="mt-1 font-serif text-3xl italic">Mes invités</h1>
         </div>
@@ -65,7 +65,7 @@ function GuestsPage() {
         onChange={(e) => setCeremonyFilter(e.target.value)}
         className="w-full rounded-lg border border-input bg-card px-4 py-2.5 text-sm"
       >
-        <option value="all">Toutes les cérémonies</option>
+        <option value="all">Toutes les étapes</option>
         {ceremonies.map((c) => (
           <option key={c.id} value={c.id}>
             {c.name || c.label}

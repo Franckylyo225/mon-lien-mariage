@@ -232,6 +232,7 @@ export type Database = {
           custom_info_body: string | null
           custom_info_title: string | null
           dress_code_note: string | null
+          event_type: string
           groom_name: string
           has_envelope_animation: boolean
           hashtag: string | null
@@ -261,6 +262,7 @@ export type Database = {
           custom_info_body?: string | null
           custom_info_title?: string | null
           dress_code_note?: string | null
+          event_type?: string
           groom_name?: string
           has_envelope_animation?: boolean
           hashtag?: string | null
@@ -290,6 +292,7 @@ export type Database = {
           custom_info_body?: string | null
           custom_info_title?: string | null
           dress_code_note?: string | null
+          event_type?: string
           groom_name?: string
           has_envelope_animation?: boolean
           hashtag?: string | null

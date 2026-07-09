@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { useWedding, guestStats, type TemplateId } from "@/lib/wedding-store";
-import { templateMeta, templateOrder } from "@/lib/ceremony-meta";
+import { useWedding, guestStats, type TemplateId, type EventType } from "@/lib/wedding-store";
+import { templateMeta, templateOrder, eventTypeMeta, eventTypeOrder } from "@/lib/ceremony-meta";
+
 
 export const Route = createFileRoute("/dashboard/landing")({
   head: () => ({
@@ -197,12 +198,42 @@ function LandingEditor() {
       <section className="grid grid-cols-3 gap-3">
         <MiniStat label="Confirmés" value={stats.confirmés} tone="primary" />
         <MiniStat label="En attente" value={stats.en_attente} />
-        <MiniStat label="Cérémonies publiées" value={publishedCount} />
+        <MiniStat label="Étapes publiées" value={publishedCount} />
       </section>
 
       {/* Content editor */}
       <section className="rounded-3xl border border-border bg-card p-6">
         <h2 className="font-serif text-lg italic">Contenu de la page</h2>
+
+        <div className="mt-5">
+          <label className="mb-2 block font-mono text-[10px] uppercase tracking-widest opacity-60">
+            Type d'événement
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {eventTypeOrder.map((t) => {
+              const active = (couple.eventType ?? "mariage") === t;
+              return (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => updateCouple({ eventType: t as EventType })}
+                  className={
+                    "rounded-full border px-4 py-2 text-xs transition " +
+                    (active
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border bg-background hover:bg-accent/20")
+                  }
+                >
+                  {eventTypeMeta[t].label}
+                </button>
+              );
+            })}
+          </div>
+          <p className="mt-2 text-xs opacity-60">
+            Affiché comme titre de la partie « programme » sur votre page.
+          </p>
+        </div>
+
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
           <Field
             label="Prénom mariée"

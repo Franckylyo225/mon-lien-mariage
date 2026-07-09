@@ -80,14 +80,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Créez une page d'invitation stylée pour chaque cérémonie de mariage (dot, civil, religieux, dîner, anniversaire), collectez les RSVP et gérez vos invités depuis un dashboard simple.",
+          "Créez une page d'invitation stylée pour chaque étape de mariage (dot, civil, religieux, dîner, anniversaire), collectez les RSVP et gérez vos invités depuis un dashboard simple.",
       },
       { name: "author", content: "MonMariage.ci" },
       { property: "og:title", content: "MonMariage.ci — Invitations & gestion de mariage" },
       {
         property: "og:description",
         content:
-          "5 modèles d'invitation, RSVP par cérémonie, QR code et partage WhatsApp. Pensé pour les mariages ivoiriens.",
+          "5 modèles d'invitation, RSVP par étape, QR code et partage WhatsApp. Pensé pour les mariages ivoiriens.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

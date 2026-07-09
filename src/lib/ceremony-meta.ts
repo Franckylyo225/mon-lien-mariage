@@ -1,4 +1,20 @@
-import type { CeremonyType, TemplateId } from "./wedding-store";
+import type { CeremonyType, EventType, TemplateId } from "./wedding-store";
+
+export const eventTypeMeta: Record<
+  EventType,
+  { label: string; programTitle: string }
+> = {
+  mariage: { label: "Mariage", programTitle: "Programme du mariage" },
+  dot: { label: "Dot", programTitle: "Programme de la dot" },
+  traditionnel: {
+    label: "Cérémonie traditionnelle",
+    programTitle: "Programme de la cérémonie",
+  },
+  autre: { label: "Autre événement", programTitle: "Programme de l'événement" },
+};
+
+export const eventTypeOrder: EventType[] = ["mariage", "dot", "traditionnel", "autre"];
+
 
 export const ceremonyMeta: Record<
   CeremonyType,
@@ -26,7 +42,7 @@ export const ceremonyMeta: Record<
     blurb: "La bénédiction, à l'église, au temple ou à la mosquée.",
   },
   traditionnel: {
-    label: "Cérémonie traditionnelle",
+    label: "Étape traditionnelle",
     short: "Traditionnel",
     icon: "❋",
     color: "#a0522d",
@@ -54,7 +70,7 @@ export const ceremonyMeta: Record<
     blurb: "L'annonce officielle, entre proches.",
   },
   autre: {
-    label: "Autre cérémonie",
+    label: "Autre étape",
     short: "Autre",
     icon: "✧",
     color: "#4a6741",

@@ -1,4 +1,5 @@
 import { formatFrenchDate } from "@/lib/wedding-store";
+import { eventTypeMeta } from "@/lib/ceremony-meta";
 import type { TemplateProps } from "./types";
 import { CeremonyProgramTabs } from "./program-tabs";
 import { Countdown, TemplateBottomSections } from "./sections";
@@ -78,7 +79,7 @@ export function TropicalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
         <section className="mt-14">
           <div className="mb-8 flex items-center gap-3">
             <span className="text-2xl text-[#e88b62]">🌴</span>
-            <h2 className="font-serif text-2xl italic">Programme</h2>
+            <h2 className="font-serif text-2xl italic">{eventTypeMeta[couple.eventType ?? "mariage"].programTitle}</h2>
             <span className="ml-auto h-px flex-1 bg-[#e88b62]/40" />
           </div>
           <CeremonyProgramTabs ceremonies={published} variant="tropical" />
