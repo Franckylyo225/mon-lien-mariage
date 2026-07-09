@@ -93,7 +93,7 @@ function PreviewPage() {
           ceremonies={ceremonies}
           rsvpSlot={
             <TemplateRsvpForm
-              tone={rsvpToneForTheme(coupleTheme.theme)}
+              theme={coupleTheme.theme}
               weddingId={coupleTheme.isPublished && weddingId ? weddingId : undefined}
               ceremonies={ceremonies}
             />
