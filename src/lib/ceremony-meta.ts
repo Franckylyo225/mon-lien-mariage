@@ -1,4 +1,20 @@
-import type { CeremonyType, TemplateId } from "./wedding-store";
+import type { CeremonyType, EventType, TemplateId } from "./wedding-store";
+
+export const eventTypeMeta: Record<
+  EventType,
+  { label: string; programTitle: string }
+> = {
+  mariage: { label: "Mariage", programTitle: "Programme du mariage" },
+  dot: { label: "Dot", programTitle: "Programme de la dot" },
+  traditionnel: {
+    label: "Cérémonie traditionnelle",
+    programTitle: "Programme de la cérémonie",
+  },
+  autre: { label: "Autre événement", programTitle: "Programme de l'événement" },
+};
+
+export const eventTypeOrder: EventType[] = ["mariage", "dot", "traditionnel", "autre"];
+
 
 export const ceremonyMeta: Record<
   CeremonyType,
