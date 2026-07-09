@@ -1,78 +1,50 @@
-# Effets d'ouverture animés — 6 concepts
 
-## Périmètre
+# Refonte des effets d'ouverture
 
-Remplacer l'actuelle `EnvelopeAnimation` (unique) par un **système d'effets** sélectionnable, joué à la première visite d'une invitation publique.
+Les 3 images de référence pointent vers deux archétypes premium :
+- **A. Enveloppe crème embossée** avec fleurs gaufrées en relief + gros sceau de cire doré (N&J) + pastille "TAP TO OPEN" translucide.
+- **B. Rideau de théâtre en velours rouge** qui s'écarte pour révéler l'invitation.
 
-## Modèle de données
+Les effets actuels (`EnvelopeRoyal`, `EnvelopeFloral`, `CinemaCurtain`) rendent ces idées mais de façon trop plate et géométrique (polygone triangle, rideau à plis droits, sceau texte). Je refonds ces 3 effets avec un rendu beaucoup plus riche, sans ajouter de librairie.
 
-Migration SQL sur `public.weddings` :
-- `has_opening_effect boolean DEFAULT false`
-- `opening_effect_slug text CHECK (... IN (6 slugs))`
+## Effets refondus
 
-Conserver `has_envelope_animation` pour rétrocompat (mappé vers `envelope-royal` si `has_opening_effect` est faux mais `has_envelope_animation` vrai).
+### 1. `envelope-royal` → "Enveloppe Ivoire Embossée" (réf. images 2 & 3)
+- Fond crème avec vignette douce et texture papier subtile (SVG `feTurbulence`).
+- Enveloppe portrait 300×420 (au lieu de paysage) avec :
+  - Rabat triangulaire + **motifs floraux gaufrés** (SVG line-art blanc sur crème, filtre `drop-shadow` intérieure pour effet d'embossage) répartis sur le rabat et le dos.
+  - **Sceau de cire circulaire** avec dégradé radial doré, bordure irrégulière (path organique, pas ellipse parfaite), reflet, ombre portée, et **monogramme "A & B" en script** (Cormorant italic) gravé au centre — texte légèrement enfoncé (double text ombré).
+  - Pastille pilule blanche translucide "TAP TO OPEN" (Cormorant small caps, letter-spacing large) qui pulse doucement.
+  - Sous l'enveloppe, gravure dorée "Prénom & Prénom — Ville · date".
+- Interaction : au tap → le sceau se **fend en deux** (deux moitiés qui tombent avec rotation + fade), puis le rabat s'ouvre (rotateX 3D), la carte glisse vers le haut, puis fondu.
+- Durée totale : ~2,8s après tap.
 
-Étendre `getPublicWedding` + type `Couple` (champs `hasOpeningEffect`, `openingEffectSlug`).
+### 2. `envelope-floral` → "Enveloppe Botanique Aquarelle"
+Variante plus colorée de la 1 : mêmes motifs gaufrés mais **remplis d'aquarelles pastel** (roses poudrés, sauge, or) au lieu de blanc gaufré, sceau assorti à `--wedding-accent`. Même interaction tap-to-open.
 
-## Architecture front
+### 3. `cinema-curtain` → "Rideau de Velours" (réf. image 1)
+Refonte complète :
+- Fond scène sombre + halo doré central.
+- Deux rideaux (gauche/droit) rendus en SVG avec :
+  - **Plis verticaux réalistes** via ~14 bandes de dégradés linéaires (rouge foncé `#5a0a12` → rouge vif `#c81e2c` → rouge foncé, en alternance sur chaque pli) au lieu d'un aplat.
+  - **Frange festonnée** (path en vagues) en bas de chaque rideau.
+  - **Tringle dorée** en haut avec anneaux.
+  - **Embrasses en cordon doré** avec pompons SVG.
+- Animation : les rideaux s'écartent en 1,8s avec easing `cubic-bezier(.6,.05,.3,1)` (accélération puis décélération, comme un vrai tirage), légère rotation Y pour perspective, ombre qui s'étire sur les plis.
+- Au centre, l'invitation apparaît en fondu + zoom léger derrière les rideaux (visible dès qu'ils commencent à s'écarter).
+- Durée totale : 3,2s.
 
-Nouveau dossier `src/components/opening-effects/` :
+## Effets conservés tels quels
+`grand-portal`, `falling-petals`, `book-open` — non concernés par les références utilisateur, gardés en l'état.
 
-```
-opening-effects/
-  index.tsx              // <OpeningEffect slug=... couple=... onDone=... />
-  shared/
-    useOpeningLifecycle.ts   // sessionStorage flag, reduced-motion, skip button, fade sortie
-    OpeningShell.tsx         // fond plein écran + bouton Passer + gestion durée
-  effects/
-    EnvelopeRoyal.tsx        // Effet 1 (tap-to-open)
-    EnvelopeFloral.tsx       // Effet 2 (variation Effet 1 + fleurs SVG)
-    GrandPortal.tsx          // Effet 3 (deux battants + nœud)
-    CinemaCurtain.tsx        // Effet 4 (velours)
-    FallingPetals.tsx        // Effet 5 (36 pétales CSS)
-    BookOpen.tsx             // Effet 6 (livre 3D)
-  thumbnails/                // mini-SVG 6 vignettes (paywall + éditeur)
-```
+## Fichiers touchés
+- `src/components/opening-effects/index.tsx` : réécriture des 3 fonctions `EnvelopeRoyal`, `EnvelopeFloral`, `CinemaCurtain` (~450 lignes remplacées). Signature publique et slugs inchangés → **aucune migration SQL, aucun changement d'API**, les invitations existantes basculent automatiquement sur les nouveaux visuels.
+- Le sélecteur dans l'éditeur (`OpeningEffectSheet`) reste identique — les labels et l'ordre ne changent pas.
 
-Règles communes centralisées dans `useOpeningLifecycle` :
-- `sessionStorage['opening_seen_' + slug]` → skip si présent
-- `prefers-reduced-motion` → afficher juste 1s de frame finale
-- Bouton **Passer** apparaît après 1,5s
-- Fade-in de la page à la fin (400ms)
-- Durée max 5s
-
-Aucune librairie ajoutée : CSS + SVG + framer-motion (déjà présent si utilisé, sinon fallback CSS keyframes inline). Je vérifie et j'utilise CSS pur si framer-motion absent.
-
-## Intégration `/e/:slug`
-
-Dans `src/routes/e.$slug.tsx` : remplacer le bloc `EnvelopeAnimation` par `<OpeningEffect slug={couple.openingEffectSlug ?? 'envelope-royal'} couple={couple} enabled={couple.hasOpeningEffect || couple.hasEnvelopeAnimation} />`.
-
-## Éditeur
-
-Dans l'éditeur "Ma page" (`PreviewEditor` / sheet dédié) : nouveau composant `OpeningEffectSheet` avec grille 2×3 des vignettes, sélection radio, aperçu plein écran en modal (réutilise `<OpeningEffect>`).
-
-**Paywall** : pour l'instant, pas de logique de paiement dans cette annexe — j'ajoute juste l'UI (badge « 990 FCFA », vignettes grisées si `has_opening_effect=false`) et un bouton "Débloquer" qui bascule `has_opening_effect=true` (à câbler ensuite au provider de paiement).
-
-## Ordre d'implémentation
-
-1. Migration SQL + types
-2. `useOpeningLifecycle` + `OpeningShell`
-3. Effets 1, 4, 5 (les plus simples / prioritaires)
-4. Effets 2, 3, 6
-5. Vignettes SVG
-6. Sheet éditeur + modal d'aperçu
-7. Intégration dans `/e/:slug`
-8. Vérif Playwright mobile 375×812
+## Vérification
+Playwright mobile 375×812 sur `/dashboard/preview` : ouvrir l'aperçu de chaque effet refondu, capturer 3 screenshots par effet (état initial / mi-animation / fin) et les inspecter.
 
 ## Hors périmètre
-
-- Intégration paiement réelle (juste UI paywall)
-- Son
-- Personnalisation fine des couleurs par effet
-
-## Question avant de démarrer
-
-Ce chantier est **conséquent** (~15-20 fichiers, 1 migration, refonte de l'ouverture). Confirmes-tu :
-
-1. Je livre les **6 effets d'un coup** dans ce turn, ou seulement les **3 prioritaires** (Enveloppe Royale, Rideau de Gala, Pétales) et les 3 autres dans un turn suivant ?
-2. Le sheet éditeur / paywall UI : à inclure maintenant ou après validation visuelle des effets ?
+- Nouveaux slugs / nouvelle entrée dans le paywall.
+- Bruits d'ambiance.
+- Personnalisation fine des motifs floraux par l'utilisateur.
