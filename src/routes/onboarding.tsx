@@ -61,11 +61,11 @@ function OnboardingLayout() {
         </header>
 
         <div className="mb-10 flex items-center gap-2">
-          {stepPaths.map((_, i) => (
+          {Array.from({ length: 5 }).map((_, i) => (
             <span
               key={i}
               className={
-                "h-1.5 flex-1 rounded-full " +
+                "h-1.5 w-1.5 rounded-full " +
                 (i <= current ? "bg-primary" : "bg-border")
               }
             />
