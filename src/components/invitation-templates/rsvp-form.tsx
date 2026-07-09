@@ -141,11 +141,11 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
     setError(null);
   };
 
-  const submit = async () => {
+  const submit = async (): Promise<boolean> => {
     setError(null);
     if (!weddingId) {
       setDone(true);
-      return;
+      return true;
     }
     setSubmitting(true);
     try {
@@ -162,9 +162,11 @@ export function TemplateRsvpForm({ tone, weddingId, ceremonies = [] }: Props) {
       const { error: err } = await supabase.from("rsvps").insert(rows as never);
       if (err) throw err;
       setDone(true);
+      return true;
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Une erreur s'est produite.";
       setError(msg);
+      return false;
     } finally {
       setSubmitting(false);
     }
