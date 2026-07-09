@@ -395,6 +395,110 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
         )}
       </BottomSheet>
 
+      {/* Practical info sheet */}
+      <BottomSheet
+        open={sheet === "practical"}
+        onOpenChange={(o) => !o && setSheet(null)}
+        title="Infos pratiques"
+      >
+        <div className="space-y-5">
+          <label className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background px-4 py-3">
+            <div>
+              <p className="text-sm font-medium">Afficher cette section</p>
+              <p className="text-[11px] opacity-60">
+                Parking, hébergement et contact référent apparaissent en bas de votre page.
+              </p>
+            </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={practicalEnabled}
+              onClick={() => persist({ practicalInfoEnabled: !practicalEnabled })}
+              className={cn(
+                "relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors",
+                practicalEnabled ? "bg-primary" : "bg-muted",
+              )}
+            >
+              <span
+                className={cn(
+                  "inline-block size-5 rounded-full bg-background shadow transition-transform",
+                  practicalEnabled ? "translate-x-5" : "translate-x-0.5",
+                )}
+              />
+            </button>
+          </label>
+
+          <div
+            className={cn(
+              "space-y-4 transition-opacity",
+              !practicalEnabled && "pointer-events-none opacity-40",
+            )}
+          >
+            <div>
+              <label className="mb-2 block font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                Parking
+              </label>
+              <textarea
+                value={practicalParking}
+                rows={2}
+                maxLength={280}
+                placeholder="Ex : parking gratuit à côté de l'hôtel, voiturier disponible dès 18h."
+                onChange={(e) => {
+                  setPracticalParking(e.target.value);
+                  persist({ practicalParking: e.target.value });
+                }}
+                className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                Hébergement
+              </label>
+              <textarea
+                value={practicalAccommodation}
+                rows={2}
+                maxLength={280}
+                placeholder="Ex : hôtel partenaire à 5 min, tarif préférentiel avec le code MARIAGE2027."
+                onChange={(e) => {
+                  setPracticalAccommodation(e.target.value);
+                  persist({ practicalAccommodation: e.target.value });
+                }}
+                className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+              />
+            </div>
+
+            <div className="rounded-xl border border-dashed border-border p-3">
+              <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                Contact référent
+              </p>
+              <div className="space-y-3">
+                <Field
+                  label="Nom"
+                  value={practicalContactName}
+                  onChange={(v) => {
+                    setPracticalContactName(v);
+                    persist({ practicalContactName: v });
+                  }}
+                />
+                <Field
+                  label="Téléphone"
+                  value={practicalContactPhone}
+                  onChange={(v) => {
+                    setPracticalContactPhone(v);
+                    persist({ practicalContactPhone: v });
+                  }}
+                />
+              </div>
+            </div>
+
+            <p className="text-[11px] opacity-60">
+              Les champs vides ne s'affichent pas sur la page.
+            </p>
+          </div>
+        </div>
+      </BottomSheet>
+
       <HeroPhotoSheet
         open={sheet === "hero"}
         onOpenChange={(o) => !o && setSheet(null)}
