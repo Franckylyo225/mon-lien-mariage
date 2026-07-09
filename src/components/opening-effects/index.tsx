@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import type { Couple } from "@/lib/wedding-store";
 
 export const OPENING_EFFECT_SLUGS = [
+  "envelope-wax-sage",
+  "envelope-navy-pearl",
   "envelope-royal",
   "envelope-floral",
   "grand-portal",
@@ -13,6 +15,8 @@ export const OPENING_EFFECT_SLUGS = [
 export type OpeningEffectSlug = (typeof OPENING_EFFECT_SLUGS)[number];
 
 export const OPENING_EFFECT_LABELS: Record<OpeningEffectSlug, string> = {
+  "envelope-wax-sage": "Enveloppe Sceau Sauge",
+  "envelope-navy-pearl": "Enveloppe Nuit Nacrée",
   "envelope-royal": "Enveloppe Royale",
   "envelope-floral": "Enveloppe Florale",
   "grand-portal": "Grand Portail",
