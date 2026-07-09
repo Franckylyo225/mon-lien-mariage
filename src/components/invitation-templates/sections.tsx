@@ -29,47 +29,83 @@ const defaultTone: CountdownTone = {
   separatorClass: "opacity-30",
 };
 
+export type CountdownUnit = "days" | "hours" | "minutes" | "seconds";
+
+const UNIT_LABELS: Record<CountdownUnit, string> = {
+  days: "jours",
+  hours: "heures",
+  minutes: "min",
+  seconds: "sec",
+};
+
+const DEFAULT_UNITS: CountdownUnit[] = ["days", "hours", "minutes", "seconds"];
+
 export function Countdown({
   targetDate,
+  units,
   tone = defaultTone,
 }: {
   targetDate: string;
+  units?: CountdownUnit[];
   tone?: Partial<CountdownTone>;
 }) {
   const t = { ...defaultTone, ...tone };
   const targetMs = targetDate ? new Date(targetDate + "T00:00:00").getTime() : 0;
   const [delta, setDelta] = useState(() => computeDelta(targetMs));
+  const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
     if (!targetMs) return;
-    const id = window.setInterval(() => setDelta(computeDelta(targetMs)), 1000);
+    const id = window.setInterval(() => {
+      setDelta(computeDelta(targetMs));
+      setNow(Date.now());
+    }, 1000);
     return () => window.clearInterval(id);
   }, [targetMs]);
 
   if (!targetDate) return null;
+  // Auto-hide when the wedding date is past.
+  if (targetMs && now >= targetMs) return null;
 
-  const cells = [
-    { v: delta.days, l: "jours" },
-    { v: delta.hours, l: "heures" },
-    { v: delta.minutes, l: "min" },
-    { v: delta.seconds, l: "sec" },
-  ];
+  const activeUnits = (units && units.length > 0 ? units : DEFAULT_UNITS).filter(
+    (u): u is CountdownUnit => u in UNIT_LABELS,
+  );
+  if (activeUnits.length === 0) return null;
+
+  const valueMap: Record<CountdownUnit, number> = {
+    days: delta.days,
+    hours: delta.hours,
+    minutes: delta.minutes,
+    seconds: delta.seconds,
+  };
+
+  const gridColsClass =
+    activeUnits.length === 1
+      ? "grid-cols-1"
+      : activeUnits.length === 2
+        ? "grid-cols-2"
+        : activeUnits.length === 3
+          ? "grid-cols-3"
+          : "grid-cols-4";
 
   return (
-    <section aria-label="Compte à rebours" className="grid grid-cols-4 gap-2 sm:gap-3">
-      {cells.map((c, i) => (
+    <section aria-label="Compte à rebours" className={`grid ${gridColsClass} gap-2 sm:gap-3`}>
+      {activeUnits.map((u, i) => (
         <div
-          key={c.l}
+          key={u}
           className={`${t.cellBg} ${t.cellBorder} rounded-2xl px-2 py-4 text-center`}
         >
-          <p className={t.numberClass}>{String(c.v).padStart(2, "0")}</p>
-          <p className={t.labelClass}>{c.l}</p>
-          {i < 3 ? <span className={`sr-only ${t.separatorClass}`}>:</span> : null}
+          <p className={t.numberClass}>{String(valueMap[u]).padStart(2, "0")}</p>
+          <p className={t.labelClass}>{UNIT_LABELS[u]}</p>
+          {i < activeUnits.length - 1 ? (
+            <span className={`sr-only ${t.separatorClass}`}>:</span>
+          ) : null}
         </div>
       ))}
     </section>
   );
 }
+
 
 // ---------- Section wrapper ----------
 
