@@ -163,6 +163,8 @@ const defaultCouple = (): Couple => ({
     "Sous le soleil d'Abidjan, nous scellons notre promesse. Nous vous invitons à célébrer cette union entourés de chaleur et de lumière.",
   templateId: "terracotta",
   theme: "rose-elegance",
+  eventType: "mariage",
+
   accent: "#993556",
   hashtag: "#AichaEtStephane2027",
   isPublished: false,
