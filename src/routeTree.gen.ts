@@ -23,6 +23,7 @@ import { Route as OnboardingGuestsRouteImport } from './routes/onboarding.guests
 import { Route as OnboardingCoupleRouteImport } from './routes/onboarding.couple'
 import { Route as OnboardingCeremoniesRouteImport } from './routes/onboarding.ceremonies'
 import { Route as ESlugRouteImport } from './routes/e.$slug'
+import { Route as DashboardStatsRouteImport } from './routes/dashboard.stats'
 import { Route as DashboardShareRouteImport } from './routes/dashboard.share'
 import { Route as DashboardPreviewRouteImport } from './routes/dashboard.preview'
 import { Route as DashboardLandingRouteImport } from './routes/dashboard.landing'
@@ -102,6 +103,11 @@ const ESlugRoute = ESlugRouteImport.update({
   path: '/e/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardStatsRoute = DashboardStatsRouteImport.update({
+  id: '/stats',
+  path: '/stats',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardShareRoute = DashboardShareRouteImport.update({
   id: '/share',
   path: '/share',
@@ -157,6 +163,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/landing': typeof DashboardLandingRoute
   '/dashboard/preview': typeof DashboardPreviewRoute
   '/dashboard/share': typeof DashboardShareRoute
+  '/dashboard/stats': typeof DashboardStatsRoute
   '/e/$slug': typeof ESlugRoute
   '/onboarding/ceremonies': typeof OnboardingCeremoniesRoute
   '/onboarding/couple': typeof OnboardingCoupleRoute
@@ -180,6 +187,7 @@ export interface FileRoutesByTo {
   '/dashboard/landing': typeof DashboardLandingRoute
   '/dashboard/preview': typeof DashboardPreviewRoute
   '/dashboard/share': typeof DashboardShareRoute
+  '/dashboard/stats': typeof DashboardStatsRoute
   '/e/$slug': typeof ESlugRoute
   '/onboarding/ceremonies': typeof OnboardingCeremoniesRoute
   '/onboarding/couple': typeof OnboardingCoupleRoute
@@ -205,6 +213,7 @@ export interface FileRoutesById {
   '/dashboard/landing': typeof DashboardLandingRoute
   '/dashboard/preview': typeof DashboardPreviewRoute
   '/dashboard/share': typeof DashboardShareRoute
+  '/dashboard/stats': typeof DashboardStatsRoute
   '/e/$slug': typeof ESlugRoute
   '/onboarding/ceremonies': typeof OnboardingCeremoniesRoute
   '/onboarding/couple': typeof OnboardingCoupleRoute
@@ -231,6 +240,7 @@ export interface FileRouteTypes {
     | '/dashboard/landing'
     | '/dashboard/preview'
     | '/dashboard/share'
+    | '/dashboard/stats'
     | '/e/$slug'
     | '/onboarding/ceremonies'
     | '/onboarding/couple'
@@ -254,6 +264,7 @@ export interface FileRouteTypes {
     | '/dashboard/landing'
     | '/dashboard/preview'
     | '/dashboard/share'
+    | '/dashboard/stats'
     | '/e/$slug'
     | '/onboarding/ceremonies'
     | '/onboarding/couple'
@@ -278,6 +289,7 @@ export interface FileRouteTypes {
     | '/dashboard/landing'
     | '/dashboard/preview'
     | '/dashboard/share'
+    | '/dashboard/stats'
     | '/e/$slug'
     | '/onboarding/ceremonies'
     | '/onboarding/couple'
@@ -400,6 +412,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ESlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/stats': {
+      id: '/dashboard/stats'
+      path: '/stats'
+      fullPath: '/dashboard/stats'
+      preLoaderRoute: typeof DashboardStatsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/share': {
       id: '/dashboard/share'
       path: '/share'
@@ -489,6 +508,7 @@ interface DashboardRouteChildren {
   DashboardLandingRoute: typeof DashboardLandingRoute
   DashboardPreviewRoute: typeof DashboardPreviewRoute
   DashboardShareRoute: typeof DashboardShareRoute
+  DashboardStatsRoute: typeof DashboardStatsRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
@@ -499,6 +519,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardLandingRoute: DashboardLandingRoute,
   DashboardPreviewRoute: DashboardPreviewRoute,
   DashboardShareRoute: DashboardShareRoute,
+  DashboardStatsRoute: DashboardStatsRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 
