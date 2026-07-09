@@ -29,7 +29,15 @@ export type TemplateId =
   | "tropical"
   | "art-deco";
 
-export type ThemeId = "rose-elegance" | "ivoire-epure" | "wax-dore";
+export type ThemeId =
+  | "rose-elegance"
+  | "ivoire-epure"
+  | "wax-dore"
+  | "vert-sauge"
+  | "bleu-nuit"
+  | "or-antique";
+
+export type BackgroundBase = "ivoire" | "creme" | "blanc" | "gris";
 
 export type EventType = "mariage" | "dot" | "traditionnel" | "autre";
 
