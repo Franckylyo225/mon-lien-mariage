@@ -127,6 +127,11 @@ export interface Couple {
   storyTitle?: string;
   storyBody?: string;
   storyImages?: string[];
+  storyStyle?: {
+    font?: "serif" | "sans" | "script" | "mono" | "display";
+    size?: "sm" | "md" | "lg";
+    align?: "left" | "center";
+  };
   galleryEnabled?: boolean;
   galleryTitle?: string;
   galleryImages?: string[];
