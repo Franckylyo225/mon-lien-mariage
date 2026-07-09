@@ -193,6 +193,8 @@ const emptyCouple = (): Couple => ({
   introMessage: "",
   templateId: "terracotta",
   theme: "rose-elegance",
+  eventType: "mariage",
+
   isPublished: false,
   isLocked: false,
 });
