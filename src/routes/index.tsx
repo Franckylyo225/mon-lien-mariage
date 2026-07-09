@@ -301,8 +301,8 @@ function TemplateFan() {
   ];
 
   return (
-    <div className="relative mx-auto mt-14 h-[420px] w-full max-w-5xl sm:mt-20 sm:h-[520px]">
-      <div className="absolute left-1/2 top-0 h-full w-full -translate-x-1/2">
+    <div className="relative mx-auto mt-14 h-[380px] w-full max-w-5xl overflow-hidden sm:mt-20 sm:h-[520px]">
+      <div className="absolute left-1/2 top-0 h-full w-full origin-top -translate-x-1/2 scale-[0.62] sm:scale-100">
         {arranged.map((c, i) => {
           const l = layout[i];
           return (
