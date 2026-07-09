@@ -1,86 +1,74 @@
-## Objectif
 
-Créer une nouvelle page **Liens & Partages** (`/dashboard/share`) accessible uniquement une fois le paiement effectué (`couple.isPublished === true`). Sinon → paywall qui invite à publier.
+# Personnalisation thème & couleurs
 
-## Structure de la page (dans l'ordre)
+Bottom sheet dans l'éditeur inline pour choisir un thème (6 au total), une couleur d'accent (12 curées) et un fond (4 curés), avec aperçu en direct via CSS variables.
 
-1. **Aperçu du lien de partage** (mise en avant — bloc principal)
-   - Prévisualisation type "carte OG" (comme sur WhatsApp / iMessage / Facebook) : image + titre + description + domaine.
-   - Champs éditables :
-     - `Titre du partage` (défaut : `{Prénoms} — Vous êtes convié·e`)
-     - `Description du partage` (défaut : `Rejoignez-nous le {date} à {ville}`)
-     - `Image de partage` (URL ; défaut : `heroImageUrl`)
-   - Ces valeurs alimentent les balises `og:title`, `og:description`, `og:image`, `twitter:*` de `src/routes/e.$slug.tsx`.
-   - Note explicite affichée à l'utilisateur : les plateformes mettent en cache l'aperçu ; forcer un rafraîchissement peut prendre un moment.
+## 1. Base de données
 
-2. **Lien public** — champ readonly + bouton *Copier*.
+Migration `weddings` :
+- `accent_color text` (défaut null — hérite du thème)
+- `background_base text` (défaut null — hérite du thème)
 
-3. **Adresse personnalisée**
-   - Input `monmariage.ci/e/{slug}` avec **vérification de disponibilité** en temps réel (debounce ~400 ms).
-   - États : ✓ Disponible / ✗ Déjà pris / … Vérification.
-   - Bouton *Enregistrer* actif seulement si valide + dispo.
-   - **Suggestions courtes** générées si indisponible ou sur demande — privilégier les liens les plus courts :
-     - initiales : `as`, `as27`
-     - prénom+initiale : `aicha-s`, `stephane-a`
-     - + année 2 chiffres : `as-27`
-     - Filtrer par disponibilité avant affichage (max 4 suggestions).
+Le champ `theme` existant accepte 3 nouveaux slugs : `vert-sauge`, `bleu-nuit`, `or-antique`. Contrainte CHECK mise à jour pour valider les 6 thèmes et les 4 fonds.
 
-4. **Partage WhatsApp** — bouton `wa.me/?text=…` avec message pré-rempli utilisant le titre de partage.
+Rétrocompatibilité : les valeurs NULL restent valides, le rendu tombe sur les défauts du thème.
 
-5. **QR Code** — image (api.qrserver.com), bouton *Télécharger*.
+## 2. Configuration des thèmes (fichier `src/lib/wedding-theme.ts`)
 
-## Paywall
+Nouveau module central exportant :
+- `THEMES` : 6 entrées `{ slug, name, fontHeading, fontBody, defaultAccent, defaultBg, pattern? }`
+- `ACCENTS` : les 12 couleurs curées (nom + hex)
+- `BACKGROUNDS` : les 4 fonds (slug + hex)
+- `resolveTheme(couple)` : retourne les valeurs finales `{ bg, accent, textPrimary, textSecondary, border, surface, fontHeading, fontBody }`
+- `applyThemeVars(root, resolved)` : écrit toutes les CSS variables sur l'élément racine
 
-- Si `couple.isPublished === false` → la page rend un état verrouillé (icône cadenas, court texte, CTA *Publier mon invitation* → `/publish`). Pas de lien public, pas de slug, pas d'aperçu.
-- Le lien "Ma page / Aperçu" de la bottom nav reçoit un onglet dédié **Partager** visible uniquement quand publié ; sinon on garde l'onglet Aperçu existant.
-- Sur `dashboard/landing`, retirer les blocs "Lien public + QR + WhatsApp" et les déplacer ici (source unique de vérité). La page landing reste dédiée à la personnalisation du contenu.
+Les couleurs de texte secondaire, bordure, surface sont dérivées de manière cohérente (fond clair → texte foncé, surface blanche).
+
+## 3. Store & mappers
+
+`src/lib/wedding-store.tsx` :
+- Ajout à `Couple` : `accentColor?: string`, `backgroundBase?: "ivoire" | "creme" | "blanc" | "gris"`
+- Nouveau slug `ThemeId` étendu aux 6 thèmes
+- `rowToCouple` / `coupleToRow` gèrent les 2 nouvelles colonnes
+
+`src/lib/public-wedding.functions.ts` : ajout des champs dans la sélection et le mapper public.
+
+## 4. CSS variables & rendu
+
+Les templates lisent des CSS variables au lieu de valeurs hardcodées :
+- `--wedding-bg`, `--wedding-accent`, `--wedding-text-primary`, `--wedding-text-secondary`, `--wedding-border`, `--wedding-surface`, `--wedding-font-heading`, `--wedding-font-body`
+
+Application :
+- **Éditeur (`/dashboard/preview`)** : `useEffect` sur le wrapper de `PreviewPage` — met à jour les vars en fonction de `couple.theme / accentColor / backgroundBase`.
+- **Page publique (`/e/:slug`)** : balise `<style>` inline dans `head()` (via `createFileRoute.head`) pour éviter le FOUC, en utilisant `loaderData`.
+
+Composants qui adoptent l'accent : sceau enveloppe, compte à rebours, boutons RSVP, icônes cérémonie, séparateurs. Le corps de texte reste `--wedding-text-primary`.
+
+## 5. Bottom sheet "Thème & couleurs"
+
+Nouveau composant `ThemeSheet` dans `src/components/editor/ThemeSheet.tsx`, appelé depuis `PreviewEditor.tsx` (nouveau bouton palette dans les contrôles globaux).
+
+Structure :
+- Hauteur 60vh, drag pour aller à 85vh (comportement identique aux autres sheets)
+- Deux onglets : **Thème** / **Couleurs**
+
+**Onglet Thème** : grille 2×3 des 6 thèmes, chaque carte rend en direct un mini-preview (couple names dans la typo du thème, fond du thème, trait d'accent) — pas d'images statiques, on rend en HTML/CSS pour rester léger et à jour. Tap = applique thème + reset `accentColor` / `backgroundBase` à null.
+
+**Onglet Couleurs** :
+- Section "Couleur d'accent" : grille 6×2 de pastilles 44 px avec nom en 9 px
+- Section "Fond" : grille 2×2 de tuiles avec "Aa" central
+- Bouton texte "Restaurer les valeurs du thème" en bas (remet `accentColor` et `backgroundBase` à null)
+
+Live update : chaque changement met à jour les CSS variables via `applyThemeVars` immédiatement, puis debounce 500 ms sur la sauvegarde Supabase (via `useAutosave` déjà en place).
+
+Indicateur discret en bas du sheet : "Vos changements sont visibles en direct ci-dessus".
+
+## 6. Priorités & hors périmètre
+
+Hors périmètre (conforme à l'annexe §14) : roue chromatique libre, changement de typo, palette dynamique par thème (§11 phase 2 non implémentée), miniatures PNG statiques (rendu HTML à la place).
 
 ## Détails techniques
 
-### Base de données (migration Supabase)
-Ajouter trois colonnes sur `weddings` :
-- `share_title TEXT`
-- `share_description TEXT`
-- `share_image_url TEXT`
-
-Aucune nouvelle table. Colonnes exposées via `getPublicWedding` (server fn déjà existante) pour être lues par `e.$slug.tsx`.
-
-### Store `wedding-store.tsx`
-- Étendre `Couple` avec `shareTitle`, `shareDescription`, `shareImageUrl`.
-- Ajouter mappers `rowToCouple` / `coupleToRow` correspondants.
-
-### Vérification de disponibilité slug
-- Nouvelle server function `checkSlugAvailability` dans `src/lib/public-wedding.functions.ts` : requête publiable-key sur `weddings` where `slug = ? and id != currentWeddingId`. Retourne `{ available: boolean }`.
-- Politique RLS déjà en place pour lecture publique via `getPublicWedding` — vérifier qu'une policy `SELECT` sur slug existe (elle existe déjà pour la page publique). Sinon, ajouter un RPC SECURITY DEFINER qui renvoie juste le booléen.
-
-### Meta OG dynamique
-- `src/routes/e.$slug.tsx` — `head({ loaderData })` utilise `data.wedding.share_title / share_description / share_image_url` en priorité, sinon fallback sur les valeurs actuelles + `hero_image_url`.
-- Ajouter `og:image`, `twitter:card=summary_large_image`, `twitter:image`, `og:url` (relatif).
-
-### Nouveau fichier route
-- `src/routes/dashboard.share.tsx` (`createFileRoute("/dashboard/share")`), `head()` avec `robots: noindex`.
-
-### Navigation
-- `BottomNav.tsx` : quand `isPublished`, remplacer le 4ᵉ onglet "Ma page" par "Partager" pointant vers `/dashboard/share` (icône `IconShare`). L'aperçu reste accessible depuis "Ma page" landing / bouton dédié.
-- `TITLES` dans `dashboard.tsx` : ajouter `"/dashboard/share": "Liens & Partages"`.
-
-### Nettoyage `dashboard.landing.tsx`
-- Retirer la section "Lien public + QR" et les CTA WhatsApp / QR (déplacés vers `/dashboard/share`).
-- Garder l'éditeur de template, contenu, contact, dress code, etc.
-
-## Fichiers touchés
-
-- **Nouveau** : `src/routes/dashboard.share.tsx`
-- **Nouveau** : migration SQL (ajout 3 colonnes `weddings`)
-- **Modifiés** :
-  - `src/lib/wedding-store.tsx` (type + mappers)
-  - `src/lib/public-wedding.functions.ts` (retour des 3 colonnes + nouvelle fn `checkSlugAvailability`)
-  - `src/routes/e.$slug.tsx` (head OG dynamique + passage des champs au template si besoin)
-  - `src/routes/dashboard.landing.tsx` (retrait des blocs partage)
-  - `src/components/mobile-shell/BottomNav.tsx` (onglet Partager si publié)
-  - `src/routes/dashboard.tsx` (titre)
-
-## Hors périmètre (non fait dans ce plan)
-
-- Génération automatique d'une image OG personnalisée (server-side rendering d'une carte visuelle). L'utilisateur colle une URL image pour l'instant. Peut être ajouté plus tard.
-- Intégration réelle CinetPay (le paiement reste simulé comme aujourd'hui).
+- Validation côté serveur : dans `coupleToRow`, si `accentColor` fourni, vérifier qu'il appartient aux 12 hex ; idem `backgroundBase` parmi les 4 slugs. Sinon reset à null.
+- Templates existants (terracotta / noir-minimal / etc.) : refactor progressif — les couleurs hardcodées les plus visibles (hero background, accent boutons) passent en `var(--wedding-*)` avec fallback à la valeur actuelle. Pas de refonte complète des 5 templates.
+- Le sceau d'enveloppe (`envelope-animation.tsx`) utilise déjà `couple.accent` — remplacé par `var(--wedding-accent)`.
