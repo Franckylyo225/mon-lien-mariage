@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { AuthLayout, Field, GoogleAuthButton, AuthDivider } from "./signup";
+import { AuthLayout, Field, GoogleAuthButton, AuthDivider, inputClass } from "./signup";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -55,7 +55,11 @@ function LoginPage() {
   };
 
   return (
-    <AuthLayout title="Se connecter">
+    <AuthLayout
+      eyebrow="Se connecter"
+      title={<>Content de vous <em className="text-[#c17c74]">revoir.</em></>}
+      subtitle="Reprenez la préparation de votre grand jour là où vous l'avez laissée."
+    >
       <GoogleAuthButton label="Continuer avec Google" />
       <AuthDivider />
       <form onSubmit={submit} className="space-y-4">
@@ -65,7 +69,7 @@ function LoginPage() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+            className={inputClass}
             placeholder="vous@exemple.ci"
           />
         </Field>
@@ -76,21 +80,21 @@ function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Votre mot de passe"
-            className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+            className={inputClass}
           />
         </Field>
         {error ? <p className="text-xs text-destructive">{error}</p> : null}
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
+          className="w-full rounded-full bg-[#2b1a14] px-4 py-3.5 text-sm font-medium tracking-wide text-[#fdf7f3] shadow-lg shadow-[#c17c74]/20 transition hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
         >
           {loading ? "Connexion…" : "Se connecter"}
         </button>
       </form>
-      <p className="mt-6 text-center text-xs text-muted-foreground">
+      <p className="mt-6 text-center text-xs text-[#6b4a3e]">
         Pas encore de compte —{" "}
-        <Link to="/signup" className="text-primary hover:underline">
+        <Link to="/signup" className="font-medium text-[#c17c74] hover:underline">
           S'inscrire
         </Link>
       </p>
