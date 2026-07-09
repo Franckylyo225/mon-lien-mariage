@@ -47,6 +47,7 @@ export function PhotoGridSheet({
   images,
   onImagesChange,
   maxImages = 12,
+  extraControls,
 }: PhotoGridSheetProps) {
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
