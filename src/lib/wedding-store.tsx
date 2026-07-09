@@ -367,6 +367,10 @@ function rowToCouple(w: WeddingRow): Couple {
     practicalAccommodation: w.practical_accommodation ?? undefined,
     practicalContactName: w.practical_contact_name ?? undefined,
     practicalContactPhone: w.practical_contact_phone ?? undefined,
+    storyEnabled: w.story_enabled ?? true,
+    storyTitle: w.story_title ?? undefined,
+    storyBody: w.story_body ?? undefined,
+    storyImages: w.story_images ?? [],
   };
 }
 
