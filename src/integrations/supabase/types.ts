@@ -228,6 +228,8 @@ export type Database = {
       weddings: {
         Row: {
           accent: string | null
+          accent_color: string | null
+          background_base: string | null
           bride_name: string
           caption: string | null
           city: string | null
@@ -284,6 +286,8 @@ export type Database = {
         }
         Insert: {
           accent?: string | null
+          accent_color?: string | null
+          background_base?: string | null
           bride_name?: string
           caption?: string | null
           city?: string | null
@@ -340,6 +344,8 @@ export type Database = {
         }
         Update: {
           accent?: string | null
+          accent_color?: string | null
+          background_base?: string | null
           bride_name?: string
           caption?: string | null
           city?: string | null

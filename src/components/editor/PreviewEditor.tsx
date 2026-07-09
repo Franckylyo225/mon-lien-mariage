@@ -5,6 +5,7 @@ import { useAutosave } from "@/hooks/use-autosave";
 import { SaveIndicator } from "./SaveIndicator";
 import { HeroPhotoSheet } from "./HeroPhotoSheet";
 import { PhotoGridSheet } from "./PhotoGridSheet";
+import { ThemeSheet } from "./ThemeSheet";
 import {
   Lock,
   Type,
@@ -18,6 +19,7 @@ import {
   BookHeart,
   Images,
   Gift,
+  Palette,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -32,7 +34,8 @@ type Sheet =
   | "practical"
   | "registry"
   | "story"
-  | "gallery";
+  | "gallery"
+  | "theme";
 
 const CAPTION_SUGGESTIONS = [
   "Ils se disent oui",
@@ -189,6 +192,12 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
       {mode === "edit" && (
         <div className="fixed inset-x-0 bottom-4 z-30 mx-auto flex max-w-xl justify-center px-4">
           <div className="flex w-full items-center gap-2 overflow-x-auto rounded-2xl border border-background/20 bg-foreground/95 p-2 shadow-lg backdrop-blur">
+            <EditChip
+              icon={<Palette className="size-4" />}
+              label="Thème & couleurs"
+              value={themeChipValue(couple)}
+              onClick={() => setSheet("theme")}
+            />
             <EditChip
               icon={<ImageIcon className="size-4" />}
               label="Photo couverture"
@@ -929,8 +938,29 @@ export function PreviewEditor({ mode, onToggle }: EditorProps) {
         onUploaded={(url) => updateCouple({ heroImageUrl: url })}
         onRemove={() => updateCouple({ heroImageUrl: "" })}
       />
+
+      <ThemeSheet
+        open={sheet === "theme"}
+        onOpenChange={(o) => !o && setSheet(null)}
+        couple={couple}
+        onPatch={(patch) => persist(patch)}
+      />
     </>
   );
+}
+
+function themeChipValue(couple: Couple): string {
+  const theme = couple.theme ?? "rose-elegance";
+  const themeName = ({
+    "rose-elegance": "Rose Élégance",
+    "ivoire-epure": "Ivoire Épuré",
+    "wax-dore": "Wax Doré",
+    "vert-sauge": "Vert Sauge",
+    "bleu-nuit": "Bleu Nuit",
+    "or-antique": "Or Antique",
+  } as Record<string, string>)[theme] ?? "Personnalisé";
+  const custom = couple.accentColor || couple.backgroundBase ? " ●" : "";
+  return `${themeName}${custom}`;
 }
 
 type StoryStyle = NonNullable<Couple["storyStyle"]>;

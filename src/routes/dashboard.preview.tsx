@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useMemo } from "react";
 import { useWedding } from "@/lib/wedding-store";
 import { templateComponents, templateRsvpTone } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
 import { PreviewEditor } from "@/components/editor/PreviewEditor";
 import { useEditMode } from "@/lib/edit-mode";
 import { cn } from "@/lib/utils";
+import { applyThemeVars, resolveTheme } from "@/lib/wedding-theme";
 
 export const Route = createFileRoute("/dashboard/preview")({
   head: () => ({
@@ -18,8 +20,19 @@ export const Route = createFileRoute("/dashboard/preview")({
 
 function PreviewPage() {
   const { couple, ceremonies, weddingId } = useWedding();
-  const Template = templateComponents[couple.templateId];
   const { mode, toggle } = useEditMode();
+
+  const resolved = useMemo(
+    () => resolveTheme(couple),
+    [couple.theme, couple.accentColor, couple.backgroundBase, couple.accent],
+  );
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    applyThemeVars(document.documentElement, resolved);
+  }, [resolved]);
+
+  const coupleTheme = { ...couple, accent: resolved.accent };
+  const Template = templateComponents[coupleTheme.templateId];
 
   return (
     <div className="relative -mx-4 -my-8 sm:-mx-8">
@@ -76,12 +89,12 @@ function PreviewPage() {
         )}
       >
         <Template
-          couple={couple}
+          couple={coupleTheme}
           ceremonies={ceremonies}
           rsvpSlot={
             <TemplateRsvpForm
-              tone={templateRsvpTone[couple.templateId]}
-              weddingId={couple.isPublished && weddingId ? weddingId : undefined}
+              tone={templateRsvpTone[coupleTheme.templateId]}
+              weddingId={coupleTheme.isPublished && weddingId ? weddingId : undefined}
               ceremonies={ceremonies}
             />
           }

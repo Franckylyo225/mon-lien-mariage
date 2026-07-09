@@ -5,7 +5,8 @@ import { getPublicWedding } from "@/lib/public-wedding.functions";
 import { templateComponents, templateRsvpTone } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
 import { EnvelopeAnimation } from "@/components/envelope-animation";
-import type { Ceremony, Couple, EventType, TemplateId, ThemeId } from "@/lib/wedding-store";
+import type { BackgroundBase, Ceremony, Couple, EventType, TemplateId, ThemeId } from "@/lib/wedding-store";
+import { resolveTheme, themeCssString } from "@/lib/wedding-theme";
 
 const publicWeddingQuery = (slug: string) =>
   queryOptions({
@@ -76,6 +77,8 @@ function PublicInvitationPage() {
     theme: (w.theme as ThemeId) ?? "rose-elegance",
     eventType: ((w as { event_type?: string }).event_type as EventType) ?? "mariage",
     accent: w.accent ?? undefined,
+    accentColor: (w as { accent_color?: string | null }).accent_color ?? undefined,
+    backgroundBase: ((w as { background_base?: string | null }).background_base as BackgroundBase | null) ?? undefined,
     hashtag: w.hashtag ?? undefined,
     slug: w.slug ?? undefined,
     isPublished: true,
@@ -136,23 +139,28 @@ function PublicInvitationPage() {
     publicSlug: c.public_slug ?? "",
   }));
 
-  const Template = templateComponents[couple.templateId];
+  const resolved = resolveTheme(couple);
+  // Override couple.accent with resolved accent so templates that read couple.accent
+  // reflect the user's chosen colour.
+  const coupleTheme: Couple = { ...couple, accent: resolved.accent };
+  const Template = templateComponents[coupleTheme.templateId];
 
   return (
-    <div className="relative" data-theme={couple.theme}>
-      {couple.hasEnvelopeAnimation && !animPlayed ? (
+    <div className="relative" data-theme={coupleTheme.theme} style={{ backgroundColor: resolved.bg }}>
+      <style dangerouslySetInnerHTML={{ __html: `:root{${themeCssString(resolved)}}` }} />
+      {coupleTheme.hasEnvelopeAnimation && !animPlayed ? (
         <EnvelopeAnimation
-          brideName={couple.brideName}
-          groomName={couple.groomName}
+          brideName={coupleTheme.brideName}
+          groomName={coupleTheme.groomName}
           onDone={() => setAnimPlayed(true)}
         />
       ) : null}
       <Template
-        couple={couple}
+        couple={coupleTheme}
         ceremonies={ceremonies}
         rsvpSlot={
           <TemplateRsvpForm
-            tone={templateRsvpTone[couple.templateId]}
+            tone={templateRsvpTone[coupleTheme.templateId]}
             weddingId={w.id}
             ceremonies={ceremonies}
           />
@@ -161,6 +169,7 @@ function PublicInvitationPage() {
     </div>
   );
 }
+
 
 function NotFound() {
   return (

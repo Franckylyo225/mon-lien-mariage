@@ -29,7 +29,15 @@ export type TemplateId =
   | "tropical"
   | "art-deco";
 
-export type ThemeId = "rose-elegance" | "ivoire-epure" | "wax-dore";
+export type ThemeId =
+  | "rose-elegance"
+  | "ivoire-epure"
+  | "wax-dore"
+  | "vert-sauge"
+  | "bleu-nuit"
+  | "or-antique";
+
+export type BackgroundBase = "ivoire" | "creme" | "blanc" | "gris";
 
 export type EventType = "mariage" | "dot" | "traditionnel" | "autre";
 
@@ -98,6 +106,8 @@ export interface Couple {
   templateId: TemplateId;
   theme: ThemeId;
   accent?: string;
+  accentColor?: string;
+  backgroundBase?: BackgroundBase;
   hashtag?: string;
   slug?: string;
   isPublished: boolean;
@@ -316,6 +326,8 @@ type WeddingRow = {
   event_type: string;
 
   accent: string | null;
+  accent_color: string | null;
+  background_base: string | null;
   hashtag: string | null;
   slug: string | null;
   is_published: boolean;
@@ -372,6 +384,8 @@ function rowToCouple(w: WeddingRow): Couple {
     eventType: ((w.event_type as EventType) ?? "mariage"),
 
     accent: w.accent ?? undefined,
+    accentColor: w.accent_color ?? undefined,
+    backgroundBase: (w.background_base as BackgroundBase | null) ?? undefined,
     hashtag: w.hashtag ?? undefined,
     slug: w.slug ?? undefined,
     isPublished: !!w.is_published,
@@ -432,6 +446,8 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.eventType !== undefined) r.event_type = p.eventType;
 
   if (p.accent !== undefined) r.accent = p.accent;
+  if (p.accentColor !== undefined) r.accent_color = p.accentColor || null;
+  if (p.backgroundBase !== undefined) r.background_base = p.backgroundBase || null;
   if (p.hashtag !== undefined) r.hashtag = p.hashtag;
   if (p.slug !== undefined) r.slug = p.slug;
   if (p.isPublished !== undefined) r.is_published = p.isPublished;
