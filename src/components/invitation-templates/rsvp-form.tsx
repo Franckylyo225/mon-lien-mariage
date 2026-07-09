@@ -426,6 +426,38 @@ function RsvpModal({
           </div>
         </div>
 
+        <div className="mt-6">
+          <p className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-60">
+            Allergies ou régime alimentaire
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {DIETARY_TAGS.map((tag) => {
+              const active = dietaryTags.includes(tag);
+              return (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={() => toggleTag(tag)}
+                  className={
+                    "rounded-full px-3 py-1.5 text-xs transition " +
+                    (active ? t.active : t.inactive)
+                  }
+                >
+                  {tag}
+                </button>
+              );
+            })}
+          </div>
+          <textarea
+            value={dietaryDetail}
+            onChange={(e) => setDietaryDetail(e.target.value.slice(0, 300))}
+            placeholder="Précisez si besoin (ex. allergie aux arachides, sans porc, etc.)"
+            rows={2}
+            className={`mt-3 w-full rounded-2xl border px-4 py-3 text-sm focus:outline-none ${t.input}`}
+          />
+          <p className="mt-1 text-[10px] opacity-50">{dietaryDetail.length}/300</p>
+        </div>
+
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
