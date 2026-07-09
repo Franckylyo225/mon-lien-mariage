@@ -22,9 +22,9 @@ export function BotaniqueDoreTemplate({ couple, ceremonies, rsvpSlot }: Template
             Nous avons l'honneur de vous convier au mariage de
           </p>
           <h1 className="mt-6 font-serif text-5xl italic leading-tight">
-            {couple.brideName}
-            <span className="mx-3 text-[#c9a84c]">&</span>
-            {couple.groomName}
+            <span className="block">{couple.brideName}</span>
+            <span className="my-1 block text-[#c9a84c]">&</span>
+            <span className="block">{couple.groomName}</span>
           </h1>
           <div className="mx-auto my-6 flex items-center justify-center gap-3">
             <span className="h-px w-8 bg-[#c9a84c]" />
