@@ -20,8 +20,19 @@ export const Route = createFileRoute("/dashboard/preview")({
 
 function PreviewPage() {
   const { couple, ceremonies, weddingId } = useWedding();
-  const Template = templateComponents[couple.templateId];
   const { mode, toggle } = useEditMode();
+
+  const resolved = useMemo(
+    () => resolveTheme(couple),
+    [couple.theme, couple.accentColor, couple.backgroundBase, couple.accent],
+  );
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    applyThemeVars(document.documentElement, resolved);
+  }, [resolved]);
+
+  const coupleTheme = { ...couple, accent: resolved.accent };
+  const Template = templateComponents[coupleTheme.templateId];
 
   return (
     <div className="relative -mx-4 -my-8 sm:-mx-8">
