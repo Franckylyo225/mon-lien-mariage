@@ -78,18 +78,23 @@ export function HeroPhotoSheet({
     setStep("uploading");
     setError(null);
     try {
-      // 1. Render cropped canvas
+      // 1. Render cropped canvas (JPEG — universally supported on Android/iOS)
       const blob = await renderCroppedBlob(imageSrc, croppedArea, rotation);
-      // 2. Compress
-      const compressed = await imageCompression(
-        new File([blob], "hero.jpg", { type: "image/jpeg" }),
-        { maxSizeMB: 1.5, maxWidthOrHeight: 2000, useWebWorker: true, fileType: "image/webp" },
-      );
+      // 2. Compress (best-effort — fall back to original if it fails)
+      let toUpload: Blob = blob;
+      try {
+        toUpload = await imageCompression(
+          new File([blob], "hero.jpg", { type: "image/jpeg" }),
+          { maxSizeMB: 1.5, maxWidthOrHeight: 2000, useWebWorker: true, fileType: "image/jpeg" },
+        );
+      } catch (compErr) {
+        console.warn("[hero] compression failed, uploading original", compErr);
+      }
       // 3. Upload
-      const path = `${weddingId}/hero/${crypto.randomUUID()}.webp`;
+      const path = `${weddingId}/hero/${safeUuid()}.jpg`;
       const { error: upErr } = await supabase.storage
         .from("wedding-photos")
-        .upload(path, compressed, { contentType: "image/webp", upsert: false });
+        .upload(path, toUpload, { contentType: "image/jpeg", upsert: false });
       if (upErr) throw upErr;
 
       // 4. Signed URL (10 years)
@@ -273,6 +278,20 @@ export function HeroPhotoSheet({
     </BottomSheet>
   );
 }
+
+/** Safe UUID that works even on browsers without crypto.randomUUID. */
+function safeUuid(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  const bytes = new Uint8Array(16);
+  (crypto as Crypto).getRandomValues(bytes);
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
 
 /** Draw the cropped area at native resolution as JPEG blob. */
 async function renderCroppedBlob(
