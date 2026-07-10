@@ -141,8 +141,11 @@ export interface Couple {
   contactName?: string;
   contactPhone?: string;
   contactEmail?: string;
+  dressCodeEnabled?: boolean;
+  dressCodeTitle?: string;
   dressCodeNote?: string;
   dressCodeColors?: string[];
+  dressCodeImages?: string[];
   customInfoTitle?: string;
   customInfoBody?: string;
   caption?: string;
