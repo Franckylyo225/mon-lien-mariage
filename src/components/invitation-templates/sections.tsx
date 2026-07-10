@@ -439,26 +439,26 @@ export function DressCodeSection({
       <div className="mt-6 space-y-4 rounded-2xl border border-current/10 bg-white/5 p-5">
         <div className="flex items-start gap-3">
           <Shirt className="mt-0.5 size-5 shrink-0" style={{ color: accent }} />
-          <div className="min-w-0 flex-1 space-y-3">
+          <div className="min-w-0 flex-1">
             {cleanNote ? (
               <p className="whitespace-pre-line text-sm italic leading-relaxed opacity-90">
                 {cleanNote}
               </p>
             ) : null}
-            {swatches.length > 0 ? (
-              <div className="flex flex-wrap items-center justify-center gap-3">
-                {swatches.map((c, i) => (
-                  <span
-                    key={`${c}-${i}`}
-                    className="size-8 rounded-full ring-2 ring-white shadow-sm"
-                    style={{ backgroundColor: c }}
-                    aria-label={`Couleur ${c}`}
-                  />
-                ))}
-              </div>
-            ) : null}
           </div>
         </div>
+        {swatches.length > 0 ? (
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            {swatches.map((c, i) => (
+              <span
+                key={`${c}-${i}`}
+                className="size-8 rounded-full ring-2 ring-white shadow-sm"
+                style={{ backgroundColor: c }}
+                aria-label={`Couleur ${c}`}
+              />
+            ))}
+          </div>
+        ) : null}
         {photos.length > 0 ? (
           <div className="grid grid-cols-5 gap-1.5">
             {photos.map((src, i) => (
