@@ -183,7 +183,7 @@ export function AuthLayout({
               le soir même. »
             </p>
             <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.35em] text-[#e8c5b6]">
-              Aïcha & Stéphane — Abidjan
+              Aïcha & Loïc — Abidjan
             </p>
           </div>
         </aside>

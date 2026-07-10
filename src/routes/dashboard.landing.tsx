@@ -159,7 +159,7 @@ function LandingEditor() {
           <Field
             label="Hashtag"
             value={couple.hashtag ?? ""}
-            placeholder="#AichaEtStephane2027"
+            placeholder="#AichaEtLoic2027"
             onChange={(v) => updateCouple({ hashtag: v })}
           />
           <Field

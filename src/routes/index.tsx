@@ -314,7 +314,7 @@ function EnvelopeMock() {
         A&S
       </div>
       <div className="absolute inset-x-0 bottom-3 text-center font-[family-name:var(--font-display)] text-[11px] italic text-[#8a6a5e]">
-        Aïcha & Stéphane · 14.08.2027
+        Aïcha & Loïc · 14.08.2027
       </div>
     </div>
   );
@@ -369,10 +369,10 @@ function ShareMock() {
         </p>
         <div className="mt-2 rounded-md border border-[#e8c5b6] p-2">
           <p className="font-[family-name:var(--font-display)] text-xs italic text-[#c17c74]">
-            monmariage.ci/aicha-stephane
+            monmariage.ci/aicha-loic
           </p>
           <p className="mt-0.5 text-[9px] text-[#8a6a5e]">
-            Aïcha & Stéphane · 14 août
+            Aïcha & Loïc · 14 août
           </p>
         </div>
       </div>
@@ -493,7 +493,7 @@ function TimeArgument() {
               « Prête en une soirée. »
             </p>
             <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-[#c17c74]">
-              Aïcha & Stéphane
+              Aïcha & Loïc
             </p>
           </div>
         </div>
@@ -848,7 +848,7 @@ function TemplateCard({
           className="font-[family-name:var(--font-display)] text-[24px] italic leading-none sm:text-[28px]"
           style={{ color: ink }}
         >
-          Stéphane
+          Loïc
         </p>
         <div
           className="mx-auto my-3 h-px w-8"
