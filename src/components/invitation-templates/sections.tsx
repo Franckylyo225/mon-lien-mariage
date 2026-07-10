@@ -446,11 +446,11 @@ export function DressCodeSection({
               </p>
             ) : null}
             {swatches.length > 0 ? (
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center justify-center gap-3">
                 {swatches.map((c, i) => (
                   <span
                     key={`${c}-${i}`}
-                    className="size-6 rounded-full ring-2 ring-white shadow-sm"
+                    className="size-8 rounded-full ring-2 ring-white shadow-sm"
                     style={{ backgroundColor: c }}
                     aria-label={`Couleur ${c}`}
                   />
