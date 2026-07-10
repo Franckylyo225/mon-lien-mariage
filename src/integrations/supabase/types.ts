@@ -244,7 +244,10 @@ export type Database = {
           custom_info_body: string | null
           custom_info_title: string | null
           dress_code_colors: string[]
+          dress_code_enabled: boolean | null
+          dress_code_images: Json | null
           dress_code_note: string | null
+          dress_code_title: string | null
           event_type: string
           gallery_enabled: boolean | null
           gallery_images: string[] | null
@@ -304,7 +307,10 @@ export type Database = {
           custom_info_body?: string | null
           custom_info_title?: string | null
           dress_code_colors?: string[]
+          dress_code_enabled?: boolean | null
+          dress_code_images?: Json | null
           dress_code_note?: string | null
+          dress_code_title?: string | null
           event_type?: string
           gallery_enabled?: boolean | null
           gallery_images?: string[] | null
@@ -364,7 +370,10 @@ export type Database = {
           custom_info_body?: string | null
           custom_info_title?: string | null
           dress_code_colors?: string[]
+          dress_code_enabled?: boolean | null
+          dress_code_images?: Json | null
           dress_code_note?: string | null
+          dress_code_title?: string | null
           event_type?: string
           gallery_enabled?: boolean | null
           gallery_images?: string[] | null

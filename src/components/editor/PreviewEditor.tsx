@@ -26,6 +26,7 @@ import {
   Gift,
   Palette,
   Sparkles,
+  Shirt,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -38,6 +39,7 @@ type Sheet =
   | "hero"
   | "countdown"
   | "practical"
+  | "dress"
   | "registry"
   | "story"
   | "gallery"
@@ -128,8 +130,15 @@ export function PreviewEditor({ mode }: EditorProps) {
     practicalParking,
     practicalAccommodation,
     practicalContactName || practicalContactPhone,
-    dressCodeNote || dressColors.some((c) => c.trim().length > 0) ? "x" : "",
   ].filter((v) => v && v.trim().length > 0).length;
+  const dressCodeEnabled = couple.dressCodeEnabled ?? false;
+  const dressPhotoCount = (couple.dressCodeImages ?? []).filter(
+    (u) => u && u.trim().length > 0,
+  ).length;
+  const dressFilledCount =
+    (dressCodeNote.trim().length > 0 ? 1 : 0) +
+    (dressColors.some((c) => c.trim().length > 0) ? 1 : 0) +
+    (dressPhotoCount > 0 ? 1 : 0);
   const countdownEnabled = couple.countdownEnabled ?? true;
   const countdownUnits: CountdownUnit[] =
     couple.countdownUnits && couple.countdownUnits.length > 0
@@ -260,6 +269,18 @@ export function PreviewEditor({ mode }: EditorProps) {
                     : `${registryStoreCount} magasin${registryStoreCount > 1 ? "s" : ""}`
               }
               onClick={() => setSheet("registry")}
+            />
+            <EditChip
+              icon={<Shirt className="size-4" />}
+              label="Dress code"
+              value={
+                !dressCodeEnabled
+                  ? "Désactivé"
+                  : dressFilledCount === 0
+                    ? "À compléter"
+                    : `${dressFilledCount} élément${dressFilledCount > 1 ? "s" : ""}`
+              }
+              onClick={() => setSheet("dress")}
             />
             <EditChip
               icon={<Info className="size-4" />}
@@ -630,51 +651,6 @@ export function PreviewEditor({ mode }: EditorProps) {
               !practicalEnabled && "pointer-events-none opacity-40",
             )}
           >
-            <div className="rounded-xl border border-dashed border-border p-3">
-              <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
-                Dress code
-              </p>
-              <textarea
-                value={dressCodeNote}
-                rows={2}
-                maxLength={200}
-                placeholder="Ex : élégance Riviera — accents dorés et terracotta bienvenus."
-                onChange={(e) => {
-                  setDressCodeNote(e.target.value);
-                  persist({ dressCodeNote: e.target.value });
-                }}
-                className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
-              />
-              <p className="mt-3 mb-2 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
-                Couleurs (2 à 3)
-              </p>
-              <div className="grid grid-cols-3 gap-2">
-                {[0, 1, 2].map((i) => (
-                  <div
-                    key={i}
-                    className="flex items-center gap-2 rounded-lg border border-border bg-background px-2 py-1.5"
-                  >
-                    <input
-                      type="color"
-                      value={dressColors[i] || "#c9a96b"}
-                      onChange={(e) => setDressColor(i, e.target.value)}
-                      className="size-7 shrink-0 cursor-pointer rounded-md border border-border bg-transparent"
-                      aria-label={`Couleur ${i + 1}`}
-                    />
-                    <input
-                      type="text"
-                      value={dressColors[i]}
-                      placeholder={i < 2 ? "#c9a96b" : "opt."}
-                      onChange={(e) => setDressColor(i, e.target.value)}
-                      className="min-w-0 flex-1 bg-transparent font-mono text-[11px] uppercase tracking-wider outline-none"
-                    />
-                  </div>
-                ))}
-              </div>
-              <p className="mt-2 text-[10px] opacity-60">
-                Laissez la 3ᵉ vide pour n'afficher que 2 couleurs.
-              </p>
-            </div>
 
             <div>
               <label className="mb-2 block font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
@@ -875,6 +851,68 @@ export function PreviewEditor({ mode }: EditorProps) {
       </BottomSheet>
 
 
+
+      <PhotoGridSheet
+        open={sheet === "dress"}
+        onOpenChange={(o) => !o && setSheet(null)}
+        title="Dress code"
+        intro="Donnez le ton vestimentaire : indications, couleurs et petites photos d'inspiration."
+        weddingId={weddingId}
+        folder="dress-code"
+        enabled={dressCodeEnabled}
+        onEnabledChange={(v) => persist({ dressCodeEnabled: v })}
+        titleField={{
+          label: "Titre du bloc",
+          value: couple.dressCodeTitle ?? "",
+          placeholder: "Dress code",
+          onChange: (v) => persist({ dressCodeTitle: v }),
+        }}
+        bodyField={{
+          label: "Indications",
+          value: dressCodeNote,
+          placeholder: "Ex : Élégance Riviera — accents dorés et terracotta bienvenus.",
+          onChange: (v) => {
+            setDressCodeNote(v);
+            persist({ dressCodeNote: v });
+          },
+        }}
+        images={couple.dressCodeImages ?? []}
+        onImagesChange={(next) => persist({ dressCodeImages: next })}
+        maxImages={6}
+        extraControls={
+          <div>
+            <label className="mb-2 block font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+              Couleurs (jusqu'à 3)
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-2 rounded-lg border border-border bg-background px-2 py-1.5"
+                >
+                  <input
+                    type="color"
+                    value={dressColors[i] || "#c9a96b"}
+                    onChange={(e) => setDressColor(i, e.target.value)}
+                    className="size-7 shrink-0 cursor-pointer rounded-md border border-border bg-transparent"
+                    aria-label={`Couleur ${i + 1}`}
+                  />
+                  <input
+                    type="text"
+                    value={dressColors[i]}
+                    placeholder={i < 2 ? "#c9a96b" : "opt."}
+                    onChange={(e) => setDressColor(i, e.target.value)}
+                    className="min-w-0 flex-1 bg-transparent font-mono text-[11px] uppercase tracking-wider outline-none"
+                  />
+                </div>
+              ))}
+            </div>
+            <p className="mt-2 text-[10px] opacity-60">
+              Laissez vide pour ne pas afficher de palette.
+            </p>
+          </div>
+        }
+      />
 
       <PhotoGridSheet
         open={sheet === "story"}

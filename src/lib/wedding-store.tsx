@@ -141,8 +141,11 @@ export interface Couple {
   contactName?: string;
   contactPhone?: string;
   contactEmail?: string;
+  dressCodeEnabled?: boolean;
+  dressCodeTitle?: string;
   dressCodeNote?: string;
   dressCodeColors?: string[];
+  dressCodeImages?: string[];
   customInfoTitle?: string;
   customInfoBody?: string;
   caption?: string;
@@ -424,8 +427,11 @@ function rowToCouple(w: WeddingRow): Couple {
     contactName: w.contact_name ?? undefined,
     contactPhone: w.contact_phone ?? undefined,
     contactEmail: w.contact_email ?? undefined,
+    dressCodeEnabled: (w as { dress_code_enabled?: boolean | null }).dress_code_enabled ?? false,
+    dressCodeTitle: (w as { dress_code_title?: string | null }).dress_code_title ?? undefined,
     dressCodeNote: w.dress_code_note ?? undefined,
     dressCodeColors: w.dress_code_colors ?? [],
+    dressCodeImages: ((w as { dress_code_images?: string[] | null }).dress_code_images as string[] | null) ?? [],
     customInfoTitle: w.custom_info_title ?? undefined,
     customInfoBody: w.custom_info_body ?? undefined,
     caption: w.caption ?? undefined,
@@ -488,8 +494,11 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.contactName !== undefined) r.contact_name = p.contactName;
   if (p.contactPhone !== undefined) r.contact_phone = p.contactPhone;
   if (p.contactEmail !== undefined) r.contact_email = p.contactEmail;
+  if (p.dressCodeEnabled !== undefined) r.dress_code_enabled = p.dressCodeEnabled;
+  if (p.dressCodeTitle !== undefined) r.dress_code_title = p.dressCodeTitle || null;
   if (p.dressCodeNote !== undefined) r.dress_code_note = p.dressCodeNote;
   if (p.dressCodeColors !== undefined) r.dress_code_colors = p.dressCodeColors ?? [];
+  if (p.dressCodeImages !== undefined) r.dress_code_images = p.dressCodeImages ?? [];
   if (p.customInfoTitle !== undefined) r.custom_info_title = p.customInfoTitle;
   if (p.customInfoBody !== undefined) r.custom_info_body = p.customInfoBody;
   if (p.caption !== undefined) r.caption = p.caption || null;
