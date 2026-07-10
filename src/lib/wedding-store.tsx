@@ -228,7 +228,7 @@ const uid = () =>
 
 const defaultCouple = (): Couple => ({
   brideName: "Aïcha",
-  groomName: "Stéphane",
+  groomName: "Loïc",
   weddingDate: "2027-02-14",
   city: "Abidjan",
   introMessage:
@@ -238,12 +238,12 @@ const defaultCouple = (): Couple => ({
   eventType: "mariage",
 
   accent: "#993556",
-  hashtag: "#AichaEtStephane2027",
+  hashtag: "#AichaEtLoic2027",
   isPublished: false,
   isLocked: false,
   contactName: "Mariam Diabaté",
   contactPhone: "+225 07 08 09 10 11",
-  contactEmail: "contact@aicha-stephane.ci",
+  contactEmail: "contact@aicha-loic.ci",
   dressCodeNote: "Élégance Riviera — accents dorés et terracotta bienvenus.",
   customInfoTitle: "Bon à savoir",
   customInfoBody:
