@@ -972,6 +972,25 @@ export function PreviewEditor({ mode }: EditorProps) {
         couple={couple}
         onPatch={(patch) => persist(patch)}
       />
+
+      <ParticleSheet
+        open={sheet === "particles"}
+        onOpenChange={(o) => !o && setSheet(null)}
+        config={{
+          slug: couple.particleEffectSlug ?? null,
+          intensity: couple.particleIntensity ?? "normal",
+          speed: couple.particleSpeed ?? 1,
+          size: couple.particleSize ?? "normal",
+          colorMode: couple.particleColorMode ?? "auto",
+          accentColor: couple.accentColor ?? couple.accent ?? "#993556",
+        }}
+        triggers={{
+          open: couple.particleTriggerOpen ?? true,
+          loop: couple.particleTriggerLoop ?? false,
+          rsvp: couple.particleTriggerRsvp ?? true,
+        }}
+        onPatch={(patch) => persist(patch)}
+      />
     </>
   );
 }
