@@ -130,8 +130,15 @@ export function PreviewEditor({ mode }: EditorProps) {
     practicalParking,
     practicalAccommodation,
     practicalContactName || practicalContactPhone,
-    dressCodeNote || dressColors.some((c) => c.trim().length > 0) ? "x" : "",
   ].filter((v) => v && v.trim().length > 0).length;
+  const dressCodeEnabled = couple.dressCodeEnabled ?? false;
+  const dressPhotoCount = (couple.dressCodeImages ?? []).filter(
+    (u) => u && u.trim().length > 0,
+  ).length;
+  const dressFilledCount =
+    (dressCodeNote.trim().length > 0 ? 1 : 0) +
+    (dressColors.some((c) => c.trim().length > 0) ? 1 : 0) +
+    (dressPhotoCount > 0 ? 1 : 0);
   const countdownEnabled = couple.countdownEnabled ?? true;
   const countdownUnits: CountdownUnit[] =
     couple.countdownUnits && couple.countdownUnits.length > 0
