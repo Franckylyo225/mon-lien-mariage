@@ -281,6 +281,7 @@ export function PreviewEditor({ mode }: EditorProps) {
                     : `${dressFilledCount} élément${dressFilledCount > 1 ? "s" : ""}`
               }
               onClick={() => setSheet("dress")}
+            />
             <EditChip
               icon={<Info className="size-4" />}
               label="Infos pratiques"
