@@ -450,17 +450,10 @@ export function DressCodeSection({
                 {swatches.map((c, i) => (
                   <span
                     key={`${c}-${i}`}
-                    className="inline-flex items-center gap-2 rounded-full border border-current/15 bg-white/5 px-2.5 py-1"
-                  >
-                    <span
-                      className="size-4 rounded-full ring-1 ring-current/20"
-                      style={{ backgroundColor: c }}
-                      aria-hidden
-                    />
-                    <span className="font-mono text-[10px] uppercase tracking-widest opacity-70">
-                      {c}
-                    </span>
-                  </span>
+                    className="size-6 rounded-full ring-2 ring-white shadow-sm"
+                    style={{ backgroundColor: c }}
+                    aria-label={`Couleur ${c}`}
+                  />
                 ))}
               </div>
             ) : null}
