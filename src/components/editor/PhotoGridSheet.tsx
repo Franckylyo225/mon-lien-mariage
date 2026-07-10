@@ -80,16 +80,23 @@ export function PhotoGridSheet({
       const toUpload = Array.from(files).slice(0, remaining);
       const uploaded: string[] = [];
       for (const file of toUpload) {
-        const compressed = await imageCompression(file, {
-          maxSizeMB: 1.2,
-          maxWidthOrHeight: 1800,
-          useWebWorker: true,
-          fileType: "image/webp",
-        });
-        const path = `${weddingId}/${folder}/${crypto.randomUUID()}.webp`;
+        // Compress best-effort; fall back to the original file (Android Chrome
+        // sometimes fails to encode WebP / very large HEIC-derived JPEGs).
+        let payload: Blob = file;
+        try {
+          payload = await imageCompression(file, {
+            maxSizeMB: 1.2,
+            maxWidthOrHeight: 1800,
+            useWebWorker: true,
+            fileType: "image/jpeg",
+          });
+        } catch (compErr) {
+          console.warn("[photo] compression failed, uploading original", compErr);
+        }
+        const path = `${weddingId}/${folder}/${safeUuid()}.jpg`;
         const { error: upErr } = await supabase.storage
           .from("wedding-photos")
-          .upload(path, compressed, { contentType: "image/webp", upsert: false });
+          .upload(path, payload, { contentType: "image/jpeg", upsert: false });
         if (upErr) throw upErr;
         const { data: signed, error: sErr } = await supabase.storage
           .from("wedding-photos")
@@ -107,6 +114,18 @@ export function PhotoGridSheet({
       if (cameraInputRef.current) cameraInputRef.current.value = "";
     }
   };
+
+  function safeUuid(): string {
+    if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+      return crypto.randomUUID();
+    }
+    const bytes = new Uint8Array(16);
+    (crypto as Crypto).getRandomValues(bytes);
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+    return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+  }
 
   const removeImage = (i: number) => {
     onImagesChange(images.filter((_, idx) => idx !== i));
