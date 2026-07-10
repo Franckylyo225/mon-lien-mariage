@@ -38,6 +38,7 @@ type Sheet =
   | "hero"
   | "countdown"
   | "practical"
+  | "dress"
   | "registry"
   | "story"
   | "gallery"
