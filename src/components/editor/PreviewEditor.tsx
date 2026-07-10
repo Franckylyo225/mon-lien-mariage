@@ -26,6 +26,7 @@ import {
   Gift,
   Palette,
   Sparkles,
+  Shirt,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
