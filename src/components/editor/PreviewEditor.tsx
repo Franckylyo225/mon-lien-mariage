@@ -7,6 +7,8 @@ import { HeroPhotoSheet } from "./HeroPhotoSheet";
 import { PhotoGridSheet } from "./PhotoGridSheet";
 import { ColorPicker } from "./ColorPicker";
 import { ThemeSheet } from "./ThemeSheet";
+import { ParticleSheet } from "./ParticleSheet";
+import { PARTICLE_STYLES } from "@/lib/particles/styles";
 import {
   OpeningEffect,
   OPENING_EFFECT_LABELS,
@@ -28,6 +30,7 @@ import {
   Palette,
   Sparkles,
   Shirt,
+  Stars,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -45,7 +48,8 @@ type Sheet =
   | "story"
   | "gallery"
   | "theme"
-  | "opening";
+  | "opening"
+  | "particles";
 
 const CAPTION_SUGGESTIONS = [
   "Ils se disent oui",

@@ -264,6 +264,14 @@ export type Database = {
           onboarding_step: number
           opening_effect_slug: string | null
           owner_id: string
+          particle_color_mode: string | null
+          particle_effect_slug: string | null
+          particle_intensity: string | null
+          particle_size: string | null
+          particle_speed: number | null
+          particle_trigger_loop: boolean | null
+          particle_trigger_open: boolean | null
+          particle_trigger_rsvp: boolean | null
           practical_accommodation: string | null
           practical_contact_name: string | null
           practical_contact_phone: string | null
@@ -327,6 +335,14 @@ export type Database = {
           onboarding_step?: number
           opening_effect_slug?: string | null
           owner_id: string
+          particle_color_mode?: string | null
+          particle_effect_slug?: string | null
+          particle_intensity?: string | null
+          particle_size?: string | null
+          particle_speed?: number | null
+          particle_trigger_loop?: boolean | null
+          particle_trigger_open?: boolean | null
+          particle_trigger_rsvp?: boolean | null
           practical_accommodation?: string | null
           practical_contact_name?: string | null
           practical_contact_phone?: string | null
@@ -390,6 +406,14 @@ export type Database = {
           onboarding_step?: number
           opening_effect_slug?: string | null
           owner_id?: string
+          particle_color_mode?: string | null
+          particle_effect_slug?: string | null
+          particle_intensity?: string | null
+          particle_size?: string | null
+          particle_speed?: number | null
+          particle_trigger_loop?: boolean | null
+          particle_trigger_open?: boolean | null
+          particle_trigger_rsvp?: boolean | null
           practical_accommodation?: string | null
           practical_contact_name?: string | null
           practical_contact_phone?: string | null

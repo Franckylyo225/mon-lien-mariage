@@ -5,8 +5,15 @@ import { getPublicWedding } from "@/lib/public-wedding.functions";
 import { componentForTheme } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
 import { OpeningEffect, type OpeningEffectSlug } from "@/components/opening-effects";
+import { ParticleCanvas, RsvpBurstOverlay } from "@/components/particles/ParticleCanvas";
 import type { BackgroundBase, Ceremony, Couple, EventType, TemplateId, ThemeId } from "@/lib/wedding-store";
 import { resolveTheme, themeCssString } from "@/lib/wedding-theme";
+import type {
+  ParticleColorMode,
+  ParticleIntensity,
+  ParticleSize,
+  ParticleSlug,
+} from "@/lib/particles/types";
 
 const publicWeddingQuery = (slug: string) =>
   queryOptions({
@@ -61,6 +68,7 @@ function PublicInvitationPage() {
   const { slug } = Route.useParams();
   const { data } = useSuspenseQuery(publicWeddingQuery(slug));
   const [animPlayed, setAnimPlayed] = useState(false);
+  const [rsvpBurst, setRsvpBurst] = useState(false);
 
   if (!data.wedding) throw notFound();
 
@@ -127,6 +135,21 @@ function PublicInvitationPage() {
     hasOpeningEffect: !!(w as { has_opening_effect?: boolean | null }).has_opening_effect,
     openingEffectSlug:
       ((w as { opening_effect_slug?: string | null }).opening_effect_slug as Couple["openingEffectSlug"]) ?? undefined,
+    particleEffectSlug:
+      ((w as { particle_effect_slug?: string | null }).particle_effect_slug as ParticleSlug | null) ?? null,
+    particleIntensity:
+      ((w as { particle_intensity?: string | null }).particle_intensity as ParticleIntensity) ?? "normal",
+    particleSpeed: (w as { particle_speed?: number | null }).particle_speed ?? 1,
+    particleSize:
+      ((w as { particle_size?: string | null }).particle_size as ParticleSize) ?? "normal",
+    particleColorMode:
+      ((w as { particle_color_mode?: string | null }).particle_color_mode as ParticleColorMode) ?? "auto",
+    particleTriggerOpen:
+      (w as { particle_trigger_open?: boolean | null }).particle_trigger_open ?? true,
+    particleTriggerLoop:
+      (w as { particle_trigger_loop?: boolean | null }).particle_trigger_loop ?? false,
+    particleTriggerRsvp:
+      (w as { particle_trigger_rsvp?: boolean | null }).particle_trigger_rsvp ?? true,
   };
 
   const ceremonies: Ceremony[] = (data.ceremonies ?? []).map((c) => ({
@@ -170,6 +193,29 @@ function PublicInvitationPage() {
           onDone={() => setAnimPlayed(true)}
         />
       ) : null}
+
+      {animPlayed && coupleTheme.particleEffectSlug ? (
+        <ParticleCanvas
+          config={{
+            slug: coupleTheme.particleEffectSlug as ParticleSlug,
+            intensity: (coupleTheme.particleIntensity ?? "normal") as ParticleIntensity,
+            speed: coupleTheme.particleSpeed ?? 1,
+            size: (coupleTheme.particleSize ?? "normal") as ParticleSize,
+            colorMode: (coupleTheme.particleColorMode ?? "auto") as ParticleColorMode,
+            accentColor: resolved.accent,
+          }}
+          burstOnMount={coupleTheme.particleTriggerOpen ? 24 : 0}
+          loop={!!coupleTheme.particleTriggerLoop}
+        />
+      ) : null}
+
+      {rsvpBurst ? (
+        <RsvpBurstOverlay
+          accentColor={resolved.accent}
+          onDone={() => setRsvpBurst(false)}
+        />
+      ) : null}
+
       <Template
         couple={coupleTheme}
         ceremonies={ceremonies}
@@ -178,6 +224,9 @@ function PublicInvitationPage() {
             theme={coupleTheme.theme}
             weddingId={w.id}
             ceremonies={ceremonies}
+            onConfirmed={() => {
+              if (coupleTheme.particleTriggerRsvp !== false) setRsvpBurst(true);
+            }}
           />
         }
       />

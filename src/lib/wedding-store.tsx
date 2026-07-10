@@ -146,6 +146,21 @@ export interface Couple {
   dressCodeNote?: string;
   dressCodeColors?: string[];
   dressCodeImages?: string[];
+  particleEffectSlug?:
+    | "glitter"
+    | "flowers"
+    | "hearts"
+    | "petals"
+    | "bubbles"
+    | "stars"
+    | null;
+  particleIntensity?: "soft" | "normal" | "festive";
+  particleSpeed?: number;
+  particleSize?: "small" | "normal" | "large";
+  particleColorMode?: "auto" | "bordeaux" | "gold" | "blush" | "sage" | "white";
+  particleTriggerOpen?: boolean;
+  particleTriggerLoop?: boolean;
+  particleTriggerRsvp?: boolean;
   customInfoTitle?: string;
   customInfoBody?: string;
   caption?: string;
@@ -432,6 +447,22 @@ function rowToCouple(w: WeddingRow): Couple {
     dressCodeNote: w.dress_code_note ?? undefined,
     dressCodeColors: w.dress_code_colors ?? [],
     dressCodeImages: ((w as { dress_code_images?: string[] | null }).dress_code_images as string[] | null) ?? [],
+    particleEffectSlug:
+      ((w as { particle_effect_slug?: string | null }).particle_effect_slug as Couple["particleEffectSlug"]) ?? null,
+    particleIntensity:
+      ((w as { particle_intensity?: string | null }).particle_intensity as Couple["particleIntensity"]) ?? "normal",
+    particleSpeed:
+      (w as { particle_speed?: number | null }).particle_speed ?? 1,
+    particleSize:
+      ((w as { particle_size?: string | null }).particle_size as Couple["particleSize"]) ?? "normal",
+    particleColorMode:
+      ((w as { particle_color_mode?: string | null }).particle_color_mode as Couple["particleColorMode"]) ?? "auto",
+    particleTriggerOpen:
+      (w as { particle_trigger_open?: boolean | null }).particle_trigger_open ?? true,
+    particleTriggerLoop:
+      (w as { particle_trigger_loop?: boolean | null }).particle_trigger_loop ?? false,
+    particleTriggerRsvp:
+      (w as { particle_trigger_rsvp?: boolean | null }).particle_trigger_rsvp ?? true,
     customInfoTitle: w.custom_info_title ?? undefined,
     customInfoBody: w.custom_info_body ?? undefined,
     caption: w.caption ?? undefined,
@@ -499,6 +530,14 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.dressCodeNote !== undefined) r.dress_code_note = p.dressCodeNote;
   if (p.dressCodeColors !== undefined) r.dress_code_colors = p.dressCodeColors ?? [];
   if (p.dressCodeImages !== undefined) r.dress_code_images = p.dressCodeImages ?? [];
+  if (p.particleEffectSlug !== undefined) r.particle_effect_slug = p.particleEffectSlug ?? null;
+  if (p.particleIntensity !== undefined) r.particle_intensity = p.particleIntensity;
+  if (p.particleSpeed !== undefined) r.particle_speed = p.particleSpeed;
+  if (p.particleSize !== undefined) r.particle_size = p.particleSize;
+  if (p.particleColorMode !== undefined) r.particle_color_mode = p.particleColorMode;
+  if (p.particleTriggerOpen !== undefined) r.particle_trigger_open = p.particleTriggerOpen;
+  if (p.particleTriggerLoop !== undefined) r.particle_trigger_loop = p.particleTriggerLoop;
+  if (p.particleTriggerRsvp !== undefined) r.particle_trigger_rsvp = p.particleTriggerRsvp;
   if (p.customInfoTitle !== undefined) r.custom_info_title = p.customInfoTitle;
   if (p.customInfoBody !== undefined) r.custom_info_body = p.customInfoBody;
   if (p.caption !== undefined) r.caption = p.caption || null;
