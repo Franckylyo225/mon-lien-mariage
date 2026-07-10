@@ -21,6 +21,8 @@ interface Props {
   tone?: LegacyTone;
   weddingId?: string;
   ceremonies?: Ceremony[];
+  /** Called once when the guest successfully confirms their attendance. */
+  onConfirmed?: () => void;
 }
 
 // Legacy tone → representative theme (kept only for invitation.tsx preview)
@@ -42,7 +44,7 @@ const DIETARY_TAGS = [
   "Allergie",
 ] as const;
 
-export function TemplateRsvpForm({ theme, tone, weddingId, ceremonies = [] }: Props) {
+export function TemplateRsvpForm({ theme, tone, weddingId, ceremonies = [], onConfirmed }: Props) {
   const resolvedTheme: ThemeId | undefined =
     theme ?? (tone ? TONE_TO_THEME[tone] : undefined);
   const design = resolveRsvpDesign(resolvedTheme);
@@ -103,6 +105,7 @@ export function TemplateRsvpForm({ theme, tone, weddingId, ceremonies = [] }: Pr
     setError(null);
     if (!weddingId) {
       setDone(true);
+      onConfirmed?.();
       return true;
     }
     setSubmitting(true);
@@ -121,6 +124,7 @@ export function TemplateRsvpForm({ theme, tone, weddingId, ceremonies = [] }: Pr
       const { error: err } = await supabase.from("rsvps").insert(rows as never);
       if (err) throw err;
       setDone(true);
+      onConfirmed?.();
       return true;
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Une erreur s'est produite.";

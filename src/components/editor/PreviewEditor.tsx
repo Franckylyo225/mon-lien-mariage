@@ -7,6 +7,8 @@ import { HeroPhotoSheet } from "./HeroPhotoSheet";
 import { PhotoGridSheet } from "./PhotoGridSheet";
 import { ColorPicker } from "./ColorPicker";
 import { ThemeSheet } from "./ThemeSheet";
+import { ParticleSheet } from "./ParticleSheet";
+import { PARTICLE_STYLES } from "@/lib/particles/styles";
 import {
   OpeningEffect,
   OPENING_EFFECT_LABELS,
@@ -28,6 +30,7 @@ import {
   Palette,
   Sparkles,
   Shirt,
+  Stars,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -45,7 +48,8 @@ type Sheet =
   | "story"
   | "gallery"
   | "theme"
-  | "opening";
+  | "opening"
+  | "particles";
 
 const CAPTION_SUGGESTIONS = [
   "Ils se disent oui",
@@ -298,6 +302,17 @@ export function PreviewEditor({ mode }: EditorProps) {
               }
               onClick={() => setSheet("opening")}
             />
+            <EditChip
+              icon={<Stars className="size-4" />}
+              label="Effet de particules"
+              value={
+                couple.particleEffectSlug
+                  ? `${PARTICLE_STYLES[couple.particleEffectSlug].emoji} ${PARTICLE_STYLES[couple.particleEffectSlug].name}`
+                  : "Aucun"
+              }
+              onClick={() => setSheet("particles")}
+            />
+
 
           </div>
         </div>
@@ -955,6 +970,25 @@ export function PreviewEditor({ mode }: EditorProps) {
         open={sheet === "opening"}
         onOpenChange={(o) => !o && setSheet(null)}
         couple={couple}
+        onPatch={(patch) => persist(patch)}
+      />
+
+      <ParticleSheet
+        open={sheet === "particles"}
+        onOpenChange={(o) => !o && setSheet(null)}
+        config={{
+          slug: couple.particleEffectSlug ?? null,
+          intensity: couple.particleIntensity ?? "normal",
+          speed: couple.particleSpeed ?? 1,
+          size: couple.particleSize ?? "normal",
+          colorMode: couple.particleColorMode ?? "auto",
+          accentColor: couple.accentColor ?? couple.accent ?? "#993556",
+        }}
+        triggers={{
+          open: couple.particleTriggerOpen ?? true,
+          loop: couple.particleTriggerLoop ?? false,
+          rsvp: couple.particleTriggerRsvp ?? true,
+        }}
         onPatch={(patch) => persist(patch)}
       />
     </>
