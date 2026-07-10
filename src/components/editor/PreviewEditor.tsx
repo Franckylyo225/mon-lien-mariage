@@ -82,19 +82,8 @@ export function PreviewEditor({ mode }: EditorProps) {
     couple.practicalContactPhone ?? "",
   );
   const [dressCodeNote, setDressCodeNote] = useState(couple.dressCodeNote ?? "");
-  const initialColors = [
-    couple.dressCodeColors?.[0] ?? "",
-    couple.dressCodeColors?.[1] ?? "",
-    couple.dressCodeColors?.[2] ?? "",
-  ];
-  const [dressColors, setDressColors] = useState<string[]>(initialColors);
-  const setDressColor = (i: number, v: string) => {
-    const next = [...dressColors];
-    next[i] = v;
-    setDressColors(next);
-    const cleaned = next.map((c) => c.trim()).filter((c) => c.length > 0);
-    persist({ dressCodeColors: cleaned });
-  };
+  const dressColors = couple.dressCodeColors ?? [];
+
 
   // Registry (liste de mariage) drafts
   const registryEnabled = couple.registryEnabled ?? false;
