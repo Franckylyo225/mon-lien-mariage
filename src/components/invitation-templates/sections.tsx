@@ -681,10 +681,17 @@ export function TemplateBottomSections({
   return (
     <>
       <LocationsSection ceremonies={ceremonies} accent={accent} />
+      <DressCodeSection
+        enabled={couple.dressCodeEnabled}
+        title={couple.dressCodeTitle}
+        note={couple.dressCodeNote}
+        colors={couple.dressCodeColors}
+        images={couple.dressCodeImages}
+        accent={accent}
+      />
       <RegistrySection couple={couple} accent={accent} />
       <PracticalInfoSection couple={couple} accent={accent} />
       <ContactSection couple={couple} accent={accent} />
-      <DressCodeSection note={couple.dressCodeNote} colors={couple.dressCodeColors} accent={accent} />
       <CustomInfoSection
         title={couple.customInfoTitle}
         body={couple.customInfoBody}
