@@ -413,45 +413,71 @@ export function ContactSection({
 // ---------- Dress code ----------
 
 export function DressCodeSection({
+  enabled,
+  title,
   note,
   colors,
+  images,
   accent,
 }: {
+  enabled?: boolean;
+  title?: string;
   note?: string;
   colors?: string[];
+  images?: string[];
   accent?: string;
 }) {
-  const swatches = (colors ?? []).filter((c) => c && c.trim().length > 0).slice(0, 3);
-  if (!note && swatches.length === 0) return null;
+  if (enabled === false) return null;
+  const swatches = (colors ?? []).filter((c) => c && c.trim().length > 0).slice(0, 6);
+  const photos = (images ?? []).filter((u) => u && u.trim().length > 0).slice(0, 6);
+  const cleanNote = note?.trim();
+  if (!cleanNote && swatches.length === 0 && photos.length === 0) return null;
+  const heading = title?.trim() || "Dress code";
   return (
     <section className="mt-14">
-      <SectionTitle eyebrow="Tenue" title="Dress code" accent={accent} />
-      <div className="mt-6 flex items-start gap-3 rounded-2xl border border-current/10 bg-white/5 p-5">
-        <Shirt className="mt-0.5 size-5 shrink-0" style={{ color: accent }} />
-        <div className="min-w-0 flex-1 space-y-3">
-          {note ? (
-            <p className="text-sm italic leading-relaxed opacity-90">{note}</p>
-          ) : null}
-          {swatches.length > 0 ? (
-            <div className="flex flex-wrap items-center gap-2">
-              {swatches.map((c, i) => (
-                <span
-                  key={`${c}-${i}`}
-                  className="inline-flex items-center gap-2 rounded-full border border-current/15 bg-white/5 px-2.5 py-1"
-                >
+      <SectionTitle eyebrow="Tenue" title={heading} accent={accent} />
+      <div className="mt-6 space-y-4 rounded-2xl border border-current/10 bg-white/5 p-5">
+        <div className="flex items-start gap-3">
+          <Shirt className="mt-0.5 size-5 shrink-0" style={{ color: accent }} />
+          <div className="min-w-0 flex-1 space-y-3">
+            {cleanNote ? (
+              <p className="whitespace-pre-line text-sm italic leading-relaxed opacity-90">
+                {cleanNote}
+              </p>
+            ) : null}
+            {swatches.length > 0 ? (
+              <div className="flex flex-wrap items-center gap-2">
+                {swatches.map((c, i) => (
                   <span
-                    className="size-4 rounded-full ring-1 ring-current/20"
-                    style={{ backgroundColor: c }}
-                    aria-hidden
-                  />
-                  <span className="font-mono text-[10px] uppercase tracking-widest opacity-70">
-                    {c}
+                    key={`${c}-${i}`}
+                    className="inline-flex items-center gap-2 rounded-full border border-current/15 bg-white/5 px-2.5 py-1"
+                  >
+                    <span
+                      className="size-4 rounded-full ring-1 ring-current/20"
+                      style={{ backgroundColor: c }}
+                      aria-hidden
+                    />
+                    <span className="font-mono text-[10px] uppercase tracking-widest opacity-70">
+                      {c}
+                    </span>
                   </span>
-                </span>
-              ))}
-            </div>
-          ) : null}
+                ))}
+              </div>
+            ) : null}
+          </div>
         </div>
+        {photos.length > 0 ? (
+          <div className="grid grid-cols-5 gap-1.5">
+            {photos.map((src, i) => (
+              <div
+                key={i}
+                className="aspect-[3/4] overflow-hidden rounded-md ring-1 ring-current/10"
+              >
+                <img src={src} alt="" loading="lazy" className="size-full object-cover" />
+              </div>
+            ))}
+          </div>
+        ) : null}
       </div>
     </section>
   );
