@@ -5,6 +5,7 @@ import { useAutosaveContext } from "@/lib/autosave-context";
 import { SaveIndicator } from "./SaveIndicator";
 import { HeroPhotoSheet } from "./HeroPhotoSheet";
 import { PhotoGridSheet } from "./PhotoGridSheet";
+import { ColorPicker } from "./ColorPicker";
 import { ThemeSheet } from "./ThemeSheet";
 import {
   OpeningEffect,
