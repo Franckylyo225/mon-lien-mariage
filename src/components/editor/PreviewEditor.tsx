@@ -302,6 +302,17 @@ export function PreviewEditor({ mode }: EditorProps) {
               }
               onClick={() => setSheet("opening")}
             />
+            <EditChip
+              icon={<Stars className="size-4" />}
+              label="Effet de particules"
+              value={
+                couple.particleEffectSlug
+                  ? `${PARTICLE_STYLES[couple.particleEffectSlug].emoji} ${PARTICLE_STYLES[couple.particleEffectSlug].name}`
+                  : "Aucun"
+              }
+              onClick={() => setSheet("particles")}
+            />
+
 
           </div>
         </div>
