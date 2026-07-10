@@ -271,6 +271,17 @@ export function PreviewEditor({ mode }: EditorProps) {
               onClick={() => setSheet("registry")}
             />
             <EditChip
+              icon={<Shirt className="size-4" />}
+              label="Dress code"
+              value={
+                !dressCodeEnabled
+                  ? "Désactivé"
+                  : dressFilledCount === 0
+                    ? "À compléter"
+                    : `${dressFilledCount} élément${dressFilledCount > 1 ? "s" : ""}`
+              }
+              onClick={() => setSheet("dress")}
+            <EditChip
               icon={<Info className="size-4" />}
               label="Infos pratiques"
               value={
