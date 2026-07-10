@@ -494,8 +494,11 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.contactName !== undefined) r.contact_name = p.contactName;
   if (p.contactPhone !== undefined) r.contact_phone = p.contactPhone;
   if (p.contactEmail !== undefined) r.contact_email = p.contactEmail;
+  if (p.dressCodeEnabled !== undefined) r.dress_code_enabled = p.dressCodeEnabled;
+  if (p.dressCodeTitle !== undefined) r.dress_code_title = p.dressCodeTitle || null;
   if (p.dressCodeNote !== undefined) r.dress_code_note = p.dressCodeNote;
   if (p.dressCodeColors !== undefined) r.dress_code_colors = p.dressCodeColors ?? [];
+  if (p.dressCodeImages !== undefined) r.dress_code_images = p.dressCodeImages ?? [];
   if (p.customInfoTitle !== undefined) r.custom_info_title = p.customInfoTitle;
   if (p.customInfoBody !== undefined) r.custom_info_body = p.customInfoBody;
   if (p.caption !== undefined) r.caption = p.caption || null;
