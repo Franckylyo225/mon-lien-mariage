@@ -42,9 +42,9 @@ function formatFrenchDate(iso: string): string | null {
 }
 
 function PublishPage() {
-  const { couple, weddingId } = useWedding();
+  const { couple, weddingId, loading } = useWedding();
   const initPayment = useServerFn(initMonerooPayment);
-  const [loading, setLoading] = useState(false);
+  const [payLoading, setPayLoading] = useState(false);
 
   const slug = useMemo(
     () =>
@@ -55,6 +55,7 @@ function PublishPage() {
   const dateLabel = formatFrenchDate(couple.weddingDate);
   const subLine = [dateLabel, couple.city].filter(Boolean).join(" · ");
   const total = BASE_PRICE_XOF;
+  const alreadyPublished = couple.isPublished === true;
 
   const handlePay = async () => {
     if (!weddingId) {
