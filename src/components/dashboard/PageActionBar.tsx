@@ -2,6 +2,7 @@ import {
   IconArrowRight,
   IconCheck,
   IconEdit,
+  IconEye,
   IconLoader2,
   IconShare,
 } from "@tabler/icons-react";
