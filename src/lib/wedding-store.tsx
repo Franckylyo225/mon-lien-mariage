@@ -564,6 +564,7 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.galleryEnabled !== undefined) r.gallery_enabled = p.galleryEnabled;
   if (p.galleryTitle !== undefined) r.gallery_title = p.galleryTitle || null;
   if (p.galleryImages !== undefined) r.gallery_images = p.galleryImages ?? [];
+  if (p.galleryDisplay !== undefined) r.gallery_display = p.galleryDisplay ?? "grid";
   if (p.shareTitle !== undefined) r.share_title = p.shareTitle || null;
   if (p.shareDescription !== undefined) r.share_description = p.shareDescription || null;
   if (p.shareImageUrl !== undefined) r.share_image_url = p.shareImageUrl || null;
