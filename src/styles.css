@@ -166,20 +166,12 @@
 @utility animate-marquee-right {
   animation: marquee-right 40s linear infinite;
 }
-@utility animate-marquee-hero {
-  animation: marquee-left 60s linear infinite;
-}
-.marquee-pause:hover .animate-marquee-hero {
-  animation-play-state: paused;
-}
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee-left,
-  .animate-marquee-right,
-  .animate-marquee-hero {
+  .animate-marquee-right {
     animation: none;
   }
 }
-
 
 /* Editable zone highlight — used in edit mode on preview page */
 @utility preview-editable {
