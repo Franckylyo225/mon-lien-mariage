@@ -148,23 +148,32 @@ export type Database = {
         Row: {
           active_wedding_id: string | null
           created_at: string
+          deletion_requested_at: string | null
           display_name: string | null
           email: string | null
+          email_notifications: boolean
           id: string
+          user_first_name: string | null
         }
         Insert: {
           active_wedding_id?: string | null
           created_at?: string
+          deletion_requested_at?: string | null
           display_name?: string | null
           email?: string | null
+          email_notifications?: boolean
           id: string
+          user_first_name?: string | null
         }
         Update: {
           active_wedding_id?: string | null
           created_at?: string
+          deletion_requested_at?: string | null
           display_name?: string | null
           email?: string | null
+          email_notifications?: boolean
           id?: string
+          user_first_name?: string | null
         }
         Relationships: [
           {
