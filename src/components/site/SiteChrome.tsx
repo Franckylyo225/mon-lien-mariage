@@ -204,34 +204,118 @@ export function SiteHeader() {
 }
 
 export function SiteFooter() {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const year = new Date().getFullYear();
   return (
-    <footer className="border-t border-[#e8c5b6]/40 bg-[#fdf7f3] py-10">
-      <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-5 text-center text-xs text-[#8a6a5e]">
-        <nav aria-label="Navigation bas de page">
-          <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-            {NAV.map((n) => {
-              const active = isActive(pathname, n.to);
-              return (
-                <li key={n.to}>
-                  <Link
-                    to={n.to}
-                    aria-current={active ? "page" : undefined}
-                    className={
-                      "hover:text-[#2b1a14] " +
-                      (active ? "text-[#2b1a14] font-medium" : "")
-                    }
-                  >
-                    {n.label}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-        <p>© 2027 MonInvit.com — Fait avec ♡ à Abidjan</p>
+    <footer className="relative isolate mt-16 overflow-hidden bg-[#2b1a14] text-[#fdf7f3]">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 opacity-70"
+        style={{
+          background:
+            "radial-gradient(600px 300px at 15% 0%, rgba(193,124,116,0.35) 0%, transparent 60%), radial-gradient(700px 350px at 90% 100%, rgba(246,217,203,0.15) 0%, transparent 65%)",
+        }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent, rgba(232,197,182,0.6), transparent)",
+        }}
+      />
+
+      <div className="mx-auto max-w-6xl px-5 pt-16 pb-8">
+        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+          <div>
+            <Link
+              to="/"
+              aria-label="MonInvit.com — accueil"
+              className="inline-flex items-baseline font-[family-name:var(--font-display)] text-2xl italic"
+            >
+              MonInvit<span className="text-[#e8a89e]">.ci</span>
+            </Link>
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-[#fdf7f3]/70">
+              Des invitations digitales élégantes, pensées avec amour pour les mariés
+              de Côte d'Ivoire.
+            </p>
+            <p className="mt-4 font-[family-name:var(--font-display)] text-lg italic text-[#e8a89e]">
+              Célébrons votre union ♡
+            </p>
+          </div>
+
+          <FooterColumn title="Explorer">
+            <FooterLink to="/">Accueil</FooterLink>
+            <FooterLink to="/comment-ca-marche">Comment ça marche</FooterLink>
+            <FooterLink to="/temoignages">Témoignages</FooterLink>
+            <FooterLink to="/blog">Blog</FooterLink>
+          </FooterColumn>
+
+          <FooterColumn title="Commencer">
+            <FooterLink to="/signup">Créer notre invitation</FooterLink>
+            <FooterLink to="/login">Se connecter</FooterLink>
+            <FooterLink to="/invitation">Voir un exemple</FooterLink>
+          </FooterColumn>
+
+          <FooterColumn title="Légal">
+            <FooterLink to="/termes-et-conditions">Termes & conditions</FooterLink>
+            <FooterLink to="/politique-de-confidentialite">
+              Politique de confidentialité
+            </FooterLink>
+            <li>
+              <a
+                href="mailto:contact@moninvit.ci"
+                className="text-sm text-[#fdf7f3]/70 transition hover:text-[#e8a89e]"
+              >
+                contact@moninvit.ci
+              </a>
+            </li>
+          </FooterColumn>
+        </div>
+
+        <div
+          aria-hidden
+          className="mt-12 h-px w-full"
+          style={{
+            background:
+              "linear-gradient(90deg, transparent, rgba(232,197,182,0.35), transparent)",
+          }}
+        />
+
+        <div className="mt-6 flex flex-col items-center justify-between gap-3 text-xs text-[#fdf7f3]/60 sm:flex-row">
+          <p>© {year} MonInvit.com — Fait avec ♡ à Abidjan</p>
+          <p className="flex items-center gap-2">
+            <span className="inline-block size-1.5 rounded-full bg-[#e8a89e]" />
+            Basé en Côte d'Ivoire
+          </p>
+        </div>
       </div>
     </footer>
+  );
+}
+
+function FooterColumn({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <h3 className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#e8a89e]">
+        {title}
+      </h3>
+      <ul className="mt-4 flex flex-col gap-2.5">{children}</ul>
+    </div>
+  );
+}
+
+function FooterLink({ to, children }: { to: string; children: React.ReactNode }) {
+  return (
+    <li>
+      <Link
+        to={to}
+        className="group inline-flex items-center gap-1.5 text-sm text-[#fdf7f3]/75 transition hover:text-[#e8a89e]"
+      >
+        <span className="transition-transform group-hover:translate-x-0.5">
+          {children}
+        </span>
+      </Link>
+    </li>
   );
 }
 
