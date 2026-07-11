@@ -193,6 +193,7 @@ export interface Couple {
   galleryEnabled?: boolean;
   galleryTitle?: string;
   galleryImages?: string[];
+  galleryDisplay?: "grid" | "marquee";
   shareTitle?: string;
   shareDescription?: string;
   shareImageUrl?: string;
