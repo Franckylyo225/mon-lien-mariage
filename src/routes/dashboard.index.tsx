@@ -7,6 +7,8 @@ import {
   IconChevronRight,
   IconCircleCheck,
   IconLayout,
+  IconLayoutList,
+
   IconLock,
   IconPencil,
   IconShare,
