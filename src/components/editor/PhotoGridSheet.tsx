@@ -212,6 +212,30 @@ export function PhotoGridSheet({
             </div>
           )}
 
+          {displayField && (
+            <div>
+              <label className="mb-2 block font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                Type d'affichage
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <DisplayOption
+                  active={displayField.value === "grid"}
+                  onClick={() => displayField.onChange("grid")}
+                  title="Grille"
+                  subtitle="Affichage classique"
+                  preview={<GridPreview />}
+                />
+                <DisplayOption
+                  active={displayField.value === "marquee"}
+                  onClick={() => displayField.onChange("marquee")}
+                  title="Défilement"
+                  subtitle="2 lignes animées"
+                  preview={<MarqueePreview />}
+                />
+              </div>
+            </div>
+          )}
+
           {extraControls}
 
 
