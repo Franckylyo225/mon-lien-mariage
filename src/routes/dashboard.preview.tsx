@@ -126,6 +126,21 @@ function PreviewPage() {
       </div>
 
       <PreviewEditor mode={mode} onToggle={toggle} />
+
+      {coupleTheme.particleEffectSlug ? (
+        <ParticleCanvas
+          config={{
+            slug: coupleTheme.particleEffectSlug as ParticleSlug,
+            intensity: (coupleTheme.particleIntensity ?? "normal") as ParticleIntensity,
+            speed: coupleTheme.particleSpeed ?? 1,
+            size: (coupleTheme.particleSize ?? "normal") as ParticleSize,
+            colorMode: (coupleTheme.particleColorMode ?? "auto") as ParticleColorMode,
+            accentColor: resolved.accent,
+          }}
+          burstOnMount={coupleTheme.particleTriggerOpen ? 24 : 0}
+          loop={!!coupleTheme.particleTriggerLoop || !coupleTheme.particleTriggerOpen}
+        />
+      ) : null}
     </div>
   );
 }
