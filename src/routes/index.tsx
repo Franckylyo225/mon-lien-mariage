@@ -722,7 +722,7 @@ function FinalCta() {
         aria-hidden
         className="absolute inset-0 -z-10 h-full w-full object-cover opacity-20"
       />
-      <div className="mx-auto max-w-3xl px-5 py-24 text-center">
+      <div className="mx-auto max-w-3xl px-5 pt-24 pb-8 text-center">
         <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#e8c5b6]">
           Il ne manque plus que vous
         </p>

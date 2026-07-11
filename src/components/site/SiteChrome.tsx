@@ -206,7 +206,7 @@ export function SiteHeader() {
 export function SiteFooter() {
   const year = new Date().getFullYear();
   return (
-    <footer className="relative isolate mt-16 overflow-hidden bg-[#2b1a14] text-[#fdf7f3]">
+    <footer className="relative isolate overflow-hidden bg-[#2b1a14] text-[#fdf7f3]">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10 opacity-70"
