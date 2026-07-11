@@ -17,11 +17,11 @@ export const Route = createFileRoute("/")({
         content:
           "Une invitation de mariage digitale élégante, prête en 10 minutes. RSVP, programme, invités, partage WhatsApp. Créée pour les mariés en Côte d'Ivoire, Sénégal, Bénin, Togo, Mali, Burkina Faso et toute l'Afrique de l'Ouest.",
       },
-      { property: "og:title", content: "MonInvit.com — Célébrons votre union" },
+      { property: "og:title", content: "MonInvit.com — Invitations de mariage digitales, dessinées avec amour" },
       {
         property: "og:description",
         content:
-          "20+ modèles romantiques, RSVP automatiques, tableau de bord privé. Un seul lien à partager. Pensé pour l'Afrique de l'Ouest.",
+          "Une invitation de mariage digitale élégante, prête en 10 minutes. RSVP, programme, invités, partage WhatsApp. Créée pour les mariés en Côte d'Ivoire, Sénégal, Bénin, Togo, Mali, Burkina Faso et toute l'Afrique de l'Ouest.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://moninvit.com/" },
@@ -30,11 +30,11 @@ export const Route = createFileRoute("/")({
       { property: "og:image:height", content: "630" },
       { property: "og:image:alt", content: "MonInvit.com — Invitations de mariage digitales pour l'Afrique de l'Ouest" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "MonInvit.com — Célébrons votre union" },
+      { name: "twitter:title", content: "MonInvit.com — Invitations de mariage digitales, dessinées avec amour" },
       {
         name: "twitter:description",
         content:
-          "Invitations digitales, RSVP en direct et tableau de bord — pensé pour les mariés d'Afrique de l'Ouest.",
+          "Une invitation de mariage digitale élégante, prête en 10 minutes. RSVP, programme, invités, partage WhatsApp. Créée pour les mariés en Côte d'Ivoire, Sénégal, Bénin, Togo, Mali, Burkina Faso et toute l'Afrique de l'Ouest.",
       },
       { name: "twitter:image", content: OG_IMAGE_URL },
     ],
