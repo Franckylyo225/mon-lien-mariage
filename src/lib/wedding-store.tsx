@@ -697,13 +697,16 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
   const [authReady, setAuthReady] = useState(false);
   const [loading, setLoading] = useState(true);
   const [weddingId, setWeddingId] = useState<string | null>(null);
+  const [activeWeddingId, setActiveWeddingId] = useState<string | null>(null);
+  const [weddings, setWeddings] = useState<WeddingSummary[]>([]);
 
   const [account, setAccount] = useState<Account>(defaultAccount);
   const [couple, setCouple] = useState<Couple>(defaultCouple);
   const [ceremonies, setCeremonies] = useState<Ceremony[]>(demoCeremonies);
   const [guests, setGuests] = useState<Guest[]>([]);
 
-  const loadedFor = useRef<string | null>(null);
+  const loadedSessionUser = useRef<string | null>(null);
+  const loadedWeddingId = useRef<string | null>(null);
 
   // Auth subscription
   useEffect(() => {
@@ -722,12 +725,25 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  // Load or create wedding when session changes
+  const summarizeWedding = (w: WeddingRow): WeddingSummary => ({
+    id: w.id,
+    brideName: w.bride_name ?? "",
+    groomName: w.groom_name ?? "",
+    weddingDate: w.wedding_date ?? null,
+    eventType: (w.event_type as EventType) ?? "mariage",
+    isPublished: !!w.is_published,
+    slug: w.slug ?? null,
+  });
+
+  // Resolve session → list of weddings + active id (once per user)
   useEffect(() => {
     if (!authReady) return;
     if (!session) {
-      loadedFor.current = null;
+      loadedSessionUser.current = null;
+      loadedWeddingId.current = null;
       setWeddingId(null);
+      setActiveWeddingId(null);
+      setWeddings([]);
       setAccount(defaultAccount());
       setCouple(defaultCouple());
       setCeremonies(demoCeremonies());
@@ -735,33 +751,78 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       setLoading(false);
       return;
     }
-    if (loadedFor.current === session.user.id) return;
-    loadedFor.current = session.user.id;
+    if (loadedSessionUser.current === session.user.id) return;
+    loadedSessionUser.current = session.user.id;
     setLoading(true);
 
     (async () => {
-      let { data: w } = await supabase
-        .from("weddings")
-        .select("*")
-        .eq("owner_id", session.user.id)
+      const userId = session.user.id;
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("active_wedding_id")
+        .eq("id", userId)
         .maybeSingle();
 
-      if (!w) {
+      const { data: list } = await supabase
+        .from("weddings")
+        .select("*")
+        .eq("owner_id", userId)
+        .order("created_at", { ascending: false });
+
+      let rows = (list ?? []) as WeddingRow[];
+
+      if (rows.length === 0) {
+        // Bootstrap: create empty wedding for a brand-new account
         const empty = emptyCouple();
-        const insertRow = { owner_id: session.user.id, ...coupleToRow(empty) };
+        const insertRow = { owner_id: userId, ...coupleToRow(empty) };
         const { data: created, error } = await supabase
           .from("weddings")
           .insert(insertRow as never)
           .select("*")
           .single();
-        if (error) {
+        if (error || !created) {
           console.error("createWedding", error);
           setLoading(false);
           return;
         }
-        w = created;
+        rows = [created as WeddingRow];
       }
 
+      setWeddings(rows.map(summarizeWedding));
+
+      const profileActive =
+        (profile as { active_wedding_id?: string | null } | null)?.active_wedding_id ?? null;
+      let active = profileActive && rows.some((r) => r.id === profileActive)
+        ? profileActive
+        : rows[0].id;
+
+      if (active !== profileActive) {
+        await supabase
+          .from("profiles")
+          .upsert({ id: userId, active_wedding_id: active } as never, { onConflict: "id" });
+      }
+      setActiveWeddingId(active);
+    })();
+  }, [session, authReady]);
+
+  // Load the active wedding + its ceremonies/guests
+  useEffect(() => {
+    if (!session || !activeWeddingId) return;
+    if (loadedWeddingId.current === activeWeddingId) return;
+    loadedWeddingId.current = activeWeddingId;
+    setLoading(true);
+
+    (async () => {
+      const { data: w } = await supabase
+        .from("weddings")
+        .select("*")
+        .eq("id", activeWeddingId)
+        .maybeSingle();
+      if (!w) {
+        setLoading(false);
+        return;
+      }
       const wRow = w as WeddingRow;
       setWeddingId(wRow.id);
       setCouple(rowToCouple(wRow));
@@ -779,7 +840,8 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       setGuests((gs ?? []).map((g) => rowToGuest(g as GuestRow)));
       setLoading(false);
     })();
-  }, [session, authReady]);
+  }, [session, activeWeddingId]);
+
 
   // Apply data-theme
   useEffect(() => {
