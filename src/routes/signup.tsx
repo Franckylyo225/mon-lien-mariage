@@ -22,6 +22,7 @@ function SignupPage() {
   const [password, setPassword] = useState("");
   const [cgu, setCgu] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const pwCheck = useMemo(() => validatePassword(password), [password]);
@@ -29,6 +30,7 @@ function SignupPage() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setInfo(null);
     if (!email.includes("@")) return setError("Adresse email invalide.");
     if (!pwCheck.valid)
       return setError(
@@ -51,8 +53,8 @@ function SignupPage() {
     if (data.session) {
       navigate({ to: "/onboarding/prenoms" });
     } else {
-      setError(
-        "Compte créé. Vérifiez votre email pour activer votre compte, puis connectez-vous.",
+      setInfo(
+        `Un email de confirmation vient d'être envoyé à ${email}. Cliquez sur le lien reçu pour activer votre compte.`,
       );
     }
   };
@@ -100,6 +102,7 @@ function SignupPage() {
           J'accepte les conditions générales d'utilisation.
         </label>
         {error ? <p className="text-xs text-destructive">{error}</p> : null}
+        {info ? <p className="rounded-md border border-[#c17c74]/30 bg-[#c17c74]/10 px-3 py-2 text-xs text-[#7a2f3a]">{info}</p> : null}
         <button
           type="submit"
           disabled={loading}
