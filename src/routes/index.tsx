@@ -788,8 +788,19 @@ function TemplateMarquee() {
   const cards = templateOrder.map((id) => ({ id, ...templateMeta[id] }));
   // duplicate the track so translateX(-50%) loops seamlessly
   const track = [...cards, ...cards];
-  // alternating tilt angles per card index — mimics the reference layout
-  const tilts = [-4, 3, -2, 5, -3, 2, -5, 4];
+
+  // Wave pattern — cards are shorter and lower in the middle of the pattern,
+  // taller and lifted on the outer positions. This creates the concave arc
+  // seen in the reference: "rétréci vers le milieu, plus haut sur les côtés".
+  const wave = [
+    { scale: 1.05, y: -28, rot: -4 },
+    { scale: 0.98, y: -14, rot: 3 },
+    { scale: 0.9, y: 0, rot: -2 },
+    { scale: 0.86, y: 8, rot: 4 },
+    { scale: 0.9, y: 0, rot: -3 },
+    { scale: 0.98, y: -14, rot: 2 },
+    { scale: 1.05, y: -28, rot: -5 },
+  ];
 
   return (
     <div className="marquee-pause relative mx-auto mt-12 w-full sm:mt-16">
@@ -803,15 +814,18 @@ function TemplateMarquee() {
         className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-[#fdf7f3] to-transparent sm:w-32"
       />
 
-      <div className="relative w-full overflow-hidden py-6">
-        <div className="animate-marquee-hero flex w-max items-center gap-5 sm:gap-6">
+      <div className="relative w-full overflow-hidden py-10 sm:py-14">
+        <div className="animate-marquee-hero flex w-max items-center gap-4 sm:gap-5">
           {track.map((c, i) => {
-            const rot = tilts[i % tilts.length];
+            const w = wave[i % wave.length];
             return (
               <div
                 key={`${c.id}-${i}`}
-                className="shrink-0 transition-transform duration-500 hover:!rotate-0 hover:-translate-y-1"
-                style={{ transform: `rotate(${rot}deg)` }}
+                className="shrink-0 transition-transform duration-500 hover:!translate-y-[-8px] hover:!rotate-0"
+                style={{
+                  transform: `translateY(${w.y}px) rotate(${w.rot}deg) scale(${w.scale})`,
+                  transformOrigin: "center",
+                }}
               >
                 <TemplateCard meta={c} />
               </div>
@@ -822,6 +836,8 @@ function TemplateMarquee() {
     </div>
   );
 }
+
+
 
 
 
