@@ -6,11 +6,31 @@ import {
   Container,
   Head,
   Heading,
+  Hr,
   Html,
   Link,
   Preview,
+  Section,
   Text,
 } from '@react-email/components'
+
+import {
+  body,
+  brandName,
+  brandTag,
+  button,
+  buttonWrap,
+  container,
+  divider,
+  footer,
+  footerBrand,
+  h1,
+  header,
+  link,
+  main,
+  smallText,
+  text,
+} from './_brand'
 
 interface EmailChangeEmailProps {
   siteName: string
@@ -25,66 +45,57 @@ interface EmailChangeEmailProps {
 }
 
 export const EmailChangeEmail = ({
-  siteName,
   oldEmail,
   newEmail,
   confirmationUrl,
 }: EmailChangeEmailProps) => (
-  <Html lang="en" dir="ltr">
+  <Html lang="fr" dir="ltr">
     <Head />
-    <Preview>Confirm your email change for {siteName}</Preview>
+    <Preview>Confirmez votre nouvelle adresse email MonInvit.com</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Confirm your email change</Heading>
-        <Text style={text}>
-          You requested to change your email address for {siteName} from{' '}
-          <Link href={`mailto:${oldEmail}`} style={link}>
-            {oldEmail}
-          </Link>{' '}
-          to{' '}
-          <Link href={`mailto:${newEmail}`} style={link}>
-            {newEmail}
-          </Link>
-          .
-        </Text>
-        <Text style={text}>
-          Click the button below to confirm this change:
-        </Text>
-        <Button style={button} href={confirmationUrl}>
-          Confirm Email Change
-        </Button>
-        <Text style={footer}>
-          If you didn't request this change, please secure your account
-          immediately.
-        </Text>
+        <Section style={header}>
+          <Heading as="h1" style={brandName}>MonInvit.com</Heading>
+          <Text style={brandTag}>Changement d'adresse</Text>
+        </Section>
+
+        <Section style={body}>
+          <Heading as="h2" style={h1}>Confirmer votre nouvel email</Heading>
+          <Text style={text}>
+            Vous avez demandé à changer l'adresse email de votre compte
+            MonInvit.com :<br />
+            de{' '}
+            <Link href={`mailto:${oldEmail}`} style={link}>{oldEmail}</Link>{' '}
+            vers{' '}
+            <Link href={`mailto:${newEmail}`} style={link}>{newEmail}</Link>.
+          </Text>
+
+          <Section style={buttonWrap}>
+            <Button style={button} href={confirmationUrl}>
+              Confirmer le changement
+            </Button>
+          </Section>
+
+          <Text style={smallText}>
+            Ou copiez ce lien dans votre navigateur :<br />
+            <Link href={confirmationUrl} style={link}>{confirmationUrl}</Link>
+          </Text>
+
+          <Hr style={divider} />
+
+          <Text style={smallText}>
+            Vous n'avez pas demandé ce changement ? Sécurisez votre compte dès
+            maintenant en changeant votre mot de passe.
+          </Text>
+        </Section>
+
+        <Section style={footer}>
+          <Text style={footerBrand}>MonInvit.com</Text>
+          <Text style={{ margin: 0 }}>Vos mariages, vos invitations.</Text>
+        </Section>
       </Container>
     </Body>
   </Html>
 )
 
 export default EmailChangeEmail
-
-const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
-const container = { padding: '20px 25px' }
-const h1 = {
-  fontSize: '22px',
-  fontWeight: 'bold' as const,
-  color: '#000000',
-  margin: '0 0 20px',
-}
-const text = {
-  fontSize: '14px',
-  color: '#55575d',
-  lineHeight: '1.5',
-  margin: '0 0 25px',
-}
-const link = { color: 'inherit', textDecoration: 'underline' }
-const button = {
-  backgroundColor: '#000000',
-  color: '#ffffff',
-  fontSize: '14px',
-  borderRadius: '8px',
-  padding: '12px 20px',
-  textDecoration: 'none',
-}
-const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
