@@ -460,7 +460,7 @@ function rowToCouple(w: WeddingRow): Couple {
     particleTriggerOpen:
       (w as { particle_trigger_open?: boolean | null }).particle_trigger_open ?? true,
     particleTriggerLoop:
-      (w as { particle_trigger_loop?: boolean | null }).particle_trigger_loop ?? false,
+      (w as { particle_trigger_loop?: boolean | null }).particle_trigger_loop ?? true,
     particleTriggerRsvp:
       (w as { particle_trigger_rsvp?: boolean | null }).particle_trigger_rsvp ?? true,
     customInfoTitle: w.custom_info_title ?? undefined,
