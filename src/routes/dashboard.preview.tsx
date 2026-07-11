@@ -9,6 +9,13 @@ import { usePageChrome } from "@/lib/page-chrome";
 import { useAutosaveContext } from "@/lib/autosave-context";
 import { cn } from "@/lib/utils";
 import { applyThemeVars, resolveTheme } from "@/lib/wedding-theme";
+import { ParticleCanvas } from "@/components/particles/ParticleCanvas";
+import type {
+  ParticleColorMode,
+  ParticleIntensity,
+  ParticleSize,
+  ParticleSlug,
+} from "@/lib/particles/types";
 import {
   PageStatusPill,
   type PageStatus,
@@ -119,6 +126,21 @@ function PreviewPage() {
       </div>
 
       <PreviewEditor mode={mode} onToggle={toggle} />
+
+      {coupleTheme.particleEffectSlug ? (
+        <ParticleCanvas
+          config={{
+            slug: coupleTheme.particleEffectSlug as ParticleSlug,
+            intensity: (coupleTheme.particleIntensity ?? "normal") as ParticleIntensity,
+            speed: coupleTheme.particleSpeed ?? 1,
+            size: (coupleTheme.particleSize ?? "normal") as ParticleSize,
+            colorMode: (coupleTheme.particleColorMode ?? "auto") as ParticleColorMode,
+            accentColor: resolved.accent,
+          }}
+          burstOnMount={coupleTheme.particleTriggerOpen ? 24 : 0}
+          loop={!!coupleTheme.particleTriggerLoop || !coupleTheme.particleTriggerOpen}
+        />
+      ) : null}
     </div>
   );
 }
