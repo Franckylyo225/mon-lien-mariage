@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermesEtConditionsRouteImport } from './routes/termes-et-conditions'
 import { Route as TemoignagesRouteImport } from './routes/temoignages'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PublishRouteImport } from './routes/publish'
@@ -56,6 +57,11 @@ const TermesEtConditionsRoute = TermesEtConditionsRouteImport.update({
 const TemoignagesRoute = TemoignagesRouteImport.update({
   id: '/temoignages',
   path: '/temoignages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SignupRoute = SignupRouteImport.update({
@@ -254,6 +260,7 @@ export interface FileRoutesByFullPath {
   '/publish': typeof PublishRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/app/profile': typeof AppProfileRoute
@@ -293,6 +300,7 @@ export interface FileRoutesByTo {
   '/publish': typeof PublishRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/app/profile': typeof AppProfileRoute
@@ -334,6 +342,7 @@ export interface FileRoutesById {
   '/publish': typeof PublishRouteWithChildren
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/app/profile': typeof AppProfileRoute
@@ -376,6 +385,7 @@ export interface FileRouteTypes {
     | '/publish'
     | '/reset-password'
     | '/signup'
+    | '/sitemap.xml'
     | '/temoignages'
     | '/termes-et-conditions'
     | '/app/profile'
@@ -415,6 +425,7 @@ export interface FileRouteTypes {
     | '/publish'
     | '/reset-password'
     | '/signup'
+    | '/sitemap.xml'
     | '/temoignages'
     | '/termes-et-conditions'
     | '/app/profile'
@@ -455,6 +466,7 @@ export interface FileRouteTypes {
     | '/publish'
     | '/reset-password'
     | '/signup'
+    | '/sitemap.xml'
     | '/temoignages'
     | '/termes-et-conditions'
     | '/app/profile'
@@ -496,6 +508,7 @@ export interface RootRouteChildren {
   PublishRoute: typeof PublishRouteWithChildren
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TemoignagesRoute: typeof TemoignagesRoute
   TermesEtConditionsRoute: typeof TermesEtConditionsRoute
   AppProfileRoute: typeof AppProfileRoute
@@ -520,6 +533,13 @@ declare module '@tanstack/react-router' {
       path: '/temoignages'
       fullPath: '/temoignages'
       preLoaderRoute: typeof TemoignagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/signup': {
@@ -864,6 +884,7 @@ const rootRouteChildren: RootRouteChildren = {
   PublishRoute: PublishRouteWithChildren,
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TemoignagesRoute: TemoignagesRoute,
   TermesEtConditionsRoute: TermesEtConditionsRoute,
   AppProfileRoute: AppProfileRoute,
