@@ -38,6 +38,7 @@ import { Route as DashboardInvitesRouteImport } from './routes/dashboard.invites
 import { Route as DashboardEventsRouteImport } from './routes/dashboard.events'
 import { Route as DashboardCeremoniesRouteImport } from './routes/dashboard.ceremonies'
 import { Route as DashboardBillingRouteImport } from './routes/dashboard.billing'
+import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as DashboardGuestsIndexRouteImport } from './routes/dashboard.guests.index'
 import { Route as DashboardGuestsNewRouteImport } from './routes/dashboard.guests.new'
 import { Route as DashboardCeremoniesIdRouteImport } from './routes/dashboard.ceremonies.$id'
@@ -188,6 +189,11 @@ const DashboardBillingRoute = DashboardBillingRouteImport.update({
   path: '/billing',
   getParentRoute: () => DashboardRoute,
 } as any)
+const AppProfileRoute = AppProfileRouteImport.update({
+  id: '/app/profile',
+  path: '/app/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardGuestsIndexRoute = DashboardGuestsIndexRouteImport.update({
   id: '/guests/',
   path: '/guests/',
@@ -217,6 +223,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
+  '/app/profile': typeof AppProfileRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/events': typeof DashboardEventsRoute
@@ -250,6 +257,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
+  '/app/profile': typeof AppProfileRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/events': typeof DashboardEventsRoute
@@ -285,6 +293,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
+  '/app/profile': typeof AppProfileRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/events': typeof DashboardEventsRoute
@@ -321,6 +330,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/temoignages'
     | '/termes-et-conditions'
+    | '/app/profile'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
     | '/dashboard/events'
@@ -354,6 +364,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/temoignages'
     | '/termes-et-conditions'
+    | '/app/profile'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
     | '/dashboard/events'
@@ -388,6 +399,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/temoignages'
     | '/termes-et-conditions'
+    | '/app/profile'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
     | '/dashboard/events'
@@ -423,6 +435,7 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   TemoignagesRoute: typeof TemoignagesRoute
   TermesEtConditionsRoute: typeof TermesEtConditionsRoute
+  AppProfileRoute: typeof AppProfileRoute
   ESlugRoute: typeof ESlugRoute
   ThemeThumbSlugRoute: typeof ThemeThumbSlugRoute
 }
@@ -632,6 +645,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardBillingRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/app/profile': {
+      id: '/app/profile'
+      path: '/app/profile'
+      fullPath: '/app/profile'
+      preLoaderRoute: typeof AppProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard/guests/': {
       id: '/dashboard/guests/'
       path: '/guests'
@@ -743,19 +763,10 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   TemoignagesRoute: TemoignagesRoute,
   TermesEtConditionsRoute: TermesEtConditionsRoute,
+  AppProfileRoute: AppProfileRoute,
   ESlugRoute: ESlugRoute,
   ThemeThumbSlugRoute: ThemeThumbSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
