@@ -36,8 +36,8 @@ function EventsPage() {
     switchActiveWedding,
     createNewWedding,
   } = useWedding();
-  const [confirmOpen, setConfirmOpen] = useState(false);
   const [creating, setCreating] = useState(false);
+
 
   const { upcoming, past } = useMemo(() => {
     const today = new Date();
@@ -68,12 +68,13 @@ function EventsPage() {
   };
 
   const handleCreate = async () => {
+    if (creating) return;
     setCreating(true);
     const id = await createNewWedding();
     setCreating(false);
-    setConfirmOpen(false);
     if (id) navigate({ to: "/onboarding/prenoms" });
   };
+
 
   return (
     <div className="min-h-screen bg-background">
@@ -90,12 +91,13 @@ function EventsPage() {
         </button>
         <h1 className="font-serif text-[15px] italic">Mes événements</h1>
         <button
-          onClick={() => setConfirmOpen(true)}
+          onClick={handleCreate}
           aria-label="Nouvel événement"
           className="grid size-9 place-items-center rounded-full text-foreground transition active:bg-secondary"
         >
           <IconPlus size={18} strokeWidth={1.75} />
         </button>
+
       </header>
 
       <main className="mx-auto max-w-xl space-y-6 px-4 py-6">
@@ -127,7 +129,8 @@ function EventsPage() {
         ) : null}
 
         <button
-          onClick={() => setConfirmOpen(true)}
+          onClick={handleCreate}
+          disabled={creating}
           className="flex w-full items-center gap-3 rounded-[10px] border border-dashed border-border px-3 py-3 text-left transition active:bg-secondary/60"
           style={{ borderWidth: "0.5px" }}
         >
@@ -135,12 +138,12 @@ function EventsPage() {
             <IconPlus size={16} strokeWidth={1.75} />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="text-[13px] font-medium">Nouvel événement</p>
-            <p className="text-[10px] text-muted-foreground">
-              25 000 FCFA à la publication
+            <p className="text-[13px] font-medium">
+              {creating ? "Création…" : "Nouvel événement"}
             </p>
           </div>
         </button>
+
       </main>
 
       {confirmOpen ? (
