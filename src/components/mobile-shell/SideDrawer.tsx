@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   IconUser,
-  IconPalette,
   IconShare,
   IconChartBar,
   IconCreditCard,
