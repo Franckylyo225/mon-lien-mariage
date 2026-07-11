@@ -76,7 +76,7 @@ function Landing() {
 
 function Hero() {
   return (
-    <section className="relative isolate">
+    <section className="relative isolate overflow-hidden pb-20 sm:pb-28">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10"
@@ -93,7 +93,14 @@ function Hero() {
       </div>
 
       <div className="mx-auto max-w-5xl px-5 pt-10 text-center sm:pt-16">
-        <h1 className="mt-4 font-[family-name:var(--font-display)] text-[46px] leading-[1.02] sm:text-6xl md:text-[76px]">
+        <div className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-[#e8c5b6]/70 bg-[#fbeee4]/80 px-4 py-1.5 shadow-sm backdrop-blur-sm">
+          <span className="size-1.5 rounded-full bg-[#c17c74]" />
+          <span className="text-[12px] font-medium text-[#6b4a3e]">
+            +500 couples ivoiriens nous font confiance
+          </span>
+        </div>
+
+        <h1 className="font-[family-name:var(--font-display)] text-[46px] leading-[1.02] sm:text-6xl md:text-[76px]">
           Votre invitation de mariage,{" "}
           <em className="italic text-[#c17c74]">rêvée puis dessinée.</em>
         </h1>
@@ -101,38 +108,63 @@ function Hero() {
           Pensée pour les mariés d'Abidjan et d'ailleurs.
         </p>
 
-        {/* Rating pill */}
-        <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#e8c5b6]/70 bg-white/70 px-4 py-2 shadow-sm backdrop-blur-sm">
-          <StarRow />
-          <span className="text-[13px] text-[#6b4a3e]">
-            <strong className="text-[#2b1a14]">4.9</strong> · Choisie par +500
-            couples ivoiriens
-          </span>
-        </div>
-
-        <p className="mx-auto mt-6 max-w-xl text-[15px] leading-relaxed text-[#6b4a3e] sm:text-base">
+        <p className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-[#6b4a3e] sm:text-base">
           Choisissez le style, on le fait vibrer autour de votre histoire.
           <br className="hidden sm:block" />
           Un seul lien élégant, prêt à envoyer sur WhatsApp.
         </p>
+      </div>
 
-        <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+      {/* Marquee ribbon of templates */}
+      <TemplateMarquee />
+
+      {/* CTA below the ribbon, with handwritten annotation */}
+      <div className="relative mx-auto mt-10 flex flex-col items-center gap-3 px-5 sm:mt-12">
+        <div className="relative inline-flex items-center">
+          <HandwrittenFree className="absolute -left-32 top-1/2 hidden -translate-y-1/2 sm:block" />
           <Link
             to="/signup"
-            className="inline-block w-full rounded-full bg-[#2b1a14] px-8 py-4 text-sm font-medium tracking-wide text-[#fdf7f3] shadow-lg shadow-[#c17c74]/20 transition hover:-translate-y-0.5 hover:shadow-xl sm:w-auto"
+            className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#c17c74] px-8 py-4 text-sm font-medium tracking-wide text-[#fdf7f3] shadow-lg shadow-[#c17c74]/30 transition hover:-translate-y-0.5 hover:bg-[#b06e66] hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2b1a14] focus-visible:ring-offset-2 focus-visible:ring-offset-[#fdf7f3]"
           >
             Créer notre invitation
           </Link>
-          <p className="text-xs text-[#8a6a5e]">
-            Aucune carte bancaire · Sans engagement jusqu'à la publication
-          </p>
         </div>
+        <p className="text-xs text-[#8a6a5e]">
+          Aucune carte bancaire · Sans engagement jusqu'à la publication
+        </p>
       </div>
-
-      <TemplateFan />
     </section>
   );
 }
+
+/* Handwritten "C'est gratuit" annotation with curved arrow */
+function HandwrittenFree({ className = "" }: { className?: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={
+        "pointer-events-none flex items-center gap-1 " + className
+      }
+      style={{ fontFamily: "'Caveat', 'Special Elite', cursive" }}
+    >
+      <span className="whitespace-nowrap text-lg italic text-[#2b1a14]">
+        C'est gratuit
+      </span>
+      <svg
+        viewBox="0 0 60 40"
+        className="h-8 w-14 text-[#2b1a14]"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+      >
+        <path d="M2 8 C 20 6, 40 20, 54 30" />
+        <path d="M46 26 L 54 30 L 50 22" />
+      </svg>
+    </span>
+  );
+}
+
 
 function StarRow() {
   return (
