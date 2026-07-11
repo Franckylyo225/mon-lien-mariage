@@ -15,6 +15,7 @@ export const Route = createFileRoute("/dashboard")({
 
 const TITLES: Record<string, string> = {
   "/dashboard": "",
+  "/dashboard/events": "Mes événements",
   "/dashboard/ceremonies": "Mes étapes",
   "/dashboard/guests": "Mes invités",
   "/dashboard/preview": "Aperçu de ma page",
