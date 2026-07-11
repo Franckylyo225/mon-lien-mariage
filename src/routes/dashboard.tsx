@@ -106,7 +106,6 @@ function DashboardChrome({
   isPublished,
   drawerOpen,
   setDrawerOpen,
-  showEventsLink,
   onSignOut,
 }: {
   title: string;
@@ -118,9 +117,9 @@ function DashboardChrome({
   isPublished: boolean;
   drawerOpen: boolean;
   setDrawerOpen: (v: boolean) => void;
-  showEventsLink: boolean;
   onSignOut: () => Promise<void>;
 }) {
+
   const { mode } = useEditMode();
   const { centerNode, actionBarNode } = usePageChrome();
   const editing = mode === "edit";
@@ -149,8 +148,8 @@ function DashboardChrome({
         email={email}
         initials={coupleInitials}
         onSignOut={onSignOut}
-        showEventsLink={showEventsLink}
       />
+
     </div>
   );
 }
