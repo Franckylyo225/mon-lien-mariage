@@ -8,7 +8,7 @@ export const Route = createFileRoute("/comment-ca-marche")({
       {
         name: "description",
         content:
-          "Découvrez comment créer votre invitation de mariage digitale en 4 étapes simples : choisissez un modèle, personnalisez, partagez, suivez les RSVP.",
+          "Créez votre invitation de mariage digitale en 4 étapes : choisissez un modèle, personnalisez, partagez, suivez les RSVP en direct.",
       },
       { property: "og:title", content: "Comment ça marche — MonMariage.ci" },
       {
@@ -16,10 +16,22 @@ export const Route = createFileRoute("/comment-ca-marche")({
         content:
           "Du choix du modèle au suivi des invités, votre invitation prête en 10 minutes.",
       },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "/comment-ca-marche" },
+      { property: "og:site_name", content: "MonMariage.ci" },
+      { property: "og:locale", content: "fr_FR" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Comment ça marche — MonMariage.ci" },
+      {
+        name: "twitter:description",
+        content: "Votre invitation prête en 10 minutes, en 4 étapes simples.",
+      },
     ],
+    links: [{ rel: "canonical", href: "/comment-ca-marche" }],
   }),
   component: HowItWorks,
 });
+
 
 const STEPS = [
   {
@@ -75,8 +87,10 @@ function HowItWorks() {
       }
       intro="Nous avons pensé chaque étape pour que vous puissiez tout faire depuis votre téléphone, sans compétence technique."
     >
-      <section className="mx-auto max-w-5xl px-5 py-12">
+      <section className="mx-auto max-w-5xl px-5 py-12" aria-labelledby="etapes-heading">
+        <h2 id="etapes-heading" className="sr-only">Les 4 étapes</h2>
         <ol className="grid gap-6 md:grid-cols-2">
+
           {STEPS.map((s) => (
             <li
               key={s.n}

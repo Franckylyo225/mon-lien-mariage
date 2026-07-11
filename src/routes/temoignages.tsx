@@ -8,18 +8,30 @@ export const Route = createFileRoute("/temoignages")({
       {
         name: "description",
         content:
-          "Découvrez les témoignages de couples ivoiriens qui ont créé leur invitation de mariage sur MonMariage.ci.",
+          "Plus de 500 couples ivoiriens racontent leur expérience MonMariage.ci : création de l'invitation, suivi des RSVP et jour J.",
       },
       { property: "og:title", content: "Témoignages — MonMariage.ci" },
       {
         property: "og:description",
         content:
-          "Plus de 500 couples nous font confiance pour leur invitation digitale et le suivi de leurs invités.",
+          "Plus de 500 couples nous font confiance pour leur invitation digitale.",
+      },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "/temoignages" },
+      { property: "og:site_name", content: "MonMariage.ci" },
+      { property: "og:locale", content: "fr_FR" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Témoignages — MonMariage.ci" },
+      {
+        name: "twitter:description",
+        content: "Les mariés racontent leur expérience MonMariage.ci.",
       },
     ],
+    links: [{ rel: "canonical", href: "/temoignages" }],
   }),
   component: Testimonials,
 });
+
 
 const REVIEWS = [
   {
@@ -149,8 +161,10 @@ function Testimonials() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 pb-16">
+      <section className="mx-auto max-w-6xl px-5 pb-16" aria-labelledby="avis-heading">
+        <h2 id="avis-heading" className="sr-only">Avis des couples</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
           {REVIEWS.map((r) => {
             const t = TONES[r.tone];
             return (
