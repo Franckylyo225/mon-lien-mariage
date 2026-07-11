@@ -39,10 +39,10 @@ export function SiteHeader() {
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-4">
         <Link
           to="/"
-          aria-label="MonMariage.ci — accueil"
+          aria-label="MonInvit.com — accueil"
           className="font-[family-name:var(--font-display)] text-xl italic text-[#2b1a14] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c17c74] focus-visible:ring-offset-2 focus-visible:ring-offset-[#fdf7f3] rounded-sm"
         >
-          MonMariage<span className="text-[#c17c74]">.ci</span>
+          MonInvit<span className="text-[#c17c74]">.ci</span>
         </Link>
 
         {/* Desktop nav */}
@@ -229,7 +229,7 @@ export function SiteFooter() {
             })}
           </ul>
         </nav>
-        <p>© 2027 MonMariage.ci — Fait avec ♡ à Abidjan</p>
+        <p>© 2027 MonInvit.com — Fait avec ♡ à Abidjan</p>
       </div>
     </footer>
   );

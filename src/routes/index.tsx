@@ -9,13 +9,13 @@ import tableImg from "@/assets/home-table.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MonMariage.ci — Invitations de mariage digitales, dessinées avec amour" },
+      { title: "MonInvit.com — Invitations de mariage digitales, dessinées avec amour" },
       {
         name: "description",
         content:
           "Une invitation de mariage digitale élégante, prête en 10 minutes. RSVP, programme, invités, partage WhatsApp. Créée pour les mariés de Côte d'Ivoire.",
       },
-      { property: "og:title", content: "MonMariage.ci — Célébrons votre union" },
+      { property: "og:title", content: "MonInvit.com — Célébrons votre union" },
       {
         property: "og:description",
         content:
@@ -23,10 +23,10 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/" },
-      { property: "og:site_name", content: "MonMariage.ci" },
+      { property: "og:site_name", content: "MonInvit.com" },
       { property: "og:locale", content: "fr_FR" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "MonMariage.ci — Célébrons votre union" },
+      { name: "twitter:title", content: "MonInvit.com — Célébrons votre union" },
       {
         name: "twitter:description",
         content:
@@ -358,7 +358,7 @@ function ShareMock() {
         </p>
         <div className="mt-2 rounded-md border border-[#e8c5b6] p-2">
           <p className="font-[family-name:var(--font-display)] text-xs italic text-[#c17c74]">
-            monmariage.ci/aicha-loic
+            moninvit.com/aicha-loic
           </p>
           <p className="mt-0.5 text-[9px] text-[#8a6a5e]">
             Aïcha & Loïc · 14 août
@@ -488,7 +488,7 @@ function TimeArgument() {
         </div>
         <div>
           <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#c17c74]">
-            Pourquoi MonMariage.ci
+            Pourquoi MonInvit.com
           </p>
           <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl leading-[1.05] sm:text-5xl">
             Le temps de dire{" "}
@@ -601,7 +601,7 @@ function EditorialCouple() {
             Chaque mariage <br />a sa propre histoire.
           </h2>
           <p className="mt-6 text-[15px] leading-relaxed text-[#6b4a3e]">
-            MonMariage.ci comprend nos traditions. Que vous célébriez une dot
+            MonInvit.com comprend nos traditions. Que vous célébriez une dot
             intime, un mariage à l'église, ou trois jours de fête — chaque
             étape a sa page, son programme et son lieu.
           </p>

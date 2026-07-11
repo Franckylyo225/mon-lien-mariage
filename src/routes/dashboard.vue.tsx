@@ -17,7 +17,7 @@ import type {
 export const Route = createFileRoute("/dashboard/vue")({
   head: () => ({
     meta: [
-      { title: "Vue visiteur — MonMariage.ci" },
+      { title: "Vue visiteur — MonInvit.com" },
       { name: "robots", content: "noindex" },
     ],
   }),

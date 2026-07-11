@@ -4,13 +4,13 @@ import { PageShell } from "@/components/site/SiteChrome";
 export const Route = createFileRoute("/comment-ca-marche")({
   head: () => ({
     meta: [
-      { title: "Comment ça marche — MonMariage.ci" },
+      { title: "Comment ça marche — MonInvit.com" },
       {
         name: "description",
         content:
           "Créez votre invitation de mariage digitale en 4 étapes : choisissez un modèle, personnalisez, partagez, suivez les RSVP en direct.",
       },
-      { property: "og:title", content: "Comment ça marche — MonMariage.ci" },
+      { property: "og:title", content: "Comment ça marche — MonInvit.com" },
       {
         property: "og:description",
         content:
@@ -18,10 +18,10 @@ export const Route = createFileRoute("/comment-ca-marche")({
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/comment-ca-marche" },
-      { property: "og:site_name", content: "MonMariage.ci" },
+      { property: "og:site_name", content: "MonInvit.com" },
       { property: "og:locale", content: "fr_FR" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Comment ça marche — MonMariage.ci" },
+      { name: "twitter:title", content: "Comment ça marche — MonInvit.com" },
       {
         name: "twitter:description",
         content: "Votre invitation prête en 10 minutes, en 4 étapes simples.",

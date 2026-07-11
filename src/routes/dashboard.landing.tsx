@@ -6,7 +6,7 @@ import { templateMeta, templateOrder, eventTypeMeta, eventTypeOrder } from "@/li
 export const Route = createFileRoute("/dashboard/landing")({
   head: () => ({
     meta: [
-      { title: "Ma page d'invitation — MonMariage.ci" },
+      { title: "Ma page d'invitation — MonInvit.com" },
       {
         name: "description",
         content:

@@ -6,8 +6,8 @@ import { AuthLayout, Field, GoogleAuthButton, AuthDivider, inputClass } from "./
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Connexion — MonMariage.ci" },
-      { name: "description", content: "Connectez-vous à votre espace MonMariage.ci." },
+      { title: "Connexion — MonInvit.com" },
+      { name: "description", content: "Connectez-vous à votre espace MonInvit.com." },
     ],
   }),
   component: LoginPage,

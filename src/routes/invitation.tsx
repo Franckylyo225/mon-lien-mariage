@@ -8,11 +8,11 @@ import { templateMeta, templateOrder } from "@/lib/ceremony-meta";
 export const Route = createFileRoute("/invitation")({
   head: () => ({
     meta: [
-      { title: "Invitation — MonMariage.ci" },
+      { title: "Invitation — MonInvit.com" },
       {
         name: "description",
         content:
-          "Aperçu d'une invitation MonMariage.ci. Basculez entre les modèles pour choisir votre style.",
+          "Aperçu d'une invitation MonInvit.com. Basculez entre les modèles pour choisir votre style.",
       },
     ],
   }),
@@ -34,7 +34,7 @@ function InvitationPage() {
               to="/"
               className="shrink-0 font-serif text-sm italic text-foreground"
             >
-              ← MonMariage<span className="text-primary">.ci</span>
+              ← MonInvit<span className="text-primary">.ci</span>
             </Link>
             <span className="hidden text-xs opacity-40 sm:inline">·</span>
             <p className="hidden truncate font-mono text-[10px] uppercase tracking-widest opacity-60 sm:block">

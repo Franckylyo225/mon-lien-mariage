@@ -5,7 +5,7 @@ import { useWedding } from "@/lib/wedding-store";
 export const Route = createFileRoute("/publish/success")({
   head: () => ({
     meta: [
-      { title: "Publication réussie — MonMariage.ci" },
+      { title: "Publication réussie — MonInvit.com" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -18,7 +18,7 @@ function SuccessPage() {
 
   const publicUrl = useMemo(() => {
     const origin =
-      typeof window !== "undefined" ? window.location.origin : "https://monmariage.ci";
+      typeof window !== "undefined" ? window.location.origin : "https://moninvit.com";
     return `${origin}/e/${couple.slug ?? ""}`;
   }, [couple.slug]);
 

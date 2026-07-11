@@ -76,14 +76,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "MonMariage.ci — Invitations & gestion de mariage" },
+      { title: "MonInvit.com — Invitations & gestion de mariage" },
       {
         name: "description",
         content:
           "Créez une page d'invitation stylée pour chaque étape de mariage (dot, civil, religieux, dîner, anniversaire), collectez les RSVP et gérez vos invités depuis un dashboard simple.",
       },
-      { name: "author", content: "MonMariage.ci" },
-      { property: "og:title", content: "MonMariage.ci — Invitations & gestion de mariage" },
+      { name: "author", content: "MonInvit.com" },
+      { property: "og:title", content: "MonInvit.com — Invitations & gestion de mariage" },
       {
         property: "og:description",
         content:

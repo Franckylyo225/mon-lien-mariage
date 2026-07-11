@@ -5,7 +5,7 @@ import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta"
 import { Field } from "./signup";
 
 export const Route = createFileRoute("/dashboard/guests/new")({
-  head: () => ({ meta: [{ title: "Nouvel invité — MonMariage.ci" }] }),
+  head: () => ({ meta: [{ title: "Nouvel invité — MonInvit.com" }] }),
   component: NewGuestPage,
 });
 

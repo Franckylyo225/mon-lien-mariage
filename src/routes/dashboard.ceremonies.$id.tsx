@@ -5,7 +5,7 @@ import { ceremonyMeta } from "@/lib/ceremony-meta";
 import { Field } from "./signup";
 
 export const Route = createFileRoute("/dashboard/ceremonies/$id")({
-  head: () => ({ meta: [{ title: "Éditer une étape — MonMariage.ci" }] }),
+  head: () => ({ meta: [{ title: "Éditer une étape — MonInvit.com" }] }),
   component: EditCeremony,
 });
 
