@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { IconCheck, IconChevronRight, IconLock } from "@tabler/icons-react";
 import {
@@ -6,6 +7,7 @@ import {
   formatFrenchDate,
 } from "@/lib/wedding-store";
 import { cn } from "@/lib/utils";
+import { BasicInfoSheet } from "@/components/dashboard/BasicInfoSheet";
 
 export const Route = createFileRoute("/dashboard/")({
   head: () => ({ meta: [{ title: "Tableau de bord — MonMariage.ci" }] }),
@@ -17,56 +19,39 @@ type ChecklistItem = {
   label: string;
   description: string;
   done: boolean;
+  onClick?: () => void;
   to?:
-    | "/onboarding/prenoms"
     | "/dashboard/ceremonies"
     | "/dashboard/guests"
     | "/dashboard/landing"
-    | "/dashboard/preview"
     | "/publish";
   locked?: boolean;
 };
 
 function DashboardHome() {
   const { couple, ceremonies, guests } = useWedding();
+  const [infoSheetOpen, setInfoSheetOpen] = useState(false);
 
-  // ---- 7 configuration criteria (1 point each)
-  const criteria = [
-    !!couple.brideName && !!couple.groomName,
-    !!couple.eventType,
-    !!couple.weddingDate,
-    !!couple.theme,
-    ceremonies.some((c) => c.date && c.venue),
-    !!couple.heroImageUrl,
-    guests.length >= 5,
-  ];
+  // ---- 5 configuration criteria (1 point each)
+  const infosDone = !!couple.brideName && !!couple.groomName && !!couple.weddingDate;
+  const programmeDone = ceremonies.some((c) => c.date && c.venue);
+  const pageDone = !!couple.heroImageUrl;
+  const invitesDone = guests.length >= 5;
+  const canPublish = infosDone && programmeDone && pageDone && invitesDone;
+  const publishDone = !!couple.isPublished;
+
+  const criteria = [infosDone, programmeDone, pageDone, invitesDone, publishDone];
   const done = criteria.filter(Boolean).length;
   const total = criteria.length;
   const pct = Math.round((done / total) * 100);
-
-  // ---- checklist items
-  const infosDone = criteria[0] && criteria[1] && criteria[2];
-  const themeDone = criteria[3];
-  const programmeDone = ceremonies.length > 0 && ceremonies.every((c) => c.date && c.venue);
-  const pageDone = !!couple.heroImageUrl;
-  const invitesDone = guests.length >= 5;
-  const canPublish = programmeDone && pageDone && invitesDone;
-  const publishDone = couple.isPublished;
 
   const items: ChecklistItem[] = [
     {
       key: "infos",
       label: "Informations de base",
-      description: "Prénoms, type, dates",
+      description: "Prénoms, type, dates, ville",
       done: infosDone,
-      to: infosDone ? undefined : "/onboarding/prenoms",
-    },
-    {
-      key: "theme",
-      label: "Thème",
-      description: "Thème visuel de la page",
-      done: themeDone,
-      to: "/dashboard/landing",
+      onClick: () => setInfoSheetOpen(true),
     },
     {
       key: "programme",
@@ -77,8 +62,8 @@ function DashboardHome() {
     },
     {
       key: "page",
-      label: "La page d'invitation",
-      description: "Photos, textes, mise en page",
+      label: "Ma page d'invitation",
+      description: "Photos, textes, thème et mise en page",
       done: pageDone,
       to: "/dashboard/landing",
     },
@@ -123,12 +108,12 @@ function DashboardHome() {
             {days !== null ? <> · <span className="text-primary">{days} jours</span></> : null}
           </p>
         ) : (
-          <Link
-            to="/onboarding/dates"
+          <button
+            onClick={() => setInfoSheetOpen(true)}
             className="mt-2 inline-block text-[12px] italic text-muted-foreground underline"
           >
             Date à définir
-          </Link>
+          </button>
         )}
       </section>
 
@@ -183,17 +168,20 @@ function DashboardHome() {
           </div>
         ) : null}
       </section>
+
+      <BasicInfoSheet open={infoSheetOpen} onOpenChange={setInfoSheetOpen} />
     </div>
   );
 }
 
 function ChecklistRow({ item }: { item: ChecklistItem }) {
+  const clickable = !item.locked && (item.to || item.onClick);
   const inner = (
     <div
       className={cn(
         "flex items-center gap-3 px-4 py-3.5",
-        !item.done && !item.locked && item.to && "transition active:bg-secondary/60",
-        item.done && "opacity-70",
+        clickable && "transition active:bg-secondary/60",
+        item.done && !item.onClick && "opacity-70",
       )}
     >
       <span
@@ -210,7 +198,7 @@ function ChecklistRow({ item }: { item: ChecklistItem }) {
         <p
           className={cn(
             "text-[13px]",
-            item.done && "line-through text-muted-foreground",
+            item.done && !item.onClick && "line-through text-muted-foreground",
           )}
         >
           {item.label}
@@ -221,16 +209,28 @@ function ChecklistRow({ item }: { item: ChecklistItem }) {
       </div>
       {item.locked ? (
         <IconLock size={16} className="text-muted-foreground" />
-      ) : item.to ? (
+      ) : clickable ? (
         <IconChevronRight size={16} className="text-muted-foreground" />
       ) : null}
     </div>
   );
 
-  if (item.locked || !item.to) return <li>{inner}</li>;
-  return (
-    <li>
-      <Link to={item.to}>{inner}</Link>
-    </li>
-  );
+  if (item.locked) return <li>{inner}</li>;
+  if (item.onClick) {
+    return (
+      <li>
+        <button type="button" onClick={item.onClick} className="w-full text-left">
+          {inner}
+        </button>
+      </li>
+    );
+  }
+  if (item.to) {
+    return (
+      <li>
+        <Link to={item.to}>{inner}</Link>
+      </li>
+    );
+  }
+  return <li>{inner}</li>;
 }
