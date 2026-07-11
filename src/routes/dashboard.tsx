@@ -83,11 +83,13 @@ function DashboardLayout() {
             isPublished={couple.isPublished}
             drawerOpen={drawerOpen}
             setDrawerOpen={setDrawerOpen}
+            showEventsLink={weddings.length > 1}
             onSignOut={async () => {
               await signOut();
               navigate({ to: "/", replace: true });
             }}
           />
+
         </PageChromeProvider>
       </AutosaveProvider>
     </EditModeProvider>
