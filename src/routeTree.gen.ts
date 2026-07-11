@@ -37,6 +37,7 @@ import { Route as DashboardLandingRouteImport } from './routes/dashboard.landing
 import { Route as DashboardInvitesRouteImport } from './routes/dashboard.invites'
 import { Route as DashboardEventsRouteImport } from './routes/dashboard.events'
 import { Route as DashboardCeremoniesRouteImport } from './routes/dashboard.ceremonies'
+import { Route as DashboardBillingRouteImport } from './routes/dashboard.billing'
 import { Route as DashboardGuestsIndexRouteImport } from './routes/dashboard.guests.index'
 import { Route as DashboardGuestsNewRouteImport } from './routes/dashboard.guests.new'
 import { Route as DashboardCeremoniesIdRouteImport } from './routes/dashboard.ceremonies.$id'
@@ -182,6 +183,11 @@ const DashboardCeremoniesRoute = DashboardCeremoniesRouteImport.update({
   path: '/ceremonies',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardBillingRoute = DashboardBillingRouteImport.update({
+  id: '/billing',
+  path: '/billing',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardGuestsIndexRoute = DashboardGuestsIndexRouteImport.update({
   id: '/guests/',
   path: '/guests/',
@@ -211,6 +217,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
+  '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/events': typeof DashboardEventsRoute
   '/dashboard/invites': typeof DashboardInvitesRoute
@@ -243,6 +250,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
+  '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/events': typeof DashboardEventsRoute
   '/dashboard/invites': typeof DashboardInvitesRoute
@@ -277,6 +285,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
+  '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/events': typeof DashboardEventsRoute
   '/dashboard/invites': typeof DashboardInvitesRoute
@@ -312,6 +321,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/temoignages'
     | '/termes-et-conditions'
+    | '/dashboard/billing'
     | '/dashboard/ceremonies'
     | '/dashboard/events'
     | '/dashboard/invites'
@@ -344,6 +354,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/temoignages'
     | '/termes-et-conditions'
+    | '/dashboard/billing'
     | '/dashboard/ceremonies'
     | '/dashboard/events'
     | '/dashboard/invites'
@@ -377,6 +388,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/temoignages'
     | '/termes-et-conditions'
+    | '/dashboard/billing'
     | '/dashboard/ceremonies'
     | '/dashboard/events'
     | '/dashboard/invites'
@@ -613,6 +625,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardCeremoniesRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/billing': {
+      id: '/dashboard/billing'
+      path: '/billing'
+      fullPath: '/dashboard/billing'
+      preLoaderRoute: typeof DashboardBillingRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/guests/': {
       id: '/dashboard/guests/'
       path: '/guests'
@@ -649,6 +668,7 @@ const DashboardCeremoniesRouteWithChildren =
   DashboardCeremoniesRoute._addFileChildren(DashboardCeremoniesRouteChildren)
 
 interface DashboardRouteChildren {
+  DashboardBillingRoute: typeof DashboardBillingRoute
   DashboardCeremoniesRoute: typeof DashboardCeremoniesRouteWithChildren
   DashboardEventsRoute: typeof DashboardEventsRoute
   DashboardInvitesRoute: typeof DashboardInvitesRoute
@@ -663,6 +683,7 @@ interface DashboardRouteChildren {
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardBillingRoute: DashboardBillingRoute,
   DashboardCeremoniesRoute: DashboardCeremoniesRouteWithChildren,
   DashboardEventsRoute: DashboardEventsRoute,
   DashboardInvitesRoute: DashboardInvitesRoute,
