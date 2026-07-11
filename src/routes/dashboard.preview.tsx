@@ -138,7 +138,7 @@ function PreviewPage() {
             accentColor: resolved.accent,
           }}
           burstOnMount={coupleTheme.particleTriggerOpen ? 24 : 0}
-          loop={!!coupleTheme.particleTriggerLoop || !coupleTheme.particleTriggerOpen}
+          loop={!!coupleTheme.particleTriggerLoop}
         />
       ) : null}
     </div>

@@ -83,6 +83,7 @@ export function ParticleSheet({ open, onOpenChange, config, onPatch, triggers }:
                 onClick={() =>
                   onPatch({
                     particleEffectSlug: style.slug,
+                    particleTriggerLoop: true,
                   })
                 }
               />
@@ -204,15 +205,17 @@ export function ParticleSheet({ open, onOpenChange, config, onPatch, triggers }:
           <Label>Se déclenche</Label>
           <div className="mt-2 space-y-2">
             <ToggleRow
-              label="À l'ouverture de la page"
-              checked={triggers.open}
-              onChange={(v) => onPatch({ particleTriggerOpen: v })}
+              label="Effet continu pendant toute la visite"
+              hint="Les particules restent visibles tant que l'invité est sur la page."
+              checked={triggers.loop}
+              onChange={(v) => onPatch({ particleTriggerLoop: v })}
               disabled={!config.slug}
             />
             <ToggleRow
-              label="En continu pendant la visite"
-              checked={triggers.loop}
-              onChange={(v) => onPatch({ particleTriggerLoop: v })}
+              label="Éclat à l'ouverture de la page"
+              hint="Une salve de particules au premier affichage."
+              checked={triggers.open}
+              onChange={(v) => onPatch({ particleTriggerOpen: v })}
               disabled={!config.slug}
             />
             <ToggleRow
