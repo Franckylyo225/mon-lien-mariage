@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /onboarding
+Disallow: /publish
+Disallow: /app
+Disallow: /reset-password
+Disallow: /forgot-password
+Disallow: /lovable
+Disallow: /theme-thumb
+
+Sitemap: https://moninvit.com/sitemap.xml

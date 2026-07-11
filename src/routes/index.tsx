@@ -4,7 +4,9 @@ import { SiteHeader as SharedSiteHeader, SiteFooter as SharedSiteFooter } from "
 import heroCouple from "@/assets/home-couple.jpg";
 import romanceImg from "@/assets/home-romance.jpg";
 import tableImg from "@/assets/home-table.jpg";
+import ogImage from "@/assets/og-image.jpg.asset.json";
 
+const OG_IMAGE_URL = `https://moninvit.com${ogImage.url}`;
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -13,27 +15,58 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Une invitation de mariage digitale élégante, prête en 10 minutes. RSVP, programme, invités, partage WhatsApp. Créée pour les mariés de Côte d'Ivoire.",
+          "Une invitation de mariage digitale élégante, prête en 10 minutes. RSVP, programme, invités, partage WhatsApp. Créée pour les mariés en Côte d'Ivoire, Sénégal, Bénin, Togo, Mali, Burkina Faso et toute l'Afrique de l'Ouest.",
       },
       { property: "og:title", content: "MonInvit.com — Célébrons votre union" },
       {
         property: "og:description",
         content:
-          "20+ modèles romantiques, RSVP automatiques, tableau de bord privé. Un seul lien à partager. Sans engagement jusqu'au paiement.",
+          "20+ modèles romantiques, RSVP automatiques, tableau de bord privé. Un seul lien à partager. Pensé pour l'Afrique de l'Ouest.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/" },
-      { property: "og:site_name", content: "MonInvit.com" },
-      { property: "og:locale", content: "fr_FR" },
+      { property: "og:url", content: "https://moninvit.com/" },
+      { property: "og:image", content: OG_IMAGE_URL },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: "MonInvit.com — Invitations de mariage digitales pour l'Afrique de l'Ouest" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "MonInvit.com — Célébrons votre union" },
       {
         name: "twitter:description",
         content:
-          "Invitations digitales, RSVP en direct et tableau de bord — pensé pour les mariés ivoiriens.",
+          "Invitations digitales, RSVP en direct et tableau de bord — pensé pour les mariés d'Afrique de l'Ouest.",
+      },
+      { name: "twitter:image", content: OG_IMAGE_URL },
+    ],
+    links: [{ rel: "canonical", href: "https://moninvit.com/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "MonInvit.com",
+          url: "https://moninvit.com",
+          inLanguage: "fr",
+          description:
+            "Invitations de mariage digitales pour l'Afrique de l'Ouest — RSVP en direct, partage WhatsApp, tableau de bord privé.",
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Service",
+          serviceType: "Invitations de mariage digitales",
+          provider: { "@type": "Organization", name: "MonInvit.com", url: "https://moninvit.com" },
+          areaServed: [
+            "Côte d'Ivoire", "Sénégal", "Bénin", "Togo", "Mali",
+            "Burkina Faso", "Guinée", "Niger",
+          ],
+          offers: { "@type": "Offer", priceCurrency: "XOF", availability: "https://schema.org/InStock" },
+        }),
       },
     ],
-    links: [{ rel: "canonical", href: "/" }],
   }),
   component: Landing,
 });

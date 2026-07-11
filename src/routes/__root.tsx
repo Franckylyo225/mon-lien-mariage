@@ -76,26 +76,43 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "MonInvit.com — Invitations & gestion de mariage" },
+      { title: "MonInvit.com — Invitations de mariage digitales en Afrique de l'Ouest" },
       {
         name: "description",
         content:
-          "Créez une page d'invitation stylée pour chaque étape de mariage (dot, civil, religieux, dîner, anniversaire), collectez les RSVP et gérez vos invités depuis un dashboard simple.",
+          "Créez une invitation de mariage digitale élégante en 10 minutes. RSVP en direct, partage WhatsApp, QR code, tableau de bord privé. Pour les mariés en Côte d'Ivoire, Sénégal, Bénin, Togo, Mali, Burkina Faso, Guinée et toute l'Afrique de l'Ouest.",
       },
       { name: "author", content: "MonInvit.com" },
-      { property: "og:title", content: "MonInvit.com — Invitations & gestion de mariage" },
+      { name: "keywords", content: "invitation mariage digitale, faire-part mariage en ligne, RSVP mariage, invitation dot Afrique, invitation mariage Côte d'Ivoire, invitation mariage Sénégal, invitation mariage Bénin, invitation mariage Togo, invitation mariage Mali, invitation mariage Burkina Faso, invitation mariage Afrique de l'Ouest, faire-part digital, invitation WhatsApp" },
+      { name: "robots", content: "index, follow, max-image-preview:large" },
+      { name: "theme-color", content: "#993556" },
+      // Geo targeting — Afrique de l'Ouest
+      { name: "geo.region", content: "CI" },
+      { name: "geo.placename", content: "Abidjan, Côte d'Ivoire" },
+      // Open Graph defaults
+      { property: "og:site_name", content: "MonInvit.com" },
+      { property: "og:type", content: "website" },
+      { property: "og:locale", content: "fr_FR" },
+      { property: "og:locale:alternate", content: "fr_CI" },
+      { property: "og:locale:alternate", content: "fr_SN" },
+      { property: "og:locale:alternate", content: "fr_BJ" },
+      { property: "og:locale:alternate", content: "fr_TG" },
+      { property: "og:locale:alternate", content: "fr_ML" },
+      { property: "og:locale:alternate", content: "fr_BF" },
+      { property: "og:title", content: "MonInvit.com — Invitations de mariage digitales" },
       {
         property: "og:description",
         content:
-          "5 modèles d'invitation, RSVP par étape, QR code et partage WhatsApp. Pensé pour les mariages ivoiriens.",
+          "5 modèles d'invitation, RSVP par étape, QR code et partage WhatsApp. Pensé pour les mariages en Afrique de l'Ouest.",
       },
-      { property: "og:type", content: "website" },
+      // Twitter defaults
       { name: "twitter:card", content: "summary_large_image" },
-
+      { name: "twitter:site", content: "@moninvit" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", type: "image/png", href: "/favicon.png" },
+      { rel: "apple-touch-icon", href: "/favicon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       {
         rel: "preconnect",
@@ -105,6 +122,31 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Special+Elite&display=swap",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "MonInvit.com",
+          url: "https://moninvit.com",
+          logo: "https://moninvit.com/favicon.png",
+          description:
+            "Plateforme d'invitations de mariage digitales pour l'Afrique de l'Ouest : RSVP, partage WhatsApp, gestion des invités.",
+          areaServed: [
+            { "@type": "Country", name: "Côte d'Ivoire" },
+            { "@type": "Country", name: "Sénégal" },
+            { "@type": "Country", name: "Bénin" },
+            { "@type": "Country", name: "Togo" },
+            { "@type": "Country", name: "Mali" },
+            { "@type": "Country", name: "Burkina Faso" },
+            { "@type": "Country", name: "Guinée" },
+            { "@type": "Country", name: "Niger" },
+          ],
+          sameAs: [],
+        }),
       },
     ],
   }),
