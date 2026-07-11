@@ -42,6 +42,7 @@ import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as DashboardGuestsIndexRouteImport } from './routes/dashboard.guests.index'
 import { Route as DashboardGuestsNewRouteImport } from './routes/dashboard.guests.new'
 import { Route as DashboardCeremoniesIdRouteImport } from './routes/dashboard.ceremonies.$id'
+import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 
 const TermesEtConditionsRoute = TermesEtConditionsRouteImport.update({
   id: '/termes-et-conditions',
@@ -209,6 +210,12 @@ const DashboardCeremoniesIdRoute = DashboardCeremoniesIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => DashboardCeremoniesRoute,
 } as any)
+const LovableEmailQueueProcessRoute =
+  LovableEmailQueueProcessRouteImport.update({
+    id: '/lovable/email/queue/process',
+    path: '/lovable/email/queue/process',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -244,6 +251,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
   '/dashboard/guests/': typeof DashboardGuestsIndexRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -278,6 +286,7 @@ export interface FileRoutesByTo {
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
   '/dashboard/guests': typeof DashboardGuestsIndexRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -314,6 +323,7 @@ export interface FileRoutesById {
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
   '/dashboard/guests/': typeof DashboardGuestsIndexRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -351,6 +361,7 @@ export interface FileRouteTypes {
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
     | '/dashboard/guests/'
+    | '/lovable/email/queue/process'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -385,6 +396,7 @@ export interface FileRouteTypes {
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
     | '/dashboard/guests'
+    | '/lovable/email/queue/process'
   id:
     | '__root__'
     | '/'
@@ -420,6 +432,7 @@ export interface FileRouteTypes {
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
     | '/dashboard/guests/'
+    | '/lovable/email/queue/process'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -438,6 +451,7 @@ export interface RootRouteChildren {
   AppProfileRoute: typeof AppProfileRoute
   ESlugRoute: typeof ESlugRoute
   ThemeThumbSlugRoute: typeof ThemeThumbSlugRoute
+  LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -673,6 +687,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardCeremoniesIdRouteImport
       parentRoute: typeof DashboardCeremoniesRoute
     }
+    '/lovable/email/queue/process': {
+      id: '/lovable/email/queue/process'
+      path: '/lovable/email/queue/process'
+      fullPath: '/lovable/email/queue/process'
+      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -766,6 +787,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppProfileRoute: AppProfileRoute,
   ESlugRoute: ESlugRoute,
   ThemeThumbSlugRoute: ThemeThumbSlugRoute,
+  LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
