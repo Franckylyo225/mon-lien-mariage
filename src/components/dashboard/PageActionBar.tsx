@@ -33,6 +33,7 @@ export function PageActionBar({
   onEditToggle,
   onPublish,
   onShare,
+  onView,
 }: Props) {
   const editing = mode === "edit";
 
