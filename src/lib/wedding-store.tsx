@@ -193,6 +193,7 @@ export interface Couple {
   galleryEnabled?: boolean;
   galleryTitle?: string;
   galleryImages?: string[];
+  galleryDisplay?: "grid" | "marquee";
   shareTitle?: string;
   shareDescription?: string;
   shareImageUrl?: string;
@@ -491,6 +492,8 @@ function rowToCouple(w: WeddingRow): Couple {
     galleryEnabled: w.gallery_enabled ?? false,
     galleryTitle: w.gallery_title ?? undefined,
     galleryImages: w.gallery_images ?? [],
+    galleryDisplay:
+      (((w as { gallery_display?: string | null }).gallery_display as Couple["galleryDisplay"]) ?? "grid"),
     shareTitle: w.share_title ?? undefined,
     shareDescription: w.share_description ?? undefined,
     shareImageUrl: w.share_image_url ?? undefined,
@@ -561,6 +564,7 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.galleryEnabled !== undefined) r.gallery_enabled = p.galleryEnabled;
   if (p.galleryTitle !== undefined) r.gallery_title = p.galleryTitle || null;
   if (p.galleryImages !== undefined) r.gallery_images = p.galleryImages ?? [];
+  if (p.galleryDisplay !== undefined) r.gallery_display = p.galleryDisplay ?? "grid";
   if (p.shareTitle !== undefined) r.share_title = p.shareTitle || null;
   if (p.shareDescription !== undefined) r.share_description = p.shareDescription || null;
   if (p.shareImageUrl !== undefined) r.share_image_url = p.shareImageUrl || null;

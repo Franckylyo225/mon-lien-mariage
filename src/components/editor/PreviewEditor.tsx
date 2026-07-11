@@ -948,6 +948,10 @@ export function PreviewEditor({ mode }: EditorProps) {
         images={couple.galleryImages ?? []}
         onImagesChange={(next) => persist({ galleryImages: next })}
         maxImages={20}
+        displayField={{
+          value: couple.galleryDisplay ?? "grid",
+          onChange: (v) => persist({ galleryDisplay: v }),
+        }}
       />
 
       <HeroPhotoSheet
