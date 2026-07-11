@@ -73,6 +73,9 @@ function PreviewPage() {
         onShare={() => {
           navigate({ to: "/dashboard/share" });
         }}
+        onView={() => {
+          navigate({ to: "/dashboard/vue" });
+        }}
       />,
     );
     return () => {
