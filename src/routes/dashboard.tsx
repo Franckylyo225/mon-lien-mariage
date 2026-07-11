@@ -25,7 +25,7 @@ const TITLES: Record<string, string> = {
 };
 
 function DashboardLayout() {
-  const { couple, ceremonies, guests, account, loading, signOut, weddings } = useWedding();
+  const { couple, ceremonies, guests, account, loading, signOut } = useWedding();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -83,7 +83,6 @@ function DashboardLayout() {
             isPublished={couple.isPublished}
             drawerOpen={drawerOpen}
             setDrawerOpen={setDrawerOpen}
-            showEventsLink={weddings.length > 1}
             onSignOut={async () => {
               await signOut();
               navigate({ to: "/", replace: true });
@@ -95,6 +94,7 @@ function DashboardLayout() {
     </EditModeProvider>
   );
 }
+
 
 function DashboardChrome({
   title,

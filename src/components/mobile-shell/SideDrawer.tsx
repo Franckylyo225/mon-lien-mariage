@@ -20,8 +20,8 @@ interface SideDrawerProps {
   email: string | null;
   initials: string;
   onSignOut: () => void;
-  showEventsLink?: boolean;
 }
+
 
 const items = [
   { label: "Profil du couple", Icon: IconUser, to: "/dashboard" as const },
