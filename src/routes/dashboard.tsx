@@ -25,7 +25,7 @@ const TITLES: Record<string, string> = {
 };
 
 function DashboardLayout() {
-  const { couple, ceremonies, guests, account, loading, signOut, weddings } = useWedding();
+  const { couple, ceremonies, guests, account, loading, signOut } = useWedding();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -83,7 +83,6 @@ function DashboardLayout() {
             isPublished={couple.isPublished}
             drawerOpen={drawerOpen}
             setDrawerOpen={setDrawerOpen}
-            showEventsLink={weddings.length > 1}
             onSignOut={async () => {
               await signOut();
               navigate({ to: "/", replace: true });
@@ -96,6 +95,7 @@ function DashboardLayout() {
   );
 }
 
+
 function DashboardChrome({
   title,
   initial,
@@ -106,7 +106,6 @@ function DashboardChrome({
   isPublished,
   drawerOpen,
   setDrawerOpen,
-  showEventsLink,
   onSignOut,
 }: {
   title: string;
@@ -118,9 +117,9 @@ function DashboardChrome({
   isPublished: boolean;
   drawerOpen: boolean;
   setDrawerOpen: (v: boolean) => void;
-  showEventsLink: boolean;
   onSignOut: () => Promise<void>;
 }) {
+
   const { mode } = useEditMode();
   const { centerNode, actionBarNode } = usePageChrome();
   const editing = mode === "edit";
@@ -149,8 +148,8 @@ function DashboardChrome({
         email={email}
         initials={coupleInitials}
         onSignOut={onSignOut}
-        showEventsLink={showEventsLink}
       />
+
     </div>
   );
 }
