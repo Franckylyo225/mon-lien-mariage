@@ -1022,6 +1022,72 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
     }
   }, [weddingId]);
 
+  const switchActiveWedding = useCallback<WeddingState["switchActiveWedding"]>(
+    async (id) => {
+      if (!session) return;
+      if (id === activeWeddingId) return;
+      await supabase
+        .from("profiles")
+        .upsert({ id: session.user.id, active_wedding_id: id } as never, { onConflict: "id" });
+      loadedWeddingId.current = null;
+      setActiveWeddingId(id);
+    },
+    [session, activeWeddingId],
+  );
+
+  const createNewWedding = useCallback<WeddingState["createNewWedding"]>(async () => {
+    if (!session) return null;
+    const userId = session.user.id;
+    const empty = emptyCouple();
+    const insertRow = { owner_id: userId, ...coupleToRow(empty), onboarding_step: 0 };
+    const { data: created, error } = await supabase
+      .from("weddings")
+      .insert(insertRow as never)
+      .select("*")
+      .single();
+    if (error || !created) {
+      console.error("createNewWedding", error);
+      return null;
+    }
+    const wRow = created as WeddingRow;
+    setWeddings((prev) => [summarizeWedding(wRow), ...prev]);
+    await supabase
+      .from("profiles")
+      .upsert({ id: userId, active_wedding_id: wRow.id } as never, { onConflict: "id" });
+    loadedWeddingId.current = null;
+    setActiveWeddingId(wRow.id);
+    return wRow.id;
+  }, [session]);
+
+  // Keep the weddings summary list in sync when active wedding's key fields change
+  useEffect(() => {
+    if (!weddingId) return;
+    setWeddings((prev) =>
+      prev.map((w) =>
+        w.id === weddingId
+          ? {
+              ...w,
+              brideName: couple.brideName,
+              groomName: couple.groomName,
+              weddingDate: couple.weddingDate || null,
+              eventType: couple.eventType ?? "mariage",
+              isPublished: couple.isPublished,
+              slug: couple.slug ?? null,
+            }
+          : w,
+      ),
+    );
+  }, [
+    weddingId,
+    couple.brideName,
+    couple.groomName,
+    couple.weddingDate,
+    couple.eventType,
+    couple.isPublished,
+    couple.slug,
+  ]);
+
+
   const value = useMemo<WeddingState>(
     () => ({
       weddingId,
