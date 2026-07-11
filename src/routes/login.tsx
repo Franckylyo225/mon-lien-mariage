@@ -95,8 +95,17 @@ function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Votre mot de passe"
             className={inputClass}
+            autoComplete="current-password"
           />
         </Field>
+        <div className="-mt-1 text-right">
+          <Link
+            to="/forgot-password"
+            className="text-xs font-medium text-[#c17c74] hover:underline"
+          >
+            Mot de passe oublié ?
+          </Link>
+        </div>
         {error ? <p className="text-xs text-destructive">{error}</p> : null}
         <button
           type="submit"
