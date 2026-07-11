@@ -36,7 +36,7 @@ type TodoItem = {
 };
 
 function DashboardHome() {
-  const { couple, ceremonies, guests } = useWedding();
+  const { couple, ceremonies, guests, weddings } = useWedding();
   const navigate = useNavigate();
   const [infoSheetOpen, setInfoSheetOpen] = useState(false);
 
