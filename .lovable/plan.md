@@ -1,35 +1,62 @@
-# Effets de particules sur /e/:slug
+# Architecture multi-événements
 
-## Objectif
-Le couple choisit un style de particules (paillettes, fleurs, cœurs, pétales, bulles, étoiles) depuis l'éditeur inline, avec réglages d'intensité, vitesse, taille, couleur et déclencheurs. Rendu 100% Canvas, aucune librairie externe.
+## Écart schéma à noter
 
-## 1. Base de données
-Migration `weddings` : 8 nouvelles colonnes (`particle_effect_slug`, `particle_intensity`, `particle_speed`, `particle_size`, `particle_color_mode`, `particle_trigger_open`, `particle_trigger_loop`, `particle_trigger_rsvp`) avec valeurs par défaut et contraintes CHECK. Aucun impact RLS (weddings existe déjà).
+Le prompt parle d'une table `couples` avec `active_wedding_id`. Elle n'existe pas dans ce projet — on a `profiles` (1 ligne par user) et `weddings.owner_id → auth.users`. J'utilise donc `profiles.active_wedding_id` (équivalent fonctionnel). Aucune table `couples` créée.
 
-## 2. Moteur (Canvas, pur TS)
-`src/lib/particles/` :
-- `types.ts` — interfaces `Particle`, `ParticleStyle`, `ParticleConfig`
-- `styles.ts` — les 6 fonctions `draw()` avec couleurs par défaut
-- `engine.ts` — classe `ParticleEngine` : boucle `requestAnimationFrame`, spawn, physique (gravité, oscillation sway, rotation, fade in/out, direction inversée pour bulles), méthodes `startLoop()`, `stop()`, `burst(n)`, `burstRsvp()`, `destroy()`, `resize()`
-- Respect `prefers-reduced-motion` (soft ou désactivation loop) et `navigator.deviceMemory < 4` (force soft)
+## 1. Migration
 
-## 3. Composants React
-- `src/components/particles/ParticleCanvas.tsx` — canvas fixe plein écran, `pointer-events:none`, `z-index:10`, `aria-hidden`, gère resize et cleanup
-- `src/components/particles/StyleThumbnail.tsx` — mini canvas 80×110 animé en continu pour chaque style
-- `src/components/editor/ParticleSheet.tsx` — bottom sheet configurateur (grille 3×2 de vignettes animées, toggle "Aucun effet", chips intensité/taille, slider vitesse, 6 ronds couleur dont Auto en dégradé conic, chips multi-select déclencheurs, aperçu live 60px)
+- `ALTER TABLE weddings DROP CONSTRAINT weddings_owner_id_key` (retire l'unicité owner_id → autorise N mariages / compte)
+- `ALTER TABLE profiles ADD COLUMN active_wedding_id uuid REFERENCES weddings(id) ON DELETE SET NULL`
+- Backfill : pour chaque profile sans `active_wedding_id`, prendre le wedding le plus récent du user
+- RLS `ceremonies` / `guests` / `rsvps` : déjà scopés via `weddings.owner_id`, rien à changer
 
-## 4. Intégration
-- **Page publique** `src/routes/e.$slug.tsx` : monte `<ParticleCanvas />` avec la config du wedding. Déclenche `burst()` à l'ouverture si activé, `startLoop()` si continu.
-- **RSVP** : après succès du form, appeler `engine.burstRsvp()` (30 cœurs explosant du centre) — fonctionne même si aucun style n'est configuré, via un canvas éphémère monté 3s.
-- **Éditeur** `PreviewEditor.tsx` : nouveau bouton "Effet de particules" dans les contrôles globaux, ouvre `ParticleSheet`. Persistance via `persist({...})` avec debounce existant.
-- **Store** `src/lib/wedding-store.tsx` : ajouter les 8 champs au type et au mapping snake_case ↔ camelCase.
-- **Loader public** `src/lib/public-wedding.functions.ts` : ajouter les colonnes au SELECT.
+## 2. Store (`wedding-store.tsx`)
 
-## 5. Hors périmètre (confirmé par spec)
-Roue chromatique libre, mélange de styles, effets liés au scroll, collisions, son.
+- Charger `profiles.active_wedding_id` au boot ; charger la liste des weddings du user
+- Exposer : `weddings[]`, `activeWeddingId`, `switchActiveWedding(id)`, `createNewWedding()` (insert vide + set active + retourne id)
+- Toutes les mutations existantes ciblent déjà "le wedding du user" → passer à "le wedding = activeWeddingId"
+- Ceremonies / guests filtrés par `wedding_id === activeWeddingId`
 
-## Détails techniques
-- Les vignettes du sélecteur utilisent le vrai moteur avec canvas 80×110 (clamp interne des positions).
-- L'aperçu live du bottom sheet utilise aussi le moteur, dans un rectangle arrondi ~60px.
-- Sauvegarde debounced à 500ms via l'`autosave-context` existant.
-- Fallback RSVP : si aucun `particle_effect_slug`, on monte un canvas éphémère dédié aux cœurs pendant 3s puis on le démonte.
+## 3. Nouvelle route `/dashboard/events` (l'app est routée sur `/dashboard`, pas `/app` — je garde `/dashboard/events` pour cohérence)
+
+- Layout minimal (pas dans le shell dashboard) : header avec retour + titre "Mes événements" + bouton `+`
+- Sections "En cours" / "Passés" / carte "Nouvel événement" comme spécifié
+- Tap carte → `switchActiveWedding(id)` puis `navigate /dashboard`
+- Tap `+` ou carte "Nouvel événement" → modale de confirmation → `createNewWedding()` → `navigate /onboarding/prenoms`
+
+## 4. Redirection au login
+
+Dans `login.tsx` / après signIn : compter weddings du user :
+- 0 → `/onboarding/prenoms` (créer wedding vide d'abord)
+- 1 → `/dashboard` + set active_wedding_id
+- ≥2 → `/dashboard/events`
+
+## 5. Dashboard `/dashboard` (index)
+
+- Ajouter sous le bloc prénoms le lien discret "← Mes événements" (icône `IconLayoutList`, 10px gris) **uniquement si `weddings.length > 1`**
+- Aucun autre changement visuel
+
+## 6. Drawer (`SideDrawer.tsx`)
+
+- Ajouter en 1er item "Mes événements" (icône `IconCalendarHeart`) → `/dashboard/events`
+- Visible uniquement si `weddings.length > 1` (passé en prop depuis `dashboard.tsx`)
+
+## 7. Paiement
+
+`/publish` inchangé, opère sur `activeWeddingId`. Chaque publication = nouveau paiement lié au wedding actif. (Table payments hors scope actuel — pas de changement si elle n'existe pas encore.)
+
+## Fichiers touchés
+
+- Migration Supabase (via outil)
+- `src/lib/wedding-store.tsx` — liste weddings + active + switch + create
+- `src/routes/dashboard.events.tsx` — nouveau
+- `src/routes/login.tsx` — logique de redirection post-login
+- `src/routes/dashboard.tsx` — passe `weddingsCount` au drawer
+- `src/routes/dashboard.index.tsx` — lien "Mes événements" conditionnel
+- `src/components/mobile-shell/SideDrawer.tsx` — item conditionnel
+- `src/integrations/supabase/types.ts` — régénéré après migration
+
+## Hors scope (confirmé par le prompt)
+
+Wizard onboarding, paywall, onglets programme/invités/ma page, page publique `/e/:slug`, shell app.
