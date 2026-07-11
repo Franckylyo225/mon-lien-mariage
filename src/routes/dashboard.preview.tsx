@@ -9,6 +9,13 @@ import { usePageChrome } from "@/lib/page-chrome";
 import { useAutosaveContext } from "@/lib/autosave-context";
 import { cn } from "@/lib/utils";
 import { applyThemeVars, resolveTheme } from "@/lib/wedding-theme";
+import { ParticleCanvas } from "@/components/particles/ParticleCanvas";
+import type {
+  ParticleColorMode,
+  ParticleIntensity,
+  ParticleSize,
+  ParticleSlug,
+} from "@/lib/particles/types";
 import {
   PageStatusPill,
   type PageStatus,
