@@ -31,6 +31,11 @@ interface PhotoGridSheetProps {
   onImagesChange: (next: string[]) => void;
   maxImages?: number;
   extraControls?: React.ReactNode;
+  /** Optional display-mode toggle (used by the gallery to pick grid vs marquee). */
+  displayField?: {
+    value: "grid" | "marquee";
+    onChange: (v: "grid" | "marquee") => void;
+  };
 }
 
 export function PhotoGridSheet({
