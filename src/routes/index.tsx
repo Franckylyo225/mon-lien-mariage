@@ -21,10 +21,23 @@ export const Route = createFileRoute("/")({
         content:
           "20+ modèles romantiques, RSVP automatiques, tableau de bord privé. Un seul lien à partager. Sans engagement jusqu'au paiement.",
       },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "/" },
+      { property: "og:site_name", content: "MonMariage.ci" },
+      { property: "og:locale", content: "fr_FR" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "MonMariage.ci — Célébrons votre union" },
+      {
+        name: "twitter:description",
+        content:
+          "Invitations digitales, RSVP en direct et tableau de bord — pensé pour les mariés ivoiriens.",
+      },
     ],
+    links: [{ rel: "canonical", href: "/" }],
   }),
   component: Landing,
 });
+
 
 /* -------------------------------------------------------------------------- */
 /*                                    PAGE                                    */

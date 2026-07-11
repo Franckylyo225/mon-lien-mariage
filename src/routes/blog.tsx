@@ -16,10 +16,22 @@ export const Route = createFileRoute("/blog")({
         content:
           "Idées, tendances et guides pratiques pour préparer votre mariage sereinement.",
       },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "/blog" },
+      { property: "og:site_name", content: "MonMariage.ci" },
+      { property: "og:locale", content: "fr_FR" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Blog — MonMariage.ci" },
+      {
+        name: "twitter:description",
+        content: "Conseils et inspirations pour un mariage inoubliable.",
+      },
     ],
+    links: [{ rel: "canonical", href: "/blog" }],
   }),
   component: Blog,
 });
+
 
 const POSTS = [
   {
