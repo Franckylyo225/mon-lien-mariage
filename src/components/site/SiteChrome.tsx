@@ -42,7 +42,7 @@ export function SiteHeader() {
           aria-label="MonInvit.com — accueil"
           className="font-[family-name:var(--font-display)] text-xl italic text-[#2b1a14] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c17c74] focus-visible:ring-offset-2 focus-visible:ring-offset-[#fdf7f3] rounded-sm"
         >
-          MonInvit<span className="text-[#c17c74]">.ci</span>
+          MonInvit<span className="text-[#c17c74]">.com</span>
         </Link>
 
         {/* Desktop nav */}
@@ -232,7 +232,7 @@ export function SiteFooter() {
               aria-label="MonInvit.com — accueil"
               className="inline-flex items-baseline font-[family-name:var(--font-display)] text-2xl italic"
             >
-              MonInvit<span className="text-[#e8a89e]">.ci</span>
+              MonInvit<span className="text-[#e8a89e]">.com</span>
             </Link>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-[#fdf7f3]/70">
               Des invitations digitales élégantes, pensées avec amour pour les mariés
@@ -263,10 +263,10 @@ export function SiteFooter() {
             </FooterLink>
             <li>
               <a
-                href="mailto:contact@moninvit.ci"
+                href="mailto:contact@moninvit.com"
                 className="text-sm text-[#fdf7f3]/70 transition hover:text-[#e8a89e]"
               >
-                contact@moninvit.ci
+                contact@moninvit.com
               </a>
             </li>
           </FooterColumn>

@@ -120,10 +120,10 @@ function TermsPage() {
           <p>
             Une question ? Écrivez-nous à{" "}
             <a
-              href="mailto:contact@moninvit.ci"
+              href="mailto:contact@moninvit.com"
               className="font-medium text-[#c17c74] underline underline-offset-2"
             >
-              contact@moninvit.ci
+              contact@moninvit.com
             </a>
             .
           </p>
