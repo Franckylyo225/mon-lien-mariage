@@ -121,11 +121,9 @@ function EventsPage() {
             </p>
           </div>
         </button>
-
-      </main>
     </div>
-
   );
+
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
