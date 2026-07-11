@@ -161,8 +161,10 @@ function Testimonials() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 pb-16">
+      <section className="mx-auto max-w-6xl px-5 pb-16" aria-labelledby="avis-heading">
+        <h2 id="avis-heading" className="sr-only">Avis des couples</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
           {REVIEWS.map((r) => {
             const t = TONES[r.tone];
             return (
