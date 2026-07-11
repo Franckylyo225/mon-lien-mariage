@@ -62,7 +62,7 @@ function PublishPage() {
       toast.error("Aucun événement actif. Rechargez la page.");
       return;
     }
-    setLoading(true);
+    setPayLoading(true);
     try {
       const { checkoutUrl } = await initPayment({
         data: {
@@ -90,7 +90,7 @@ function PublishPage() {
           ? e.message
           : "Le paiement n'a pas abouti. Réessayez.",
       );
-      setLoading(false);
+      setPayLoading(false);
     }
   };
 
@@ -231,11 +231,11 @@ function PublishPage() {
         <div className="mb-2.5">
           <button
             onClick={handlePay}
-            disabled={loading || !weddingId}
+            disabled={payLoading || !weddingId}
             className="inline-flex w-full items-center justify-center gap-2 rounded-[14px] px-4 py-4 text-[15px] font-medium transition disabled:opacity-70"
             style={{ background: "#4B1528", color: "#FBEAF0" }}
           >
-            {loading ? (
+            {payLoading ? (
               <>
                 <Loader2 className="size-4 animate-spin" strokeWidth={2} />
                 Redirection vers le paiement…
