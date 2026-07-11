@@ -1121,6 +1121,10 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       couple,
       ceremonies,
       guests,
+      weddings,
+      activeWeddingId,
+      switchActiveWedding,
+      createNewWedding,
       signOut,
       setOnboardingStep,
       updateCouple,
@@ -1134,6 +1138,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       publish,
       unpublish,
     ],
+
   );
 
   return <WeddingContext.Provider value={value}>{children}</WeddingContext.Provider>;
