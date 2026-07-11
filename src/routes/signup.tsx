@@ -1,6 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  PasswordChecklist,
+  validatePassword,
+} from "@/components/auth/password-strength";
 
 export const Route = createFileRoute("/signup")({
   head: () => ({
@@ -20,11 +24,16 @@ function SignupPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const pwCheck = useMemo(() => validatePassword(password), [password]);
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     if (!email.includes("@")) return setError("Adresse email invalide.");
-    if (password.length < 6) return setError("Au moins 6 caractères.");
+    if (!pwCheck.valid)
+      return setError(
+        "Votre mot de passe ne respecte pas tous les critères ci-dessous.",
+      );
     if (!cgu) return setError("Merci d'accepter les CGU.");
     setLoading(true);
     const emailRedirectTo =
@@ -71,13 +80,16 @@ function SignupPage() {
           <input
             type="password"
             required
-            minLength={6}
+            minLength={8}
+            maxLength={128}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className={inputClass}
-            placeholder="Au moins 6 caractères"
+            placeholder="8 caractères min., 1 majuscule, 1 chiffre"
+            autoComplete="new-password"
           />
         </Field>
+        <PasswordChecklist password={password} />
         <label className="flex items-start gap-2 text-xs text-[#6b4a3e]">
           <input
             type="checkbox"

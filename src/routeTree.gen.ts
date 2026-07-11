@@ -12,11 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermesEtConditionsRouteImport } from './routes/termes-et-conditions'
 import { Route as TemoignagesRouteImport } from './routes/temoignages'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PublishRouteImport } from './routes/publish'
 import { Route as PolitiqueDeConfidentialiteRouteImport } from './routes/politique-de-confidentialite'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as InvitationRouteImport } from './routes/invitation'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CommentCaMarcheRouteImport } from './routes/comment-ca-marche'
 import { Route as BlogRouteImport } from './routes/blog'
@@ -61,6 +63,11 @@ const SignupRoute = SignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PublishRoute = PublishRouteImport.update({
   id: '/publish',
   path: '/publish',
@@ -85,6 +92,11 @@ const LoginRoute = LoginRouteImport.update({
 const InvitationRoute = InvitationRouteImport.update({
   id: '/invitation',
   path: '/invitation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -234,11 +246,13 @@ export interface FileRoutesByFullPath {
   '/blog': typeof BlogRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRouteWithChildren
   '/politique-de-confidentialite': typeof PolitiqueDeConfidentialiteRoute
   '/publish': typeof PublishRouteWithChildren
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
@@ -271,11 +285,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/blog': typeof BlogRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRouteWithChildren
   '/politique-de-confidentialite': typeof PolitiqueDeConfidentialiteRoute
   '/publish': typeof PublishRouteWithChildren
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
@@ -310,11 +326,13 @@ export interface FileRoutesById {
   '/blog': typeof BlogRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRouteWithChildren
   '/politique-de-confidentialite': typeof PolitiqueDeConfidentialiteRoute
   '/publish': typeof PublishRouteWithChildren
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
@@ -350,11 +368,13 @@ export interface FileRouteTypes {
     | '/blog'
     | '/comment-ca-marche'
     | '/dashboard'
+    | '/forgot-password'
     | '/invitation'
     | '/login'
     | '/onboarding'
     | '/politique-de-confidentialite'
     | '/publish'
+    | '/reset-password'
     | '/signup'
     | '/temoignages'
     | '/termes-et-conditions'
@@ -387,11 +407,13 @@ export interface FileRouteTypes {
     | '/'
     | '/blog'
     | '/comment-ca-marche'
+    | '/forgot-password'
     | '/invitation'
     | '/login'
     | '/onboarding'
     | '/politique-de-confidentialite'
     | '/publish'
+    | '/reset-password'
     | '/signup'
     | '/temoignages'
     | '/termes-et-conditions'
@@ -425,11 +447,13 @@ export interface FileRouteTypes {
     | '/blog'
     | '/comment-ca-marche'
     | '/dashboard'
+    | '/forgot-password'
     | '/invitation'
     | '/login'
     | '/onboarding'
     | '/politique-de-confidentialite'
     | '/publish'
+    | '/reset-password'
     | '/signup'
     | '/temoignages'
     | '/termes-et-conditions'
@@ -464,11 +488,13 @@ export interface RootRouteChildren {
   BlogRoute: typeof BlogRoute
   CommentCaMarcheRoute: typeof CommentCaMarcheRoute
   DashboardRoute: typeof DashboardRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   InvitationRoute: typeof InvitationRoute
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRouteWithChildren
   PolitiqueDeConfidentialiteRoute: typeof PolitiqueDeConfidentialiteRoute
   PublishRoute: typeof PublishRouteWithChildren
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
   TemoignagesRoute: typeof TemoignagesRoute
   TermesEtConditionsRoute: typeof TermesEtConditionsRoute
@@ -501,6 +527,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/publish': {
@@ -536,6 +569,13 @@ declare module '@tanstack/react-router' {
       path: '/invitation'
       fullPath: '/invitation'
       preLoaderRoute: typeof InvitationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -816,11 +856,13 @@ const rootRouteChildren: RootRouteChildren = {
   BlogRoute: BlogRoute,
   CommentCaMarcheRoute: CommentCaMarcheRoute,
   DashboardRoute: DashboardRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   InvitationRoute: InvitationRoute,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRouteWithChildren,
   PolitiqueDeConfidentialiteRoute: PolitiqueDeConfidentialiteRoute,
   PublishRoute: PublishRouteWithChildren,
+  ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
   TemoignagesRoute: TemoignagesRoute,
   TermesEtConditionsRoute: TermesEtConditionsRoute,
