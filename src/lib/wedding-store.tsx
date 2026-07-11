@@ -206,6 +206,16 @@ export interface Account {
   onboardingStep: 0 | 1 | 2 | 3 | 4;
 }
 
+export interface WeddingSummary {
+  id: string;
+  brideName: string;
+  groomName: string;
+  weddingDate: string | null;
+  eventType: EventType;
+  isPublished: boolean;
+  slug: string | null;
+}
+
 interface WeddingState {
   weddingId: string | null;
   loading: boolean;
@@ -213,6 +223,10 @@ interface WeddingState {
   couple: Couple;
   ceremonies: Ceremony[];
   guests: Guest[];
+  weddings: WeddingSummary[];
+  activeWeddingId: string | null;
+  switchActiveWedding: (id: string) => Promise<void>;
+  createNewWedding: () => Promise<string | null>;
   signOut: () => Promise<void>;
   setOnboardingStep: (n: Account["onboardingStep"]) => Promise<void>;
   updateCouple: (patch: Partial<Couple>) => Promise<void>;
@@ -226,6 +240,7 @@ interface WeddingState {
   publish: (opts?: { slug?: string; envelopeAnimation?: boolean }) => Promise<void>;
   unpublish: () => Promise<void>;
 }
+
 
 const WeddingContext = createContext<WeddingState | null>(null);
 
