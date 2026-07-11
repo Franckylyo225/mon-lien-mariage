@@ -51,15 +51,26 @@ export function PageActionBar({
           ) : isPublishing ? (
             <span aria-hidden />
           ) : (
-            <button
-              type="button"
-              onClick={onEditToggle}
-              aria-label="Passer en mode édition"
-              className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-transparent px-3 py-1.5 text-[11px] font-medium text-foreground transition hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:px-4 sm:py-2 sm:text-[13px]"
-            >
-              <IconEdit size={14} strokeWidth={2} />
-              <span>Modifier</span>
-            </button>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={onEditToggle}
+                aria-label="Passer en mode édition"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-transparent px-3 py-1.5 text-[11px] font-medium text-foreground transition hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:px-4 sm:py-2 sm:text-[13px]"
+              >
+                <IconEdit size={14} strokeWidth={2} />
+                <span>Modifier</span>
+              </button>
+              <button
+                type="button"
+                onClick={onView}
+                aria-label="Voir la page en plein écran comme un visiteur"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-transparent px-3 py-1.5 text-[11px] font-medium text-foreground transition hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:px-4 sm:py-2 sm:text-[13px]"
+              >
+                <IconEye size={14} strokeWidth={2} />
+                <span>Vue</span>
+              </button>
+            </div>
           )}
         </div>
 
