@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
-  IconArrowLeft,
   IconChevronRight,
   IconPlus,
 } from "@tabler/icons-react";
+
 
 import {
   useWedding,
@@ -77,30 +77,8 @@ function EventsPage() {
 
 
   return (
-    <div className="min-h-screen bg-background">
-      <header
-        className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/95 px-2 py-3 backdrop-blur"
-        style={{ paddingTop: "calc(env(safe-area-inset-top) + 12px)" }}
-      >
-        <button
-          onClick={() => navigate({ to: "/dashboard" })}
-          aria-label="Retour"
-          className="grid size-9 place-items-center rounded-full text-muted-foreground transition active:bg-secondary"
-        >
-          <IconArrowLeft size={18} strokeWidth={1.75} />
-        </button>
-        <h1 className="font-serif text-[15px] italic">Mes événements</h1>
-        <button
-          onClick={handleCreate}
-          aria-label="Nouvel événement"
-          className="grid size-9 place-items-center rounded-full text-foreground transition active:bg-secondary"
-        >
-          <IconPlus size={18} strokeWidth={1.75} />
-        </button>
+    <div className="space-y-6 py-2">
 
-      </header>
-
-      <main className="mx-auto max-w-xl space-y-6 px-4 py-6">
         {upcoming.length > 0 ? (
           <Section title="En cours">
             {upcoming.map((w) => (
@@ -143,11 +121,9 @@ function EventsPage() {
             </p>
           </div>
         </button>
-
-      </main>
     </div>
-
   );
+
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
