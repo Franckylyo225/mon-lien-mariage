@@ -1096,6 +1096,10 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       couple,
       ceremonies,
       guests,
+      weddings,
+      activeWeddingId,
+      switchActiveWedding,
+      createNewWedding,
       signOut,
       setOnboardingStep,
       updateCouple,
@@ -1104,6 +1108,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       removeCeremony,
       addGuest,
       updateGuest,
+
       removeGuest,
       setRsvp,
       publish,
