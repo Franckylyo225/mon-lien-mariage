@@ -40,6 +40,8 @@ export function SideDrawer({
   email,
   initials,
   onSignOut,
+  showEventsLink = false,
+
 }: SideDrawerProps) {
   useEffect(() => {
     if (!open) return;
