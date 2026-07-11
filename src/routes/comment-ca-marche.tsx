@@ -87,8 +87,10 @@ function HowItWorks() {
       }
       intro="Nous avons pensé chaque étape pour que vous puissiez tout faire depuis votre téléphone, sans compétence technique."
     >
-      <section className="mx-auto max-w-5xl px-5 py-12">
+      <section className="mx-auto max-w-5xl px-5 py-12" aria-labelledby="etapes-heading">
+        <h2 id="etapes-heading" className="sr-only">Les 4 étapes</h2>
         <ol className="grid gap-6 md:grid-cols-2">
+
           {STEPS.map((s) => (
             <li
               key={s.n}
