@@ -17,6 +17,7 @@ import { Route as InvitationRouteImport } from './routes/invitation'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as ThemeThumbSlugRouteImport } from './routes/theme-thumb.$slug'
 import { Route as PublishSuccessRouteImport } from './routes/publish.success'
 import { Route as OnboardingThemeRouteImport } from './routes/onboarding.theme'
 import { Route as OnboardingPrenomsRouteImport } from './routes/onboarding.prenoms'
@@ -73,6 +74,11 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => DashboardRoute,
+} as any)
+const ThemeThumbSlugRoute = ThemeThumbSlugRouteImport.update({
+  id: '/theme-thumb/$slug',
+  path: '/theme-thumb/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const PublishSuccessRoute = PublishSuccessRouteImport.update({
   id: '/success',
@@ -176,6 +182,7 @@ export interface FileRoutesByFullPath {
   '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
   '/publish/success': typeof PublishSuccessRoute
+  '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
@@ -201,6 +208,7 @@ export interface FileRoutesByTo {
   '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
   '/publish/success': typeof PublishSuccessRoute
+  '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
@@ -228,6 +236,7 @@ export interface FileRoutesById {
   '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
   '/publish/success': typeof PublishSuccessRoute
+  '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
@@ -256,6 +265,7 @@ export interface FileRouteTypes {
     | '/onboarding/prenoms'
     | '/onboarding/theme'
     | '/publish/success'
+    | '/theme-thumb/$slug'
     | '/dashboard/'
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
@@ -281,6 +291,7 @@ export interface FileRouteTypes {
     | '/onboarding/prenoms'
     | '/onboarding/theme'
     | '/publish/success'
+    | '/theme-thumb/$slug'
     | '/dashboard'
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
@@ -307,6 +318,7 @@ export interface FileRouteTypes {
     | '/onboarding/prenoms'
     | '/onboarding/theme'
     | '/publish/success'
+    | '/theme-thumb/$slug'
     | '/dashboard/'
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
@@ -322,6 +334,7 @@ export interface RootRouteChildren {
   PublishRoute: typeof PublishRouteWithChildren
   SignupRoute: typeof SignupRoute
   ESlugRoute: typeof ESlugRoute
+  ThemeThumbSlugRoute: typeof ThemeThumbSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -381,6 +394,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/'
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
+    }
+    '/theme-thumb/$slug': {
+      id: '/theme-thumb/$slug'
+      path: '/theme-thumb/$slug'
+      fullPath: '/theme-thumb/$slug'
+      preLoaderRoute: typeof ThemeThumbSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/publish/success': {
       id: '/publish/success'
@@ -576,6 +596,7 @@ const rootRouteChildren: RootRouteChildren = {
   PublishRoute: PublishRouteWithChildren,
   SignupRoute: SignupRoute,
   ESlugRoute: ESlugRoute,
+  ThemeThumbSlugRoute: ThemeThumbSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

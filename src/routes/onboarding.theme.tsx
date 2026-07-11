@@ -1,9 +1,16 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { IconEye, IconX, IconCheck } from "@tabler/icons-react";
+import { IconX, IconCheck } from "@tabler/icons-react";
 import { useWedding, type ThemeId } from "@/lib/wedding-store";
-import { THEMES, resolveTheme, themeCssString } from "@/lib/wedding-theme";
+import {
+  THEMES,
+  THEME_FAMILIES,
+  resolveTheme,
+  themeCssString,
+  type ThemeFamilyId,
+} from "@/lib/wedding-theme";
 import { componentForTheme } from "@/components/invitation-templates";
+import { ThemeThumbnail } from "@/components/editor/ThemeThumbnail";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/onboarding/theme")({
@@ -11,28 +18,14 @@ export const Route = createFileRoute("/onboarding/theme")({
   component: StepTheme,
 });
 
-const FEATURED: ThemeId[] = [
-  "rose-elegance",
-  "ivoire-epure",
-  "or-antique",
-  "vert-sauge",
-  "wax-dore",
-  "bleu-nuit",
-];
-
-const THEME_SWATCH: Record<string, { bg: string; fg: string }> = {
-  "rose-elegance": { bg: "#F5EAEA", fg: "#993556" },
-  "ivoire-epure": { bg: "#F7F3EC", fg: "#1A1A1A" },
-  "or-antique": { bg: "#F5EFDC", fg: "#A08234" },
-  "vert-sauge": { bg: "#E7EDE4", fg: "#5C6E4E" },
-  "wax-dore": { bg: "#F4E9CE", fg: "#8C5A1D" },
-  "bleu-nuit": { bg: "#DDE3EE", fg: "#1E2A4A" },
-};
-
 function StepTheme() {
   const { couple, ceremonies, updateCouple, setOnboardingStep } = useWedding();
   const navigate = useNavigate();
-  const [selected, setSelected] = useState<ThemeId>(couple.theme ?? "rose-elegance");
+  const initialTheme: ThemeId = (couple.theme as ThemeId) ?? "rose-elegance";
+  const [selected, setSelected] = useState<ThemeId>(initialTheme);
+  const [family, setFamily] = useState<ThemeFamilyId>(
+    THEMES[initialTheme]?.family ?? "classiques",
+  );
   const [previewOpen, setPreviewOpen] = useState(false);
 
   const confirmChoice = async () => {
@@ -41,63 +34,94 @@ function StepTheme() {
     navigate({ to: "/dashboard" });
   };
 
+  const familyDef =
+    THEME_FAMILIES.find((f) => f.id === family) ?? THEME_FAMILIES[0];
+
+  const onThemeTap = (slug: ThemeId) => {
+    if (slug === selected) {
+      // Second tap on the already-selected theme: zoom to live full-screen preview.
+      setPreviewOpen(true);
+      return;
+    }
+    setSelected(slug);
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div>
         <h1 className="font-serif text-4xl italic">Choisissez un thème</h1>
         <p className="mt-3 text-sm text-muted-foreground">
-          Vous pourrez en changer à tout moment dans l'éditeur.
+          Touchez un thème pour le sélectionner, touchez à nouveau pour
+          l'agrandir. Vous pourrez en changer à tout moment.
         </p>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
-        {FEATURED.map((slug) => {
+      {/* Sticky family chips */}
+      <div className="-mx-4 overflow-x-auto px-4">
+        <div className="flex gap-2 pb-1">
+          {THEME_FAMILIES.map((f) => {
+            const active = f.id === family;
+            return (
+              <button
+                key={f.id}
+                type="button"
+                onClick={() => setFamily(f.id)}
+                className={cn(
+                  "shrink-0 rounded-full border px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest transition",
+                  active
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border bg-background opacity-70",
+                )}
+              >
+                {f.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Grid of themes in the active family */}
+      <div className="grid grid-cols-3 gap-2.5">
+        {familyDef.themes.map((slug) => {
           const t = THEMES[slug];
-          const sw = THEME_SWATCH[slug] ?? { bg: "#F5F5F0", fg: "#333" };
           const active = selected === slug;
           return (
             <button
               key={slug}
               type="button"
-              onClick={() => setSelected(slug)}
+              onClick={() => onThemeTap(slug)}
+              aria-pressed={active}
               className={cn(
-                "flex flex-col overflow-hidden rounded-xl border bg-card text-left transition",
-                active ? "border-[1.5px] border-foreground" : "border-border",
+                "group relative flex flex-col overflow-hidden rounded-2xl border-2 text-left transition",
+                active
+                  ? "shadow-md"
+                  : "border-border hover:border-foreground/30",
               )}
+              style={active ? { borderColor: t.defaultAccent } : undefined}
             >
-              <div
-                className="grid aspect-[4/5] place-items-center"
-                style={{ backgroundColor: sw.bg }}
-              >
-                <span
-                  className="font-serif text-3xl italic"
-                  style={{ color: sw.fg, fontFamily: t.fontHeading }}
-                >
-                  Aa
+              <ThemeThumbnail theme={slug} />
+              <div className="flex flex-col gap-0.5 border-t border-border bg-background px-2 py-1.5">
+                <div className="flex items-center justify-between gap-1">
+                  <span className="truncate text-[10px] font-medium">
+                    {t.name}
+                  </span>
+                  {active && (
+                    <span
+                      className="grid size-3.5 shrink-0 place-items-center rounded-full text-white"
+                      style={{ background: t.defaultAccent }}
+                    >
+                      <IconCheck size={8} strokeWidth={3} />
+                    </span>
+                  )}
+                </div>
+                <span className="truncate text-[8px] font-mono uppercase tracking-widest opacity-50">
+                  {t.mood}
                 </span>
-              </div>
-              <div className="px-2 py-1.5">
-                <p className="truncate text-[9px] font-medium uppercase tracking-wider">
-                  {t.name}
-                </p>
               </div>
             </button>
           );
         })}
       </div>
-
-      <p className="text-[9px] text-muted-foreground">
-        +9 autres thèmes disponibles dans l'éditeur
-      </p>
-
-      <button
-        type="button"
-        onClick={() => setPreviewOpen(true)}
-        className="flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-card px-4 py-3 text-sm font-medium transition hover:bg-secondary/40"
-      >
-        <IconEye size={16} />
-        Aperçu plein écran
-      </button>
 
       <button
         onClick={confirmChoice}
@@ -144,7 +168,6 @@ function ThemePreviewOverlay({
   onClose: () => void;
   onConfirm: () => void;
 }) {
-  // Lock body scroll while overlay open + esc to close
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -173,7 +196,6 @@ function ThemePreviewOverlay({
   const resolved = useMemo(() => resolveTheme(previewCouple), [previewCouple]);
   const Template = componentForTheme(themeSlug);
   const themeName = THEMES[themeSlug].name;
-
   const themedCouple = { ...previewCouple, accent: resolved.accent };
 
   return (
@@ -183,7 +205,6 @@ function ThemePreviewOverlay({
       aria-modal="true"
       aria-label={`Aperçu du thème ${themeName}`}
     >
-      {/* Header */}
       <div className="flex shrink-0 items-center gap-2 border-b border-border bg-background/95 px-4 py-3 backdrop-blur">
         <button
           type="button"
@@ -202,27 +223,12 @@ function ThemePreviewOverlay({
         <div className="size-9 shrink-0" aria-hidden />
       </div>
 
-      {/* Scrollable preview surface */}
-      <div
-        className="flex-1 overflow-y-auto overscroll-contain animate-in slide-in-from-bottom-4 duration-300"
-        style={
-          {
-            [`--wedding-preview`]: "1",
-          } as React.CSSProperties
-        }
-      >
-        <div style={{ cssText: themeCssString(resolved) } as never}>
-          <div style={parseCssText(themeCssString(resolved))}>
-            <Template
-              couple={themedCouple}
-              ceremonies={ceremonies}
-              rsvpSlot={null}
-            />
-          </div>
+      <div className="flex-1 overflow-y-auto overscroll-contain animate-in slide-in-from-bottom-4 duration-300">
+        <div style={parseCssText(themeCssString(resolved))}>
+          <Template couple={themedCouple} ceremonies={ceremonies} rsvpSlot={null} />
         </div>
       </div>
 
-      {/* Sticky footer CTA */}
       <div className="shrink-0 border-t border-border bg-background/95 px-4 py-3 backdrop-blur [padding-bottom:calc(env(safe-area-inset-bottom)+0.75rem)]">
         <button
           type="button"
@@ -237,7 +243,6 @@ function ThemePreviewOverlay({
   );
 }
 
-// Minimal couple shape for template rendering during preview.
 function emptyPreviewCouple() {
   return {
     brideName: "",
@@ -258,7 +263,6 @@ function emptyPreviewCouple() {
   };
 }
 
-// Convert "k:v;k:v" into a React style object for scoped CSS-var injection.
 function parseCssText(css: string): React.CSSProperties {
   const style: Record<string, string> = {};
   for (const decl of css.split(";")) {

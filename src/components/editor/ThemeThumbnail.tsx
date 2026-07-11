@@ -1,4 +1,5 @@
 import { THEMES, BACKGROUNDS, type BackgroundSlug } from "@/lib/wedding-theme";
+import { THEME_THUMBNAIL_URL } from "@/lib/theme-thumbnails";
 import type { ThemeId } from "@/lib/wedding-store";
 
 interface ThemeThumbnailProps {
@@ -12,15 +13,41 @@ function bgHex(slug: BackgroundSlug): string {
 }
 
 /**
- * Live HTML/CSS + inline SVG preview of a theme. Each theme carries a
- * distinctive ornament that reflects its family signature. Fonts are the
- * real theme fonts, colors are the theme defaults.
+ * Real screenshot preview of the theme (captured from the actual
+ * invitation template). Falls back to an inline SVG ornament if the
+ * PNG asset is missing for some reason.
  */
 export function ThemeThumbnail({ theme, className }: ThemeThumbnailProps) {
   const t = THEMES[theme];
   const bg = bgHex(t.defaultBg);
-  const accent = t.defaultAccent;
+  const src = THEME_THUMBNAIL_URL[theme];
 
+  if (src) {
+    return (
+      <div
+        className={
+          "relative aspect-[3/4] w-full overflow-hidden " + (className ?? "")
+        }
+        style={{ background: bg }}
+      >
+        <img
+          src={src}
+          alt={`Aperçu du thème ${t.name}`}
+          loading="lazy"
+          decoding="async"
+          className="absolute inset-0 h-full w-full object-cover object-top"
+        />
+      </div>
+    );
+  }
+
+  return <FallbackThumb theme={theme} className={className} />;
+}
+
+function FallbackThumb({ theme, className }: ThemeThumbnailProps) {
+  const t = THEMES[theme];
+  const bg = bgHex(t.defaultBg);
+  const accent = t.defaultAccent;
   return (
     <div
       className={
@@ -30,38 +57,12 @@ export function ThemeThumbnail({ theme, className }: ThemeThumbnailProps) {
       style={{ background: bg }}
     >
       <Ornament theme={theme} accent={accent} />
-
       <div className="relative z-10 flex flex-col items-center">
-        <p
-          className="mb-1 font-mono text-[7px] uppercase tracking-[0.25em]"
-          style={{ color: accent }}
-        >
-          Save the date
-        </p>
         <p
           className="text-[13px] leading-[1.05] italic"
           style={{ fontFamily: t.fontHeading, color: "#1A1A1A" }}
         >
-          Aïcha
-          <br />
-          <span
-            className="inline-block px-1 not-italic"
-            style={{ fontFamily: t.fontHeading, color: accent }}
-          >
-            &amp;
-          </span>
-          <br />
-          Kouamé
-        </p>
-        <span
-          className="mt-1.5 block h-px w-6"
-          style={{ background: accent }}
-        />
-        <p
-          className="mt-1 font-mono text-[6px] uppercase tracking-[0.3em]"
-          style={{ color: accent, opacity: 0.7 }}
-        >
-          14.02.27
+          Aïcha <span style={{ color: accent }}>&amp;</span> Kouamé
         </p>
       </div>
     </div>
