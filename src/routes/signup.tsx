@@ -102,6 +102,7 @@ function SignupPage() {
           J'accepte les conditions générales d'utilisation.
         </label>
         {error ? <p className="text-xs text-destructive">{error}</p> : null}
+        {info ? <p className="rounded-md border border-[#c17c74]/30 bg-[#c17c74]/10 px-3 py-2 text-xs text-[#7a2f3a]">{info}</p> : null}
         <button
           type="submit"
           disabled={loading}
