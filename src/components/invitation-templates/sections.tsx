@@ -890,6 +890,75 @@ function GridLayout({
   );
 }
 
+function MarqueeLayout({
+  images,
+  onOpen,
+}: {
+  images: string[];
+  onOpen: (i: number) => void;
+}) {
+  // Split into two rows. The second row scrolls in the opposite direction.
+  // Each row is duplicated so translateX(-50%) loops seamlessly.
+  const mid = Math.ceil(images.length / 2);
+  const rowA = images.slice(0, mid);
+  const rowB = images.slice(mid).length > 0 ? images.slice(mid) : images;
+
+  return (
+    <div className="-mx-4 space-y-3 overflow-hidden sm:-mx-6">
+      <MarqueeRow images={rowA} direction="left" onOpen={(i) => onOpen(i)} />
+      <MarqueeRow
+        images={rowB}
+        direction="right"
+        onOpen={(i) => onOpen(i + mid)}
+      />
+    </div>
+  );
+}
+
+function MarqueeRow({
+  images,
+  direction,
+  onOpen,
+}: {
+  images: string[];
+  direction: "left" | "right";
+  onOpen: (i: number) => void;
+}) {
+  if (images.length === 0) return null;
+  // Duplicate the row so translateX(-50%) creates a seamless loop.
+  const track = [...images, ...images];
+  const animClass =
+    direction === "left" ? "animate-marquee-left" : "animate-marquee-right";
+  return (
+    <div className="group relative">
+      <div
+        className={
+          "flex w-max shrink-0 gap-3 will-change-transform " + animClass
+        }
+      >
+        {track.map((src, i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => onOpen(i % images.length)}
+            aria-label={`Agrandir l'image ${(i % images.length) + 1}`}
+            className="relative block shrink-0 overflow-hidden rounded-2xl shadow-sm ring-1 ring-black/5 transition active:scale-[0.98]"
+          >
+            <img
+              src={src}
+              alt=""
+              loading="lazy"
+              draggable={false}
+              className="h-40 w-40 object-cover sm:h-48 sm:w-48"
+            />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+
 function MasonryLayout({
   images,
   onOpen,
