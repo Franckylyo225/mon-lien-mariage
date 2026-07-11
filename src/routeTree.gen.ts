@@ -9,9 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermesEtConditionsRouteImport } from './routes/termes-et-conditions'
 import { Route as TemoignagesRouteImport } from './routes/temoignages'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as PublishRouteImport } from './routes/publish'
+import { Route as PolitiqueDeConfidentialiteRouteImport } from './routes/politique-de-confidentialite'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as InvitationRouteImport } from './routes/invitation'
@@ -39,6 +41,11 @@ import { Route as DashboardGuestsIndexRouteImport } from './routes/dashboard.gue
 import { Route as DashboardGuestsNewRouteImport } from './routes/dashboard.guests.new'
 import { Route as DashboardCeremoniesIdRouteImport } from './routes/dashboard.ceremonies.$id'
 
+const TermesEtConditionsRoute = TermesEtConditionsRouteImport.update({
+  id: '/termes-et-conditions',
+  path: '/termes-et-conditions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TemoignagesRoute = TemoignagesRouteImport.update({
   id: '/temoignages',
   path: '/temoignages',
@@ -54,6 +61,12 @@ const PublishRoute = PublishRouteImport.update({
   path: '/publish',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PolitiqueDeConfidentialiteRoute =
+  PolitiqueDeConfidentialiteRouteImport.update({
+    id: '/politique-de-confidentialite',
+    path: '/politique-de-confidentialite',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
@@ -193,9 +206,11 @@ export interface FileRoutesByFullPath {
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRouteWithChildren
+  '/politique-de-confidentialite': typeof PolitiqueDeConfidentialiteRoute
   '/publish': typeof PublishRouteWithChildren
   '/signup': typeof SignupRoute
   '/temoignages': typeof TemoignagesRoute
+  '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/events': typeof DashboardEventsRoute
   '/dashboard/invites': typeof DashboardInvitesRoute
@@ -223,9 +238,11 @@ export interface FileRoutesByTo {
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRouteWithChildren
+  '/politique-de-confidentialite': typeof PolitiqueDeConfidentialiteRoute
   '/publish': typeof PublishRouteWithChildren
   '/signup': typeof SignupRoute
   '/temoignages': typeof TemoignagesRoute
+  '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/events': typeof DashboardEventsRoute
   '/dashboard/invites': typeof DashboardInvitesRoute
@@ -255,9 +272,11 @@ export interface FileRoutesById {
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRouteWithChildren
+  '/politique-de-confidentialite': typeof PolitiqueDeConfidentialiteRoute
   '/publish': typeof PublishRouteWithChildren
   '/signup': typeof SignupRoute
   '/temoignages': typeof TemoignagesRoute
+  '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/events': typeof DashboardEventsRoute
   '/dashboard/invites': typeof DashboardInvitesRoute
@@ -288,9 +307,11 @@ export interface FileRouteTypes {
     | '/invitation'
     | '/login'
     | '/onboarding'
+    | '/politique-de-confidentialite'
     | '/publish'
     | '/signup'
     | '/temoignages'
+    | '/termes-et-conditions'
     | '/dashboard/ceremonies'
     | '/dashboard/events'
     | '/dashboard/invites'
@@ -318,9 +339,11 @@ export interface FileRouteTypes {
     | '/invitation'
     | '/login'
     | '/onboarding'
+    | '/politique-de-confidentialite'
     | '/publish'
     | '/signup'
     | '/temoignages'
+    | '/termes-et-conditions'
     | '/dashboard/ceremonies'
     | '/dashboard/events'
     | '/dashboard/invites'
@@ -349,9 +372,11 @@ export interface FileRouteTypes {
     | '/invitation'
     | '/login'
     | '/onboarding'
+    | '/politique-de-confidentialite'
     | '/publish'
     | '/signup'
     | '/temoignages'
+    | '/termes-et-conditions'
     | '/dashboard/ceremonies'
     | '/dashboard/events'
     | '/dashboard/invites'
@@ -381,15 +406,24 @@ export interface RootRouteChildren {
   InvitationRoute: typeof InvitationRoute
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRouteWithChildren
+  PolitiqueDeConfidentialiteRoute: typeof PolitiqueDeConfidentialiteRoute
   PublishRoute: typeof PublishRouteWithChildren
   SignupRoute: typeof SignupRoute
   TemoignagesRoute: typeof TemoignagesRoute
+  TermesEtConditionsRoute: typeof TermesEtConditionsRoute
   ESlugRoute: typeof ESlugRoute
   ThemeThumbSlugRoute: typeof ThemeThumbSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/termes-et-conditions': {
+      id: '/termes-et-conditions'
+      path: '/termes-et-conditions'
+      fullPath: '/termes-et-conditions'
+      preLoaderRoute: typeof TermesEtConditionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/temoignages': {
       id: '/temoignages'
       path: '/temoignages'
@@ -409,6 +443,13 @@ declare module '@tanstack/react-router' {
       path: '/publish'
       fullPath: '/publish'
       preLoaderRoute: typeof PublishRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/politique-de-confidentialite': {
+      id: '/politique-de-confidentialite'
+      path: '/politique-de-confidentialite'
+      fullPath: '/politique-de-confidentialite'
+      preLoaderRoute: typeof PolitiqueDeConfidentialiteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -676,9 +717,11 @@ const rootRouteChildren: RootRouteChildren = {
   InvitationRoute: InvitationRoute,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRouteWithChildren,
+  PolitiqueDeConfidentialiteRoute: PolitiqueDeConfidentialiteRoute,
   PublishRoute: PublishRouteWithChildren,
   SignupRoute: SignupRoute,
   TemoignagesRoute: TemoignagesRoute,
+  TermesEtConditionsRoute: TermesEtConditionsRoute,
   ESlugRoute: ESlugRoute,
   ThemeThumbSlugRoute: ThemeThumbSlugRoute,
 }
