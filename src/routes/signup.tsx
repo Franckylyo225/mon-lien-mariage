@@ -30,6 +30,7 @@ function SignupPage() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setInfo(null);
     if (!email.includes("@")) return setError("Adresse email invalide.");
     if (!pwCheck.valid)
       return setError(
