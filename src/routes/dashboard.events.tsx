@@ -4,8 +4,8 @@ import {
   IconArrowLeft,
   IconChevronRight,
   IconPlus,
-  IconX,
 } from "@tabler/icons-react";
+
 import {
   useWedding,
   formatShortDate,
@@ -218,50 +218,3 @@ function EventCard({
   );
 }
 
-function ConfirmModal({
-  onCancel,
-  onConfirm,
-  loading,
-}: {
-  onCancel: () => void;
-  onConfirm: () => void;
-  loading: boolean;
-}) {
-  return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4">
-      <div className="w-full max-w-sm rounded-2xl bg-card p-5 shadow-2xl">
-        <div className="mb-2 flex items-start justify-between gap-3">
-          <h2 className="font-serif text-[17px] italic">Créer un nouvel événement ?</h2>
-          <button
-            onClick={onCancel}
-            aria-label="Fermer"
-            className="grid size-7 shrink-0 place-items-center rounded-full text-muted-foreground transition active:bg-secondary"
-          >
-            <IconX size={16} strokeWidth={1.75} />
-          </button>
-        </div>
-        <p className="mb-4 text-[12px] leading-relaxed text-muted-foreground">
-          Vous allez configurer une nouvelle page d'invitation indépendante de
-          vos événements existants.
-          <br />
-          <span className="mt-1 block">Chaque publication coûte 25 000 FCFA.</span>
-        </p>
-        <div className="flex items-center justify-end gap-2">
-          <button
-            onClick={onCancel}
-            className="rounded-full border border-border px-4 py-2 text-[12px] font-medium transition active:bg-secondary"
-          >
-            Annuler
-          </button>
-          <button
-            onClick={onConfirm}
-            disabled={loading}
-            className="rounded-full bg-foreground px-4 py-2 text-[12px] font-medium text-background transition active:scale-95 disabled:opacity-60"
-          >
-            {loading ? "Création…" : "Créer un événement →"}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
