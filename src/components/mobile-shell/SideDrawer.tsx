@@ -9,6 +9,8 @@ import {
   IconMessageCircle,
   IconLogout,
   IconX,
+  IconCalendarHeart,
+  IconChevronRight,
 } from "@tabler/icons-react";
 
 interface SideDrawerProps {
@@ -18,6 +20,7 @@ interface SideDrawerProps {
   email: string | null;
   initials: string;
   onSignOut: () => void;
+  showEventsLink?: boolean;
 }
 
 const items = [
@@ -28,6 +31,7 @@ const items = [
   { label: "Aide & FAQ", Icon: IconHelpCircle, to: "/dashboard" as const },
   { label: "Contacter le support", Icon: IconMessageCircle, to: "/dashboard" as const },
 ];
+
 
 export function SideDrawer({
   open,
