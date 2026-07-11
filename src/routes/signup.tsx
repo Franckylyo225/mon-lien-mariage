@@ -5,8 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/signup")({
   head: () => ({
     meta: [
-      { title: "Inscription — MonMariage.ci" },
-      { name: "description", content: "Créez votre compte MonMariage.ci pour préparer votre mariage." },
+      { title: "Inscription — MonInvit.com" },
+      { name: "description", content: "Créez votre compte MonInvit.com pour préparer votre mariage." },
     ],
   }),
   component: SignupPage,
@@ -143,7 +143,7 @@ export function AuthLayout({
         {/* Form column */}
         <div className="flex flex-col px-5 py-8 sm:px-10 sm:py-12">
           <Link to="/" className="inline-block font-serif text-lg italic">
-            MonMariage<span className="text-[#c17c74]">.ci</span>
+            MonInvit<span className="text-[#c17c74]">.ci</span>
           </Link>
 
           <div className="mx-auto mt-10 flex w-full max-w-md flex-1 flex-col justify-center sm:mt-16">
@@ -164,7 +164,7 @@ export function AuthLayout({
           </div>
 
           <p className="mt-10 text-center text-[11px] text-[#8a6a5e] sm:text-left">
-            © 2027 MonMariage.ci
+            © 2027 MonInvit.com
           </p>
         </div>
 

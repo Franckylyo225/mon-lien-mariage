@@ -6,7 +6,7 @@ import { EnvelopeAnimation } from "@/components/envelope-animation";
 export const Route = createFileRoute("/publish")({
   head: () => ({
     meta: [
-      { title: "Publier mon invitation — MonMariage.ci" },
+      { title: "Publier mon invitation — MonInvit.com" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -124,7 +124,7 @@ function PublishPage() {
               Adresse de votre page
             </label>
             <div className="flex items-center rounded-full border border-input bg-background px-4 py-2 text-sm">
-              <span className="opacity-50">monmariage.ci/e/</span>
+              <span className="opacity-50">moninvit.com/e/</span>
               <input
                 value={slug}
                 onChange={(e) =>

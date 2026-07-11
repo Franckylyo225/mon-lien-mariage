@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 import { BasicInfoSheet } from "@/components/dashboard/BasicInfoSheet";
 
 export const Route = createFileRoute("/dashboard/")({
-  head: () => ({ meta: [{ title: "Tableau de bord — MonMariage.ci" }] }),
+  head: () => ({ meta: [{ title: "Tableau de bord — MonInvit.com" }] }),
   component: DashboardHome,
 });
 
@@ -135,7 +135,7 @@ function DashboardHome() {
     couple.slug && typeof window !== "undefined"
       ? `${window.location.host}/e/${couple.slug}`
       : couple.slug
-        ? `monmariage.ci/e/${couple.slug}`
+        ? `moninvit.com/e/${couple.slug}`
         : "";
 
   const handleShare = async () => {

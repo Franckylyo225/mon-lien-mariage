@@ -4,13 +4,13 @@ import { PageShell } from "@/components/site/SiteChrome";
 export const Route = createFileRoute("/blog")({
   head: () => ({
     meta: [
-      { title: "Blog — Conseils & inspirations mariage | MonMariage.ci" },
+      { title: "Blog — Conseils & inspirations mariage | MonInvit.com" },
       {
         name: "description",
         content:
           "Conseils, checklists et inspirations pour organiser un mariage inoubliable en Côte d'Ivoire : dot, civil, religieux, réception.",
       },
-      { property: "og:title", content: "Blog — MonMariage.ci" },
+      { property: "og:title", content: "Blog — MonInvit.com" },
       {
         property: "og:description",
         content:
@@ -18,10 +18,10 @@ export const Route = createFileRoute("/blog")({
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/blog" },
-      { property: "og:site_name", content: "MonMariage.ci" },
+      { property: "og:site_name", content: "MonInvit.com" },
       { property: "og:locale", content: "fr_FR" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Blog — MonMariage.ci" },
+      { name: "twitter:title", content: "Blog — MonInvit.com" },
       {
         name: "twitter:description",
         content: "Conseils et inspirations pour un mariage inoubliable.",
@@ -76,7 +76,7 @@ const POSTS = [
     date: "05 avril 2027",
     title: "Gérer son plan de table sans se prendre la tête",
     excerpt:
-      "La méthode simple pour placer 200 invités sans froisser personne, avec les RSVP MonMariage.ci.",
+      "La méthode simple pour placer 200 invités sans froisser personne, avec les RSVP MonInvit.com.",
     tone: "clay",
   },
   {

@@ -4,13 +4,13 @@ import { PageShell } from "@/components/site/SiteChrome";
 export const Route = createFileRoute("/temoignages")({
   head: () => ({
     meta: [
-      { title: "Témoignages — Ils ont choisi MonMariage.ci" },
+      { title: "Témoignages — Ils ont choisi MonInvit.com" },
       {
         name: "description",
         content:
-          "Plus de 500 couples ivoiriens racontent leur expérience MonMariage.ci : création de l'invitation, suivi des RSVP et jour J.",
+          "Plus de 500 couples ivoiriens racontent leur expérience MonInvit.com : création de l'invitation, suivi des RSVP et jour J.",
       },
-      { property: "og:title", content: "Témoignages — MonMariage.ci" },
+      { property: "og:title", content: "Témoignages — MonInvit.com" },
       {
         property: "og:description",
         content:
@@ -18,13 +18,13 @@ export const Route = createFileRoute("/temoignages")({
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/temoignages" },
-      { property: "og:site_name", content: "MonMariage.ci" },
+      { property: "og:site_name", content: "MonInvit.com" },
       { property: "og:locale", content: "fr_FR" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Témoignages — MonMariage.ci" },
+      { name: "twitter:title", content: "Témoignages — MonInvit.com" },
       {
         name: "twitter:description",
-        content: "Les mariés racontent leur expérience MonMariage.ci.",
+        content: "Les mariés racontent leur expérience MonInvit.com.",
       },
     ],
     links: [{ rel: "canonical", href: "/temoignages" }],
@@ -133,7 +133,7 @@ function Testimonials() {
           <em className="italic text-[#c17c74]">une seule histoire.</em>
         </>
       }
-      intro="Découvrez ce que nos mariés disent de MonMariage.ci — leurs impressions, leur expérience, et leurs conseils."
+      intro="Découvrez ce que nos mariés disent de MonInvit.com — leurs impressions, leur expérience, et leurs conseils."
     >
       <section className="mx-auto max-w-5xl px-5 pb-10">
         <div className="flex flex-wrap items-center justify-center gap-6 rounded-[24px] border border-[#e8c5b6]/50 bg-white/70 p-6 text-center sm:gap-10">

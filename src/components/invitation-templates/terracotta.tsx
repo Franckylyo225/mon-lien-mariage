@@ -87,7 +87,7 @@ export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
         <TemplateBottomSections couple={couple} ceremonies={published} accent={accent} />
 
         <footer className="pt-16 text-center font-mono text-[9px] uppercase tracking-[0.3em] opacity-40">
-          {couple.hashtag ?? `MonMariage — ${couple.brideName[0]}&${couple.groomName[0]}`}
+          {couple.hashtag ?? `MonInvit — ${couple.brideName[0]}&${couple.groomName[0]}`}
         </footer>
       </article>
     </main>

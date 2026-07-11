@@ -4,7 +4,7 @@ import { useWedding, type RSVPStatus, type Guest, type Ceremony } from "@/lib/we
 import { IconChevronRight, IconTrendingUp, IconUsers, IconCheck, IconX, IconClock } from "@tabler/icons-react";
 
 export const Route = createFileRoute("/dashboard/stats")({
-  head: () => ({ meta: [{ title: "Statistiques RSVP — MonMariage.ci" }] }),
+  head: () => ({ meta: [{ title: "Statistiques RSVP — MonInvit.com" }] }),
   component: StatsPage,
 });
 

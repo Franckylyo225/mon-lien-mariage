@@ -10,7 +10,7 @@ const SIGNED_URL_EXPIRY = 60 * 60 * 24 * 365 * 10;
 export const Route = createFileRoute("/dashboard/share")({
   head: () => ({
     meta: [
-      { title: "Liens & Partages — MonMariage.ci" },
+      { title: "Liens & Partages — MonInvit.com" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -69,7 +69,7 @@ function ShareUnlocked({
   updateCouple: UpdateCouple;
 }) {
   const origin =
-    typeof window !== "undefined" ? window.location.origin : "https://monmariage.ci";
+    typeof window !== "undefined" ? window.location.origin : "https://moninvit.com";
   const host = useMemo(() => origin.replace(/^https?:\/\//, ""), [origin]);
 
   const publicUrl = `${origin}/e/${couple.slug ?? ""}`;

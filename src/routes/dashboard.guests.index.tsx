@@ -4,7 +4,7 @@ import { useWedding, type RSVPStatus } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
 
 export const Route = createFileRoute("/dashboard/guests/")({
-  head: () => ({ meta: [{ title: "Mes invités — MonMariage.ci" }] }),
+  head: () => ({ meta: [{ title: "Mes invités — MonInvit.com" }] }),
   component: GuestsPage,
 });
 

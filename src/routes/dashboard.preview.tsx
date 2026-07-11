@@ -25,7 +25,7 @@ import { PageActionBar } from "@/components/dashboard/PageActionBar";
 export const Route = createFileRoute("/dashboard/preview")({
   head: () => ({
     meta: [
-      { title: "Aperçu privé — MonMariage.ci" },
+      { title: "Aperçu privé — MonInvit.com" },
       { name: "robots", content: "noindex" },
     ],
   }),
