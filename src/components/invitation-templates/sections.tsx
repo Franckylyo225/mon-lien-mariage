@@ -828,7 +828,9 @@ export function GallerySection({
         <h2 className="font-serif text-2xl italic">{title}</h2>
       </div>
 
-      {layout === "masonry" ? (
+      {couple.galleryDisplay === "marquee" ? (
+        <MarqueeLayout images={images} onOpen={open} />
+      ) : layout === "masonry" ? (
         <MasonryLayout images={images} onOpen={open} />
       ) : layout === "mosaic" ? (
         <MosaicLayout images={images} onOpen={open} accent={accent} />
