@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { IconReceipt, IconCircleCheck } from "@tabler/icons-react";
+import { IconReceipt, IconCircleCheck, IconDownload } from "@tabler/icons-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useWedding } from "@/lib/wedding-store";
+import { downloadInvoicePdf } from "@/lib/invoice-pdf";
 
 export const Route = createFileRoute("/dashboard/billing")({
   head: () => ({ meta: [{ title: "Paiement & facture — MonInvit.com" }] }),
@@ -116,27 +117,64 @@ function BillingPage() {
                 r.brideName || r.groomName
                   ? `${r.brideName || "…"} & ${r.groomName || "…"}`
                   : "Publication";
+              const invoiceNumber = `INV-${(r.publishedAt || "").slice(0, 10).replace(/-/g, "")}-${r.id.slice(0, 6).toUpperCase()}`;
+              const safeName = (r.brideName || r.groomName || "moninvit")
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/(^-|-$)/g, "");
+              const handleDownload = () => {
+                downloadInvoicePdf(
+                  {
+                    invoiceNumber,
+                    issuedAt: r.publishedAt,
+                    paidAt: r.publishedAt,
+                    customerName: label,
+                    customerEmail: account.email ?? null,
+                    description: `Publication de l'invitation « ${label} » sur MonInvit.com`,
+                    amountXof: UNIT_PRICE_XOF,
+                    slug: r.slug,
+                  },
+                  `facture-moninvit-${safeName}-${invoiceNumber}.pdf`,
+                );
+              };
               return (
                 <li key={r.id}>
                   <div
-                    className="flex items-center gap-3 rounded-[10px] bg-card px-3 py-3"
+                    className="rounded-[10px] bg-card px-3 py-3"
                     style={{ border: "0.5px solid hsl(var(--border))" }}
                   >
-                    <span
-                      className="grid size-9 shrink-0 place-items-center rounded-full"
-                      style={{ background: "#ecfdf5", color: "#047857" }}
-                    >
-                      <IconCircleCheck size={18} strokeWidth={1.75} />
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate font-serif text-[13px] italic">{label}</p>
-                      <p className="truncate text-[10px] text-muted-foreground">
-                        Publication · {formatDateLong(r.publishedAt)}
-                      </p>
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="grid size-9 shrink-0 place-items-center rounded-full"
+                        style={{ background: "#ecfdf5", color: "#047857" }}
+                      >
+                        <IconCircleCheck size={18} strokeWidth={1.75} />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-serif text-[13px] italic">{label}</p>
+                        <p className="truncate text-[10px] text-muted-foreground">
+                          Publication · {formatDateLong(r.publishedAt)}
+                        </p>
+                      </div>
+                      <div className="shrink-0 text-right">
+                        <p className="text-[13px] font-medium tabular-nums">{formatXOF(UNIT_PRICE_XOF)}</p>
+                        <p className="text-[9px] uppercase tracking-wide text-emerald-700">Payé</p>
+                      </div>
                     </div>
-                    <div className="shrink-0 text-right">
-                      <p className="text-[13px] font-medium tabular-nums">{formatXOF(UNIT_PRICE_XOF)}</p>
-                      <p className="text-[9px] uppercase tracking-wide text-emerald-700">Payé</p>
+                    <div className="mt-2 flex items-center justify-between gap-2 border-t border-border/50 pt-2">
+                      <p className="truncate font-mono text-[9px] uppercase tracking-wide text-muted-foreground">
+                        {invoiceNumber}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={handleDownload}
+                        className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5 text-[11px] font-medium text-foreground transition active:scale-95"
+                      >
+                        <IconDownload size={13} strokeWidth={1.75} />
+                        Facture PDF
+                      </button>
                     </div>
                   </div>
                 </li>
