@@ -337,3 +337,77 @@ export function PhotoGridSheet({
     </BottomSheet>
   );
 }
+
+function DisplayOption({
+  active,
+  onClick,
+  title,
+  subtitle,
+  preview,
+}: {
+  active: boolean;
+  onClick: () => void;
+  title: string;
+  subtitle: string;
+  preview: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={
+        "flex flex-col overflow-hidden rounded-2xl border-2 text-left transition active:scale-[0.98] " +
+        (active
+          ? "border-foreground shadow-sm"
+          : "border-border hover:border-foreground/40")
+      }
+    >
+      <div className="grid h-16 w-full place-items-center bg-muted/40 px-2">
+        {preview}
+      </div>
+      <div className="border-t border-border bg-background px-3 py-2">
+        <p className="text-[12px] font-medium">{title}</p>
+        <p className="text-[10px] opacity-60">{subtitle}</p>
+      </div>
+    </button>
+  );
+}
+
+function GridPreview() {
+  return (
+    <div className="grid w-full max-w-[80px] grid-cols-3 gap-1">
+      {Array.from({ length: 6 }).map((_, i) => (
+        <span
+          key={i}
+          className="aspect-square rounded-[3px] bg-foreground/60"
+        />
+      ))}
+    </div>
+  );
+}
+
+function MarqueePreview() {
+  return (
+    <div className="flex w-full max-w-[90px] flex-col gap-1 overflow-hidden">
+      <div className="flex gap-1">
+        {[0, 1, 2, 3].map((i) => (
+          <span
+            key={"a" + i}
+            className="h-4 w-6 rounded-[4px] bg-foreground/60"
+            style={{ opacity: 1 - i * 0.15 }}
+          />
+        ))}
+      </div>
+      <div className="flex justify-end gap-1">
+        {[0, 1, 2, 3].map((i) => (
+          <span
+            key={"b" + i}
+            className="h-4 w-6 rounded-[4px] bg-foreground/60"
+            style={{ opacity: 0.4 + i * 0.15 }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
