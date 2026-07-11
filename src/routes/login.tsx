@@ -30,28 +30,42 @@ function LoginPage() {
       setError(err.message);
       return;
     }
-    // Fetch onboarding step to route correctly
+    // Route based on number of weddings
     const { data: userRes } = await supabase.auth.getUser();
     const userId = userRes.user?.id;
     if (userId) {
-      const { data: w } = await supabase
+      const { data: list } = await supabase
         .from("weddings")
-        .select("onboarding_step")
+        .select("id, onboarding_step, created_at")
         .eq("owner_id", userId)
-        .maybeSingle();
-      const step = w?.onboarding_step ?? 0;
-      const targets = [
-        "/onboarding/prenoms",
-        "/onboarding/evenement",
-        "/onboarding/dates",
-        "/onboarding/theme",
-      ] as const;
-      if (step < 4) {
-        navigate({ to: targets[step as 0 | 1 | 2 | 3] });
+        .order("created_at", { ascending: false });
+      const weddings = list ?? [];
+      if (weddings.length >= 2) {
+        navigate({ to: "/dashboard/events" });
+        return;
+      }
+      if (weddings.length === 1) {
+        const step = (weddings[0].onboarding_step as number | null) ?? 0;
+        const targets = [
+          "/onboarding/prenoms",
+          "/onboarding/evenement",
+          "/onboarding/dates",
+          "/onboarding/theme",
+        ] as const;
+        if (step < 4) {
+          navigate({ to: targets[step as 0 | 1 | 2 | 3] });
+          return;
+        }
+      }
+      // 0 weddings → the store will bootstrap one on first dashboard load,
+      // but push the user through the onboarding wizard
+      if (weddings.length === 0) {
+        navigate({ to: "/onboarding/prenoms" });
         return;
       }
     }
     navigate({ to: "/dashboard" });
+
   };
 
   return (
