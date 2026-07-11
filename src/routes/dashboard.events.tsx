@@ -145,15 +145,8 @@ function EventsPage() {
         </button>
 
       </main>
-
-      {confirmOpen ? (
-        <ConfirmModal
-          onCancel={() => setConfirmOpen(false)}
-          onConfirm={handleCreate}
-          loading={creating}
-        />
-      ) : null}
     </div>
+
   );
 }
 
