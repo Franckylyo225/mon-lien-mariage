@@ -53,8 +53,8 @@ function SignupPage() {
     if (data.session) {
       navigate({ to: "/onboarding/prenoms" });
     } else {
-      setError(
-        "Compte créé. Vérifiez votre email pour activer votre compte, puis connectez-vous.",
+      setInfo(
+        `Un email de confirmation vient d'être envoyé à ${email}. Cliquez sur le lien reçu pour activer votre compte.`,
       );
     }
   };
