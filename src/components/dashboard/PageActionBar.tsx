@@ -22,6 +22,7 @@ interface Props {
   onEditToggle: () => void;
   onPublish: () => void;
   onShare: () => void;
+  onView: () => void;
 }
 
 export function PageActionBar({
