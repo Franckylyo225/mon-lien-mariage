@@ -1,7 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { useWedding, slugify } from "@/lib/wedding-store";
 import { EnvelopeAnimation } from "@/components/envelope-animation";
+import { initMonerooPayment } from "@/lib/moneroo.functions";
 
 export const Route = createFileRoute("/publish")({
   head: () => ({
@@ -17,23 +19,56 @@ const BASE_PRICE_XOF = 15000;
 const ADDON_PRICE_XOF = 3000;
 
 function PublishPage() {
-  const { couple, publish } = useWedding();
+  const { couple, weddingId } = useWedding();
   const navigate = useNavigate();
+  const initPayment = useServerFn(initMonerooPayment);
   const [envelope, setEnvelope] = useState<boolean>(couple.hasEnvelopeAnimation ?? false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [slug, setSlug] = useState(
     couple.slug || slugify(`${couple.brideName}-et-${couple.groomName}`),
   );
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const total = BASE_PRICE_XOF + (envelope ? ADDON_PRICE_XOF : 0);
 
   const handlePay = async () => {
+    if (!weddingId) {
+      setError("Aucun événement actif. Rechargez la page.");
+      return;
+    }
     setLoading(true);
-    // Paiement simulé (démo). CinetPay sera branché plus tard.
-    await new Promise((r) => setTimeout(r, 900));
-    await publish({ slug, envelopeAnimation: envelope });
-    navigate({ to: "/publish/success" });
+    setError(null);
+    try {
+      const { checkoutUrl } = await initPayment({
+        data: {
+          weddingId,
+          slug,
+          envelopeAnimation: envelope,
+          amount: total,
+          brideName: couple.brideName,
+          groomName: couple.groomName,
+        },
+      });
+      // Persist selection so the return page can finalize even if metadata is lost.
+      try {
+        sessionStorage.setItem(
+          "moninvit:pending-publish",
+          JSON.stringify({ weddingId, slug, envelope }),
+        );
+      } catch {
+        /* noop */
+      }
+      window.location.href = checkoutUrl;
+    } catch (e) {
+      console.error(e);
+      setError(
+        e instanceof Error
+          ? e.message
+          : "Impossible d'initialiser le paiement. Réessayez.",
+      );
+      setLoading(false);
+    }
   };
 
   return (
@@ -60,7 +95,6 @@ function PublishPage() {
           modifier les étapes et gérer vos invités.
         </p>
 
-        {/* Card offre */}
         <section className="mt-8 overflow-hidden rounded-3xl border border-border bg-card">
           <div className="border-b border-border bg-primary/5 p-6">
             <div className="flex items-baseline justify-between gap-4">
@@ -83,7 +117,6 @@ function PublishPage() {
             </ul>
           </div>
 
-          {/* Add-on animation */}
           <div className="p-6">
             <label className="flex cursor-pointer items-start gap-4 rounded-2xl border border-border p-4 transition hover:border-primary/50">
               <input
@@ -118,7 +151,6 @@ function PublishPage() {
             </label>
           </div>
 
-          {/* Slug */}
           <div className="border-t border-border p-6">
             <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest opacity-60">
               Adresse de votre page
@@ -135,7 +167,6 @@ function PublishPage() {
             </div>
           </div>
 
-          {/* Total + CTA */}
           <div className="border-t border-border bg-secondary/30 p-6">
             <div className="flex items-baseline justify-between">
               <p className="text-sm">Total</p>
@@ -144,21 +175,32 @@ function PublishPage() {
                 <span className="ml-1 font-mono text-xs opacity-60">XOF</span>
               </p>
             </div>
+            {error ? (
+              <p className="mt-4 rounded-2xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-xs text-destructive">
+                {error}
+              </p>
+            ) : null}
             <button
               onClick={handlePay}
-              disabled={loading || !slug}
+              disabled={loading || !slug || !weddingId}
               className="mt-5 w-full rounded-full bg-primary py-4 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
             >
-              {loading ? "Traitement…" : "Payer et publier"}
+              {loading ? "Redirection vers Moneroo…" : "Payer et publier"}
             </button>
             <p className="mt-3 text-center font-mono text-[10px] uppercase tracking-widest opacity-50">
-              Paiement sécurisé — CinetPay (Orange Money, MTN, Wave, Carte)
-            </p>
-            <p className="mt-1 text-center text-[10px] italic opacity-50">
-              Mode démo — aucun paiement réel n'est effectué.
+              Paiement sécurisé — Moneroo (Orange Money, MTN, Moov, Wave, Carte)
             </p>
           </div>
         </section>
+
+        {/* fallback nav to keep type check happy */}
+        <button
+          type="button"
+          onClick={() => navigate({ to: "/dashboard" })}
+          className="sr-only"
+        >
+          retour
+        </button>
       </main>
 
       {previewOpen ? (
