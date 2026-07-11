@@ -1,8 +1,20 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
+import {
+  ArrowLeft,
+  Link2,
+  Check,
+  Globe,
+  QrCode,
+  Users,
+  CalendarHeart,
+  BookHeart,
+  Lock,
+  Loader2,
+} from "lucide-react";
+import { toast } from "sonner";
 import { useWedding, slugify } from "@/lib/wedding-store";
-import { EnvelopeAnimation } from "@/components/envelope-animation";
 import { initMonerooPayment } from "@/lib/moneroo.functions";
 
 export const Route = createFileRoute("/publish")({
@@ -16,45 +28,55 @@ export const Route = createFileRoute("/publish")({
 });
 
 const BASE_PRICE_XOF = 15000;
-const ADDON_PRICE_XOF = 3000;
+
+function formatFrenchDate(iso: string): string | null {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return null;
+  return new Intl.DateTimeFormat("fr-FR", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(d);
+}
 
 function PublishPage() {
   const { couple, weddingId } = useWedding();
-  const navigate = useNavigate();
   const initPayment = useServerFn(initMonerooPayment);
-  const [envelope, setEnvelope] = useState<boolean>(couple.hasEnvelopeAnimation ?? false);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [slug, setSlug] = useState(
-    couple.slug || slugify(`${couple.brideName}-et-${couple.groomName}`),
-  );
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const total = BASE_PRICE_XOF + (envelope ? ADDON_PRICE_XOF : 0);
+  const slug = useMemo(
+    () =>
+      couple.slug || slugify(`${couple.brideName}-et-${couple.groomName}`) || "",
+    [couple.slug, couple.brideName, couple.groomName],
+  );
+
+  const dateLabel = formatFrenchDate(couple.weddingDate);
+  const subLine = [dateLabel, couple.city].filter(Boolean).join(" · ");
+  const total = BASE_PRICE_XOF;
 
   const handlePay = async () => {
     if (!weddingId) {
-      setError("Aucun événement actif. Rechargez la page.");
+      toast.error("Aucun événement actif. Rechargez la page.");
       return;
     }
     setLoading(true);
-    setError(null);
     try {
       const { checkoutUrl } = await initPayment({
         data: {
           weddingId,
           slug,
-          envelopeAnimation: envelope,
+          envelopeAnimation: false,
           amount: total,
           brideName: couple.brideName,
           groomName: couple.groomName,
         },
       });
-      // Persist selection so the return page can finalize even if metadata is lost.
       try {
         sessionStorage.setItem(
           "moninvit:pending-publish",
-          JSON.stringify({ weddingId, slug, envelope }),
+          JSON.stringify({ weddingId, slug, envelope: false }),
         );
       } catch {
         /* noop */
@@ -62,154 +84,220 @@ function PublishPage() {
       window.location.href = checkoutUrl;
     } catch (e) {
       console.error(e);
-      setError(
+      toast.error(
         e instanceof Error
           ? e.message
-          : "Impossible d'initialiser le paiement. Réessayez.",
+          : "Le paiement n'a pas abouti. Réessayez.",
       );
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background pb-24">
-      <header className="border-b border-border bg-background/85 backdrop-blur">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-4 sm:px-8">
-          <Link to="/dashboard" className="font-serif text-sm italic">
-            ← Retour au tableau
+    <div className="min-h-screen bg-background text-foreground">
+      {/* 1. Nav */}
+      <header className="border-b border-border/60">
+        <div className="mx-auto flex max-w-xl items-center justify-between px-[14px] py-3">
+          <Link
+            to="/dashboard"
+            className="inline-flex items-center gap-1.5 text-[12px] text-muted-foreground transition hover:text-foreground"
+          >
+            <ArrowLeft className="size-3" strokeWidth={1.75} />
+            Retour au tableau
           </Link>
-          <p className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-50">
+          <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-muted-foreground/70">
             Publication
-          </p>
+          </span>
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl px-4 py-10 sm:px-8">
-        <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-primary">
-          Dernière étape
-        </p>
-        <h1 className="mt-2 font-serif text-4xl italic">Publier votre invitation</h1>
-        <p className="mt-3 max-w-xl text-sm opacity-70">
-          Une fois publiée, votre page devient accessible via son lien public
-          et les prénoms du couple sont verrouillés. Vous pourrez toujours
-          modifier les étapes et gérer vos invités.
-        </p>
+      <main className="mx-auto max-w-xl px-[14px] pb-16 pt-10">
+        {/* 2. Hero */}
+        <section className="mb-6 text-center">
+          <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-primary">
+            Dernière étape
+          </p>
+          <div className="mt-4 flex flex-col items-center leading-tight">
+            <span className="font-serif text-[28px] italic">
+              {couple.brideName || "—"}
+            </span>
+            <span className="my-0.5 font-serif text-[16px] italic text-primary">
+              &amp;
+            </span>
+            <span className="font-serif text-[28px] italic">
+              {couple.groomName || "—"}
+            </span>
+          </div>
+          {subLine ? (
+            <p className="mt-3 text-[12px] capitalize text-muted-foreground">
+              {subLine}
+            </p>
+          ) : null}
+          <div
+            className="mx-auto my-3 h-px w-8 bg-primary"
+            style={{ opacity: 0.4 }}
+          />
+          <p className="text-[12px] leading-[1.5] text-muted-foreground">
+            Votre page est prête.
+            <br />
+            Publiez-la pour la partager avec vos invités.
+          </p>
+        </section>
 
-        <section className="mt-8 overflow-hidden rounded-3xl border border-border bg-card">
-          <div className="border-b border-border bg-primary/5 p-6">
-            <div className="flex items-baseline justify-between gap-4">
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-widest opacity-60">
-                  Formule
-                </p>
-                <p className="mt-1 font-serif text-2xl italic">Publication complète</p>
-              </div>
-              <p className="font-serif text-3xl italic">
-                {BASE_PRICE_XOF.toLocaleString("fr-FR")}
-                <span className="ml-1 font-mono text-xs opacity-60">XOF</span>
+        {/* 3. Carte URL */}
+        <div className="mb-4 flex items-center gap-3 rounded-[10px] bg-muted px-[14px] py-2.5">
+          <div
+            className="grid size-7 shrink-0 place-items-center rounded-md"
+            style={{ background: "#FBEAF0" }}
+          >
+            <Link2 className="size-3.5" style={{ color: "#993556" }} strokeWidth={1.75} />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground/70">
+              Votre adresse
+            </p>
+            <p className="truncate text-[12px] font-medium">
+              <span className="text-foreground">moninvit.com/e/</span>
+              <span style={{ color: "#993556" }}>{slug}</span>
+            </p>
+          </div>
+          <Check className="size-3.5 shrink-0" style={{ color: "#059669" }} strokeWidth={2} />
+        </div>
+
+        {/* 4. Carte formule */}
+        <section className="mb-3 rounded-[14px] border border-border/60 bg-card p-4">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground/70">
+                Formule
+              </p>
+              <p className="mt-1 font-serif text-[18px] italic">
+                Publication complète
               </p>
             </div>
-            <ul className="mt-4 space-y-1.5 text-sm">
-              <li className="flex gap-2"><span className="text-primary">✓</span> Page d'invitation publique et partageable</li>
-              <li className="flex gap-2"><span className="text-primary">✓</span> Lien personnalisé + QR code</li>
-              <li className="flex gap-2"><span className="text-primary">✓</span> RSVP illimités et gestion des invités</li>
-              <li className="flex gap-2"><span className="text-primary">✓</span> Toutes vos étapes (dot, civil, religieux, dîner…)</li>
-            </ul>
+            <div className="text-right">
+              <p className="font-serif text-[26px] italic leading-none">
+                {BASE_PRICE_XOF.toLocaleString("fr-FR")}
+                <span className="ml-1 font-sans text-[11px] font-normal not-italic text-muted-foreground">
+                  XOF
+                </span>
+              </p>
+              <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground/70">
+                Paiement unique
+              </p>
+            </div>
           </div>
 
-          <div className="p-6">
-            <label className="flex cursor-pointer items-start gap-4 rounded-2xl border border-border p-4 transition hover:border-primary/50">
-              <input
-                type="checkbox"
-                checked={envelope}
-                onChange={(e) => setEnvelope(e.target.checked)}
-                className="mt-1 size-5 accent-[color:var(--color-primary)]"
-              />
-              <div className="min-w-0 flex-1">
-                <div className="flex items-baseline justify-between gap-3">
-                  <p className="font-serif text-lg italic">Animation d'enveloppe</p>
-                  <p className="font-mono text-sm">
-                    +{ADDON_PRICE_XOF.toLocaleString("fr-FR")}
-                    <span className="ml-1 text-[10px] opacity-60">XOF</span>
+          <div className="my-3.5 border-t border-border/60" />
+
+          <ul className="space-y-0">
+            {INCLUDED.map((it) => (
+              <li key={it.name} className="flex items-start gap-2.5 py-1.5">
+                <span
+                  className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full"
+                  style={{ background: "#FBEAF0" }}
+                >
+                  <it.Icon
+                    className="size-[11px]"
+                    style={{ color: "#993556" }}
+                    strokeWidth={1.75}
+                  />
+                </span>
+                <div className="min-w-0">
+                  <p className="text-[12px] font-medium leading-tight">
+                    {it.name}
+                  </p>
+                  <p className="text-[10px] leading-[1.4] text-muted-foreground">
+                    {it.desc}
                   </p>
                 </div>
-                <p className="mt-1 text-xs opacity-70">
-                  Une enveloppe s'ouvre en 3 secondes à l'arrivée de chaque
-                  invité, avec vos prénoms au centre. Effet garanti.
-                </p>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setPreviewOpen(true);
-                  }}
-                  className="mt-2 font-mono text-[10px] uppercase tracking-widest text-primary hover:underline"
-                >
-                  ▶ Voir un aperçu
-                </button>
-              </div>
-            </label>
-          </div>
+              </li>
+            ))}
+          </ul>
 
-          <div className="border-t border-border p-6">
-            <label className="mb-1 block font-mono text-[10px] uppercase tracking-widest opacity-60">
-              Adresse de votre page
-            </label>
-            <div className="flex items-center rounded-full border border-input bg-background px-4 py-2 text-sm">
-              <span className="opacity-50">moninvit.com/e/</span>
-              <input
-                value={slug}
-                onChange={(e) =>
-                  setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))
-                }
-                className="min-w-0 flex-1 bg-transparent px-1 focus:outline-none"
-              />
-            </div>
-          </div>
-
-          <div className="border-t border-border bg-secondary/30 p-6">
-            <div className="flex items-baseline justify-between">
-              <p className="text-sm">Total</p>
-              <p className="font-serif text-3xl italic">
-                {total.toLocaleString("fr-FR")}
-                <span className="ml-1 font-mono text-xs opacity-60">XOF</span>
-              </p>
-            </div>
-            {error ? (
-              <p className="mt-4 rounded-2xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-xs text-destructive">
-                {error}
-              </p>
-            ) : null}
-            <button
-              onClick={handlePay}
-              disabled={loading || !slug || !weddingId}
-              className="mt-5 w-full rounded-full bg-primary py-4 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-50"
-            >
-              {loading ? "Redirection vers Moneroo…" : "Payer et publier"}
-            </button>
-            <p className="mt-3 text-center font-mono text-[10px] uppercase tracking-widest opacity-50">
-              Paiement sécurisé — Moneroo (Orange Money, MTN, Moov, Wave, Carte)
-            </p>
+          <div className="mt-1 flex items-baseline justify-between border-t border-border/60 pt-3">
+            <span className="text-[13px] font-medium">Total</span>
+            <span className="font-serif text-[22px] italic leading-none">
+              {total.toLocaleString("fr-FR")}
+              <span className="ml-1 font-sans text-[11px] font-normal not-italic text-muted-foreground">
+                XOF
+              </span>
+            </span>
           </div>
         </section>
 
-        {/* fallback nav to keep type check happy */}
-        <button
-          type="button"
-          onClick={() => navigate({ to: "/dashboard" })}
-          className="sr-only"
-        >
-          retour
-        </button>
-      </main>
+        {/* 5. Bouton */}
+        <div className="mb-2.5">
+          <button
+            onClick={handlePay}
+            disabled={loading || !weddingId}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-[14px] px-4 py-4 text-[15px] font-medium transition disabled:opacity-70"
+            style={{ background: "#4B1528", color: "#FBEAF0" }}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="size-4 animate-spin" strokeWidth={2} />
+                Redirection vers le paiement…
+              </>
+            ) : (
+              "Payer et publier"
+            )}
+          </button>
 
-      {previewOpen ? (
-        <EnvelopeAnimation
-          brideName={couple.brideName}
-          groomName={couple.groomName}
-          onDone={() => setPreviewOpen(false)}
-        />
-      ) : null}
+          <div className="mt-2 flex items-center justify-center gap-1.5">
+            <Lock className="size-3 text-muted-foreground/70" strokeWidth={1.75} />
+            <span className="font-mono text-[10px] uppercase tracking-[0.04em] text-muted-foreground/70">
+              Paiement sécurisé
+            </span>
+          </div>
+
+          <div className="mt-1.5 flex flex-wrap justify-center gap-1.5">
+            {["Wave", "Orange Money", "MTN", "Moov", "Carte"].map((m) => (
+              <span
+                key={m}
+                className="rounded-full border border-border/60 bg-muted px-2 py-[3px] text-[9px] text-muted-foreground"
+              >
+                {m}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* 6. Note */}
+        <p className="mt-3.5 text-center text-[10px] leading-[1.5] text-muted-foreground/70">
+          Après publication, vous pouvez toujours modifier
+          <br />
+          vos étapes et gérer vos invités.
+        </p>
+      </main>
     </div>
   );
 }
+
+const INCLUDED = [
+  {
+    Icon: Globe,
+    name: "Page publique et partageable",
+    desc: "Lien personnalisé à envoyer par WhatsApp",
+  },
+  {
+    Icon: QrCode,
+    name: "QR code à imprimer",
+    desc: "Pour les cartons d'invitation et l'entrée le jour J",
+  },
+  {
+    Icon: Users,
+    name: "RSVP illimités",
+    desc: "Confirmations, gestion des invités, relances",
+  },
+  {
+    Icon: CalendarHeart,
+    name: "Toutes vos étapes",
+    desc: "Dot, civil, religieux, réception…",
+  },
+  {
+    Icon: BookHeart,
+    name: "Livre d'or après le mariage",
+    desc: "Photos et messages de vos invités en souvenir",
+  },
+];
