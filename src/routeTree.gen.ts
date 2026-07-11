@@ -9,12 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TemoignagesRouteImport } from './routes/temoignages'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as PublishRouteImport } from './routes/publish'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as InvitationRouteImport } from './routes/invitation'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as CommentCaMarcheRouteImport } from './routes/comment-ca-marche'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as ThemeThumbSlugRouteImport } from './routes/theme-thumb.$slug'
@@ -35,6 +38,11 @@ import { Route as DashboardGuestsIndexRouteImport } from './routes/dashboard.gue
 import { Route as DashboardGuestsNewRouteImport } from './routes/dashboard.guests.new'
 import { Route as DashboardCeremoniesIdRouteImport } from './routes/dashboard.ceremonies.$id'
 
+const TemoignagesRoute = TemoignagesRouteImport.update({
+  id: '/temoignages',
+  path: '/temoignages',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -63,6 +71,16 @@ const InvitationRoute = InvitationRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommentCaMarcheRoute = CommentCaMarcheRouteImport.update({
+  id: '/comment-ca-marche',
+  path: '/comment-ca-marche',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -163,12 +181,15 @@ const DashboardCeremoniesIdRoute = DashboardCeremoniesIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/blog': typeof BlogRoute
+  '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRouteWithChildren
   '/publish': typeof PublishRouteWithChildren
   '/signup': typeof SignupRoute
+  '/temoignages': typeof TemoignagesRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/invites': typeof DashboardInvitesRoute
   '/dashboard/landing': typeof DashboardLandingRoute
@@ -190,11 +211,14 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/blog': typeof BlogRoute
+  '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRouteWithChildren
   '/publish': typeof PublishRouteWithChildren
   '/signup': typeof SignupRoute
+  '/temoignages': typeof TemoignagesRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/invites': typeof DashboardInvitesRoute
   '/dashboard/landing': typeof DashboardLandingRoute
@@ -217,12 +241,15 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/blog': typeof BlogRoute
+  '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRouteWithChildren
   '/publish': typeof PublishRouteWithChildren
   '/signup': typeof SignupRoute
+  '/temoignages': typeof TemoignagesRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/invites': typeof DashboardInvitesRoute
   '/dashboard/landing': typeof DashboardLandingRoute
@@ -246,12 +273,15 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/blog'
+    | '/comment-ca-marche'
     | '/dashboard'
     | '/invitation'
     | '/login'
     | '/onboarding'
     | '/publish'
     | '/signup'
+    | '/temoignages'
     | '/dashboard/ceremonies'
     | '/dashboard/invites'
     | '/dashboard/landing'
@@ -273,11 +303,14 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/blog'
+    | '/comment-ca-marche'
     | '/invitation'
     | '/login'
     | '/onboarding'
     | '/publish'
     | '/signup'
+    | '/temoignages'
     | '/dashboard/ceremonies'
     | '/dashboard/invites'
     | '/dashboard/landing'
@@ -299,12 +332,15 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/blog'
+    | '/comment-ca-marche'
     | '/dashboard'
     | '/invitation'
     | '/login'
     | '/onboarding'
     | '/publish'
     | '/signup'
+    | '/temoignages'
     | '/dashboard/ceremonies'
     | '/dashboard/invites'
     | '/dashboard/landing'
@@ -327,18 +363,28 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BlogRoute: typeof BlogRoute
+  CommentCaMarcheRoute: typeof CommentCaMarcheRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   InvitationRoute: typeof InvitationRoute
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRouteWithChildren
   PublishRoute: typeof PublishRouteWithChildren
   SignupRoute: typeof SignupRoute
+  TemoignagesRoute: typeof TemoignagesRoute
   ESlugRoute: typeof ESlugRoute
   ThemeThumbSlugRoute: typeof ThemeThumbSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/temoignages': {
+      id: '/temoignages'
+      path: '/temoignages'
+      fullPath: '/temoignages'
+      preLoaderRoute: typeof TemoignagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -379,6 +425,20 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/comment-ca-marche': {
+      id: '/comment-ca-marche'
+      path: '/comment-ca-marche'
+      fullPath: '/comment-ca-marche'
+      preLoaderRoute: typeof CommentCaMarcheRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -589,12 +649,15 @@ const PublishRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BlogRoute: BlogRoute,
+  CommentCaMarcheRoute: CommentCaMarcheRoute,
   DashboardRoute: DashboardRouteWithChildren,
   InvitationRoute: InvitationRoute,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRouteWithChildren,
   PublishRoute: PublishRouteWithChildren,
   SignupRoute: SignupRoute,
+  TemoignagesRoute: TemoignagesRoute,
   ESlugRoute: ESlugRoute,
   ThemeThumbSlugRoute: ThemeThumbSlugRoute,
 }

@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { templateMeta, templateOrder } from "@/lib/ceremony-meta";
+import { SiteHeader as SharedSiteHeader, SiteFooter as SharedSiteFooter } from "@/components/site/SiteChrome";
 import heroCouple from "@/assets/home-couple.jpg";
 import romanceImg from "@/assets/home-romance.jpg";
 import tableImg from "@/assets/home-table.jpg";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -31,7 +33,7 @@ export const Route = createFileRoute("/")({
 function Landing() {
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#fdf7f3] text-[#2b1a14] font-[var(--font-sans)]">
-      <SiteHeader />
+      <SharedSiteHeader />
 
       <Hero />
       <ProofStrip />
@@ -43,7 +45,7 @@ function Landing() {
       <PromiseBlock />
       <FaqBlock />
       <FinalCta />
-      <SiteFooter />
+      <SharedSiteFooter />
     </main>
   );
 }
@@ -52,34 +54,8 @@ function Landing() {
 /*                                   HEADER                                   */
 /* -------------------------------------------------------------------------- */
 
-function SiteHeader() {
-  return (
-    <header className="relative z-20">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-5">
-        <Link
-          to="/"
-          className="font-[family-name:var(--font-display)] text-xl italic"
-        >
-          MonMariage<span className="text-[#c17c74]">.ci</span>
-        </Link>
-        <div className="flex items-center gap-4">
-          <Link
-            to="/login"
-            className="text-sm text-[#6b4a3e] hover:text-[#2b1a14]"
-          >
-            Se connecter
-          </Link>
-          <Link
-            to="/signup"
-            className="hidden rounded-full bg-[#2b1a14] px-4 py-2 text-xs font-medium text-[#fdf7f3] hover:opacity-90 sm:inline-block"
-          >
-            Commencer
-          </Link>
-        </div>
-      </div>
-    </header>
-  );
-}
+
+
 
 /* -------------------------------------------------------------------------- */
 /*                                    HERO                                    */
@@ -756,13 +732,8 @@ function FinalCta() {
   );
 }
 
-function SiteFooter() {
-  return (
-    <footer className="border-t border-[#e8c5b6]/40 bg-[#fdf7f3] py-8 text-center text-xs text-[#8a6a5e]">
-      © 2027 MonMariage.ci — Fait avec ♡ à Abidjan
-    </footer>
-  );
-}
+
+
 
 /* -------------------------------------------------------------------------- */
 /*                              TEMPLATE FAN                                  */
