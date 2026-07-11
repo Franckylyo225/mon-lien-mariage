@@ -206,6 +206,16 @@ export interface Account {
   onboardingStep: 0 | 1 | 2 | 3 | 4;
 }
 
+export interface WeddingSummary {
+  id: string;
+  brideName: string;
+  groomName: string;
+  weddingDate: string | null;
+  eventType: EventType;
+  isPublished: boolean;
+  slug: string | null;
+}
+
 interface WeddingState {
   weddingId: string | null;
   loading: boolean;
@@ -213,6 +223,10 @@ interface WeddingState {
   couple: Couple;
   ceremonies: Ceremony[];
   guests: Guest[];
+  weddings: WeddingSummary[];
+  activeWeddingId: string | null;
+  switchActiveWedding: (id: string) => Promise<void>;
+  createNewWedding: () => Promise<string | null>;
   signOut: () => Promise<void>;
   setOnboardingStep: (n: Account["onboardingStep"]) => Promise<void>;
   updateCouple: (patch: Partial<Couple>) => Promise<void>;
@@ -226,6 +240,7 @@ interface WeddingState {
   publish: (opts?: { slug?: string; envelopeAnimation?: boolean }) => Promise<void>;
   unpublish: () => Promise<void>;
 }
+
 
 const WeddingContext = createContext<WeddingState | null>(null);
 
@@ -682,13 +697,16 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
   const [authReady, setAuthReady] = useState(false);
   const [loading, setLoading] = useState(true);
   const [weddingId, setWeddingId] = useState<string | null>(null);
+  const [activeWeddingId, setActiveWeddingId] = useState<string | null>(null);
+  const [weddings, setWeddings] = useState<WeddingSummary[]>([]);
 
   const [account, setAccount] = useState<Account>(defaultAccount);
   const [couple, setCouple] = useState<Couple>(defaultCouple);
   const [ceremonies, setCeremonies] = useState<Ceremony[]>(demoCeremonies);
   const [guests, setGuests] = useState<Guest[]>([]);
 
-  const loadedFor = useRef<string | null>(null);
+  const loadedSessionUser = useRef<string | null>(null);
+  const loadedWeddingId = useRef<string | null>(null);
 
   // Auth subscription
   useEffect(() => {
@@ -707,12 +725,25 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  // Load or create wedding when session changes
+  const summarizeWedding = (w: WeddingRow): WeddingSummary => ({
+    id: w.id,
+    brideName: w.bride_name ?? "",
+    groomName: w.groom_name ?? "",
+    weddingDate: w.wedding_date ?? null,
+    eventType: (w.event_type as EventType) ?? "mariage",
+    isPublished: !!w.is_published,
+    slug: w.slug ?? null,
+  });
+
+  // Resolve session → list of weddings + active id (once per user)
   useEffect(() => {
     if (!authReady) return;
     if (!session) {
-      loadedFor.current = null;
+      loadedSessionUser.current = null;
+      loadedWeddingId.current = null;
       setWeddingId(null);
+      setActiveWeddingId(null);
+      setWeddings([]);
       setAccount(defaultAccount());
       setCouple(defaultCouple());
       setCeremonies(demoCeremonies());
@@ -720,33 +751,78 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       setLoading(false);
       return;
     }
-    if (loadedFor.current === session.user.id) return;
-    loadedFor.current = session.user.id;
+    if (loadedSessionUser.current === session.user.id) return;
+    loadedSessionUser.current = session.user.id;
     setLoading(true);
 
     (async () => {
-      let { data: w } = await supabase
-        .from("weddings")
-        .select("*")
-        .eq("owner_id", session.user.id)
+      const userId = session.user.id;
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("active_wedding_id")
+        .eq("id", userId)
         .maybeSingle();
 
-      if (!w) {
+      const { data: list } = await supabase
+        .from("weddings")
+        .select("*")
+        .eq("owner_id", userId)
+        .order("created_at", { ascending: false });
+
+      let rows = (list ?? []) as WeddingRow[];
+
+      if (rows.length === 0) {
+        // Bootstrap: create empty wedding for a brand-new account
         const empty = emptyCouple();
-        const insertRow = { owner_id: session.user.id, ...coupleToRow(empty) };
+        const insertRow = { owner_id: userId, ...coupleToRow(empty) };
         const { data: created, error } = await supabase
           .from("weddings")
           .insert(insertRow as never)
           .select("*")
           .single();
-        if (error) {
+        if (error || !created) {
           console.error("createWedding", error);
           setLoading(false);
           return;
         }
-        w = created;
+        rows = [created as WeddingRow];
       }
 
+      setWeddings(rows.map(summarizeWedding));
+
+      const profileActive =
+        (profile as { active_wedding_id?: string | null } | null)?.active_wedding_id ?? null;
+      let active = profileActive && rows.some((r) => r.id === profileActive)
+        ? profileActive
+        : rows[0].id;
+
+      if (active !== profileActive) {
+        await supabase
+          .from("profiles")
+          .upsert({ id: userId, active_wedding_id: active } as never, { onConflict: "id" });
+      }
+      setActiveWeddingId(active);
+    })();
+  }, [session, authReady]);
+
+  // Load the active wedding + its ceremonies/guests
+  useEffect(() => {
+    if (!session || !activeWeddingId) return;
+    if (loadedWeddingId.current === activeWeddingId) return;
+    loadedWeddingId.current = activeWeddingId;
+    setLoading(true);
+
+    (async () => {
+      const { data: w } = await supabase
+        .from("weddings")
+        .select("*")
+        .eq("id", activeWeddingId)
+        .maybeSingle();
+      if (!w) {
+        setLoading(false);
+        return;
+      }
       const wRow = w as WeddingRow;
       setWeddingId(wRow.id);
       setCouple(rowToCouple(wRow));
@@ -764,7 +840,8 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       setGuests((gs ?? []).map((g) => rowToGuest(g as GuestRow)));
       setLoading(false);
     })();
-  }, [session, authReady]);
+  }, [session, activeWeddingId]);
+
 
   // Apply data-theme
   useEffect(() => {
@@ -945,6 +1022,72 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
     }
   }, [weddingId]);
 
+  const switchActiveWedding = useCallback<WeddingState["switchActiveWedding"]>(
+    async (id) => {
+      if (!session) return;
+      if (id === activeWeddingId) return;
+      await supabase
+        .from("profiles")
+        .upsert({ id: session.user.id, active_wedding_id: id } as never, { onConflict: "id" });
+      loadedWeddingId.current = null;
+      setActiveWeddingId(id);
+    },
+    [session, activeWeddingId],
+  );
+
+  const createNewWedding = useCallback<WeddingState["createNewWedding"]>(async () => {
+    if (!session) return null;
+    const userId = session.user.id;
+    const empty = emptyCouple();
+    const insertRow = { owner_id: userId, ...coupleToRow(empty), onboarding_step: 0 };
+    const { data: created, error } = await supabase
+      .from("weddings")
+      .insert(insertRow as never)
+      .select("*")
+      .single();
+    if (error || !created) {
+      console.error("createNewWedding", error);
+      return null;
+    }
+    const wRow = created as WeddingRow;
+    setWeddings((prev) => [summarizeWedding(wRow), ...prev]);
+    await supabase
+      .from("profiles")
+      .upsert({ id: userId, active_wedding_id: wRow.id } as never, { onConflict: "id" });
+    loadedWeddingId.current = null;
+    setActiveWeddingId(wRow.id);
+    return wRow.id;
+  }, [session]);
+
+  // Keep the weddings summary list in sync when active wedding's key fields change
+  useEffect(() => {
+    if (!weddingId) return;
+    setWeddings((prev) =>
+      prev.map((w) =>
+        w.id === weddingId
+          ? {
+              ...w,
+              brideName: couple.brideName,
+              groomName: couple.groomName,
+              weddingDate: couple.weddingDate || null,
+              eventType: couple.eventType ?? "mariage",
+              isPublished: couple.isPublished,
+              slug: couple.slug ?? null,
+            }
+          : w,
+      ),
+    );
+  }, [
+    weddingId,
+    couple.brideName,
+    couple.groomName,
+    couple.weddingDate,
+    couple.eventType,
+    couple.isPublished,
+    couple.slug,
+  ]);
+
+
   const value = useMemo<WeddingState>(
     () => ({
       weddingId,
@@ -953,6 +1096,10 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       couple,
       ceremonies,
       guests,
+      weddings,
+      activeWeddingId,
+      switchActiveWedding,
+      createNewWedding,
       signOut,
       setOnboardingStep,
       updateCouple,
@@ -961,6 +1108,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       removeCeremony,
       addGuest,
       updateGuest,
+
       removeGuest,
       setRsvp,
       publish,
@@ -973,6 +1121,10 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       couple,
       ceremonies,
       guests,
+      weddings,
+      activeWeddingId,
+      switchActiveWedding,
+      createNewWedding,
       signOut,
       setOnboardingStep,
       updateCouple,
@@ -986,6 +1138,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       publish,
       unpublish,
     ],
+
   );
 
   return <WeddingContext.Provider value={value}>{children}</WeddingContext.Provider>;

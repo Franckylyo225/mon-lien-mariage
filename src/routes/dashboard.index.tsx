@@ -7,6 +7,8 @@ import {
   IconChevronRight,
   IconCircleCheck,
   IconLayout,
+  IconLayoutList,
+
   IconLock,
   IconPencil,
   IconShare,
@@ -34,7 +36,7 @@ type TodoItem = {
 };
 
 function DashboardHome() {
-  const { couple, ceremonies, guests } = useWedding();
+  const { couple, ceremonies, guests, weddings } = useWedding();
   const navigate = useNavigate();
   const [infoSheetOpen, setInfoSheetOpen] = useState(false);
 
@@ -183,7 +185,17 @@ function DashboardHome() {
             Date à définir
           </button>
         )}
+        {weddings.length > 1 ? (
+          <Link
+            to="/dashboard/events"
+            className="mt-2 inline-flex items-center gap-1 text-[10px] text-muted-foreground transition hover:text-foreground"
+          >
+            <IconLayoutList size={11} strokeWidth={1.75} />
+            <span>Mes événements</span>
+          </Link>
+        ) : null}
       </section>
+
 
       {/* Bloc 2 — Progression */}
       <section>

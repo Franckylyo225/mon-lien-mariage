@@ -146,24 +146,35 @@ export type Database = {
       }
       profiles: {
         Row: {
+          active_wedding_id: string | null
           created_at: string
           display_name: string | null
           email: string | null
           id: string
         }
         Insert: {
+          active_wedding_id?: string | null
           created_at?: string
           display_name?: string | null
           email?: string | null
           id: string
         }
         Update: {
+          active_wedding_id?: string | null
           created_at?: string
           display_name?: string | null
           email?: string | null
           id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_active_wedding_id_fkey"
+            columns: ["active_wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       rsvps: {
         Row: {

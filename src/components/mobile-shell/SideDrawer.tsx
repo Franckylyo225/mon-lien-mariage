@@ -9,6 +9,8 @@ import {
   IconMessageCircle,
   IconLogout,
   IconX,
+  IconCalendarHeart,
+  IconChevronRight,
 } from "@tabler/icons-react";
 
 interface SideDrawerProps {
@@ -18,6 +20,7 @@ interface SideDrawerProps {
   email: string | null;
   initials: string;
   onSignOut: () => void;
+  showEventsLink?: boolean;
 }
 
 const items = [
@@ -29,6 +32,7 @@ const items = [
   { label: "Contacter le support", Icon: IconMessageCircle, to: "/dashboard" as const },
 ];
 
+
 export function SideDrawer({
   open,
   onClose,
@@ -36,6 +40,8 @@ export function SideDrawer({
   email,
   initials,
   onSignOut,
+  showEventsLink = false,
+
 }: SideDrawerProps) {
   useEffect(() => {
     if (!open) return;
@@ -96,6 +102,19 @@ export function SideDrawer({
         <div className="mx-5 border-t border-border" />
 
         <ul className="flex-1 overflow-y-auto px-2 py-3">
+          {showEventsLink ? (
+            <li>
+              <Link
+                to="/dashboard/events"
+                onClick={onClose}
+                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium text-foreground transition active:bg-secondary"
+              >
+                <IconCalendarHeart size={18} strokeWidth={1.75} className="text-primary" />
+                <span className="flex-1">Mes événements</span>
+                <IconChevronRight size={14} className="text-muted-foreground" />
+              </Link>
+            </li>
+          ) : null}
           {items.map((item) => (
             <li key={item.label}>
               <Link
@@ -109,6 +128,7 @@ export function SideDrawer({
             </li>
           ))}
         </ul>
+
 
         <div className="px-5 pb-6 pt-4">
           <button
