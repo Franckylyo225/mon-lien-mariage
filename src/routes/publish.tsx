@@ -27,7 +27,7 @@ export const Route = createFileRoute("/publish")({
   component: PublishPage,
 });
 
-const BASE_PRICE_XOF = 15000;
+const BASE_PRICE_XOF = 24900;
 
 function formatFrenchDate(iso: string): string | null {
   if (!iso) return null;
