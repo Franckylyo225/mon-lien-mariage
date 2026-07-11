@@ -24,7 +24,7 @@ interface SideDrawerProps {
 
 
 const items = [
-  { label: "Profil du couple", Icon: IconUser, to: "/dashboard" as const },
+  { label: "Mon profil", Icon: IconUser, to: "/app/profile" as const },
   { label: "Statistiques RSVP", Icon: IconChartBar, to: "/dashboard/stats" as const },
   { label: "Liens & partages", Icon: IconShare, to: "/dashboard/share" as const },
   { label: "Paiement & facture", Icon: IconCreditCard, to: "/dashboard/billing" as const },
