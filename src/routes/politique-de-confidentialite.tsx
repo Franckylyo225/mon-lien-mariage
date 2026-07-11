@@ -111,10 +111,10 @@ function PrivacyPage() {
           <p>
             Pour exercer ces droits, écrivez-nous à{" "}
             <a
-              href="mailto:contact@moninvit.ci"
+              href="mailto:contact@moninvit.com"
               className="font-medium text-[#c17c74] underline underline-offset-2"
             >
-              contact@moninvit.ci
+              contact@moninvit.com
             </a>
             .
           </p>
@@ -146,10 +146,10 @@ function PrivacyPage() {
           <p>
             Une question sur vos données ? Écrivez-nous à{" "}
             <a
-              href="mailto:contact@moninvit.ci"
+              href="mailto:contact@moninvit.com"
               className="font-medium text-[#c17c74] underline underline-offset-2"
             >
-              contact@moninvit.ci
+              contact@moninvit.com
             </a>
             . Nous répondons sous 5 jours ouvrés.
           </p>

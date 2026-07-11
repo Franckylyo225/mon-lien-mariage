@@ -34,7 +34,7 @@ function InvitationPage() {
               to="/"
               className="shrink-0 font-serif text-sm italic text-foreground"
             >
-              ← MonInvit<span className="text-primary">.ci</span>
+              ← MonInvit<span className="text-primary">.com</span>
             </Link>
             <span className="hidden text-xs opacity-40 sm:inline">·</span>
             <p className="hidden truncate font-mono text-[10px] uppercase tracking-widest opacity-60 sm:block">
