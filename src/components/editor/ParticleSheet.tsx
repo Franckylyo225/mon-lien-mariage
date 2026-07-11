@@ -83,6 +83,7 @@ export function ParticleSheet({ open, onOpenChange, config, onPatch, triggers }:
                 onClick={() =>
                   onPatch({
                     particleEffectSlug: style.slug,
+                    particleTriggerLoop: true,
                   })
                 }
               />
