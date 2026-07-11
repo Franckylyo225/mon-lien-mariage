@@ -25,7 +25,7 @@ const TITLES: Record<string, string> = {
 };
 
 function DashboardLayout() {
-  const { couple, ceremonies, guests, account, loading, signOut } = useWedding();
+  const { couple, ceremonies, guests, account, loading, signOut, weddings } = useWedding();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
