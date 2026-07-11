@@ -1051,17 +1051,20 @@ export function configProgress(state: {
   couple: Couple;
   ceremonies: Ceremony[];
   guests: Guest[];
-}): { pct: number; items: { label: string; done: boolean; weight: number }[] } {
+}): { pct: number; done: number; total: number; items: { label: string; done: boolean }[] } {
   const { couple, ceremonies, guests } = state;
   const items = [
-    { label: "Prénoms du couple", done: !!couple.brideName && !!couple.groomName, weight: 15 },
-    { label: "Date du mariage", done: !!couple.weddingDate, weight: 10 },
-    { label: "Au moins 1 étape avec date et lieu", done: ceremonies.some((c) => c.date && c.venue), weight: 20 },
-    { label: "Toutes les étapes ont date et lieu", done: ceremonies.length > 0 && ceremonies.every((c) => c.date && c.venue), weight: 15 },
-    { label: "Au moins 5 invités", done: guests.length >= 5, weight: 15 },
-    { label: "Photo du couple", done: !!couple.heroImageUrl, weight: 10 },
-    { label: "Thème choisi", done: !!couple.theme, weight: 15 },
+    {
+      label: "Informations de base",
+      done: !!couple.brideName && !!couple.groomName && !!couple.weddingDate,
+    },
+    { label: "Le programme", done: ceremonies.some((c) => c.date && c.venue) },
+    { label: "Ma page d'invitation", done: !!couple.heroImageUrl },
+    { label: "Les invités", done: guests.length >= 5 },
+    { label: "Publier et partager", done: !!couple.isPublished },
   ];
-  const pct = items.reduce((sum, i) => sum + (i.done ? i.weight : 0), 0);
-  return { pct, items };
+  const done = items.filter((i) => i.done).length;
+  const total = items.length;
+  const pct = Math.round((done / total) * 100);
+  return { pct, done, total, items };
 }
