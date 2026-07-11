@@ -1,6 +1,17 @@
 import { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { IconCheck, IconChevronRight, IconLock } from "@tabler/icons-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import {
+  IconArrowRight,
+  IconCalendarEvent,
+  IconCheck,
+  IconChevronRight,
+  IconCircleCheck,
+  IconLayout,
+  IconLock,
+  IconPencil,
+  IconShare,
+  IconUsers,
+} from "@tabler/icons-react";
 import {
   useWedding,
   daysUntil,
@@ -14,86 +25,138 @@ export const Route = createFileRoute("/dashboard/")({
   component: DashboardHome,
 });
 
-type ChecklistItem = {
+type TodoItem = {
   key: string;
   label: string;
   description: string;
-  done: boolean;
-  onClick?: () => void;
-  to?:
-    | "/dashboard/ceremonies"
-    | "/dashboard/guests"
-    | "/dashboard/landing"
-    | "/publish";
-  locked?: boolean;
+  Icon: typeof IconCalendarEvent;
+  to: "/dashboard/ceremonies" | "/dashboard/landing" | "/dashboard/guests";
 };
 
 function DashboardHome() {
   const { couple, ceremonies, guests } = useWedding();
+  const navigate = useNavigate();
   const [infoSheetOpen, setInfoSheetOpen] = useState(false);
 
-  // ---- 5 configuration criteria (1 point each)
+  // ---- 5 configuration criteria
   const infosDone = !!couple.brideName && !!couple.groomName && !!couple.weddingDate;
+  const themeDone = !!couple.theme;
   const programmeDone = ceremonies.some((c) => c.date && c.venue);
   const pageDone = !!couple.heroImageUrl;
   const invitesDone = guests.length >= 5;
-  const canPublish = infosDone && programmeDone && pageDone && invitesDone;
-  const publishDone = !!couple.isPublished;
 
-  const criteria = [infosDone, programmeDone, pageDone, invitesDone, publishDone];
+  const criteria = [infosDone, themeDone, programmeDone, pageDone, invitesDone];
   const done = criteria.filter(Boolean).length;
   const total = criteria.length;
   const pct = Math.round((done / total) * 100);
 
-  const items: ChecklistItem[] = [
-    {
+  const canPublish = programmeDone && pageDone && invitesDone;
+  const isPublished = !!couple.isPublished;
+
+  // ---- Done items (compact list)
+  const doneItems: {
+    key: string;
+    label: string;
+    onEdit: () => void;
+  }[] = [];
+  if (infosDone) {
+    doneItems.push({
       key: "infos",
       label: "Informations de base",
-      description: "Prénoms, type, dates, ville",
-      done: infosDone,
-      onClick: () => setInfoSheetOpen(true),
-    },
+      onEdit: () => setInfoSheetOpen(true),
+    });
+  }
+  if (themeDone) {
+    doneItems.push({
+      key: "theme",
+      label: "Thème choisi",
+      onEdit: () => navigate({ to: "/dashboard/landing" }),
+    });
+  }
+  if (programmeDone) {
+    doneItems.push({
+      key: "programme",
+      label: "Programme",
+      onEdit: () => navigate({ to: "/dashboard/ceremonies" }),
+    });
+  }
+  if (pageDone) {
+    doneItems.push({
+      key: "page",
+      label: "Photo du couple",
+      onEdit: () => navigate({ to: "/dashboard/landing" }),
+    });
+  }
+  if (invitesDone) {
+    doneItems.push({
+      key: "invites",
+      label: "Invités",
+      onEdit: () => navigate({ to: "/dashboard/guests" }),
+    });
+  }
+
+  // ---- Remaining actionable items (only 3 tracked cards per spec)
+  const allTodos: (TodoItem & { done: boolean })[] = [
     {
       key: "programme",
       label: "Le programme",
-      description: "Dot, civil, réception et leurs détails",
-      done: programmeDone,
+      description: "Dot, civil, réception…",
+      Icon: IconCalendarEvent,
       to: "/dashboard/ceremonies",
+      done: programmeDone,
     },
     {
       key: "page",
       label: "Ma page d'invitation",
-      description: "Photos, textes, thème et mise en page",
-      done: pageDone,
+      description: "Photos, textes, mise en page",
+      Icon: IconLayout,
       to: "/dashboard/landing",
+      done: pageDone,
     },
     {
       key: "invites",
       label: "Les invités",
       description: "Votre liste de convives",
-      done: invitesDone,
+      Icon: IconUsers,
       to: "/dashboard/guests",
-    },
-    {
-      key: "publish",
-      label: "Publier et partager",
-      description: "Activer le lien et le QR code",
-      done: publishDone,
-      to: canPublish ? "/publish" : undefined,
-      locked: !canPublish,
+      done: invitesDone,
     },
   ];
+  const todos = allTodos.filter((i) => !i.done);
 
-  const completed = items.filter((i) => i.done);
-  const remaining = items.filter((i) => !i.done);
-  const allComplete = remaining.length === 0;
+  // If infos incomplete, surface a card to open the sheet at the top of todos
+  const showInfosCard = !infosDone;
 
   const days = couple.weddingDate ? daysUntil(couple.weddingDate) : null;
   const brideName = couple.brideName || "Prénom A";
   const groomName = couple.groomName || "Prénom B";
 
+  const publicUrl =
+    couple.slug && typeof window !== "undefined"
+      ? `${window.location.host}/e/${couple.slug}`
+      : couple.slug
+        ? `monmariage.ci/e/${couple.slug}`
+        : "";
+
+  const handleShare = async () => {
+    const url =
+      couple.slug && typeof window !== "undefined"
+        ? `${window.location.origin}/e/${couple.slug}`
+        : "";
+    if (!url) return;
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({ title: `${brideName} & ${groomName}`, url });
+      } catch {
+        // user cancelled
+      }
+    } else if (typeof navigator !== "undefined" && navigator.clipboard) {
+      await navigator.clipboard.writeText(url);
+    }
+  };
+
   return (
-    <div className="space-y-8 pt-4">
+    <div className="space-y-7 pt-4">
       {/* Bloc 1 — Identité */}
       <section className="text-center">
         <p className="font-serif text-[24px] italic leading-tight">
@@ -105,7 +168,12 @@ function DashboardHome() {
           <p className="mt-2 text-[12px] text-muted-foreground">
             {formatFrenchDate(couple.weddingDate)}
             {couple.city ? <> · {couple.city}</> : null}
-            {days !== null ? <> · <span className="text-primary">{days} jours</span></> : null}
+            {days !== null ? (
+              <>
+                {" · "}
+                <span className="font-semibold text-primary">{days} jours</span>
+              </>
+            ) : null}
           </p>
         ) : (
           <button
@@ -120,14 +188,14 @@ function DashboardHome() {
       {/* Bloc 2 — Progression */}
       <section>
         <div className="mb-2 flex items-center justify-between">
-          <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+          <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
             Configuration
           </p>
-          <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+          <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
             {done} / {total}
           </p>
         </div>
-        <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+        <div className="h-[5px] overflow-hidden rounded-full bg-muted">
           <div
             className="h-full rounded-full bg-foreground transition-all duration-500 ease-out"
             style={{ width: pct + "%" }}
@@ -135,38 +203,145 @@ function DashboardHome() {
         </div>
       </section>
 
-      {/* Bloc 3 — Checklist */}
-      <section className="space-y-4">
-        {completed.length > 0 ? (
-          <ul className="divide-y divide-border/60 overflow-hidden rounded-xl border border-border bg-card/60">
-            {completed.map((i) => (
-              <ChecklistRow key={i.key} item={i} />
+      {/* Bloc 3 — Déjà fait */}
+      {doneItems.length > 0 ? (
+        <section>
+          <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
+            Déjà fait
+          </p>
+          <ul className="divide-y divide-border/60">
+            {doneItems.map((i) => (
+              <li key={i.key} className="flex items-center gap-3 py-2.5">
+                <span className="grid size-[18px] shrink-0 place-items-center rounded-full bg-foreground text-background">
+                  <IconCheck size={11} strokeWidth={3} />
+                </span>
+                <p className="flex-1 truncate text-[12px] text-muted-foreground line-through">
+                  {i.label}
+                </p>
+                <button
+                  type="button"
+                  onClick={i.onEdit}
+                  className="flex items-center gap-1 rounded-md px-1.5 py-1 text-[10px] text-muted-foreground transition active:bg-secondary/60"
+                >
+                  <span>Modifier</span>
+                  <IconPencil size={12} strokeWidth={1.75} />
+                </button>
+              </li>
             ))}
           </ul>
-        ) : null}
+        </section>
+      ) : null}
 
-        {remaining.length > 0 ? (
-          <ul className="divide-y divide-border/60 overflow-hidden rounded-xl border border-border bg-card">
-            {remaining.map((i) => (
-              <ChecklistRow key={i.key} item={i} />
+      {/* Bloc 4 — À compléter */}
+      {todos.length > 0 || showInfosCard ? (
+        <section>
+          <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
+            À compléter
+          </p>
+          <ul className="space-y-2">
+            {showInfosCard ? (
+              <li>
+                <button
+                  type="button"
+                  onClick={() => setInfoSheetOpen(true)}
+                  className="flex w-full items-center gap-3 rounded-xl border border-border bg-card px-3.5 py-3 text-left transition active:bg-secondary/60"
+                >
+                  <TodoBullet Icon={IconPencil} />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[13px] font-medium">Informations de base</p>
+                    <p className="truncate text-[11px] text-muted-foreground">
+                      Prénoms, type, dates, ville
+                    </p>
+                  </div>
+                  <IconChevronRight size={16} className="text-muted-foreground" />
+                </button>
+              </li>
+            ) : null}
+            {todos.map((i) => (
+              <li key={i.key}>
+                <Link
+                  to={i.to}
+                  className="flex items-center gap-3 rounded-xl border border-border bg-card px-3.5 py-3 transition active:bg-secondary/60"
+                >
+                  <TodoBullet Icon={i.Icon} />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[13px] font-medium">{i.label}</p>
+                    <p className="truncate text-[11px] text-muted-foreground">
+                      {i.description}
+                    </p>
+                  </div>
+                  <IconChevronRight size={16} className="text-muted-foreground" />
+                </Link>
+              </li>
             ))}
           </ul>
-        ) : null}
+        </section>
+      ) : (
+        <section className="flex flex-col items-center gap-2 py-2">
+          <IconCircleCheck size={24} className="text-emerald-600" strokeWidth={1.75} />
+          <p className="text-[13px] text-muted-foreground">
+            Tout est prêt · Publiez votre mariage !
+          </p>
+        </section>
+      )}
 
-        {allComplete ? (
-          <div className="rounded-xl border border-border bg-card p-5 text-center">
-            <p className="font-serif text-xl italic">Tout est prêt</p>
-            <p className="mt-1 text-[12px] text-muted-foreground">
-              Publiez votre mariage !
-            </p>
-            <Link
-              to="/publish"
-              className="mt-4 block w-full rounded-lg bg-foreground py-3 text-[13px] font-medium text-background transition active:scale-[0.99]"
+      {/* Bloc 5 — Publier et partager */}
+      <section className="mt-2">
+        {isPublished ? (
+          <div className="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-3">
+            <IconCircleCheck size={22} className="shrink-0 text-emerald-700" strokeWidth={1.75} />
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] font-medium text-emerald-800">
+                Votre mariage est en ligne
+              </p>
+              {publicUrl ? (
+                <p className="truncate text-[10px] text-emerald-700">{publicUrl}</p>
+              ) : null}
+            </div>
+            <button
+              type="button"
+              onClick={handleShare}
+              className="flex shrink-0 items-center gap-1 rounded-full bg-background px-3 py-1.5 text-[11px] font-medium text-foreground shadow-sm transition active:scale-95"
             >
-              Publier
-            </Link>
+              <IconShare size={12} strokeWidth={1.75} />
+              Partager
+            </button>
           </div>
-        ) : null}
+        ) : canPublish ? (
+          <Link
+            to="/publish"
+            className="flex items-center gap-3 rounded-xl bg-foreground px-3.5 py-3 text-background transition active:scale-[0.99]"
+          >
+            <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-background/15">
+              <IconArrowRight size={16} strokeWidth={1.75} />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] font-medium">Publier et partager</p>
+              <p className="truncate text-[11px] text-background/65">
+                Activez le lien et le QR code
+              </p>
+            </div>
+            <IconChevronRight size={16} className="text-background/70" />
+          </Link>
+        ) : (
+          <div
+            className="flex items-center gap-3 rounded-xl border border-dashed border-border bg-muted/40 px-3.5 py-3 opacity-60"
+            aria-disabled
+          >
+            <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-card">
+              <IconLock size={14} className="text-muted-foreground" strokeWidth={1.75} />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] font-medium text-muted-foreground">
+                Publier et partager
+              </p>
+              <p className="truncate text-[11px] text-muted-foreground">
+                Complétez les étapes ci-dessus
+              </p>
+            </div>
+            <IconLock size={14} className="shrink-0 text-muted-foreground" strokeWidth={1.75} />
+          </div>
+        )}
       </section>
 
       <BasicInfoSheet open={infoSheetOpen} onOpenChange={setInfoSheetOpen} />
@@ -174,63 +349,14 @@ function DashboardHome() {
   );
 }
 
-function ChecklistRow({ item }: { item: ChecklistItem }) {
-  const clickable = !item.locked && (item.to || item.onClick);
-  const inner = (
-    <div
+function TodoBullet({ Icon }: { Icon: typeof IconCalendarEvent }) {
+  return (
+    <span
       className={cn(
-        "flex items-center gap-3 px-4 py-3.5",
-        clickable && "transition active:bg-secondary/60",
-        item.done && !item.onClick && "opacity-70",
+        "relative grid size-[22px] shrink-0 place-items-center rounded-full border border-border bg-background text-muted-foreground",
       )}
     >
-      <span
-        className={cn(
-          "grid size-5 shrink-0 place-items-center rounded-full",
-          item.done
-            ? "bg-foreground text-background"
-            : "border border-border",
-        )}
-      >
-        {item.done ? <IconCheck size={12} strokeWidth={3} /> : null}
-      </span>
-      <div className="min-w-0 flex-1">
-        <p
-          className={cn(
-            "text-[13px]",
-            item.done && !item.onClick && "line-through text-muted-foreground",
-          )}
-        >
-          {item.label}
-        </p>
-        <p className="truncate text-[11px] text-muted-foreground">
-          {item.description}
-        </p>
-      </div>
-      {item.locked ? (
-        <IconLock size={16} className="text-muted-foreground" />
-      ) : clickable ? (
-        <IconChevronRight size={16} className="text-muted-foreground" />
-      ) : null}
-    </div>
+      <Icon size={12} strokeWidth={1.75} />
+    </span>
   );
-
-  if (item.locked) return <li>{inner}</li>;
-  if (item.onClick) {
-    return (
-      <li>
-        <button type="button" onClick={item.onClick} className="w-full text-left">
-          {inner}
-        </button>
-      </li>
-    );
-  }
-  if (item.to) {
-    return (
-      <li>
-        <Link to={item.to}>{inner}</Link>
-      </li>
-    );
-  }
-  return <li>{inner}</li>;
 }
