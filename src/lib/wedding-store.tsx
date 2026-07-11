@@ -492,6 +492,8 @@ function rowToCouple(w: WeddingRow): Couple {
     galleryEnabled: w.gallery_enabled ?? false,
     galleryTitle: w.gallery_title ?? undefined,
     galleryImages: w.gallery_images ?? [],
+    galleryDisplay:
+      (((w as { gallery_display?: string | null }).gallery_display as Couple["galleryDisplay"]) ?? "grid"),
     shareTitle: w.share_title ?? undefined,
     shareDescription: w.share_description ?? undefined,
     shareImageUrl: w.share_image_url ?? undefined,
