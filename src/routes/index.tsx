@@ -781,42 +781,49 @@ function FinalCta() {
 
 
 /* -------------------------------------------------------------------------- */
-/*                              TEMPLATE FAN                                  */
+/*                            TEMPLATE MARQUEE                                */
 /* -------------------------------------------------------------------------- */
 
-function TemplateFan() {
+function TemplateMarquee() {
   const cards = templateOrder.map((id) => ({ id, ...templateMeta[id] }));
-  const arranged = [cards[1], cards[3], cards[0], cards[2], cards[4]];
-  const layout = [
-    { rot: -14, x: -220, y: 40, z: 1, scale: 0.82 },
-    { rot: -7, x: -115, y: 18, z: 2, scale: 0.9 },
-    { rot: 0, x: 0, y: 0, z: 3, scale: 1 },
-    { rot: 7, x: 115, y: 18, z: 2, scale: 0.9 },
-    { rot: 14, x: 220, y: 40, z: 1, scale: 0.82 },
-  ];
+  // duplicate the track so translateX(-50%) loops seamlessly
+  const track = [...cards, ...cards];
+  // alternating tilt angles per card index — mimics the reference layout
+  const tilts = [-4, 3, -2, 5, -3, 2, -5, 4];
 
   return (
-    <div className="relative mx-auto mt-14 h-[380px] w-full max-w-5xl overflow-hidden sm:mt-20 sm:h-[520px]">
-      <div className="absolute left-1/2 top-0 h-full w-full origin-top -translate-x-1/2 scale-[0.62] sm:scale-100">
-        {arranged.map((c, i) => {
-          const l = layout[i];
-          return (
-            <div
-              key={c.id}
-              className="absolute left-1/2 top-1/2 origin-bottom transition-transform duration-500 hover:-translate-y-2"
-              style={{
-                zIndex: l.z,
-                transform: `translate(-50%, -50%) translate(${l.x}px, ${l.y}px) rotate(${l.rot}deg) scale(${l.scale})`,
-              }}
-            >
-              <TemplateCard meta={c} />
-            </div>
-          );
-        })}
+    <div className="marquee-pause relative mx-auto mt-12 w-full sm:mt-16">
+      {/* Fade edges */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-[#fdf7f3] to-transparent sm:w-32"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-[#fdf7f3] to-transparent sm:w-32"
+      />
+
+      <div className="relative w-full overflow-hidden py-6">
+        <div className="animate-marquee-hero flex w-max items-center gap-5 sm:gap-6">
+          {track.map((c, i) => {
+            const rot = tilts[i % tilts.length];
+            return (
+              <div
+                key={`${c.id}-${i}`}
+                className="shrink-0 transition-transform duration-500 hover:!rotate-0 hover:-translate-y-1"
+                style={{ transform: `rotate(${rot}deg)` }}
+              >
+                <TemplateCard meta={c} />
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
 }
+
+
 
 function TemplateCard({
   meta,
