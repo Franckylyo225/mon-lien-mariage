@@ -214,11 +214,37 @@ export function AuthDivider() {
 }
 
 export function GoogleAuthButton({ label }: { label: string }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleClick = async () => {
+    setError(null);
+    setLoading(true);
+    try {
+      const { lovable } = await import("@/integrations/lovable/index");
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+      });
+      if (result.error) {
+        setError(result.error.message ?? "Connexion Google impossible.");
+        setLoading(false);
+        return;
+      }
+      if (result.redirected) return;
+      window.location.href = "/dashboard";
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Connexion Google impossible.");
+      setLoading(false);
+    }
+  };
+
   return (
+    <>
     <button
       type="button"
-      onClick={() => alert("Connexion Google bientôt disponible.")}
-      className="flex w-full items-center justify-center gap-3 rounded-full border border-[#e8c5b6]/70 bg-white/80 px-4 py-3 text-sm font-medium text-[#2b1a14] transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md"
+      onClick={handleClick}
+      disabled={loading}
+      className="flex w-full items-center justify-center gap-3 rounded-full border border-[#e8c5b6]/70 bg-white/80 px-4 py-3 text-sm font-medium text-[#2b1a14] transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md disabled:opacity-60 disabled:hover:translate-y-0"
     >
       <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
         <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/>
