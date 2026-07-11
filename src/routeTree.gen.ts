@@ -23,6 +23,7 @@ import { Route as OnboardingPrenomsRouteImport } from './routes/onboarding.preno
 import { Route as OnboardingEvenementRouteImport } from './routes/onboarding.evenement'
 import { Route as OnboardingDatesRouteImport } from './routes/onboarding.dates'
 import { Route as ESlugRouteImport } from './routes/e.$slug'
+import { Route as DashboardVueRouteImport } from './routes/dashboard.vue'
 import { Route as DashboardStatsRouteImport } from './routes/dashboard.stats'
 import { Route as DashboardShareRouteImport } from './routes/dashboard.share'
 import { Route as DashboardPreviewRouteImport } from './routes/dashboard.preview'
@@ -103,6 +104,11 @@ const ESlugRoute = ESlugRouteImport.update({
   path: '/e/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardVueRoute = DashboardVueRouteImport.update({
+  id: '/vue',
+  path: '/vue',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardStatsRoute = DashboardStatsRouteImport.update({
   id: '/stats',
   path: '/stats',
@@ -163,6 +169,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/preview': typeof DashboardPreviewRoute
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/stats': typeof DashboardStatsRoute
+  '/dashboard/vue': typeof DashboardVueRoute
   '/e/$slug': typeof ESlugRoute
   '/onboarding/dates': typeof OnboardingDatesRoute
   '/onboarding/evenement': typeof OnboardingEvenementRoute
@@ -187,6 +194,7 @@ export interface FileRoutesByTo {
   '/dashboard/preview': typeof DashboardPreviewRoute
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/stats': typeof DashboardStatsRoute
+  '/dashboard/vue': typeof DashboardVueRoute
   '/e/$slug': typeof ESlugRoute
   '/onboarding/dates': typeof OnboardingDatesRoute
   '/onboarding/evenement': typeof OnboardingEvenementRoute
@@ -213,6 +221,7 @@ export interface FileRoutesById {
   '/dashboard/preview': typeof DashboardPreviewRoute
   '/dashboard/share': typeof DashboardShareRoute
   '/dashboard/stats': typeof DashboardStatsRoute
+  '/dashboard/vue': typeof DashboardVueRoute
   '/e/$slug': typeof ESlugRoute
   '/onboarding/dates': typeof OnboardingDatesRoute
   '/onboarding/evenement': typeof OnboardingEvenementRoute
@@ -240,6 +249,7 @@ export interface FileRouteTypes {
     | '/dashboard/preview'
     | '/dashboard/share'
     | '/dashboard/stats'
+    | '/dashboard/vue'
     | '/e/$slug'
     | '/onboarding/dates'
     | '/onboarding/evenement'
@@ -264,6 +274,7 @@ export interface FileRouteTypes {
     | '/dashboard/preview'
     | '/dashboard/share'
     | '/dashboard/stats'
+    | '/dashboard/vue'
     | '/e/$slug'
     | '/onboarding/dates'
     | '/onboarding/evenement'
@@ -289,6 +300,7 @@ export interface FileRouteTypes {
     | '/dashboard/preview'
     | '/dashboard/share'
     | '/dashboard/stats'
+    | '/dashboard/vue'
     | '/e/$slug'
     | '/onboarding/dates'
     | '/onboarding/evenement'
@@ -412,6 +424,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ESlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/vue': {
+      id: '/dashboard/vue'
+      path: '/vue'
+      fullPath: '/dashboard/vue'
+      preLoaderRoute: typeof DashboardVueRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/stats': {
       id: '/dashboard/stats'
       path: '/stats'
@@ -496,6 +515,7 @@ interface DashboardRouteChildren {
   DashboardPreviewRoute: typeof DashboardPreviewRoute
   DashboardShareRoute: typeof DashboardShareRoute
   DashboardStatsRoute: typeof DashboardStatsRoute
+  DashboardVueRoute: typeof DashboardVueRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
   DashboardGuestsNewRoute: typeof DashboardGuestsNewRoute
   DashboardGuestsIndexRoute: typeof DashboardGuestsIndexRoute
@@ -508,6 +528,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardPreviewRoute: DashboardPreviewRoute,
   DashboardShareRoute: DashboardShareRoute,
   DashboardStatsRoute: DashboardStatsRoute,
+  DashboardVueRoute: DashboardVueRoute,
   DashboardIndexRoute: DashboardIndexRoute,
   DashboardGuestsNewRoute: DashboardGuestsNewRoute,
   DashboardGuestsIndexRoute: DashboardGuestsIndexRoute,
