@@ -282,20 +282,6 @@ export function PreviewEditor({ mode }: EditorProps) {
               onClick={() => setSheet("practical")}
             />
             <EditChip
-              icon={<Sparkles className="size-4" />}
-              label="Effet d'ouverture"
-              value={
-                !couple.hasOpeningEffect && !couple.hasEnvelopeAnimation
-                  ? "Aucun · 990 FCFA"
-                  : couple.openingEffectSlug
-                    ? OPENING_EFFECT_LABELS[couple.openingEffectSlug]
-                    : couple.hasEnvelopeAnimation
-                      ? "Enveloppe Royale"
-                      : "Choisir un effet"
-              }
-              onClick={() => setSheet("opening")}
-            />
-            <EditChip
               icon={<Stars className="size-4" />}
               label="Effet de particules"
               value={
