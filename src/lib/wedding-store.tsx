@@ -587,6 +587,8 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.shareTitle !== undefined) r.share_title = p.shareTitle || null;
   if (p.shareDescription !== undefined) r.share_description = p.shareDescription || null;
   if (p.shareImageUrl !== undefined) r.share_image_url = p.shareImageUrl || null;
+  if (p.musicEnabled !== undefined) r.music_enabled = p.musicEnabled;
+  if (p.musicSlug !== undefined) r.music_slug = p.musicSlug ?? null;
   return r;
 }
 
