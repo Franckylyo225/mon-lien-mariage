@@ -41,7 +41,6 @@ type Sheet =
   | "story"
   | "gallery"
   | "theme"
-  | "opening"
   | "particles";
 
 const CAPTION_SUGGESTIONS = [
