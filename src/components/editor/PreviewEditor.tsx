@@ -8,7 +8,9 @@ import { PhotoGridSheet } from "./PhotoGridSheet";
 import { ColorPicker } from "./ColorPicker";
 import { ThemeSheet } from "./ThemeSheet";
 import { ParticleSheet } from "./ParticleSheet";
+import { MusicSheet } from "./MusicSheet";
 import { PARTICLE_STYLES } from "@/lib/particles/styles";
+import { findTrack } from "@/lib/music/tracks";
 import {
   Lock,
   Type,
@@ -24,6 +26,7 @@ import {
   Palette,
   Shirt,
   Stars,
+  Music2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -41,7 +44,8 @@ type Sheet =
   | "story"
   | "gallery"
   | "theme"
-  | "particles";
+  | "particles"
+  | "music";
 
 const CAPTION_SUGGESTIONS = [
   "Ils se disent oui",
