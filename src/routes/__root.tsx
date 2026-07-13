@@ -76,11 +76,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "MonInvit.com — Invitations de mariage digitales, dessinées avec amour" },
+      { title: "MonInvit — Invitations de mariage digitales" },
       {
         name: "description",
         content:
-          "Une invitation de mariage digitale élégante, prête en 10 minutes. RSVP, programme, invités, partage WhatsApp. Créée pour les mariés en Côte d'Ivoire, Sénégal, Bénin, Togo, Mali, Burkina Faso et toute l'Afrique de l'Ouest.",
+          "Créez votre invitation de mariage digitale en 10 minutes. RSVP, programme et partage WhatsApp — pensée pour l'Afrique de l'Ouest.",
       },
       { name: "author", content: "MonInvit.com" },
       { name: "keywords", content: "invitation mariage digitale, faire-part mariage en ligne, RSVP mariage, invitation dot Afrique, invitation mariage Côte d'Ivoire, invitation mariage Sénégal, invitation mariage Bénin, invitation mariage Togo, invitation mariage Mali, invitation mariage Burkina Faso, invitation mariage Afrique de l'Ouest, faire-part digital, invitation WhatsApp" },
@@ -99,17 +99,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:locale:alternate", content: "fr_TG" },
       { property: "og:locale:alternate", content: "fr_ML" },
       { property: "og:locale:alternate", content: "fr_BF" },
-      { property: "og:title", content: "MonInvit.com — Invitations de mariage digitales, dessinées avec amour" },
+      { property: "og:title", content: "MonInvit — Invitations de mariage digitales" },
       {
         property: "og:description",
         content:
-          "Une invitation de mariage digitale élégante, prête en 10 minutes. RSVP, programme, invités, partage WhatsApp. Créée pour les mariés en Côte d'Ivoire, Sénégal, Bénin, Togo, Mali, Burkina Faso et toute l'Afrique de l'Ouest.",
+          "Créez votre invitation de mariage digitale en 10 minutes. RSVP, programme et partage WhatsApp — pensée pour l'Afrique de l'Ouest.",
       },
       // Twitter defaults
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@moninvit" },
-      { name: "twitter:title", content: "MonInvit.com — Invitations de mariage digitales, dessinées avec amour" },
-      { name: "twitter:description", content: "Une invitation de mariage digitale élégante, prête en 10 minutes. RSVP, programme, invités, partage WhatsApp. Créée pour les mariés en Côte d'Ivoire, Sénégal, Bénin, Togo, Mali, Burkina Faso et toute l'Afrique de l'Ouest." },
+      { name: "twitter:title", content: "MonInvit — Invitations de mariage digitales" },
+      { name: "twitter:description", content: "Créez votre invitation de mariage digitale en 10 minutes. RSVP, programme et partage WhatsApp — pensée pour l'Afrique de l'Ouest." },
       { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ab558280-c910-4de6-ac6b-e1b2529247ec/id-preview-c49507f4--e93d96ce-2e56-46da-9063-996fb84fe947.lovable.app-1783800940078.png" },
       { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ab558280-c910-4de6-ac6b-e1b2529247ec/id-preview-c49507f4--e93d96ce-2e56-46da-9063-996fb84fe947.lovable.app-1783800940078.png" },
     ],

@@ -1,0 +1,18 @@
+# MonInvit.com
+
+> Invitations de mariage digitales, RSVP et partage WhatsApp — conçues pour les mariés d'Afrique de l'Ouest (Côte d'Ivoire, Sénégal, Bénin, Togo, Mali, Burkina Faso).
+
+MonInvit permet de créer en 10 minutes une invitation de mariage en ligne élégante, avec gestion des cérémonies (dot, civil, religieux, réception), suivi des réponses des invités et partage instantané par lien WhatsApp.
+
+## Pages
+
+- [Accueil](/): Présentation du produit, tarifs et fonctionnalités.
+- [Comment ça marche](/comment-ca-marche): Les étapes pour créer et publier votre invitation.
+- [Témoignages](/temoignages): Retours de couples ayant utilisé MonInvit.
+- [Exemple d'invitation](/invitation): Aperçu interactif d'une invitation type.
+- [Blog](/blog): Conseils et inspirations pour organiser son mariage.
+
+## Optional
+
+- [Politique de confidentialité](/politique-de-confidentialite)
+- [Termes et conditions](/termes-et-conditions)

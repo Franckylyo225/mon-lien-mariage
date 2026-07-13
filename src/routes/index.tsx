@@ -8,20 +8,43 @@ import ogImage from "@/assets/og-image.jpg.asset.json";
 
 const OG_IMAGE_URL = `https://moninvit.com${ogImage.url}`;
 
+const HOME_FAQS: { q: string; a: string }[] = [
+  {
+    q: "Combien de temps pour créer notre invitation ?",
+    a: "En moyenne 10 minutes pour la version essentielle. Vous pouvez ensuite l'affiner sur plusieurs soirées — vos changements sont sauvegardés automatiquement.",
+  },
+  {
+    q: "Nos invités doivent-ils créer un compte ?",
+    a: "Non, jamais. Ils ouvrent le lien, lisent votre invitation, confirment leur présence en un clic. Ni téléchargement, ni inscription.",
+  },
+  {
+    q: "Quand devons-nous payer ?",
+    a: "Uniquement au moment de la publication, quand vous êtes prêts à partager. Vous pouvez tout construire, tout tester, tout modifier — gratuitement.",
+  },
+  {
+    q: "Peut-on gérer les 4 cérémonies (dot, civil, religieux, réception) ?",
+    a: "Oui, chaque cérémonie a sa propre page avec horaire, lieu, carte et tenue conseillée. Vos invités confirment étape par étape.",
+  },
+  {
+    q: "Est-ce que ça fonctionne sur les vieux téléphones ?",
+    a: "Oui. Notre page est légère, elle s'ouvre en quelques secondes même sur une connexion 3G — pensé pour l'Afrique.",
+  },
+];
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MonInvit.com — Invitations de mariage digitales, dessinées avec amour" },
+      { title: "MonInvit — Invitations de mariage digitales" },
       {
         name: "description",
         content:
-          "Une invitation de mariage digitale élégante, prête en 10 minutes. RSVP, programme, invités, partage WhatsApp. Créée pour les mariés en Côte d'Ivoire, Sénégal, Bénin, Togo, Mali, Burkina Faso et toute l'Afrique de l'Ouest.",
+          "Créez votre invitation de mariage digitale en 10 minutes. RSVP, programme et partage WhatsApp — pensée pour l'Afrique de l'Ouest.",
       },
-      { property: "og:title", content: "MonInvit.com — Invitations de mariage digitales, dessinées avec amour" },
+      { property: "og:title", content: "MonInvit — Invitations de mariage digitales" },
       {
         property: "og:description",
         content:
-          "Une invitation de mariage digitale élégante, prête en 10 minutes. RSVP, programme, invités, partage WhatsApp. Créée pour les mariés en Côte d'Ivoire, Sénégal, Bénin, Togo, Mali, Burkina Faso et toute l'Afrique de l'Ouest.",
+          "Créez votre invitation de mariage digitale en 10 minutes. RSVP, programme et partage WhatsApp — pensée pour l'Afrique de l'Ouest.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://moninvit.com/" },
@@ -30,11 +53,11 @@ export const Route = createFileRoute("/")({
       { property: "og:image:height", content: "630" },
       { property: "og:image:alt", content: "MonInvit.com — Invitations de mariage digitales pour l'Afrique de l'Ouest" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "MonInvit.com — Invitations de mariage digitales, dessinées avec amour" },
+      { name: "twitter:title", content: "MonInvit — Invitations de mariage digitales" },
       {
         name: "twitter:description",
         content:
-          "Une invitation de mariage digitale élégante, prête en 10 minutes. RSVP, programme, invités, partage WhatsApp. Créée pour les mariés en Côte d'Ivoire, Sénégal, Bénin, Togo, Mali, Burkina Faso et toute l'Afrique de l'Ouest.",
+          "Créez votre invitation de mariage digitale en 10 minutes. RSVP, programme et partage WhatsApp — pensée pour l'Afrique de l'Ouest.",
       },
       { name: "twitter:image", content: OG_IMAGE_URL },
     ],
@@ -64,6 +87,18 @@ export const Route = createFileRoute("/")({
             "Burkina Faso", "Guinée", "Niger",
           ],
           offers: { "@type": "Offer", priceCurrency: "XOF", availability: "https://schema.org/InStock" },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: HOME_FAQS.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
         }),
       },
     ],
@@ -686,28 +721,7 @@ function PromiseBlock() {
 /* -------------------------------------------------------------------------- */
 
 function FaqBlock() {
-  const faqs = [
-    {
-      q: "Combien de temps pour créer notre invitation ?",
-      a: "En moyenne 10 minutes pour la version essentielle. Vous pouvez ensuite l'affiner sur plusieurs soirées — vos changements sont sauvegardés automatiquement.",
-    },
-    {
-      q: "Nos invités doivent-ils créer un compte ?",
-      a: "Non, jamais. Ils ouvrent le lien, lisent votre invitation, confirment leur présence en un clic. Ni téléchargement, ni inscription.",
-    },
-    {
-      q: "Quand devons-nous payer ?",
-      a: "Uniquement au moment de la publication, quand vous êtes prêts à partager. Vous pouvez tout construire, tout tester, tout modifier — gratuitement.",
-    },
-    {
-      q: "Peut-on gérer les 4 cérémonies (dot, civil, religieux, réception) ?",
-      a: "Oui, chaque cérémonie a sa propre page avec horaire, lieu, carte et tenue conseillée. Vos invités confirment étape par étape.",
-    },
-    {
-      q: "Est-ce que ça fonctionne sur les vieux téléphones ?",
-      a: "Oui. Notre page est légère, elle s'ouvre en quelques secondes même sur une connexion 3G — pensé pour l'Afrique.",
-    },
-  ];
+  const faqs = HOME_FAQS;
   return (
     <section className="mx-auto max-w-3xl px-5 py-24">
       <div className="text-center">
