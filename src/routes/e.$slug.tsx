@@ -155,6 +155,8 @@ function PublicInvitationPage() {
       (w as { particle_trigger_loop?: boolean | null }).particle_trigger_loop ?? false,
     particleTriggerRsvp:
       (w as { particle_trigger_rsvp?: boolean | null }).particle_trigger_rsvp ?? true,
+    musicEnabled: (w as { music_enabled?: boolean | null }).music_enabled ?? false,
+    musicSlug: ((w as { music_slug?: string | null }).music_slug as string | null) ?? null,
   };
 
   const ceremonies: Ceremony[] = (data.ceremonies ?? []).map((c) => ({
