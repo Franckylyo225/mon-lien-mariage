@@ -294,6 +294,16 @@ export function PreviewEditor({ mode }: EditorProps) {
               }
               onClick={() => setSheet("particles")}
             />
+            <EditChip
+              icon={<Music2 className="size-4" />}
+              label="Musique d'ambiance"
+              value={
+                couple.musicEnabled && couple.musicSlug
+                  ? (findTrack(couple.musicSlug)?.name ?? "Choisie")
+                  : "Aucune"
+              }
+              onClick={() => setSheet("music")}
+            />
 
 
           </div>
@@ -968,6 +978,14 @@ export function PreviewEditor({ mode }: EditorProps) {
           loop: couple.particleTriggerLoop ?? false,
           rsvp: couple.particleTriggerRsvp ?? true,
         }}
+        onPatch={(patch) => persist(patch)}
+      />
+
+      <MusicSheet
+        open={sheet === "music"}
+        onOpenChange={(o) => !o && setSheet(null)}
+        currentSlug={couple.musicSlug ?? null}
+        enabled={couple.musicEnabled ?? false}
         onPatch={(patch) => persist(patch)}
       />
     </>
