@@ -87,6 +87,9 @@ function FullscreenPreview() {
         }
       />
 
+      <AmbientMusicPlayer slug={coupleTheme.musicSlug} enabled={coupleTheme.musicEnabled} />
+
+
       <button
         type="button"
         onClick={() => navigate({ to: "/dashboard/preview" })}
