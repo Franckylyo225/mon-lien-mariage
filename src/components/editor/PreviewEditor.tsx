@@ -22,7 +22,6 @@ import {
   Images,
   Gift,
   Palette,
-  Sparkles,
   Shirt,
   Stars,
 } from "lucide-react";
