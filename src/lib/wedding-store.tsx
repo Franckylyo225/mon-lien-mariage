@@ -197,6 +197,8 @@ export interface Couple {
   shareTitle?: string;
   shareDescription?: string;
   shareImageUrl?: string;
+  musicEnabled?: boolean;
+  musicSlug?: string | null;
 }
 
 
@@ -512,6 +514,8 @@ function rowToCouple(w: WeddingRow): Couple {
     shareTitle: w.share_title ?? undefined,
     shareDescription: w.share_description ?? undefined,
     shareImageUrl: w.share_image_url ?? undefined,
+    musicEnabled: (w as { music_enabled?: boolean | null }).music_enabled ?? false,
+    musicSlug: ((w as { music_slug?: string | null }).music_slug as string | null) ?? null,
   };
 }
 
