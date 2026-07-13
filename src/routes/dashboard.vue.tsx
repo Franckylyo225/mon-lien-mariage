@@ -27,7 +27,6 @@ export const Route = createFileRoute("/dashboard/vue")({
 function FullscreenPreview() {
   const { couple, ceremonies, weddingId } = useWedding();
   const navigate = useNavigate();
-  const [animPlayed, setAnimPlayed] = useState(false);
   const [rsvpBurst, setRsvpBurst] = useState(false);
 
   const resolved = useMemo(
