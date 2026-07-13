@@ -4,7 +4,6 @@ import { IconX } from "@tabler/icons-react";
 import { useWedding } from "@/lib/wedding-store";
 import { componentForTheme } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
-
 import { ParticleCanvas, RsvpBurstOverlay } from "@/components/particles/ParticleCanvas";
 import { applyThemeVars, resolveTheme, themeCssString } from "@/lib/wedding-theme";
 import type {
