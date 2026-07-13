@@ -91,7 +91,6 @@ function PublicInvitationPage() {
     slug: w.slug ?? undefined,
     isPublished: true,
     isLocked: true,
-    hasEnvelopeAnimation: !!w.has_envelope_animation,
     contactName: (w as { contact_name?: string | null }).contact_name ?? undefined,
     contactPhone: (w as { contact_phone?: string | null }).contact_phone ?? undefined,
     contactEmail: (w as { contact_email?: string | null }).contact_email ?? undefined,
@@ -132,9 +131,6 @@ function PublicInvitationPage() {
     registryStores:
       ((w as { registry_stores?: Array<{ name: string; url?: string }> | null }).registry_stores as Couple["registryStores"]) ??
       [],
-    hasOpeningEffect: !!(w as { has_opening_effect?: boolean | null }).has_opening_effect,
-    openingEffectSlug:
-      ((w as { opening_effect_slug?: string | null }).opening_effect_slug as Couple["openingEffectSlug"]) ?? undefined,
     particleEffectSlug:
       ((w as { particle_effect_slug?: string | null }).particle_effect_slug as ParticleSlug | null) ?? null,
     particleIntensity:
