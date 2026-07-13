@@ -88,22 +88,22 @@ function GuestsPage() {
 
 
   const filtered = useMemo(() => {
-    return guests.filter((g) => {
+    return allGuests.filter((g) => {
       if (query && !g.name.toLowerCase().includes(query.toLowerCase())) return false;
       if (typeFilter !== "all" && g.guestType !== typeFilter) return false;
       if (ceremonyFilter !== "all" && !g.ceremonyIds.includes(ceremonyFilter)) return false;
       return true;
     });
-  }, [guests, query, typeFilter, ceremonyFilter]);
+  }, [allGuests, query, typeFilter, ceremonyFilter]);
 
-  const totalCeremonies = new Set(guests.flatMap((g) => g.ceremonyIds)).size;
+  const totalCeremonies = new Set(allGuests.flatMap((g) => g.ceremonyIds)).size;
 
   return (
     <div className="space-y-6">
       <header className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="text-xs text-muted-foreground">
-            {guests.length} invités · {totalCeremonies} étapes couvertes
+            {allGuests.length} invités · {totalCeremonies} étapes couvertes
           </p>
           <h1 className="mt-1 font-serif text-3xl italic">Mes invités</h1>
         </div>
