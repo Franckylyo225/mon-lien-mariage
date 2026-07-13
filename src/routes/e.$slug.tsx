@@ -66,7 +66,6 @@ export const Route = createFileRoute("/e/$slug")({
 function PublicInvitationPage() {
   const { slug } = Route.useParams();
   const { data } = useSuspenseQuery(publicWeddingQuery(slug));
-  const [animPlayed, setAnimPlayed] = useState(false);
   const [rsvpBurst, setRsvpBurst] = useState(false);
 
   if (!data.wedding) throw notFound();
