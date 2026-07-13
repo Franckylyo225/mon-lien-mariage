@@ -197,6 +197,8 @@ export interface Couple {
   shareTitle?: string;
   shareDescription?: string;
   shareImageUrl?: string;
+  musicEnabled?: boolean;
+  musicSlug?: string | null;
 }
 
 
@@ -512,6 +514,8 @@ function rowToCouple(w: WeddingRow): Couple {
     shareTitle: w.share_title ?? undefined,
     shareDescription: w.share_description ?? undefined,
     shareImageUrl: w.share_image_url ?? undefined,
+    musicEnabled: (w as { music_enabled?: boolean | null }).music_enabled ?? false,
+    musicSlug: ((w as { music_slug?: string | null }).music_slug as string | null) ?? null,
   };
 }
 
@@ -583,6 +587,8 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.shareTitle !== undefined) r.share_title = p.shareTitle || null;
   if (p.shareDescription !== undefined) r.share_description = p.shareDescription || null;
   if (p.shareImageUrl !== undefined) r.share_image_url = p.shareImageUrl || null;
+  if (p.musicEnabled !== undefined) r.music_enabled = p.musicEnabled;
+  if (p.musicSlug !== undefined) r.music_slug = p.musicSlug ?? null;
   return r;
 }
 

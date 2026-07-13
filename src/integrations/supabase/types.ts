@@ -393,6 +393,8 @@ export type Database = {
           intro_message: string | null
           is_locked: boolean
           is_published: boolean
+          music_enabled: boolean
+          music_slug: string | null
           onboarding_step: number
           opening_effect_slug: string | null
           owner_id: string
@@ -465,6 +467,8 @@ export type Database = {
           intro_message?: string | null
           is_locked?: boolean
           is_published?: boolean
+          music_enabled?: boolean
+          music_slug?: string | null
           onboarding_step?: number
           opening_effect_slug?: string | null
           owner_id: string
@@ -537,6 +541,8 @@ export type Database = {
           intro_message?: string | null
           is_locked?: boolean
           is_published?: boolean
+          music_enabled?: boolean
+          music_slug?: string | null
           onboarding_step?: number
           opening_effect_slug?: string | null
           owner_id?: string

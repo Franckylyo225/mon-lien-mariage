@@ -5,6 +5,7 @@ import { useWedding } from "@/lib/wedding-store";
 import { componentForTheme } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
 import { ParticleCanvas, RsvpBurstOverlay } from "@/components/particles/ParticleCanvas";
+import { AmbientMusicPlayer } from "@/components/music/AmbientMusicPlayer";
 import { applyThemeVars, resolveTheme, themeCssString } from "@/lib/wedding-theme";
 import type {
   ParticleColorMode,
@@ -85,6 +86,9 @@ function FullscreenPreview() {
           />
         }
       />
+
+      <AmbientMusicPlayer slug={coupleTheme.musicSlug} enabled={coupleTheme.musicEnabled} />
+
 
       <button
         type="button"

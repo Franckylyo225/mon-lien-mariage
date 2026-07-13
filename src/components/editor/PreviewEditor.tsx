@@ -8,7 +8,9 @@ import { PhotoGridSheet } from "./PhotoGridSheet";
 import { ColorPicker } from "./ColorPicker";
 import { ThemeSheet } from "./ThemeSheet";
 import { ParticleSheet } from "./ParticleSheet";
+import { MusicSheet } from "./MusicSheet";
 import { PARTICLE_STYLES } from "@/lib/particles/styles";
+import { findTrack } from "@/lib/music/tracks";
 import {
   Lock,
   Type,
@@ -24,6 +26,7 @@ import {
   Palette,
   Shirt,
   Stars,
+  Music2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -41,7 +44,8 @@ type Sheet =
   | "story"
   | "gallery"
   | "theme"
-  | "particles";
+  | "particles"
+  | "music";
 
 const CAPTION_SUGGESTIONS = [
   "Ils se disent oui",
@@ -289,6 +293,16 @@ export function PreviewEditor({ mode }: EditorProps) {
                   : "Aucun"
               }
               onClick={() => setSheet("particles")}
+            />
+            <EditChip
+              icon={<Music2 className="size-4" />}
+              label="Musique d'ambiance"
+              value={
+                couple.musicEnabled && couple.musicSlug
+                  ? (findTrack(couple.musicSlug)?.name ?? "Choisie")
+                  : "Aucune"
+              }
+              onClick={() => setSheet("music")}
             />
 
 
@@ -964,6 +978,14 @@ export function PreviewEditor({ mode }: EditorProps) {
           loop: couple.particleTriggerLoop ?? false,
           rsvp: couple.particleTriggerRsvp ?? true,
         }}
+        onPatch={(patch) => persist(patch)}
+      />
+
+      <MusicSheet
+        open={sheet === "music"}
+        onOpenChange={(o) => !o && setSheet(null)}
+        currentSlug={couple.musicSlug ?? null}
+        enabled={couple.musicEnabled ?? false}
         onPatch={(patch) => persist(patch)}
       />
     </>

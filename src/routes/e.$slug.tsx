@@ -5,6 +5,7 @@ import { getPublicWedding } from "@/lib/public-wedding.functions";
 import { componentForTheme } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
 import { ParticleCanvas, RsvpBurstOverlay } from "@/components/particles/ParticleCanvas";
+import { AmbientMusicPlayer } from "@/components/music/AmbientMusicPlayer";
 import type { BackgroundBase, Ceremony, Couple, EventType, TemplateId, ThemeId } from "@/lib/wedding-store";
 import { resolveTheme, themeCssString } from "@/lib/wedding-theme";
 import type {
@@ -154,6 +155,8 @@ function PublicInvitationPage() {
       (w as { particle_trigger_loop?: boolean | null }).particle_trigger_loop ?? false,
     particleTriggerRsvp:
       (w as { particle_trigger_rsvp?: boolean | null }).particle_trigger_rsvp ?? true,
+    musicEnabled: (w as { music_enabled?: boolean | null }).music_enabled ?? false,
+    musicSlug: ((w as { music_slug?: string | null }).music_slug as string | null) ?? null,
   };
 
   const ceremonies: Ceremony[] = (data.ceremonies ?? []).map((c) => ({
@@ -220,6 +223,7 @@ function PublicInvitationPage() {
           />
         }
       />
+      <AmbientMusicPlayer slug={coupleTheme.musicSlug} enabled={coupleTheme.musicEnabled} />
     </div>
   );
 }
