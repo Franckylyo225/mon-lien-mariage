@@ -26,11 +26,7 @@ const inputSchema = z.object({ slug: z.string().min(1).max(120) });
 export const getPublicWedding = createServerFn({ method: "GET" })
   .inputValidator((input) => inputSchema.parse(input))
   .handler(async ({ data }) => {
-    const supabase = createClient<Database>(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_PUBLISHABLE_KEY!,
-      { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } },
-    );
+    const supabase = getSupabase();
 
     const { data: wedding, error } = await supabase
       .from("weddings")
@@ -69,11 +65,7 @@ const slugCheckSchema = z.object({
 export const checkSlugAvailability = createServerFn({ method: "GET" })
   .inputValidator((input) => slugCheckSchema.parse(input))
   .handler(async ({ data }) => {
-    const supabase = createClient<Database>(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_PUBLISHABLE_KEY!,
-      { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } },
-    );
+    const supabase = getSupabase();
     // Reads only slug of published weddings; anon can read via existing public policy
     const { data: rows, error } = await supabase
       .from("weddings")
@@ -99,11 +91,7 @@ const rsvpSchema = z.object({
 export const submitPublicRsvp = createServerFn({ method: "POST" })
   .inputValidator((input) => rsvpSchema.parse(input))
   .handler(async ({ data }) => {
-    const supabase = createClient<Database>(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_PUBLISHABLE_KEY!,
-      { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } },
-    );
+    const supabase = getSupabase();
 
     const { error } = await supabase.from("rsvps").insert({
       wedding_id: data.weddingId,
