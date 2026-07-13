@@ -10,12 +10,6 @@ import { ThemeSheet } from "./ThemeSheet";
 import { ParticleSheet } from "./ParticleSheet";
 import { PARTICLE_STYLES } from "@/lib/particles/styles";
 import {
-  OpeningEffect,
-  OPENING_EFFECT_LABELS,
-  OPENING_EFFECT_SLUGS,
-  type OpeningEffectSlug,
-} from "@/components/opening-effects";
-import {
   Lock,
   Type,
   Users,
