@@ -176,21 +176,7 @@ function PublicInvitationPage() {
   return (
     <div className="relative" data-theme={coupleTheme.theme} style={{ backgroundColor: resolved.bg }}>
       <style dangerouslySetInnerHTML={{ __html: `:root{${themeCssString(resolved)}}` }} />
-      {!animPlayed && coupleTheme.hasOpeningEffect && coupleTheme.openingEffectSlug ? (
-        <OpeningEffect
-          slug={coupleTheme.openingEffectSlug as OpeningEffectSlug}
-          couple={coupleTheme}
-          onDone={() => setAnimPlayed(true)}
-        />
-      ) : !animPlayed && coupleTheme.hasEnvelopeAnimation ? (
-        <OpeningEffect
-          slug="envelope-royal"
-          couple={coupleTheme}
-          onDone={() => setAnimPlayed(true)}
-        />
-      ) : null}
-
-      {animPlayed && coupleTheme.particleEffectSlug ? (
+      {coupleTheme.particleEffectSlug ? (
         <ParticleCanvas
           config={{
             slug: coupleTheme.particleEffectSlug as ParticleSlug,
