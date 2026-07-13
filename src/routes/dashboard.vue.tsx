@@ -4,7 +4,6 @@ import { IconX } from "@tabler/icons-react";
 import { useWedding } from "@/lib/wedding-store";
 import { componentForTheme } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
-import { OpeningEffect, type OpeningEffectSlug } from "@/components/opening-effects";
 import { ParticleCanvas, RsvpBurstOverlay } from "@/components/particles/ParticleCanvas";
 import { applyThemeVars, resolveTheme, themeCssString } from "@/lib/wedding-theme";
 import type {
@@ -27,7 +26,6 @@ export const Route = createFileRoute("/dashboard/vue")({
 function FullscreenPreview() {
   const { couple, ceremonies, weddingId } = useWedding();
   const navigate = useNavigate();
-  const [animPlayed, setAnimPlayed] = useState(false);
   const [rsvpBurst, setRsvpBurst] = useState(false);
 
   const resolved = useMemo(
@@ -51,21 +49,7 @@ function FullscreenPreview() {
     >
       <style dangerouslySetInnerHTML={{ __html: `:root{${themeCssString(resolved)}}` }} />
 
-      {!animPlayed && coupleTheme.hasOpeningEffect && coupleTheme.openingEffectSlug ? (
-        <OpeningEffect
-          slug={coupleTheme.openingEffectSlug as OpeningEffectSlug}
-          couple={coupleTheme}
-          onDone={() => setAnimPlayed(true)}
-        />
-      ) : !animPlayed && coupleTheme.hasEnvelopeAnimation ? (
-        <OpeningEffect
-          slug="envelope-royal"
-          couple={coupleTheme}
-          onDone={() => setAnimPlayed(true)}
-        />
-      ) : null}
-
-      {animPlayed && coupleTheme.particleEffectSlug ? (
+      {coupleTheme.particleEffectSlug ? (
         <ParticleCanvas
           config={{
             slug: coupleTheme.particleEffectSlug as ParticleSlug,

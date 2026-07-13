@@ -4,7 +4,6 @@ import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { getPublicWedding } from "@/lib/public-wedding.functions";
 import { componentForTheme } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
-import { OpeningEffect, type OpeningEffectSlug } from "@/components/opening-effects";
 import { ParticleCanvas, RsvpBurstOverlay } from "@/components/particles/ParticleCanvas";
 import type { BackgroundBase, Ceremony, Couple, EventType, TemplateId, ThemeId } from "@/lib/wedding-store";
 import { resolveTheme, themeCssString } from "@/lib/wedding-theme";
@@ -67,7 +66,6 @@ export const Route = createFileRoute("/e/$slug")({
 function PublicInvitationPage() {
   const { slug } = Route.useParams();
   const { data } = useSuspenseQuery(publicWeddingQuery(slug));
-  const [animPlayed, setAnimPlayed] = useState(false);
   const [rsvpBurst, setRsvpBurst] = useState(false);
 
   if (!data.wedding) throw notFound();
@@ -91,7 +89,6 @@ function PublicInvitationPage() {
     slug: w.slug ?? undefined,
     isPublished: true,
     isLocked: true,
-    hasEnvelopeAnimation: !!w.has_envelope_animation,
     contactName: (w as { contact_name?: string | null }).contact_name ?? undefined,
     contactPhone: (w as { contact_phone?: string | null }).contact_phone ?? undefined,
     contactEmail: (w as { contact_email?: string | null }).contact_email ?? undefined,
@@ -132,9 +129,6 @@ function PublicInvitationPage() {
     registryStores:
       ((w as { registry_stores?: Array<{ name: string; url?: string }> | null }).registry_stores as Couple["registryStores"]) ??
       [],
-    hasOpeningEffect: !!(w as { has_opening_effect?: boolean | null }).has_opening_effect,
-    openingEffectSlug:
-      ((w as { opening_effect_slug?: string | null }).opening_effect_slug as Couple["openingEffectSlug"]) ?? undefined,
     particleEffectSlug:
       ((w as { particle_effect_slug?: string | null }).particle_effect_slug as ParticleSlug | null) ?? null,
     particleIntensity:
@@ -180,21 +174,7 @@ function PublicInvitationPage() {
   return (
     <div className="relative" data-theme={coupleTheme.theme} style={{ backgroundColor: resolved.bg }}>
       <style dangerouslySetInnerHTML={{ __html: `:root{${themeCssString(resolved)}}` }} />
-      {!animPlayed && coupleTheme.hasOpeningEffect && coupleTheme.openingEffectSlug ? (
-        <OpeningEffect
-          slug={coupleTheme.openingEffectSlug as OpeningEffectSlug}
-          couple={coupleTheme}
-          onDone={() => setAnimPlayed(true)}
-        />
-      ) : !animPlayed && coupleTheme.hasEnvelopeAnimation ? (
-        <OpeningEffect
-          slug="envelope-royal"
-          couple={coupleTheme}
-          onDone={() => setAnimPlayed(true)}
-        />
-      ) : null}
-
-      {animPlayed && coupleTheme.particleEffectSlug ? (
+      {coupleTheme.particleEffectSlug ? (
         <ParticleCanvas
           config={{
             slug: coupleTheme.particleEffectSlug as ParticleSlug,
