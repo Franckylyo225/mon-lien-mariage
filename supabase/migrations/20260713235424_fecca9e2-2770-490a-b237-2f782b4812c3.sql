@@ -1,0 +1,1 @@
+ALTER TABLE public.weddings ADD COLUMN IF NOT EXISTS music_slug text, ADD COLUMN IF NOT EXISTS music_enabled boolean NOT NULL DEFAULT false;
