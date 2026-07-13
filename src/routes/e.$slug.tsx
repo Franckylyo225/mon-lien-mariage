@@ -78,6 +78,13 @@ function PublicInvitationPage() {
     city: w.city ?? "Abidjan",
     introMessage: w.intro_message ?? "",
     coupleStory: w.couple_story ?? undefined,
+    storyEnabled: (w as { story_enabled?: boolean | null }).story_enabled ?? true,
+    storyTitle: (w as { story_title?: string | null }).story_title ?? undefined,
+    galleryEnabled: (w as { gallery_enabled?: boolean | null }).gallery_enabled ?? false,
+    galleryTitle: (w as { gallery_title?: string | null }).gallery_title ?? undefined,
+    galleryImages: ((w as { gallery_images?: string[] | null }).gallery_images as string[] | null) ?? [],
+    galleryDisplay:
+      (((w as { gallery_display?: string | null }).gallery_display as Couple["galleryDisplay"]) ?? "grid"),
     heroImageUrl: w.hero_image_url ?? undefined,
     templateId: (w.template_id as TemplateId) ?? "terracotta",
     theme: (w.theme as ThemeId) ?? "rose-elegance",
