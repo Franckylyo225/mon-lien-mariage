@@ -30,12 +30,15 @@ export function ThemeThumbnail({ theme, className }: ThemeThumbnailProps) {
         }
         style={{ background: bg }}
       >
+        {/* Fallback ornament sits behind the image so the card never looks
+            empty while the PNG loads or if it fails to load entirely. */}
+        <FallbackThumb theme={theme} className="absolute inset-0" />
         <img
           src={src}
           alt={`Aperçu du thème ${t.name}`}
           loading="lazy"
           decoding="async"
-          className="absolute inset-0 h-full w-full object-cover object-top"
+          className="absolute inset-0 h-full w-full object-cover object-center"
         />
       </div>
     );
