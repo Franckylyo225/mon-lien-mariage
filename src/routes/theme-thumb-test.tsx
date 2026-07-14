@@ -1,30 +1,41 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ThemeThumbnail } from "@/components/editor/ThemeThumbnail";
-import { THEMES } from "@/lib/wedding-theme";
-import type { ThemeId } from "@/lib/wedding-store";
+import { useState } from "react";
+import { ThemeSheet } from "@/components/editor/ThemeSheet";
+import type { Couple } from "@/lib/wedding-store";
 
 export const Route = createFileRoute("/theme-thumb-test")({
-  head: () => ({ meta: [{ title: "Theme thumb test" }] }),
+  head: () => ({ meta: [{ title: "Theme sheet test" }] }),
   component: TestRoute,
 });
 
 function TestRoute() {
-  const slugs = Object.keys(THEMES) as ThemeId[];
+  const [open, setOpen] = useState(true);
+  const [couple, setCouple] = useState<Couple>({
+    brideName: "A",
+    groomName: "B",
+    weddingDate: "2027-02-14",
+    rsvpDeadline: undefined,
+    city: "Abidjan",
+    introMessage: "",
+    templateId: "terracotta",
+    theme: "rose-elegance",
+    caption: "",
+    isPublished: false,
+    isLocked: false,
+    countdownEnabled: true,
+    countdownUnits: ["days"],
+  });
   return (
-    <div className="mx-auto max-w-xl p-4">
-      <div className="grid grid-cols-3 gap-2.5">
-        {slugs.map((s) => (
-          <div
-            key={s}
-            className="relative flex flex-col overflow-hidden rounded-2xl border-2 border-border"
-          >
-            <ThemeThumbnail theme={s} />
-            <div className="border-t border-border bg-background px-2 py-1.5 text-[10px]">
-              {THEMES[s].name}
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="p-8">
+      <button className="rounded bg-black px-4 py-2 text-white" onClick={() => setOpen(true)}>
+        Open Sheet
+      </button>
+      <ThemeSheet
+        open={open}
+        onOpenChange={setOpen}
+        couple={couple}
+        onPatch={(p) => setCouple({ ...couple, ...p })}
+      />
     </div>
   );
 }
