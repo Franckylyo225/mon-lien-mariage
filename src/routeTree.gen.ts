@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ThemeThumbTestRouteImport } from './routes/theme-thumb-test'
 import { Route as TermesEtConditionsRouteImport } from './routes/termes-et-conditions'
 import { Route as TemoignagesRouteImport } from './routes/temoignages'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -50,11 +49,6 @@ import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/e
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 
-const ThemeThumbTestRoute = ThemeThumbTestRouteImport.update({
-  id: '/theme-thumb-test',
-  path: '/theme-thumb-test',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const TermesEtConditionsRoute = TermesEtConditionsRouteImport.update({
   id: '/termes-et-conditions',
   path: '/termes-et-conditions',
@@ -269,7 +263,6 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
-  '/theme-thumb-test': typeof ThemeThumbTestRoute
   '/app/profile': typeof AppProfileRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
@@ -310,7 +303,6 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
-  '/theme-thumb-test': typeof ThemeThumbTestRoute
   '/app/profile': typeof AppProfileRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
@@ -353,7 +345,6 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
-  '/theme-thumb-test': typeof ThemeThumbTestRoute
   '/app/profile': typeof AppProfileRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
@@ -397,7 +388,6 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/temoignages'
     | '/termes-et-conditions'
-    | '/theme-thumb-test'
     | '/app/profile'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
@@ -438,7 +428,6 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/temoignages'
     | '/termes-et-conditions'
-    | '/theme-thumb-test'
     | '/app/profile'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
@@ -480,7 +469,6 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/temoignages'
     | '/termes-et-conditions'
-    | '/theme-thumb-test'
     | '/app/profile'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
@@ -523,7 +511,6 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TemoignagesRoute: typeof TemoignagesRoute
   TermesEtConditionsRoute: typeof TermesEtConditionsRoute
-  ThemeThumbTestRoute: typeof ThemeThumbTestRoute
   AppProfileRoute: typeof AppProfileRoute
   ESlugRoute: typeof ESlugRoute
   ThemeThumbSlugRoute: typeof ThemeThumbSlugRoute
@@ -534,13 +521,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/theme-thumb-test': {
-      id: '/theme-thumb-test'
-      path: '/theme-thumb-test'
-      fullPath: '/theme-thumb-test'
-      preLoaderRoute: typeof ThemeThumbTestRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/termes-et-conditions': {
       id: '/termes-et-conditions'
       path: '/termes-et-conditions'
@@ -907,7 +887,6 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TemoignagesRoute: TemoignagesRoute,
   TermesEtConditionsRoute: TermesEtConditionsRoute,
-  ThemeThumbTestRoute: ThemeThumbTestRoute,
   AppProfileRoute: AppProfileRoute,
   ESlugRoute: ESlugRoute,
   ThemeThumbSlugRoute: ThemeThumbSlugRoute,
