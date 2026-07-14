@@ -18,7 +18,7 @@ function TestRoute() {
     city: "Abidjan",
     introMessage: "",
     templateId: "terracotta",
-    theme: "rose-elegance",
+    theme: "aquarelle",
     caption: "",
     isPublished: false,
     isLocked: false,
