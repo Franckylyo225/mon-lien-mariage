@@ -7,36 +7,100 @@ interface Props {
   enabled?: boolean;
 }
 
+const CROSSFADE_MS = 3500;
+const TARGET_VOLUME = 0.55;
+
 /**
- * Ambient music player for the public invitation page.
- * - Attempts autoplay muted (allowed by browsers), unmutes on first user gesture.
- * - Loops indefinitely.
- * - Shows a floating mute/unmute button.
+ * Ambient music player with seamless crossfade looping.
+ * Uses two <audio> elements ping-ponging: near end of A, start B and fade.
  */
 export function AmbientMusicPlayer({ slug, enabled }: Props) {
   const track = findTrack(slug);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const aRef = useRef<HTMLAudioElement | null>(null);
+  const bRef = useRef<HTMLAudioElement | null>(null);
+  const activeRef = useRef<"a" | "b">("a");
+  const rafRef = useRef<number | null>(null);
+  const scheduledRef = useRef(false);
+  const mutedRef = useRef(true);
   const [muted, setMuted] = useState(true);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     if (!enabled || !track) return;
-    const audio = new Audio(track.url);
-    audio.loop = true;
-    audio.preload = "auto";
-    audio.muted = true;
-    audio.volume = 0.55;
-    audioRef.current = audio;
-    audio.play().then(() => setReady(true)).catch(() => setReady(true));
 
-    // Unmute on first user interaction if user hasn't touched the button yet.
+    const make = () => {
+      const a = new Audio(track.url);
+      a.loop = false;
+      a.preload = "auto";
+      a.crossOrigin = "anonymous";
+      a.volume = 0;
+      a.muted = true;
+      return a;
+    };
+    const a = make();
+    const b = make();
+    aRef.current = a;
+    bRef.current = b;
+
+    const setVol = (el: HTMLAudioElement, v: number) => {
+      el.volume = Math.max(0, Math.min(1, v));
+    };
+
+    const startElement = (el: HTMLAudioElement, targetVol: number) => {
+      el.currentTime = 0;
+      el.muted = mutedRef.current;
+      setVol(el, mutedRef.current ? 0 : targetVol);
+      el.play().catch(() => {});
+    };
+
+    const tick = () => {
+      rafRef.current = null;
+      const active = activeRef.current === "a" ? aRef.current : bRef.current;
+      const other = activeRef.current === "a" ? bRef.current : aRef.current;
+      if (!active || !other) return;
+
+      const dur = active.duration;
+      if (Number.isFinite(dur) && dur > 0) {
+        const remaining = dur - active.currentTime;
+        const fade = Math.min(CROSSFADE_MS / 1000, dur / 3);
+        if (!scheduledRef.current && remaining <= fade) {
+          scheduledRef.current = true;
+          startElement(other, mutedRef.current ? 0 : TARGET_VOLUME);
+        }
+        if (scheduledRef.current) {
+          // t goes 0 -> 1 across the fade window
+          const t = 1 - Math.max(0, remaining) / fade;
+          const target = mutedRef.current ? 0 : TARGET_VOLUME;
+          setVol(active, target * (1 - t));
+          setVol(other, target * t);
+          if (t >= 1 || active.ended) {
+            active.pause();
+            active.currentTime = 0;
+            activeRef.current = activeRef.current === "a" ? "b" : "a";
+            scheduledRef.current = false;
+          }
+        } else if (!mutedRef.current) {
+          setVol(active, TARGET_VOLUME);
+        }
+      }
+      rafRef.current = window.requestAnimationFrame(tick);
+    };
+
+    const onCanPlay = () => setReady(true);
+    a.addEventListener("canplaythrough", onCanPlay, { once: true });
+
+    // Kick off muted (browsers allow autoplay when muted).
+    startElement(a, 0);
+    rafRef.current = window.requestAnimationFrame(tick);
+
     const onFirstGesture = () => {
-      const a = audioRef.current;
-      if (!a) return;
-      if (a.muted) {
-        a.muted = false;
+      if (mutedRef.current) {
+        mutedRef.current = false;
         setMuted(false);
-        a.play().catch(() => {});
+        [aRef.current, bRef.current].forEach((el) => {
+          if (!el) return;
+          el.muted = false;
+        });
       }
       cleanupGestures();
     };
@@ -51,25 +115,32 @@ export function AmbientMusicPlayer({ slug, enabled }: Props) {
 
     return () => {
       cleanupGestures();
-      audio.pause();
-      audio.src = "";
-      audioRef.current = null;
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      a.removeEventListener("canplaythrough", onCanPlay);
+      [a, b].forEach((el) => {
+        el.pause();
+        el.src = "";
+      });
+      aRef.current = null;
+      bRef.current = null;
+      scheduledRef.current = false;
+      activeRef.current = "a";
     };
   }, [enabled, track?.url]);
 
   if (!enabled || !track) return null;
 
   const toggle = () => {
-    const a = audioRef.current;
-    if (!a) return;
-    if (a.muted || a.paused) {
-      a.muted = false;
-      setMuted(false);
-      a.play().catch(() => {});
-    } else {
-      a.muted = true;
-      setMuted(true);
-    }
+    const nextMuted = !mutedRef.current;
+    mutedRef.current = nextMuted;
+    setMuted(nextMuted);
+    [aRef.current, bRef.current].forEach((el) => {
+      if (!el) return;
+      el.muted = nextMuted;
+      if (!nextMuted && el.paused && el === (activeRef.current === "a" ? aRef.current : bRef.current)) {
+        el.play().catch(() => {});
+      }
+    });
   };
 
   return (
