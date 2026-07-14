@@ -100,6 +100,55 @@ function GuestsPage() {
 
   const totalCeremonies = new Set(allGuests.flatMap((g) => g.ceremonyIds)).size;
 
+  const exportXlsx = () => {
+    const ceremonyLabel = (id: string) => {
+      const c = ceremonies.find((x) => x.id === id);
+      return c?.name || c?.label || id;
+    };
+    const rows = filtered.map((g) => {
+      const perCeremony = g.rsvps.reduce<Record<string, RSVPStatus>>((acc, r) => {
+        acc[r.ceremonyId] = r.status;
+        return acc;
+      }, {});
+      const plusOnes = g.rsvps.reduce((sum, r) => sum + (r.plusOnes ?? 0), 0);
+      const global = globalRsvp(g.rsvps.map((r) => r.status));
+      return {
+        Nom: g.name,
+        Téléphone: g.phone ?? "",
+        Email: (g as { email?: string }).email ?? "",
+        Type: guestTypeMeta[g.guestType]?.short ?? g.guestType,
+        Groupe: g.group ?? "",
+        Source: g.source === "auto" ? "Auto-inscription" : "Manuel",
+        "Statut global": global,
+        "Accompagnants": plusOnes,
+        Étapes: g.ceremonyIds.map(ceremonyLabel).join(", "),
+        "Détails par étape": g.ceremonyIds
+          .map((id) => `${ceremonyLabel(id)}: ${perCeremony[id] ?? "en_attente"}`)
+          .join(" | "),
+        Message: g.message ?? "",
+      };
+    });
+    const ws = XLSX.utils.json_to_sheet(rows);
+    ws["!cols"] = [
+      { wch: 24 },
+      { wch: 16 },
+      { wch: 24 },
+      { wch: 14 },
+      { wch: 18 },
+      { wch: 16 },
+      { wch: 14 },
+      { wch: 14 },
+      { wch: 30 },
+      { wch: 40 },
+      { wch: 40 },
+    ];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Invités");
+    const stamp = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(wb, `invites-moninvit-${stamp}.xlsx`);
+  };
+
+
   return (
     <div className="space-y-6">
       <header className="flex items-center justify-between gap-3">
