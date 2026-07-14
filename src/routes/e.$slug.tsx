@@ -6,6 +6,7 @@ import { componentForTheme } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
 import { ParticleCanvas, RsvpBurstOverlay } from "@/components/particles/ParticleCanvas";
 import { AmbientMusicPlayer } from "@/components/music/AmbientMusicPlayer";
+import { RevealOnScroll } from "@/components/site/RevealOnScroll";
 import type { BackgroundBase, Ceremony, Couple, EventType, TemplateId, ThemeId } from "@/lib/wedding-store";
 import { resolveTheme, themeCssString } from "@/lib/wedding-theme";
 import type {
@@ -209,20 +210,22 @@ function PublicInvitationPage() {
         />
       ) : null}
 
-      <Template
-        couple={coupleTheme}
-        ceremonies={ceremonies}
-        rsvpSlot={
-          <TemplateRsvpForm
-            theme={coupleTheme.theme}
-            weddingId={w.id}
-            ceremonies={ceremonies}
-            onConfirmed={() => {
-              if (coupleTheme.particleTriggerRsvp !== false) setRsvpBurst(true);
-            }}
-          />
-        }
-      />
+      <RevealOnScroll>
+        <Template
+          couple={coupleTheme}
+          ceremonies={ceremonies}
+          rsvpSlot={
+            <TemplateRsvpForm
+              theme={coupleTheme.theme}
+              weddingId={w.id}
+              ceremonies={ceremonies}
+              onConfirmed={() => {
+                if (coupleTheme.particleTriggerRsvp !== false) setRsvpBurst(true);
+              }}
+            />
+          }
+        />
+      </RevealOnScroll>
       <AmbientMusicPlayer slug={coupleTheme.musicSlug} enabled={coupleTheme.musicEnabled} />
     </div>
   );
