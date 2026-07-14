@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { Download } from "lucide-react";
+import * as XLSX from "xlsx";
 import { useWedding, type Guest, type RSVPStatus } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
 import { supabase } from "@/integrations/supabase/client";
@@ -98,6 +100,55 @@ function GuestsPage() {
 
   const totalCeremonies = new Set(allGuests.flatMap((g) => g.ceremonyIds)).size;
 
+  const exportXlsx = () => {
+    const ceremonyLabel = (id: string) => {
+      const c = ceremonies.find((x) => x.id === id);
+      return c?.name || c?.label || id;
+    };
+    const rows = filtered.map((g) => {
+      const perCeremony = g.rsvps.reduce<Record<string, RSVPStatus>>((acc, r) => {
+        acc[r.ceremonyId] = r.status;
+        return acc;
+      }, {});
+      const plusOnes = g.rsvps.reduce((sum, r) => sum + (r.plusOnes ?? 0), 0);
+      const global = globalRsvp(g.rsvps.map((r) => r.status));
+      return {
+        Nom: g.name,
+        Téléphone: g.phone ?? "",
+        Email: (g as { email?: string }).email ?? "",
+        Type: guestTypeMeta[g.guestType]?.short ?? g.guestType,
+        Groupe: g.group ?? "",
+        Source: g.source === "auto" ? "Auto-inscription" : "Manuel",
+        "Statut global": global,
+        "Accompagnants": plusOnes,
+        Étapes: g.ceremonyIds.map(ceremonyLabel).join(", "),
+        "Détails par étape": g.ceremonyIds
+          .map((id) => `${ceremonyLabel(id)}: ${perCeremony[id] ?? "en_attente"}`)
+          .join(" | "),
+        Message: g.message ?? "",
+      };
+    });
+    const ws = XLSX.utils.json_to_sheet(rows);
+    ws["!cols"] = [
+      { wch: 24 },
+      { wch: 16 },
+      { wch: 24 },
+      { wch: 14 },
+      { wch: 18 },
+      { wch: 16 },
+      { wch: 14 },
+      { wch: 14 },
+      { wch: 30 },
+      { wch: 40 },
+      { wch: 40 },
+    ];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Invités");
+    const stamp = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(wb, `invites-moninvit-${stamp}.xlsx`);
+  };
+
+
   return (
     <div className="space-y-6">
       <header className="flex items-center justify-between gap-3">
@@ -107,12 +158,24 @@ function GuestsPage() {
           </p>
           <h1 className="mt-1 font-serif text-3xl italic">Mes invités</h1>
         </div>
-        <Link
-          to="/dashboard/guests/new"
-          className="shrink-0 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90"
-        >
-          + Ajouter
-        </Link>
+        <div className="flex shrink-0 items-center gap-2">
+          <button
+            type="button"
+            onClick={exportXlsx}
+            disabled={filtered.length === 0}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2.5 text-sm font-medium hover:bg-secondary/40 disabled:cursor-not-allowed disabled:opacity-50"
+            title="Télécharger la liste au format Excel"
+          >
+            <Download className="size-4" />
+            <span className="hidden sm:inline">Excel</span>
+          </button>
+          <Link
+            to="/dashboard/guests/new"
+            className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90"
+          >
+            + Ajouter
+          </Link>
+        </div>
       </header>
 
       <input
