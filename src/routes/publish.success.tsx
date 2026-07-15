@@ -117,7 +117,7 @@ function SuccessPage() {
     return (
       <div className="mx-auto max-w-lg px-6 py-24 text-center">
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-60">
-          Moneroo
+          Paystack
         </p>
         <p className="mt-4 font-serif text-2xl italic">Vérification du paiement…</p>
         <p className="mt-3 text-sm opacity-70">Merci de patienter quelques instants.</p>
