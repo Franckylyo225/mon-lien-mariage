@@ -2,19 +2,18 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useWedding } from "@/lib/wedding-store";
-import { verifyMonerooPayment } from "@/lib/moneroo.functions";
+import { verifyPaystackPayment } from "@/lib/paystack.functions";
 
 interface SearchParams {
-  paymentId?: string;
-  paymentStatus?: string;
+  reference?: string;
+  trxref?: string;
   wid?: string;
 }
 
 export const Route = createFileRoute("/publish/success")({
   validateSearch: (search: Record<string, unknown>): SearchParams => ({
-    paymentId: typeof search.paymentId === "string" ? search.paymentId : undefined,
-    paymentStatus:
-      typeof search.paymentStatus === "string" ? search.paymentStatus : undefined,
+    reference: typeof search.reference === "string" ? search.reference : undefined,
+    trxref: typeof search.trxref === "string" ? search.trxref : undefined,
     wid: typeof search.wid === "string" ? search.wid : undefined,
   }),
   head: () => ({
