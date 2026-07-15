@@ -43,7 +43,7 @@ function formatFrenchDate(iso: string): string | null {
 
 function PublishPage() {
   const { couple, weddingId, loading } = useWedding();
-  const initPayment = useServerFn(initMonerooPayment);
+  const initPayment = useServerFn(initPaystackPayment);
   const [payLoading, setPayLoading] = useState(false);
 
   const slug = useMemo(
