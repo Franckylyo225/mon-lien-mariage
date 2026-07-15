@@ -34,14 +34,15 @@ type VerifyState =
 function SuccessPage() {
   const { couple } = useWedding();
   const search = Route.useSearch();
-  const verify = useServerFn(verifyMonerooPayment);
+  const verify = useServerFn(verifyPaystackPayment);
   const [copied, setCopied] = useState(false);
+  const reference = search.reference ?? search.trxref;
   const [state, setState] = useState<VerifyState>(
-    search.paymentId ? { kind: "verifying" } : { kind: "pending" },
+    reference ? { kind: "verifying" } : { kind: "pending" },
   );
 
   useEffect(() => {
-    if (!search.paymentId) return;
+    if (!reference) return;
 
     let cancelled = false;
     (async () => {
@@ -61,7 +62,7 @@ function SuccessPage() {
         }
         const res = await verify({
           data: {
-            paymentId: search.paymentId!,
+            reference,
             weddingId,
             slug: pending?.slug ?? couple.slug ?? "",
             envelopeAnimation: pending?.envelope ?? !!couple.hasEnvelopeAnimation,
@@ -92,7 +93,7 @@ function SuccessPage() {
     return () => {
       cancelled = true;
     };
-  }, [search.paymentId, search.wid, verify, couple.slug, couple.hasEnvelopeAnimation]);
+  }, [reference, search.wid, verify, couple.slug, couple.hasEnvelopeAnimation]);
 
   const publicUrl = useMemo(() => {
     const origin =
