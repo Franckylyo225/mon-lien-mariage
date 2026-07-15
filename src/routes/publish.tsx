@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useWedding, slugify } from "@/lib/wedding-store";
-import { initMonerooPayment } from "@/lib/moneroo.functions";
+import { initPaystackPayment } from "@/lib/paystack.functions";
 
 export const Route = createFileRoute("/publish")({
   head: () => ({
