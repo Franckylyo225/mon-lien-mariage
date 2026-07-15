@@ -2,19 +2,18 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { useWedding } from "@/lib/wedding-store";
-import { verifyMonerooPayment } from "@/lib/moneroo.functions";
+import { verifyPaystackPayment } from "@/lib/paystack.functions";
 
 interface SearchParams {
-  paymentId?: string;
-  paymentStatus?: string;
+  reference?: string;
+  trxref?: string;
   wid?: string;
 }
 
 export const Route = createFileRoute("/publish/success")({
   validateSearch: (search: Record<string, unknown>): SearchParams => ({
-    paymentId: typeof search.paymentId === "string" ? search.paymentId : undefined,
-    paymentStatus:
-      typeof search.paymentStatus === "string" ? search.paymentStatus : undefined,
+    reference: typeof search.reference === "string" ? search.reference : undefined,
+    trxref: typeof search.trxref === "string" ? search.trxref : undefined,
     wid: typeof search.wid === "string" ? search.wid : undefined,
   }),
   head: () => ({
@@ -35,14 +34,15 @@ type VerifyState =
 function SuccessPage() {
   const { couple } = useWedding();
   const search = Route.useSearch();
-  const verify = useServerFn(verifyMonerooPayment);
+  const verify = useServerFn(verifyPaystackPayment);
   const [copied, setCopied] = useState(false);
+  const reference = search.reference ?? search.trxref;
   const [state, setState] = useState<VerifyState>(
-    search.paymentId ? { kind: "verifying" } : { kind: "pending" },
+    reference ? { kind: "verifying" } : { kind: "pending" },
   );
 
   useEffect(() => {
-    if (!search.paymentId) return;
+    if (!reference) return;
 
     let cancelled = false;
     (async () => {
@@ -62,7 +62,7 @@ function SuccessPage() {
         }
         const res = await verify({
           data: {
-            paymentId: search.paymentId!,
+            reference,
             weddingId,
             slug: pending?.slug ?? couple.slug ?? "",
             envelopeAnimation: pending?.envelope ?? !!couple.hasEnvelopeAnimation,
@@ -93,7 +93,7 @@ function SuccessPage() {
     return () => {
       cancelled = true;
     };
-  }, [search.paymentId, search.wid, verify, couple.slug, couple.hasEnvelopeAnimation]);
+  }, [reference, search.wid, verify, couple.slug, couple.hasEnvelopeAnimation]);
 
   const publicUrl = useMemo(() => {
     const origin =
@@ -117,7 +117,7 @@ function SuccessPage() {
     return (
       <div className="mx-auto max-w-lg px-6 py-24 text-center">
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-60">
-          Moneroo
+          Paystack
         </p>
         <p className="mt-4 font-serif text-2xl italic">Vérification du paiement…</p>
         <p className="mt-3 text-sm opacity-70">Merci de patienter quelques instants.</p>

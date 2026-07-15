@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useWedding, slugify } from "@/lib/wedding-store";
-import { initMonerooPayment } from "@/lib/moneroo.functions";
+import { initPaystackPayment } from "@/lib/paystack.functions";
 
 export const Route = createFileRoute("/publish")({
   head: () => ({
@@ -43,7 +43,7 @@ function formatFrenchDate(iso: string): string | null {
 
 function PublishPage() {
   const { couple, weddingId, loading } = useWedding();
-  const initPayment = useServerFn(initMonerooPayment);
+  const initPayment = useServerFn(initPaystackPayment);
   const [payLoading, setPayLoading] = useState(false);
 
   const slug = useMemo(
