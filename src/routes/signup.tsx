@@ -38,12 +38,10 @@ function SignupPage() {
       );
     if (!cgu) return setError("Merci d'accepter les CGU.");
     setLoading(true);
-    const emailRedirectTo =
-      typeof window !== "undefined" ? `${window.location.origin}/dashboard` : undefined;
     const { data, error: err } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo },
+      options: { emailRedirectTo: "https://moninvit.com/verify-email" },
     });
     setLoading(false);
     if (err) {
@@ -53,9 +51,7 @@ function SignupPage() {
     if (data.session) {
       navigate({ to: "/onboarding/prenoms" });
     } else {
-      setInfo(
-        `Un email de confirmation vient d'être envoyé à ${email}. Cliquez sur le lien reçu pour activer votre compte.`,
-      );
+      navigate({ to: "/verify-email", search: { email } });
     }
   };
 

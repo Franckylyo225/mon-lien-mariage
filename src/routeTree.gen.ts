@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as TermesEtConditionsRouteImport } from './routes/termes-et-conditions'
 import { Route as TemoignagesRouteImport } from './routes/temoignages'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -50,6 +51,11 @@ import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/em
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as ApiPublicWebhooksPaystackRouteImport } from './routes/api/public/webhooks/paystack'
 
+const VerifyEmailRoute = VerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermesEtConditionsRoute = TermesEtConditionsRouteImport.update({
   id: '/termes-et-conditions',
   path: '/termes-et-conditions',
@@ -270,6 +276,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/app/profile': typeof AppProfileRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
@@ -311,6 +318,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/app/profile': typeof AppProfileRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
@@ -354,6 +362,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/app/profile': typeof AppProfileRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
@@ -398,6 +407,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/temoignages'
     | '/termes-et-conditions'
+    | '/verify-email'
     | '/app/profile'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
@@ -439,6 +449,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/temoignages'
     | '/termes-et-conditions'
+    | '/verify-email'
     | '/app/profile'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
@@ -481,6 +492,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/temoignages'
     | '/termes-et-conditions'
+    | '/verify-email'
     | '/app/profile'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
@@ -524,6 +536,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TemoignagesRoute: typeof TemoignagesRoute
   TermesEtConditionsRoute: typeof TermesEtConditionsRoute
+  VerifyEmailRoute: typeof VerifyEmailRoute
   AppProfileRoute: typeof AppProfileRoute
   ESlugRoute: typeof ESlugRoute
   ThemeThumbSlugRoute: typeof ThemeThumbSlugRoute
@@ -535,6 +548,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verify-email': {
+      id: '/verify-email'
+      path: '/verify-email'
+      fullPath: '/verify-email'
+      preLoaderRoute: typeof VerifyEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/termes-et-conditions': {
       id: '/termes-et-conditions'
       path: '/termes-et-conditions'
@@ -908,6 +928,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TemoignagesRoute: TemoignagesRoute,
   TermesEtConditionsRoute: TermesEtConditionsRoute,
+  VerifyEmailRoute: VerifyEmailRoute,
   AppProfileRoute: AppProfileRoute,
   ESlugRoute: ESlugRoute,
   ThemeThumbSlugRoute: ThemeThumbSlugRoute,
