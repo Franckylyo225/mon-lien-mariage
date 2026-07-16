@@ -32,12 +32,8 @@ function ForgotPasswordPage() {
       return;
     }
     setLoading(true);
-    const redirectTo =
-      typeof window !== "undefined"
-        ? `${window.location.origin}/reset-password`
-        : undefined;
     const { error: err } = await supabase.auth.resetPasswordForEmail(trimmed, {
-      redirectTo,
+      redirectTo: "https://moninvit.com/reset-password",
     });
     setLoading(false);
     if (err) {
