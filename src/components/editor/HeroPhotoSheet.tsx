@@ -1,9 +1,10 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Cropper, { type Area } from "react-easy-crop";
 import imageCompression from "browser-image-compression";
 import { supabase } from "@/integrations/supabase/client";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { Camera, ImageIcon, Loader2, RotateCw, Trash2 } from "lucide-react";
+
 
 
 interface HeroPhotoSheetProps {
@@ -39,7 +40,19 @@ export function HeroPhotoSheet({
   const galleryInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
+  // Track the current object URL so we can revoke it and free memory —
+  // critical on low-RAM Android (Tecno / Itel) where large data URLs OOM.
+  const objectUrlRef = useRef<string | null>(null);
+  const revokeObjectUrl = () => {
+    if (objectUrlRef.current) {
+      URL.revokeObjectURL(objectUrlRef.current);
+      objectUrlRef.current = null;
+    }
+  };
+  useEffect(() => () => revokeObjectUrl(), []);
+
   const reset = () => {
+    revokeObjectUrl();
     setStep("source");
     setImageSrc(null);
     setRotation(0);
@@ -56,18 +69,55 @@ export function HeroPhotoSheet({
 
   const handleFile = async (file: File) => {
     setError(null);
+    // HEIC/HEIF from newer phone cameras can't be decoded by the browser.
+    const nameLower = file.name.toLowerCase();
+    const looksHeic =
+      /image\/hei[cf]/i.test(file.type) ||
+      nameLower.endsWith(".heic") ||
+      nameLower.endsWith(".heif");
+    if (looksHeic) {
+      setError(
+        "Ce format (HEIC) n'est pas lisible par votre navigateur. Dans les réglages de votre appareil photo, choisissez « JPEG » ou « Plus compatible », puis reprenez la photo.",
+      );
+      return;
+    }
     try {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImageSrc(reader.result as string);
-        setStep("crop");
-      };
-      reader.readAsDataURL(file);
+      // Pre-downscale large photos BEFORE feeding the cropper. Full-res
+      // phone photos (12MP+) blow up the WebView canvas on low-end Android
+      // and either silently fail or freeze. 2000px on the long edge is
+      // plenty for a hero image and keeps memory in check.
+      let source: Blob = file;
+      try {
+        source = await imageCompression(file, {
+          maxSizeMB: 3,
+          maxWidthOrHeight: 2000,
+          useWebWorker: true,
+          fileType: "image/jpeg",
+          initialQuality: 0.9,
+        });
+      } catch (preErr) {
+        console.warn("[hero] pre-downscale failed, using original", preErr);
+      }
+      revokeObjectUrl();
+      const url = URL.createObjectURL(source);
+      objectUrlRef.current = url;
+      // Verify the image actually decodes before entering the cropper.
+      await new Promise<void>((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error("decode"));
+        img.src = url;
+      });
+      setImageSrc(url);
+      setStep("crop");
     } catch (err) {
-      console.error(err);
-      setError("Impossible de lire cette photo. Essayez-en une autre.");
+      console.error("[hero] handleFile", err);
+      setError(
+        "Impossible d'ouvrir cette photo. Essayez une autre image ou reprenez-la en JPEG.",
+      );
     }
   };
+
 
   const onCropComplete = useCallback((_: Area, pixels: Area) => {
     setCroppedArea(pixels);

@@ -85,7 +85,19 @@ export function PhotoGridSheet({
       const remaining = Math.max(0, maxImages - images.length);
       const toUpload = Array.from(files).slice(0, remaining);
       const uploaded: string[] = [];
+      const skipped: string[] = [];
       for (const file of toUpload) {
+        // Reject HEIC/HEIF up-front — browsers can't decode them, and the
+        // compressor would silently fail on low-end Android (Tecno, Itel).
+        const nameLower = file.name.toLowerCase();
+        const looksHeic =
+          /image\/hei[cf]/i.test(file.type) ||
+          nameLower.endsWith(".heic") ||
+          nameLower.endsWith(".heif");
+        if (looksHeic) {
+          skipped.push(file.name || "photo");
+          continue;
+        }
         // Compress best-effort; fall back to the original file (Android Chrome
         // sometimes fails to encode WebP / very large HEIC-derived JPEGs).
         let payload: Blob = file;
@@ -111,6 +123,11 @@ export function PhotoGridSheet({
         uploaded.push(signed.signedUrl);
       }
       if (uploaded.length > 0) onImagesChange([...images, ...uploaded]);
+      if (skipped.length > 0) {
+        setError(
+          `Format HEIC non lisible par votre navigateur (${skipped.length} photo${skipped.length > 1 ? "s" : ""} ignorée${skipped.length > 1 ? "s" : ""}). Dans les réglages de votre appareil photo, choisissez « JPEG » ou « Plus compatible ».`,
+        );
+      }
     } catch (err) {
       console.error("[photo upload]", err);
       setError(err instanceof Error ? err.message : "Erreur pendant l'envoi.");
@@ -120,6 +137,7 @@ export function PhotoGridSheet({
       if (cameraInputRef.current) cameraInputRef.current.value = "";
     }
   };
+
 
   function safeUuid(): string {
     if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
