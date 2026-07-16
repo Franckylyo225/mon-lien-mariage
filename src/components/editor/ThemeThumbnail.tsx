@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { THEMES, BACKGROUNDS, type BackgroundSlug } from "@/lib/wedding-theme";
 import { THEME_THUMBNAIL_URL } from "@/lib/theme-thumbnails";
 import type { ThemeId } from "@/lib/wedding-store";
@@ -15,14 +16,15 @@ function bgHex(slug: BackgroundSlug): string {
 /**
  * Real screenshot preview of the theme (captured from the actual
  * invitation template). Falls back to an inline SVG ornament if the
- * PNG asset is missing for some reason.
+ * PNG asset is missing or fails to load (older browsers, flaky network).
  */
 export function ThemeThumbnail({ theme, className }: ThemeThumbnailProps) {
   const t = THEMES[theme];
   const bg = bgHex(t.defaultBg);
   const src = THEME_THUMBNAIL_URL[theme];
+  const [failed, setFailed] = useState(false);
 
-  if (src) {
+  if (src && !failed) {
     return (
       <div
         className={
@@ -33,8 +35,8 @@ export function ThemeThumbnail({ theme, className }: ThemeThumbnailProps) {
         <img
           src={src}
           alt={`Aperçu du thème ${t.name}`}
-          loading="lazy"
           decoding="async"
+          onError={() => setFailed(true)}
           className="absolute inset-0 h-full w-full object-cover object-center"
         />
       </div>
