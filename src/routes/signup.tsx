@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   PasswordChecklist,
@@ -228,13 +228,23 @@ export function GoogleAuthButton({ label }: { label: string }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleClick = async () => {
+  const handleClick = React.useCallback(async () => {
+
     setError(null);
     setLoading(true);
     try {
       const { lovable } = await import("@/integrations/lovable/index");
+      // Force le flow OAuth via le domaine Lovable (le domaine custom moninvit.com
+      // passe par un proxy Vercel qui casse le callback Google). L'utilisateur
+      // termine la connexion sur moninvit.lovable.app où la session est établie.
+      const LOVABLE_ORIGIN = "https://moninvit.lovable.app";
+      const isLovableOrigin = window.location.origin === LOVABLE_ORIGIN;
+      if (!isLovableOrigin) {
+        window.location.href = `${LOVABLE_ORIGIN}/signup?google=1`;
+        return;
+      }
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
+        redirect_uri: LOVABLE_ORIGIN,
       });
       if (result.error) {
         setError(result.error.message ?? "Connexion Google impossible.");
@@ -242,12 +252,23 @@ export function GoogleAuthButton({ label }: { label: string }) {
         return;
       }
       if (result.redirected) return;
-      window.location.href = "/dashboard";
+      window.location.href = `${LOVABLE_ORIGIN}/dashboard`;
+
     } catch (e) {
       setError(e instanceof Error ? e.message : "Connexion Google impossible.");
       setLoading(false);
     }
-  };
+  }, []);
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("google") === "1" && window.location.origin === "https://moninvit.lovable.app") {
+      void handleClick();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   return (
     <>
