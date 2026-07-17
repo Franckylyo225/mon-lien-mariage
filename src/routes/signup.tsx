@@ -173,7 +173,7 @@ export function AuthLayout({
           </div>
 
           <p className="mt-10 text-center text-[11px] text-[#8a6a5e] sm:text-left">
-            © 2027 MonInvit.com
+            © 2026 MonInvit.com
           </p>
         </div>
 
