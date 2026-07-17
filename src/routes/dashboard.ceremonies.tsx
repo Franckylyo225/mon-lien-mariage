@@ -142,11 +142,7 @@ function CeremonySheet({
   const [timeStart, setTimeStart] = useState(initial?.timeStart ?? "18:00");
   const [timeEnd, setTimeEnd] = useState(initial?.timeEnd ?? "");
   const [venue, setVenue] = useState(initial?.venue ?? "");
-  const [dressCode, setDressCode] = useState(initial?.dressCode ?? "");
-  const [color, setColor] = useState(initial?.color ?? "#d97757");
-  const [capacity, setCapacity] = useState<number | "">(initial?.capacity ?? "");
-  const [notes, setNotes] = useState(initial?.notes ?? "");
-  const [status, setStatus] = useState<Ceremony["status"]>(initial?.status ?? "brouillon");
+  const color = initial?.color ?? "#d97757";
   const [program, setProgram] = useState<ProgramItem[]>(initial?.program ?? []);
 
   const addProgramItem = () =>
