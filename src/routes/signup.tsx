@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   PasswordChecklist,
@@ -61,8 +61,6 @@ function SignupPage() {
       title={<>Commençons <em className="text-[#c17c74]">votre histoire.</em></>}
       subtitle="En 10 minutes, votre page d'invitation est prête à être partagée."
     >
-      <GoogleAuthButton label="S'inscrire avec Google" />
-      <AuthDivider />
       <form onSubmit={submit} className="space-y-4">
         <Field label="Adresse email">
           <input
@@ -213,99 +211,4 @@ export function Field({ label, children }: { label: string; children: React.Reac
     </label>
   );
 }
-
-export function AuthDivider() {
-  return (
-    <div className="my-6 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.3em] text-[#8a6a5e]">
-      <span className="h-px flex-1 bg-[#e8c5b6]" />
-      ou
-      <span className="h-px flex-1 bg-[#e8c5b6]" />
-    </div>
-  );
-}
-
-export function GoogleAuthButton({ label }: { label: string }) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleClick = React.useCallback(async () => {
-
-    setError(null);
-    setLoading(true);
-    try {
-      const { lovable } = await import("@/integrations/lovable/index");
-      // Force le flow OAuth via le domaine Lovable (le domaine custom moninvit.com
-      // passe par un proxy Vercel qui casse le callback Google). L'utilisateur
-      // termine la connexion sur moninvit.lovable.app où la session est établie.
-      const LOVABLE_ORIGIN = "https://moninvit.lovable.app";
-      const isLovableOrigin = window.location.origin === LOVABLE_ORIGIN;
-      if (!isLovableOrigin) {
-        window.location.href = `${LOVABLE_ORIGIN}/signup?google=1`;
-        return;
-      }
-      const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: LOVABLE_ORIGIN,
-      });
-      if (result.error) {
-        setError(result.error.message ?? "Connexion Google impossible.");
-        setLoading(false);
-        return;
-      }
-      if (result.redirected) return;
-      // Session établie sur moninvit.lovable.app. On transporte les tokens
-      // vers moninvit.com via le fragment (#) pour que la session y soit recréée.
-      const { data: sessionData } = await supabase.auth.getSession();
-      const s = sessionData.session;
-      if (s) {
-        const hash = new URLSearchParams({
-          access_token: s.access_token,
-          refresh_token: s.refresh_token,
-          expires_in: String(s.expires_in ?? 3600),
-          token_type: s.token_type ?? "bearer",
-          type: "oauth",
-        }).toString();
-        window.location.href = `https://moninvit.com/auth/callback#${hash}`;
-        return;
-      }
-      window.location.href = `${LOVABLE_ORIGIN}/dashboard`;
-
-
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Connexion Google impossible.");
-      setLoading(false);
-    }
-  }, []);
-
-  React.useEffect(() => {
-    if (typeof window === "undefined") return;
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("google") === "1" && window.location.origin === "https://moninvit.lovable.app") {
-      void handleClick();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-
-  return (
-    <>
-    <button
-      type="button"
-      onClick={handleClick}
-      disabled={loading}
-      className="flex w-full items-center justify-center gap-3 rounded-full border border-[#e8c5b6]/70 bg-white/80 px-4 py-3 text-sm font-medium text-[#2b1a14] transition hover:-translate-y-0.5 hover:bg-white hover:shadow-md disabled:opacity-60 disabled:hover:translate-y-0"
-    >
-      <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
-        <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/>
-        <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 16 18.9 13 24 13c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.6 8.3 6.3 14.7z"/>
-        <path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/>
-        <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.1 5.6l6.2 5.2c-.4.4 6.6-4.8 6.6-14.8 0-1.3-.1-2.4-.4-3.5z"/>
-      </svg>
-      {loading ? "Connexion…" : label}
-    </button>
-    {error ? <p className="mt-2 text-center text-xs text-destructive">{error}</p> : null}
-    </>
-  );
-}
-
-
 
