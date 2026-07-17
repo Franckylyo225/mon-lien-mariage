@@ -124,27 +124,6 @@ function EditCeremony() {
         </Field>
       </section>
 
-      <section className="space-y-4">
-        <h2 className="font-serif text-lg italic">Détails</h2>
-        <Field label="Dress code">
-          <input
-            value={form.dressCode ?? ""}
-            onChange={(e) => patch("dressCode", e.target.value)}
-            placeholder="Ex. Tenue de soirée, Wax, Blanc & Or…"
-            className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm"
-          />
-        </Field>
-        <Field label="Capacité maximale">
-          <input
-            type="number"
-            min={0}
-            value={form.capacity ?? ""}
-            onChange={(e) => patch("capacity", e.target.value ? Number(e.target.value) : undefined)}
-            placeholder="Nombre de places"
-            className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm"
-          />
-        </Field>
-      </section>
 
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background p-4 sm:static sm:border-0 sm:p-0">
         <div className="mx-auto flex max-w-xl gap-3">
