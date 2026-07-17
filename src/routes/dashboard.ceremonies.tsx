@@ -346,10 +346,10 @@ function CeremonySheet({
                 timeStart,
                 timeEnd: timeEnd || undefined,
                 venue: venue.trim(),
-                dressCode: dressCode.trim() || undefined,
+                dressCode: initial?.dressCode,
                 color,
-                capacity: capacity === "" ? undefined : capacity,
-                notes: notes.trim() || undefined,
+                capacity: initial?.capacity,
+                notes: initial?.notes,
                 program: program
                   .map((it) => ({
                     ...it,
@@ -357,7 +357,7 @@ function CeremonySheet({
                     description: it.description?.trim() || undefined,
                   }))
                   .filter((it) => it.title.length > 0),
-                status,
+                status: "publiée",
               })
             }
             className="flex-1 rounded-full bg-primary py-3 font-mono text-[10px] uppercase tracking-widest text-primary-foreground disabled:opacity-40"
