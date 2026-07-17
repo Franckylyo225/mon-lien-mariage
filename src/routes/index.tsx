@@ -259,15 +259,15 @@ function FeatureCards() {
       </div>
 
       <div className="mt-14 grid gap-6 md:grid-cols-6">
-        {/* Card 1 — Enveloppe */}
+        {/* Card 1 — Musique d'ambiance */}
         <FeatureCard
           className="md:col-span-3"
           tone="cream"
-          eyebrow="Enveloppe personnalisée"
-          title="Une enveloppe à vos initiales, avec sceau doré."
-          desc="Vos invités ouvrent une vraie enveloppe animée — comme un pli reçu de vos mains."
+          eyebrow="Musique d'ambiance"
+          title="Une bande-son romantique qui démarre à l'ouverture."
+          desc="Choisissez un morceau, activez le lecteur, et offrez à vos invités une immersion complète dès le premier clic."
         >
-          <EnvelopeMock />
+          <MusicMock />
         </FeatureCard>
 
         {/* Card 2 — RSVP dashboard */}
@@ -363,15 +363,40 @@ function FeatureCard({
   );
 }
 
-function EnvelopeMock() {
+function MusicMock() {
   return (
-    <div className="relative h-40 w-64 -rotate-6 rounded-md bg-[#fdf7f3] shadow-[0_20px_40px_-15px_rgba(75,32,20,0.4)] ring-1 ring-[#c17c74]/20">
-      <div className="absolute inset-x-0 top-0 h-20 origin-top rotate-x-[10deg] rounded-t-md border-b border-[#c17c74]/20 bg-[#fbeee4]" />
-      <div className="absolute left-1/2 top-14 flex size-10 -translate-x-1/2 items-center justify-center rounded-full bg-[#c17c74] font-[family-name:var(--font-display)] text-sm italic text-[#fdf7f3] shadow-md">
-        A&S
+    <div className="relative w-64 rounded-2xl bg-[#fdf7f3] p-4 shadow-[0_20px_40px_-15px_rgba(75,32,20,0.35)] ring-1 ring-[#c17c74]/20">
+      <div className="flex items-center gap-3">
+        <div className="grid size-11 place-items-center rounded-full bg-[#c17c74] text-[#fdf7f3] shadow-md">
+          <svg viewBox="0 0 24 24" fill="currentColor" className="size-5 pl-0.5">
+            <path d="M8 5v14l11-7L8 5z" />
+          </svg>
+        </div>
+        <div className="text-left">
+          <p className="font-[family-name:var(--font-display)] text-sm italic text-[#2b1a14]">
+            Vows on Silk
+          </p>
+          <p className="text-[10px] text-[#8a6a5e]">Piano intime · lecture en boucle</p>
+        </div>
       </div>
-      <div className="absolute inset-x-0 bottom-3 text-center font-[family-name:var(--font-display)] text-[11px] italic text-[#8a6a5e]">
-        Aïcha & Loïc · 14.08.2027
+      <div className="mt-4 h-1.5 w-full rounded-full bg-[#e8c5b6]/60">
+        <div className="h-full w-2/3 rounded-full bg-[#c17c74]" />
+      </div>
+      <div className="mt-3 flex items-center justify-between text-[10px] text-[#8a6a5e]">
+        <span>1:24</span>
+        <span>2:08</span>
+      </div>
+      <div className="mt-4 flex items-center justify-center gap-1">
+        {Array.from({ length: 20 }).map((_, i) => (
+          <span
+            key={i}
+            className="w-1 rounded-full bg-[#c17c74]/60"
+            style={{
+              height: `${8 + Math.sin(i * 0.9) * 6}px`,
+              opacity: 0.5 + Math.cos(i * 0.7) * 0.4,
+            }}
+          />
+        ))}
       </div>
     </div>
   );
