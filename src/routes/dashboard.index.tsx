@@ -72,7 +72,7 @@ function DashboardHome() {
     doneItems.push({
       key: "theme",
       label: "Thème choisi",
-      onEdit: () => navigate({ to: "/dashboard/landing" }),
+      onEdit: () => navigate({ to: "/dashboard/preview", search: { sheet: "theme" } }),
     });
   }
   if (programmeDone) {
