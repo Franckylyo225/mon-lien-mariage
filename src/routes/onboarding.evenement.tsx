@@ -12,7 +12,7 @@ type Option = { value: EventType; label: string; blurb: string; icon: string };
 
 const OPTIONS: Option[] = [
   { value: "mariage", label: "Mariage", blurb: "Union officielle", icon: "◈" },
-  { value: "fiancailles", label: "Fiançailles", blurb: "Avant le grand jour", icon: "♡" },
+  { value: "coutumier", label: "Mariage coutumier", blurb: "Rites & traditions", icon: "✿" },
   { value: "anniversaire", label: "Anniversaire", blurb: "De mariage", icon: "✦" },
   { value: "autre", label: "Autre", blurb: "Célébration", icon: "⋯" },
 ];

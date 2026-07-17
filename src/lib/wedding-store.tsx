@@ -53,7 +53,7 @@ export type ThemeId =
 
 export type BackgroundBase = "ivoire" | "creme" | "blanc" | "gris";
 
-export type EventType = "mariage" | "dot" | "traditionnel" | "fiancailles" | "anniversaire" | "autre";
+export type EventType = "mariage" | "dot" | "traditionnel" | "coutumier" | "anniversaire" | "autre";
 
 
 export type RSVPStatus = "confirmé" | "en_attente" | "décliné" | "sans_reponse";

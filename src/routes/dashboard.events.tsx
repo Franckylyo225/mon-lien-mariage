@@ -21,7 +21,7 @@ const EVENT_TYPE_LABELS: Record<string, string> = {
   mariage: "Mariage",
   dot: "Dot",
   traditionnel: "Traditionnel",
-  fiancailles: "Fiançailles",
+  coutumier: "Mariage coutumier",
   anniversaire: "Anniversaire",
   autre: "Événement",
 };

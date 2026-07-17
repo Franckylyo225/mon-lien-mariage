@@ -10,12 +10,12 @@ export const eventTypeMeta: Record<
     label: "Cérémonie traditionnelle",
     programTitle: "Programme de la cérémonie",
   },
-  fiancailles: { label: "Fiançailles", programTitle: "Programme des fiançailles" },
+  coutumier: { label: "Mariage coutumier", programTitle: "Programme du mariage coutumier" },
   anniversaire: { label: "Anniversaire", programTitle: "Programme de l'anniversaire" },
   autre: { label: "Autre événement", programTitle: "Programme de l'événement" },
 };
 
-export const eventTypeOrder: EventType[] = ["mariage", "fiancailles", "anniversaire", "dot", "traditionnel", "autre"];
+export const eventTypeOrder: EventType[] = ["mariage", "coutumier", "anniversaire", "dot", "traditionnel", "autre"];
 
 
 export const ceremonyMeta: Record<

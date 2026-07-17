@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 const EVENT_OPTIONS: { value: EventType; label: string; icon: string }[] = [
   { value: "mariage", label: "Mariage", icon: "◈" },
-  { value: "fiancailles", label: "Fiançailles", icon: "♡" },
+  { value: "coutumier", label: "Mariage coutumier", icon: "✿" },
   { value: "anniversaire", label: "Anniversaire", icon: "✦" },
   { value: "autre", label: "Autre", icon: "⋯" },
 ];
