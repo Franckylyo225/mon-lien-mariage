@@ -228,7 +228,8 @@ export function GoogleAuthButton({ label }: { label: string }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleClick = async () => {
+  const handleClick = React.useCallback(async () => {
+
     setError(null);
     setLoading(true);
     try {
