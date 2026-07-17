@@ -62,27 +62,12 @@ function CeremoniesPage() {
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="font-serif text-lg">{c.name}</h3>
-                      <span
-                        className={
-                          "rounded-full px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest " +
-                          (c.status === "publiée"
-                            ? "bg-primary/10 text-primary"
-                            : "bg-muted text-muted-foreground")
-                        }
-                      >
-                        {c.status}
-                      </span>
                     </div>
                     <p className="mt-0.5 font-mono text-[10px] uppercase tracking-widest opacity-60">
                       {c.label} · {formatShortDate(c.date)} · {c.timeStart}
                       {c.timeEnd ? `–${c.timeEnd}` : ""}
                     </p>
                     <p className="mt-1 text-xs opacity-70">{c.venue}</p>
-                    {c.dressCode ? (
-                      <p className="mt-2 inline-block rounded-full bg-accent/20 px-2.5 py-0.5 text-[10px] opacity-80">
-                        {c.dressCode}
-                      </p>
-                    ) : null}
                     <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[10px] uppercase tracking-widest">
                       <span>
                         <span className="text-primary">{s.confirmés}</span> conf.
@@ -93,9 +78,6 @@ function CeremoniesPage() {
                       <span>
                         <span className="opacity-60">{s.déclinés}</span> décl.
                       </span>
-                      {c.capacity ? (
-                        <span className="opacity-60">/ {c.capacity} max</span>
-                      ) : null}
                     </div>
                   </div>
                 </div>
