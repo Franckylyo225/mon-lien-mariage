@@ -2,34 +2,32 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { templateMeta, templateOrder } from "@/lib/ceremony-meta";
 import { SiteHeader as SharedSiteHeader, SiteFooter as SharedSiteFooter } from "@/components/site/SiteChrome";
 import heroCouple from "@/assets/home-couple.jpg";
+import romanceImg from "@/assets/home-romance.jpg";
+import tableImg from "@/assets/home-table.jpg";
 import ogImage from "@/assets/og-image.jpg.asset.json";
 
 const OG_IMAGE_URL = `https://moninvit.com${ogImage.url}`;
 
 const HOME_FAQS: { q: string; a: string }[] = [
   {
-    q: "Combien de temps faut-il pour créer mon invitation ?",
-    a: "Entre 15 et 30 minutes pour une première version complète. Vous pouvez ensuite modifier à tout moment avant de publier.",
+    q: "Combien de temps pour créer notre invitation ?",
+    a: "En moyenne 10 minutes pour la version essentielle. Vous pouvez ensuite l'affiner sur plusieurs soirées — vos changements sont sauvegardés automatiquement.",
   },
   {
-    q: "Dois-je créer un compte pour commencer ?",
-    a: "Oui, mais en 30 secondes avec votre email. Aucune information de paiement requise à l'inscription.",
+    q: "Nos invités doivent-ils créer un compte ?",
+    a: "Non, jamais. Ils ouvrent le lien, lisent votre invitation, confirment leur présence en un clic. Ni téléchargement, ni inscription.",
   },
   {
-    q: "Peut-on gérer plusieurs cérémonies (dot, civil, religieux) ?",
-    a: "Absolument. Chaque cérémonie a sa propre date, son lieu, son dress code. Vos invités voient uniquement les étapes auxquelles vous les avez conviés.",
+    q: "Quand devons-nous payer ?",
+    a: "Uniquement au moment de la publication, quand vous êtes prêts à partager. Vous pouvez tout construire, tout tester, tout modifier — gratuitement.",
   },
   {
-    q: "Comment mes invités confirment-ils leur présence ?",
-    a: "Ils reçoivent votre lien sur WhatsApp, ouvrent la page et confirment en un tap. Vous voyez les confirmations en temps réel dans votre tableau de bord.",
+    q: "Peut-on gérer les 4 cérémonies (dot, civil, religieux, réception) ?",
+    a: "Oui, chaque cérémonie a sa propre page avec horaire, lieu, carte et tenue conseillée. Vos invités confirment étape par étape.",
   },
   {
-    q: "Est-ce que ça fonctionne sur téléphone ?",
-    a: "La page est conçue pour mobile en priorité. Vos invités l'ouvriront depuis WhatsApp — elle est parfaite sur tous les écrans.",
-  },
-  {
-    q: "Que se passe-t-il après le mariage ?",
-    a: "Votre page se transforme en livre d'or. Vos invités peuvent y déposer photos et messages. Vous téléchargez un PDF souvenir de tout.",
+    q: "Est-ce que ça fonctionne sur les vieux téléphones ?",
+    a: "Oui. Notre page est légère, elle s'ouvre en quelques secondes même sur une connexion 3G — pensé pour l'Afrique.",
   },
 ];
 
@@ -40,13 +38,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Créez en 30 minutes une invitation de mariage digitale élégante — RSVP, programme et partage WhatsApp intégrés. Pensée pour l'Afrique de l'Ouest.",
+          "Créez votre invitation de mariage digitale en 10 minutes. RSVP, programme et partage WhatsApp — pensée pour l'Afrique de l'Ouest.",
       },
       { property: "og:title", content: "MonInvit — Invitations de mariage digitales" },
       {
         property: "og:description",
         content:
-          "Créez en 30 minutes une invitation de mariage digitale élégante — RSVP, programme et partage WhatsApp intégrés.",
+          "Créez votre invitation de mariage digitale en 10 minutes. RSVP, programme et partage WhatsApp — pensée pour l'Afrique de l'Ouest.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://moninvit.com/" },
@@ -59,7 +57,7 @@ export const Route = createFileRoute("/")({
       {
         name: "twitter:description",
         content:
-          "Créez en 30 minutes une invitation de mariage digitale élégante — RSVP, programme et partage WhatsApp intégrés.",
+          "Créez votre invitation de mariage digitale en 10 minutes. RSVP, programme et partage WhatsApp — pensée pour l'Afrique de l'Ouest.",
       },
       { name: "twitter:image", content: OG_IMAGE_URL },
     ],
@@ -88,12 +86,7 @@ export const Route = createFileRoute("/")({
             "Côte d'Ivoire", "Sénégal", "Bénin", "Togo", "Mali",
             "Burkina Faso", "Guinée", "Niger",
           ],
-          offers: {
-            "@type": "Offer",
-            priceCurrency: "XOF",
-            price: "19900",
-            availability: "https://schema.org/InStock",
-          },
+          offers: { "@type": "Offer", priceCurrency: "XOF", availability: "https://schema.org/InStock" },
         }),
       },
       {
@@ -113,24 +106,25 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
+
 /* -------------------------------------------------------------------------- */
 /*                                    PAGE                                    */
 /* -------------------------------------------------------------------------- */
 
 function Landing() {
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#faf8f5] text-[#1a1a1a] font-[var(--font-sans)]">
+    <main className="min-h-screen overflow-x-hidden bg-[#fdf7f3] text-[#2b1a14] font-[var(--font-sans)]">
       <SharedSiteHeader />
+
       <Hero />
-      <StatsStrip />
-      <Testimonials />
-      <Features />
-      <Steps />
-      <ThemesPreview />
+      <ProofStrip />
+      <FeatureCards />
+      <IncludedChecklist />
+      <TimeArgument />
+      <StepsSection />
       <EditorialCouple />
-      <Pricing />
-      <Guarantee />
-      <Faq />
+      <PromiseBlock />
+      <FaqBlock />
       <FinalCta />
       <SharedSiteFooter />
     </main>
@@ -138,77 +132,108 @@ function Landing() {
 }
 
 /* -------------------------------------------------------------------------- */
+/*                                   HEADER                                   */
+/* -------------------------------------------------------------------------- */
+
+
+
+
+/* -------------------------------------------------------------------------- */
 /*                                    HERO                                    */
 /* -------------------------------------------------------------------------- */
 
 function Hero() {
   return (
-    <section className="relative isolate overflow-hidden">
+    <section className="relative isolate">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10"
         style={{
           background:
-            "radial-gradient(1200px 600px at 50% -10%, #f6d9cb 0%, #faf8f5 60%, #faf8f5 100%)",
+            "radial-gradient(1200px 600px at 50% -10%, #f6d9cb 0%, #fdf7f3 55%, #fdf7f3 100%)",
         }}
       />
-      <div className="mx-auto grid max-w-6xl gap-10 px-5 pt-12 pb-6 md:grid-cols-2 md:items-center md:pt-20 md:pb-12">
-        <div className="text-center md:text-left">
-          <span className="inline-flex items-center gap-2 rounded-full border border-[#e8c5b6]/70 bg-[#fbeaf0]/80 px-4 py-1.5 text-[12px] font-medium text-[#7a2440] shadow-sm backdrop-blur-sm">
-            <span aria-hidden>✦</span> Déjà +400 couples en Côte d'Ivoire
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 opacity-60">
+        <span className="absolute left-[8%] top-[18%] size-2 rounded-full bg-[#c17c74]/40" />
+        <span className="absolute right-[12%] top-[10%] size-3 rounded-full bg-[#e8c5b6]/60" />
+        <span className="absolute left-[20%] top-[38%] size-1.5 rounded-full bg-[#d97757]/50" />
+        <span className="absolute right-[18%] top-[55%] size-2 rounded-full bg-[#c9a84c]/40" />
+      </div>
+
+      <div className="mx-auto max-w-5xl px-5 pt-10 text-center sm:pt-16">
+        <h1 className="mt-4 font-[family-name:var(--font-display)] text-[46px] leading-[1.02] sm:text-6xl md:text-[76px]">
+          Votre invitation de mariage,{" "}
+          <em className="italic text-[#c17c74]">rêvée puis dessinée.</em>
+        </h1>
+        <p className="mx-auto mt-4 font-[family-name:var(--font-display)] text-lg italic text-[#8a5a4a] sm:text-xl">
+          Pensée pour les mariés d'Abidjan et d'ailleurs.
+        </p>
+
+        {/* Rating pill */}
+        <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#e8c5b6]/70 bg-white/70 px-4 py-2 shadow-sm backdrop-blur-sm">
+          <StarRow />
+          <span className="text-[13px] text-[#6b4a3e]">
+            <strong className="text-[#2b1a14]">4.9</strong> · Choisie par +500
+            couples ivoiriens
           </span>
-
-          <h1 className="mt-5 font-[family-name:var(--font-display)] text-[36px] leading-[1.05] text-[#1a1a1a] sm:text-5xl md:text-[52px]">
-            Votre mariage mérite{" "}
-            <em className="italic text-[#993556]">une invitation à la hauteur.</em>
-          </h1>
-
-          <p className="mx-auto mt-5 max-w-[520px] text-[16px] leading-relaxed text-[#6b6b6b] md:mx-0 md:text-[18px]">
-            Créez en 30 minutes une page d'invitation personnalisée que vos invités
-            recevront sur WhatsApp — avec RSVP, programme et compte à rebours intégrés.
-          </p>
-
-          <div className="mt-8 flex flex-col items-center gap-3 md:items-start">
-            <Link
-              to="/signup"
-              className="inline-flex items-center justify-center rounded-full bg-[#4b1528] px-7 py-3.5 text-[15px] font-medium text-[#fbeaf0] shadow-lg shadow-[#4b1528]/20 transition hover:-translate-y-0.5 hover:shadow-xl"
-            >
-              Créer mon invitation gratuitement →
-            </Link>
-            <p className="text-xs text-[#8a6a5e]">
-              ✓ Aucune carte bancaire requise · Publication à partir de 19 900 FCFA
-            </p>
-          </div>
         </div>
 
-        <div className="relative">
-          <TemplateFan />
+        <p className="mx-auto mt-6 max-w-xl text-[15px] leading-relaxed text-[#6b4a3e] sm:text-base">
+          Choisissez le style, on le fait vibrer autour de votre histoire.
+          <br className="hidden sm:block" />
+          Un seul lien élégant, prêt à envoyer sur WhatsApp.
+        </p>
+
+        <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+          <Link
+            to="/signup"
+            className="inline-block w-full rounded-full bg-[#2b1a14] px-8 py-4 text-sm font-medium tracking-wide text-[#fdf7f3] shadow-lg shadow-[#c17c74]/20 transition hover:-translate-y-0.5 hover:shadow-xl sm:w-auto"
+          >
+            Créer notre invitation
+          </Link>
+          <p className="text-xs text-[#8a6a5e]">
+            Aucune carte bancaire · Sans engagement jusqu'à la publication
+          </p>
         </div>
       </div>
+
+      <TemplateFan />
     </section>
   );
 }
 
+function StarRow() {
+  return (
+    <span className="flex items-center gap-0.5 text-[#c9a84c]">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <svg key={i} viewBox="0 0 20 20" fill="currentColor" className="size-3.5">
+          <path d="M10 1.5l2.6 5.3 5.9.9-4.2 4.1 1 5.9L10 14.9l-5.3 2.8 1-5.9L1.5 7.7l5.9-.9L10 1.5z" />
+        </svg>
+      ))}
+    </span>
+  );
+}
+
 /* -------------------------------------------------------------------------- */
-/*                                STATS STRIP                                 */
+/*                               PROOF STRIP                                  */
 /* -------------------------------------------------------------------------- */
 
-function StatsStrip() {
+function ProofStrip() {
   const items = [
-    ["30 min", "Pour créer votre page"],
-    ["15", "Thèmes élégants"],
+    ["10 min", "Pour créer votre page"],
+    ["20+", "Modèles romantiques"],
     ["4 étapes", "Dot, civil, religieux, réception"],
     ["0 stress", "RSVP automatiques"],
   ];
   return (
-    <section className="border-y border-[#e5e5e5] bg-white">
-      <div className="mx-auto grid max-w-5xl grid-cols-2 gap-4 px-5 py-10 text-center sm:grid-cols-4">
+    <section className="border-y border-[#e8c5b6]/40 bg-[#fbeee4]/60">
+      <div className="mx-auto grid max-w-5xl grid-cols-2 gap-4 px-5 py-8 text-center sm:grid-cols-4">
         {items.map(([n, l]) => (
           <div key={l}>
-            <p className="font-[family-name:var(--font-display)] text-3xl italic text-[#993556] sm:text-4xl">
+            <p className="font-[family-name:var(--font-display)] text-3xl italic text-[#c17c74] sm:text-4xl">
               {n}
             </p>
-            <p className="mt-1 text-xs text-[#6b6b6b] sm:text-sm">{l}</p>
+            <p className="mt-1 text-xs text-[#6b4a3e] sm:text-sm">{l}</p>
           </div>
         ))}
       </div>
@@ -217,151 +242,358 @@ function StatsStrip() {
 }
 
 /* -------------------------------------------------------------------------- */
-/*                                TESTIMONIALS                                */
+/*                              FEATURE CARDS                                 */
 /* -------------------------------------------------------------------------- */
 
-const TESTIMONIALS = [
-  {
-    initials: "A&K",
-    quote:
-      "Nos invités ont adoré recevoir le lien sur WhatsApp. La page était tellement belle qu'ils ont tous pensé qu'on avait payé un designer.",
-    author: "Adjoua & Koffi",
-    context: "Mariage à Abidjan · Mars 2026",
-  },
-  {
-    initials: "M&S",
-    quote:
-      "En 20 minutes, notre page était prête. On a partagé le lien pour la dot ET la réception, avec deux programmes différents. Incroyable.",
-    author: "Mariama & Seydou",
-    context: "Mariage à Bouaké · Janvier 2026",
-  },
-  {
-    initials: "C&A",
-    quote:
-      "Le compte à rebours sur la page rendait nos invités impatients. Plusieurs nous ont dit que c'était l'invitation la plus élégante qu'ils avaient vue.",
-    author: "Christelle & Arnaud",
-    context: "Mariage à Abidjan · Avril 2026",
-  },
-];
-
-function Testimonials() {
+function FeatureCards() {
   return (
-    <section className="bg-[#faf8f5] py-20 sm:py-24">
-      <div className="mx-auto max-w-6xl px-5">
-        <div className="text-center">
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#993556]">
-            Témoignages
-          </p>
-          <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl italic sm:text-5xl">
-            Ils ont dit oui à <em className="text-[#993556]">MonInvit.</em>
-          </h2>
-        </div>
+    <section className="mx-auto max-w-6xl px-5 py-24">
+      <div className="text-center">
+        <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#c17c74]">
+          Tout ce qu'il vous faut
+        </p>
+        <h2 className="mx-auto mt-4 max-w-2xl font-[family-name:var(--font-display)] text-4xl leading-[1.05] sm:text-5xl">
+          Pour rendre votre invitation{" "}
+          <em className="italic text-[#c17c74]">inoubliable.</em>
+        </h2>
+      </div>
 
-        <div className="mt-12 -mx-5 flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-4 md:mx-0 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-0">
-          {TESTIMONIALS.map((t) => (
-            <article
-              key={t.author}
-              className="flex min-w-[85%] shrink-0 snap-center flex-col rounded-xl border border-[#e5e5e5] bg-white p-6 shadow-sm md:min-w-0"
+      <div className="mt-14 grid gap-6 md:grid-cols-6">
+        {/* Card 1 — Enveloppe */}
+        <FeatureCard
+          className="md:col-span-3"
+          tone="cream"
+          eyebrow="Enveloppe personnalisée"
+          title="Une enveloppe à vos initiales, avec sceau doré."
+          desc="Vos invités ouvrent une vraie enveloppe animée — comme un pli reçu de vos mains."
+        >
+          <EnvelopeMock />
+        </FeatureCard>
+
+        {/* Card 2 — RSVP dashboard */}
+        <FeatureCard
+          className="md:col-span-3"
+          tone="dark"
+          eyebrow="RSVP & tableau de bord"
+          title="Suivez chaque réponse, en direct sur votre téléphone."
+          desc="Confirmations, régimes alimentaires, +1, chansons demandées — tout est là."
+        >
+          <RsvpMock />
+        </FeatureCard>
+
+        {/* Card 3 — Partage */}
+        <FeatureCard
+          className="md:col-span-2"
+          tone="clay"
+          eyebrow="Partage instantané"
+          title="Un lien, WhatsApp, c'est parti."
+          desc="Copiez, partagez, épinglez dans vos groupes. Aucune application à installer."
+        >
+          <ShareMock />
+        </FeatureCard>
+
+        {/* Card 4 — Programme */}
+        <FeatureCard
+          className="md:col-span-2"
+          tone="sage"
+          eyebrow="Programme des 4 jours"
+          title="Dot, civil, religieux, réception."
+          desc="Chaque étape a sa page, son horaire, sa carte et sa tenue conseillée."
+        >
+          <ProgramMock />
+        </FeatureCard>
+
+        {/* Card 5 — Multi-langue */}
+        <FeatureCard
+          className="md:col-span-2"
+          tone="cream"
+          eyebrow="Français · English"
+          title="Une invitation qui parle à toute la famille."
+          desc="Vos oncles à Paris, vos cousines à Atlanta — chacun lit dans sa langue."
+        >
+          <LangMock />
+        </FeatureCard>
+      </div>
+    </section>
+  );
+}
+
+/* ---------------------------- Mock components ----------------------------- */
+
+function FeatureCard({
+  children,
+  eyebrow,
+  title,
+  desc,
+  tone,
+  className = "",
+}: {
+  children: React.ReactNode;
+  eyebrow: string;
+  title: string;
+  desc: string;
+  tone: "cream" | "dark" | "clay" | "sage";
+  className?: string;
+}) {
+  const tones: Record<string, string> = {
+    cream: "bg-[#fbeee4] text-[#2b1a14] border border-[#e8c5b6]/50",
+    dark: "bg-[#2b1a14] text-[#fdf7f3]",
+    clay: "bg-[#c17c74] text-[#fdf7f3]",
+    sage: "bg-[#e5ded1] text-[#2b1a14] border border-[#d5c9b3]/60",
+  };
+  const eyebrowColor =
+    tone === "dark" || tone === "clay" ? "text-[#e8c5b6]" : "text-[#c17c74]";
+  const descColor =
+    tone === "dark" || tone === "clay" ? "text-[#fdf7f3]/80" : "text-[#6b4a3e]";
+  return (
+    <div
+      className={`group relative flex flex-col overflow-hidden rounded-[28px] p-6 transition hover:-translate-y-1 hover:shadow-xl sm:p-8 ${tones[tone]} ${className}`}
+    >
+      <div className="flex min-h-[220px] flex-1 items-center justify-center py-6">
+        {children}
+      </div>
+      <p className={`font-mono text-[10px] uppercase tracking-[0.28em] ${eyebrowColor}`}>
+        {eyebrow}
+      </p>
+      <h3 className="mt-3 font-[family-name:var(--font-display)] text-2xl leading-tight sm:text-[26px]">
+        {title}
+      </h3>
+      <p className={`mt-2 text-sm leading-relaxed ${descColor}`}>{desc}</p>
+    </div>
+  );
+}
+
+function EnvelopeMock() {
+  return (
+    <div className="relative h-40 w-64 -rotate-6 rounded-md bg-[#fdf7f3] shadow-[0_20px_40px_-15px_rgba(75,32,20,0.4)] ring-1 ring-[#c17c74]/20">
+      <div className="absolute inset-x-0 top-0 h-20 origin-top rotate-x-[10deg] rounded-t-md border-b border-[#c17c74]/20 bg-[#fbeee4]" />
+      <div className="absolute left-1/2 top-14 flex size-10 -translate-x-1/2 items-center justify-center rounded-full bg-[#c17c74] font-[family-name:var(--font-display)] text-sm italic text-[#fdf7f3] shadow-md">
+        A&S
+      </div>
+      <div className="absolute inset-x-0 bottom-3 text-center font-[family-name:var(--font-display)] text-[11px] italic text-[#8a6a5e]">
+        Aïcha & Loïc · 14.08.2027
+      </div>
+    </div>
+  );
+}
+
+function RsvpMock() {
+  return (
+    <div className="w-56 rounded-2xl bg-[#fdf7f3] p-4 text-[#2b1a14] shadow-2xl">
+      <p className="font-mono text-[9px] uppercase tracking-widest text-[#c17c74]">
+        Tableau de bord
+      </p>
+      <p className="mt-1 font-[family-name:var(--font-display)] text-xl italic">
+        142 <span className="text-sm not-italic text-[#8a6a5e]">présents</span>
+      </p>
+      <div className="mt-3 h-1.5 w-full rounded-full bg-[#e8c5b6]/60">
+        <div className="h-full w-[78%] rounded-full bg-[#c17c74]" />
+      </div>
+      <ul className="mt-4 space-y-2 text-[11px]">
+        <li className="flex items-center justify-between">
+          <span>Fatou Koné</span>
+          <span className="rounded-full bg-[#d4eadf] px-2 py-0.5 text-[9px] font-medium text-[#2f6b4a]">
+            ✓ Oui
+          </span>
+        </li>
+        <li className="flex items-center justify-between">
+          <span>Kouassi B.</span>
+          <span className="rounded-full bg-[#d4eadf] px-2 py-0.5 text-[9px] font-medium text-[#2f6b4a]">
+            ✓ Oui +1
+          </span>
+        </li>
+        <li className="flex items-center justify-between">
+          <span>Marie D.</span>
+          <span className="rounded-full bg-[#f6e0dc] px-2 py-0.5 text-[9px] font-medium text-[#a24545]">
+            ✗ Empêchée
+          </span>
+        </li>
+      </ul>
+    </div>
+  );
+}
+
+function ShareMock() {
+  return (
+    <div className="relative w-52 rounded-2xl bg-[#25D366]/10 p-3 ring-1 ring-[#25D366]/30">
+      <div className="mb-2 flex items-center gap-2">
+        <span className="size-6 rounded-full bg-[#25D366]" />
+        <span className="text-[11px] font-medium text-[#2b1a14]">WhatsApp</span>
+      </div>
+      <div className="rounded-xl bg-white p-3 shadow-sm">
+        <p className="text-[10px] text-[#6b4a3e]">
+          Vous êtes conviés à notre mariage ✨
+        </p>
+        <div className="mt-2 rounded-md border border-[#e8c5b6] p-2">
+          <p className="font-[family-name:var(--font-display)] text-xs italic text-[#c17c74]">
+            moninvit.com/aicha-loic
+          </p>
+          <p className="mt-0.5 text-[9px] text-[#8a6a5e]">
+            Aïcha & Loïc · 14 août
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProgramMock() {
+  const days = [
+    ["12.08", "Dot"],
+    ["13.08", "Civil"],
+    ["14.08", "Religieux"],
+    ["15.08", "Réception"],
+  ];
+  return (
+    <div className="w-56 rounded-2xl bg-white/80 p-4 shadow-lg">
+      <ul className="space-y-2">
+        {days.map(([d, t]) => (
+          <li key={t} className="flex items-center gap-3 rounded-lg bg-[#fdf7f3] px-3 py-2">
+            <span className="font-mono text-[10px] uppercase tracking-widest text-[#c17c74]">
+              {d}
+            </span>
+            <span className="font-[family-name:var(--font-display)] text-sm italic text-[#2b1a14]">
+              {t}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function LangMock() {
+  return (
+    <div className="flex items-center gap-3">
+      <div className="rounded-2xl bg-white/80 px-4 py-3 shadow-md">
+        <p className="font-mono text-[9px] uppercase tracking-widest text-[#c17c74]">FR</p>
+        <p className="font-[family-name:var(--font-display)] text-base italic">
+          Nous vous invitons…
+        </p>
+      </div>
+      <span className="font-[family-name:var(--font-display)] text-2xl italic text-[#8a6a5e]">
+        ⇄
+      </span>
+      <div className="rounded-2xl bg-white/80 px-4 py-3 shadow-md">
+        <p className="font-mono text-[9px] uppercase tracking-widest text-[#c17c74]">EN</p>
+        <p className="font-[family-name:var(--font-display)] text-base italic">
+          You are invited…
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                            INCLUDED CHECKLIST                              */
+/* -------------------------------------------------------------------------- */
+
+function IncludedChecklist() {
+  const items = [
+    "Enveloppe animée à vos initiales",
+    "Galerie photos illimitée",
+    "RSVP personnalisé",
+    "Tableau de bord privé",
+    "Messages des invités",
+    "Régimes alimentaires",
+    "Programme sur 4 jours",
+    "Carte & itinéraire",
+    "Bilingue FR / EN",
+    "Export Excel",
+    "Partage WhatsApp",
+    "Lien à vie",
+  ];
+  return (
+    <section className="border-y border-[#e8c5b6]/40 bg-[#2b1a14] py-16 text-[#fdf7f3]">
+      <div className="mx-auto max-w-5xl px-5">
+        <p className="text-center font-mono text-[11px] uppercase tracking-[0.3em] text-[#e8c5b6]">
+          Inclus dans chaque invitation
+        </p>
+        <h3 className="mx-auto mt-4 max-w-2xl text-center font-[family-name:var(--font-display)] text-3xl italic sm:text-4xl">
+          Tout est déjà là. Vous n'ajoutez que votre histoire.
+        </h3>
+        <div className="mt-10 flex flex-wrap justify-center gap-x-3 gap-y-3">
+          {items.map((i) => (
+            <span
+              key={i}
+              className="inline-flex items-center gap-2 rounded-full border border-[#e8c5b6]/25 px-4 py-2 text-sm text-[#fdf7f3]/90"
             >
-              <div className="flex items-center gap-1 text-[#c9a84c]" aria-label="5 étoiles sur 5">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <svg key={i} viewBox="0 0 20 20" fill="currentColor" className="size-3.5">
-                    <path d="M10 1.5l2.6 5.3 5.9.9-4.2 4.1 1 5.9L10 14.9l-5.3 2.8 1-5.9L1.5 7.7l5.9-.9L10 1.5z" />
-                  </svg>
-                ))}
-              </div>
-              <p className="mt-4 flex-1 font-[family-name:var(--font-display)] text-[17px] italic leading-relaxed text-[#1a1a1a]">
-                « {t.quote} »
-              </p>
-              <div className="mt-6 flex items-center gap-3 border-t border-[#e5e5e5] pt-4">
-                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[#fbeaf0] font-[family-name:var(--font-display)] text-sm italic text-[#993556]">
-                  {t.initials}
-                </span>
-                <div>
-                  <p className="text-sm font-medium text-[#1a1a1a]">— {t.author}</p>
-                  <p className="text-xs text-[#6b6b6b]">{t.context}</p>
-                </div>
-              </div>
-            </article>
+              <span className="size-1 rounded-full bg-[#e8c5b6]" />
+              {i}
+            </span>
           ))}
         </div>
-
-        <p className="mt-8 text-center text-[13px] text-[#6b6b6b]">
-          Rejoignez +400 couples qui ont choisi MonInvit
-        </p>
       </div>
     </section>
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/*                                  FEATURES                                  */
+/*                              TIME ARGUMENT                                 */
 /* -------------------------------------------------------------------------- */
 
-const FEATURES = [
-  {
-    icon: "♪",
-    eyebrow: "Musique d'ambiance",
-    title: "Une ambiance qui se ressent dès l'ouverture",
-    desc: "Choisissez parmi 26 musiques de mariage soigneusement composées. Dès que vos invités ouvrent votre page, la mélodie les plonge dans l'émotion du moment.",
-  },
-  {
-    icon: "✓",
-    eyebrow: "RSVP en temps réel",
-    title: "Fini les appels pour confirmer",
-    desc: "Chaque invité confirme en un tap. Vous voyez en direct combien viendront à la dot, au civil, à la réception — séparément.",
-  },
-  {
-    icon: "◈",
-    eyebrow: "WhatsApp natif",
-    title: "Partagé là où tout le monde est déjà",
-    desc: "Un lien, un message pré-rempli. Votre famille reçoit l'invitation sur WhatsApp comme un message ordinaire — et clique immédiatement.",
-  },
-  {
-    icon: "✦",
-    eyebrow: "Multi-cérémonies",
-    title: "Dot, civil, réception — tout en un",
-    desc: "Ajoutez chaque étape avec ses détails, son lieu, son dress code. Chaque invité voit uniquement les cérémonies auxquelles il est convié.",
-  },
-];
-
-function Features() {
+function TimeArgument() {
   return (
-    <section className="bg-white py-20 sm:py-24">
-      <div className="mx-auto max-w-6xl px-5">
-        <div className="text-center">
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#993556]">
-            Tout ce qu'il vous faut
-          </p>
-          <h2 className="mx-auto mt-4 max-w-2xl font-[family-name:var(--font-display)] text-4xl leading-[1.05] sm:text-5xl">
-            Pour rendre votre invitation{" "}
-            <em className="italic text-[#993556]">inoubliable.</em>
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-[15px] text-[#6b6b6b]">
-            Tout ce dont vous avez besoin, sans rien de superflu.
-          </p>
+    <section className="mx-auto max-w-5xl px-5 py-24">
+      <div className="grid items-center gap-12 md:grid-cols-2">
+        <div className="relative">
+          <img
+            src={romanceImg}
+            alt="Roses et alliances dorées"
+            width={1024}
+            height={1024}
+            loading="lazy"
+            className="aspect-[4/5] w-full rounded-[2rem] object-cover shadow-xl shadow-[#c17c74]/15"
+          />
+          <div className="absolute -bottom-6 -right-4 hidden rounded-2xl bg-[#fdf7f3] p-4 shadow-lg sm:block">
+            <p className="font-[family-name:var(--font-display)] text-sm italic text-[#6b4a3e]">
+              « Prête en une soirée. »
+            </p>
+            <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-[#c17c74]">
+              Aïcha & Loïc
+            </p>
+          </div>
         </div>
-
-        <div className="mt-14 grid gap-6 sm:grid-cols-2">
-          {FEATURES.map((f) => (
-            <article
-              key={f.title}
-              className="group rounded-2xl border border-[#e5e5e5] bg-[#faf8f5] p-6 transition hover:-translate-y-1 hover:shadow-lg sm:p-8"
-            >
-              <span className="grid size-11 place-items-center rounded-full bg-[#fbeaf0] font-[family-name:var(--font-display)] text-xl italic text-[#993556]">
-                {f.icon}
-              </span>
-              <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.28em] text-[#993556]">
-                {f.eyebrow}
-              </p>
-              <h3 className="mt-2 font-[family-name:var(--font-display)] text-2xl italic leading-tight text-[#1a1a1a]">
-                {f.title}
-              </h3>
-              <p className="mt-3 text-[15px] leading-relaxed text-[#6b6b6b]">
-                {f.desc}
-              </p>
-            </article>
-          ))}
+        <div>
+          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#c17c74]">
+            Pourquoi MonInvit.com
+          </p>
+          <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl leading-[1.05] sm:text-5xl">
+            Le temps de dire{" "}
+            <em className="italic text-[#c17c74]">« oui »</em>, et c'est prêt.
+          </h2>
+          <ul className="mt-8 space-y-6">
+            {[
+              {
+                t: "10 minutes chrono, depuis votre téléphone",
+                d: "Prénoms, date, lieu, quelques photos — votre page est en ligne. Pas de logiciel, pas d'imprimeur, pas de graphiste à briefer.",
+              },
+              {
+                t: "Des modèles pensés pour l'Afrique",
+                d: "Terracotta, wax doré, kente royal, sahel, botanique… des ambiances qui vous ressemblent, loin des clichés génériques.",
+              },
+              {
+                t: "Vos invités RSVP en un seul clic",
+                d: "Un lien à partager sur WhatsApp. Ils confirment, précisent leur régime, laissent un mot — vous suivez tout, en temps réel.",
+              },
+              {
+                t: "Vos données restent vos données",
+                d: "Aucune publicité, pas de revente, pas de compte à créer pour vos invités. Discret et respectueux.",
+              },
+            ].map((b) => (
+              <li key={b.t} className="flex gap-4">
+                <span className="mt-2 h-px w-8 shrink-0 bg-[#c17c74]" />
+                <div>
+                  <p className="font-[family-name:var(--font-display)] text-xl italic">
+                    {b.t}
+                  </p>
+                  <p className="mt-1 text-sm leading-relaxed text-[#6b4a3e]">
+                    {b.d}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>
@@ -372,139 +604,42 @@ function Features() {
 /*                                   STEPS                                    */
 /* -------------------------------------------------------------------------- */
 
-const STEPS = [
-  { n: "1", t: "Vos prénoms", d: "Entrez vos infos en 2 minutes." },
-  { n: "2", t: "Vos dates", d: "Mariage, dot, civil, réception." },
-  { n: "3", t: "Votre ambiance", d: "Choisissez parmi 15 thèmes élégants." },
-  { n: "4", t: "Partagez", d: "Lien WhatsApp en un tap." },
-];
-
-function Steps() {
+function StepsSection() {
+  const steps: Array<[string, string, string]> = [
+    ["01", "Vos prénoms", "Vous et votre moitié, c'est tout ce qu'il faut pour démarrer."],
+    ["02", "Vos dates", "Une seule étape ou toutes : dot, civil, religieux, réception."],
+    ["03", "Votre ambiance", "Un modèle qui vous ressemble, personnalisable en quelques clics."],
+    ["04", "Partagez", "Un lien élégant à envoyer sur WhatsApp. Les RSVP arrivent tout seuls."],
+  ];
   return (
-    <section className="bg-[#faf8f5] py-20 sm:py-24">
-      <div className="mx-auto max-w-6xl px-5">
+    <section className="border-t border-[#e8c5b6]/40 bg-[#fbeee4]/40 py-24">
+      <div className="mx-auto max-w-5xl px-5">
         <div className="text-center">
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#993556]">
-            Comment ça marche
+          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#c17c74]">
+            4 étapes, c'est tout
           </p>
           <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl italic sm:text-5xl">
-            Prêt à partager en <em className="text-[#993556]">4 étapes.</em>
+            De l'idée à l'invitation
           </h2>
         </div>
-
-        <div className="relative mt-14">
-          <div
-            aria-hidden
-            className="absolute left-0 right-0 top-6 hidden h-px bg-gradient-to-r from-transparent via-[#e5c5b6] to-transparent md:block"
-          />
-          <ol className="relative grid gap-8 sm:grid-cols-2 md:grid-cols-4 md:gap-6">
-            {STEPS.map((s) => (
-              <li key={s.n} className="text-center">
-                <div className="mx-auto grid size-12 place-items-center rounded-full border border-[#993556] bg-white font-[family-name:var(--font-display)] text-lg italic text-[#993556] shadow-sm">
-                  {s.n}
-                </div>
-                <p className="mt-4 font-[family-name:var(--font-display)] text-xl italic text-[#1a1a1a]">
-                  {s.t}
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-[#6b6b6b]">
-                  {s.d}
-                </p>
-              </li>
-            ))}
-          </ol>
-        </div>
-
-        <div className="mt-12 text-center">
-          <Link
-            to="/signup"
-            className="inline-flex items-center justify-center rounded-full bg-[#4b1528] px-7 py-3.5 text-[15px] font-medium text-[#fbeaf0] shadow-lg shadow-[#4b1528]/20 transition hover:-translate-y-0.5 hover:shadow-xl"
-          >
-            Commencer maintenant — c'est gratuit →
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*                              THEMES PREVIEW                                */
-/* -------------------------------------------------------------------------- */
-
-function ThemesPreview() {
-  const themes = templateOrder.slice(0, 6).map((id) => ({ id, ...templateMeta[id] }));
-  return (
-    <section className="bg-white py-20 sm:py-24">
-      <div className="mx-auto max-w-6xl px-5">
-        <div className="text-center">
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#993556]">
-            Choix des thèmes
-          </p>
-          <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl italic sm:text-5xl">
-            15 thèmes. Un seul qui est <em className="text-[#993556]">le vôtre.</em>
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-[15px] text-[#6b6b6b]">
-            Du classique élégant aux motifs wax ivoiriens — personnalisez les couleurs
-            selon votre mariage.
-          </p>
-        </div>
-
-        <div className="mt-12 grid grid-cols-2 gap-5 sm:grid-cols-3">
-          {themes.map((t) => (
-            <div key={t.id} className="text-center">
-              <div className="mx-auto aspect-[3/4] w-full overflow-hidden rounded-xl border border-[#e5e5e5] shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-                <MiniTemplateCard meta={t} />
-              </div>
-              <p className="mt-3 font-[family-name:var(--font-display)] text-base italic text-[#1a1a1a]">
-                {t.label}
+        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {steps.map(([n, t, d]) => (
+            <div
+              key={n}
+              className="rounded-3xl border border-[#e8c5b6]/60 bg-[#fdf7f3] p-6 transition hover:-translate-y-1 hover:shadow-lg"
+            >
+              <p className="font-mono text-[10px] uppercase tracking-widest text-[#c17c74]">
+                Étape {n}
               </p>
+              <p className="mt-3 font-[family-name:var(--font-display)] text-2xl italic">
+                {t}
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-[#6b4a3e]">{d}</p>
             </div>
           ))}
         </div>
-
-        <div className="mt-10 text-center">
-          <Link
-            to="/signup"
-            className="inline-flex items-center gap-1 text-sm font-medium text-[#993556] hover:underline"
-          >
-            Voir tous les thèmes →
-          </Link>
-        </div>
       </div>
     </section>
-  );
-}
-
-function MiniTemplateCard({
-  meta,
-}: {
-  meta: { label: string; swatch: string[] };
-}) {
-  const [bg, accent1, accent2, ink] = meta.swatch;
-  return (
-    <div className="flex h-full w-full flex-col" style={{ backgroundColor: bg, color: ink }}>
-      <div className="flex items-center justify-between px-3 pt-3">
-        <span className="font-mono text-[7px] uppercase tracking-[0.25em]" style={{ color: ink, opacity: 0.6 }}>
-          Save the date
-        </span>
-        <span className="size-1 rounded-full" style={{ backgroundColor: accent2 }} />
-      </div>
-      <div
-        className="mx-3 mt-2 flex-1 rounded-sm"
-        style={{ background: `linear-gradient(140deg, ${accent1} 0%, ${accent2} 55%, ${ink} 100%)` }}
-      />
-      <div className="px-3 py-3 text-center">
-        <p className="font-[family-name:var(--font-display)] text-[16px] italic leading-none" style={{ color: ink }}>
-          Aïcha
-        </p>
-        <p className="my-0.5 font-[family-name:var(--font-display)] text-[9px] italic" style={{ color: accent2 }}>
-          &
-        </p>
-        <p className="font-[family-name:var(--font-display)] text-[16px] italic leading-none" style={{ color: ink }}>
-          Loïc
-        </p>
-      </div>
-    </div>
   );
 }
 
@@ -514,39 +649,36 @@ function MiniTemplateCard({
 
 function EditorialCouple() {
   return (
-    <section className="bg-[#faf8f5] py-20 sm:py-24">
-      <div className="mx-auto max-w-6xl px-5">
-        <div className="grid items-center gap-12 md:grid-cols-5">
-          <div className="md:col-span-3">
-            <img
-              src={heroCouple}
-              alt="Couple mariés à Abidjan"
-              width={1024}
-              height={1024}
-              loading="lazy"
-              className="aspect-[5/4] w-full rounded-[2rem] object-cover shadow-xl shadow-[#993556]/15"
-            />
-          </div>
-          <div className="md:col-span-2">
-            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#993556]">
-              Chaque couple est unique
-            </p>
-            <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl italic leading-[1.05] sm:text-[36px]">
-              Chaque mariage <br />
-              a sa propre <em className="text-[#993556]">histoire.</em>
-            </h2>
-            <p className="mt-6 text-[15px] leading-relaxed text-[#6b6b6b]">
-              MonInvit comprend vos besoins. Que vous célébriez une dot intime ou une
-              réception à l'église, le civil en mairie ou le dîner de gala — votre
-              programme, votre page, vos invités. Tout en un.
-            </p>
-            <Link
-              to="/signup"
-              className="mt-8 inline-flex items-center rounded-full bg-[#4b1528] px-7 py-3.5 text-[15px] font-medium text-[#fbeaf0] shadow-lg shadow-[#4b1528]/20 transition hover:-translate-y-0.5"
-            >
-              Créer ma page →
-            </Link>
-          </div>
+    <section className="mx-auto max-w-6xl px-5 py-24">
+      <div className="grid items-center gap-12 md:grid-cols-5">
+        <div className="md:col-span-3">
+          <img
+            src={heroCouple}
+            alt="Couple mariés à Abidjan"
+            width={1024}
+            height={1024}
+            loading="lazy"
+            className="aspect-[5/4] w-full rounded-[2rem] object-cover shadow-xl shadow-[#c17c74]/15"
+          />
+        </div>
+        <div className="md:col-span-2">
+          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#c17c74]">
+            Pensé à Abidjan
+          </p>
+          <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl italic leading-[1.05] sm:text-5xl">
+            Chaque mariage <br />a sa propre histoire.
+          </h2>
+          <p className="mt-6 text-[15px] leading-relaxed text-[#6b4a3e]">
+            MonInvit.com comprend nos traditions. Que vous célébriez une dot
+            intime, un mariage à l'église, ou trois jours de fête — chaque
+            étape a sa page, son programme et son lieu.
+          </p>
+          <Link
+            to="/signup"
+            className="mt-8 inline-block rounded-full border border-[#2b1a14] px-6 py-3 text-sm font-medium text-[#2b1a14] transition hover:bg-[#2b1a14] hover:text-[#fdf7f3]"
+          >
+            Créer notre page →
+          </Link>
         </div>
       </div>
     </section>
@@ -554,74 +686,30 @@ function EditorialCouple() {
 }
 
 /* -------------------------------------------------------------------------- */
-/*                                  PRICING                                   */
+/*                              PROMISE BLOCK                                 */
 /* -------------------------------------------------------------------------- */
 
-function Pricing() {
-  const includes = [
-    "Page d'invitation publique",
-    "Lien personnalisé + QR code",
-    "RSVP illimités",
-    "Toutes vos étapes (dot, civil, religieux, réception)",
-    "Musique d'ambiance (26 titres)",
-    "Compte à rebours automatique",
-    "Livre d'or après le mariage",
-    "Accès à vie",
-  ];
+function PromiseBlock() {
   return (
-    <section className="bg-white py-20 sm:py-24">
-      <div className="mx-auto max-w-4xl px-5">
-        <div className="text-center">
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#993556]">
-            Tarif
-          </p>
-          <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl italic sm:text-5xl">
-            Simple. Transparent. <em className="text-[#993556]">Sans surprise.</em>
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-[15px] text-[#6b6b6b]">
-            Vous créez gratuitement. Vous payez uniquement quand vous publiez.
-          </p>
+    <section className="mx-auto max-w-4xl px-5 pb-8">
+      <div className="relative overflow-hidden rounded-[2rem] border border-[#e8c5b6]/60 bg-[#fdf7f3] p-8 text-center shadow-lg sm:p-14">
+        <div
+          aria-hidden
+          className="absolute -top-8 left-1/2 -translate-x-1/2 font-[family-name:var(--font-display)] text-[140px] italic text-[#c17c74]/10"
+        >
+          ♡
         </div>
-
-        <div className="mx-auto mt-12 max-w-2xl overflow-hidden rounded-3xl border border-[#e5c5b6] bg-[#faf8f5] shadow-xl shadow-[#993556]/10">
-          <div className="border-b border-[#e5e5e5] bg-white px-8 py-8 text-center">
-            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#993556]">
-              Formule unique
-            </p>
-            <p className="mt-4 font-[family-name:var(--font-display)] text-6xl italic text-[#1a1a1a]">
-              19 900 <span className="text-3xl not-italic">XOF</span>
-            </p>
-            <p className="mt-2 text-sm text-[#6b6b6b]">
-              Paiement unique à la publication
-            </p>
-          </div>
-
-          <ul className="grid gap-3 px-8 py-8 sm:grid-cols-2">
-            {includes.map((i) => (
-              <li key={i} className="flex items-start gap-3 text-[14px] text-[#1a1a1a]">
-                <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-[#fbeaf0] text-[11px] font-bold text-[#993556]">
-                  ✓
-                </span>
-                {i}
-              </li>
-            ))}
-          </ul>
-
-          <div className="border-t border-[#e5e5e5] bg-white px-8 py-8 text-center">
-            <Link
-              to="/signup"
-              className="inline-flex w-full items-center justify-center rounded-full bg-[#4b1528] px-7 py-3.5 text-[15px] font-medium text-[#fbeaf0] shadow-lg shadow-[#4b1528]/20 transition hover:-translate-y-0.5 sm:w-auto"
-            >
-              Commencer gratuitement →
-            </Link>
-            <p className="mt-4 text-xs text-[#6b6b6b]">
-              Payé par Wave, Orange Money, MTN, Moov ou carte bancaire
-            </p>
-          </div>
-        </div>
-
-        <p className="mx-auto mt-6 max-w-xl text-center text-[13px] italic text-[#6b6b6b]">
-          Vous créez, vous prévisualisez, vous partagez — vous ne payez que quand vous êtes prêt.
+        <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#c17c74]">
+          Notre promesse
+        </p>
+        <h2 className="mt-4 font-[family-name:var(--font-display)] text-3xl italic leading-[1.15] sm:text-4xl">
+          Vous ne partagerez votre invitation que <br />
+          <em className="text-[#c17c74]">le jour où elle vous fera vibrer.</em>
+        </h2>
+        <p className="mx-auto mt-6 max-w-xl text-[15px] leading-relaxed text-[#6b4a3e]">
+          Vous avancez à votre rythme, révision après révision.
+          Tant que chaque détail n'est pas exactement comme vous l'imaginiez,
+          rien n'est publié — et rien n'est facturé.
         </p>
       </div>
     </section>
@@ -629,115 +717,83 @@ function Pricing() {
 }
 
 /* -------------------------------------------------------------------------- */
-/*                                 GUARANTEE                                  */
+/*                                 FAQ BLOCK                                  */
 /* -------------------------------------------------------------------------- */
 
-function Guarantee() {
+function FaqBlock() {
+  const faqs = HOME_FAQS;
   return (
-    <section className="bg-[#faf8f5] py-20 sm:py-24">
-      <div className="mx-auto max-w-3xl px-5">
-        <div className="relative overflow-hidden rounded-[2rem] border border-[#e5c5b6]/60 bg-white p-8 text-center shadow-sm sm:p-14">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 font-[family-name:var(--font-display)] text-[140px] italic text-[#993556]/10"
-          >
-            ♡
-          </div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#993556]">
-            Notre promesse
-          </p>
-          <h2 className="mt-4 font-[family-name:var(--font-display)] text-3xl italic leading-[1.15] sm:text-4xl">
-            Vous ne partagerez votre invitation que{" "}
-            <em className="text-[#993556]">le jour où elle vous libère.</em>
-          </h2>
-          <p className="mx-auto mt-6 max-w-xl text-[15px] leading-relaxed text-[#6b6b6b]">
-            Pas de précipitation, pas de deadline artificielle. Prenez le temps de
-            tout peaufiner, de choisir votre thème, d'ajuster vos listes. Tout est
-            sauvegardé automatiquement. Vous ne publiez — et ne payez — que lorsque
-            vous êtes pleinement satisfait.
-          </p>
-        </div>
+    <section className="mx-auto max-w-3xl px-5 py-24">
+      <div className="text-center">
+        <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#c17c74]">
+          Vos questions
+        </p>
+        <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl italic sm:text-5xl">
+          Tout ce qu'on nous demande.
+        </h2>
+      </div>
+      <div className="mt-12 divide-y divide-[#e8c5b6]/60 border-y border-[#e8c5b6]/60">
+        {faqs.map((f) => (
+          <details key={f.q} className="group py-5">
+            <summary className="flex cursor-pointer list-none items-start justify-between gap-6">
+              <span className="font-[family-name:var(--font-display)] text-lg italic text-[#2b1a14] sm:text-xl">
+                {f.q}
+              </span>
+              <span className="mt-1 shrink-0 font-mono text-lg text-[#c17c74] transition group-open:rotate-45">
+                +
+              </span>
+            </summary>
+            <p className="mt-3 pr-8 text-[15px] leading-relaxed text-[#6b4a3e]">
+              {f.a}
+            </p>
+          </details>
+        ))}
       </div>
     </section>
   );
 }
 
 /* -------------------------------------------------------------------------- */
-/*                                    FAQ                                     */
-/* -------------------------------------------------------------------------- */
-
-function Faq() {
-  return (
-    <section className="bg-white py-20 sm:py-24">
-      <div className="mx-auto max-w-3xl px-5">
-        <div className="text-center">
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#993556]">
-            Vos questions
-          </p>
-          <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl italic sm:text-5xl">
-            Tout ce qu'on nous <em className="text-[#993556]">demande.</em>
-          </h2>
-        </div>
-        <div className="mt-12 divide-y divide-[#e5e5e5] border-y border-[#e5e5e5]">
-          {HOME_FAQS.map((f) => (
-            <details key={f.q} className="group py-5">
-              <summary className="flex cursor-pointer list-none items-start justify-between gap-6">
-                <span className="font-[family-name:var(--font-display)] text-lg italic text-[#1a1a1a] sm:text-xl">
-                  {f.q}
-                </span>
-                <span className="mt-1 shrink-0 font-mono text-lg text-[#993556] transition group-open:rotate-45">
-                  +
-                </span>
-              </summary>
-              <p className="mt-3 pr-8 text-[15px] leading-relaxed text-[#6b6b6b]">
-                {f.a}
-              </p>
-            </details>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*                                 FINAL CTA                                  */
+/*                                FINAL CTA                                   */
 /* -------------------------------------------------------------------------- */
 
 function FinalCta() {
   return (
-    <section className="relative isolate overflow-hidden bg-[#2d0d16] text-[#fbeaf0]">
-      <div
+    <section className="relative isolate overflow-hidden bg-[#2b1a14] text-[#fdf7f3]">
+      <img
+        src={tableImg}
+        alt=""
+        width={1024}
+        height={1024}
+        loading="lazy"
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 opacity-70"
-        style={{
-          background:
-            "radial-gradient(600px 300px at 15% 0%, rgba(153,53,86,0.35) 0%, transparent 60%), radial-gradient(700px 350px at 90% 100%, rgba(251,234,240,0.08) 0%, transparent 65%)",
-        }}
+        className="absolute inset-0 -z-10 h-full w-full object-cover opacity-20"
       />
-      <div className="mx-auto max-w-3xl px-5 py-24 text-center">
-        <h2 className="font-[family-name:var(--font-display)] text-4xl italic leading-[1.05] text-white sm:text-5xl md:text-[40px]">
-          Faisons de votre <em className="text-[#e8a89e]">« oui »</em>
-          <br />
+      <div className="mx-auto max-w-3xl px-5 pt-24 pb-8 text-center">
+        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#e8c5b6]">
+          Il ne manque plus que vous
+        </p>
+        <h2 className="mt-6 font-[family-name:var(--font-display)] text-4xl italic leading-[1.05] sm:text-6xl">
+          Faisons de votre{" "}
+          <em className="text-[#e8c5b6]">« oui »</em> <br />
           un souvenir partagé.
         </h2>
-        <p className="mx-auto mt-6 max-w-xl text-[16px] leading-relaxed text-white/70">
-          Rejoignez les centaines de couples qui ont fait confiance à MonInvit pour
-          leur plus beau jour.
-        </p>
         <Link
           to="/signup"
-          className="mt-10 inline-flex items-center justify-center rounded-full bg-white px-8 py-3.5 text-[15px] font-medium text-[#4b1528] shadow-xl transition hover:-translate-y-0.5"
+          className="mt-10 inline-block rounded-full bg-[#fdf7f3] px-10 py-4 text-sm font-medium tracking-wide text-[#2b1a14] shadow-xl transition hover:-translate-y-0.5"
         >
-          Créer mon invitation gratuitement →
+          Créer notre invitation
         </Link>
-        <p className="mt-4 text-xs text-white/60">
-          ✓ Gratuit jusqu'à la publication · ✓ Aucune carte requise
+        <p className="mt-4 text-xs text-[#e8c5b6]/70">
+          Créez votre page en 10 min · Payez uniquement à la publication
         </p>
       </div>
     </section>
   );
 }
+
+
+
 
 /* -------------------------------------------------------------------------- */
 /*                              TEMPLATE FAN                                  */
@@ -747,16 +803,16 @@ function TemplateFan() {
   const cards = templateOrder.map((id) => ({ id, ...templateMeta[id] }));
   const arranged = [cards[1], cards[3], cards[0], cards[2], cards[4]];
   const layout = [
-    { rot: -14, x: -180, y: 40, z: 1, scale: 0.78 },
-    { rot: -7, x: -90, y: 18, z: 2, scale: 0.88 },
+    { rot: -14, x: -220, y: 40, z: 1, scale: 0.82 },
+    { rot: -7, x: -115, y: 18, z: 2, scale: 0.9 },
     { rot: 0, x: 0, y: 0, z: 3, scale: 1 },
-    { rot: 7, x: 90, y: 18, z: 2, scale: 0.88 },
-    { rot: 14, x: 180, y: 40, z: 1, scale: 0.78 },
+    { rot: 7, x: 115, y: 18, z: 2, scale: 0.9 },
+    { rot: 14, x: 220, y: 40, z: 1, scale: 0.82 },
   ];
 
   return (
-    <div className="relative mx-auto h-[360px] w-full max-w-xl overflow-hidden sm:h-[460px]">
-      <div className="absolute left-1/2 top-0 h-full w-full origin-top -translate-x-1/2 scale-[0.6] sm:scale-90">
+    <div className="relative mx-auto mt-14 h-[380px] w-full max-w-5xl overflow-hidden sm:mt-20 sm:h-[520px]">
+      <div className="absolute left-1/2 top-0 h-full w-full origin-top -translate-x-1/2 scale-[0.62] sm:scale-100">
         {arranged.map((c, i) => {
           const l = layout[i];
           return (
@@ -789,27 +845,50 @@ function TemplateCard({
       style={{ backgroundColor: bg, color: ink }}
     >
       <div className="flex items-center justify-between px-4 pt-4">
-        <span className="font-mono text-[8px] uppercase tracking-[0.25em]" style={{ color: ink, opacity: 0.6 }}>
+        <span
+          className="font-mono text-[8px] uppercase tracking-[0.25em]"
+          style={{ color: ink, opacity: 0.6 }}
+        >
           Save the date
         </span>
-        <span className="size-1.5 rounded-full" style={{ backgroundColor: accent2 }} />
+        <span
+          className="size-1.5 rounded-full"
+          style={{ backgroundColor: accent2 }}
+        />
       </div>
       <div
         className="mx-4 mt-3 flex-1 rounded-md"
-        style={{ background: `linear-gradient(140deg, ${accent1} 0%, ${accent2} 55%, ${ink} 100%)` }}
+        style={{
+          background: `linear-gradient(140deg, ${accent1} 0%, ${accent2} 55%, ${ink} 100%)`,
+        }}
       />
       <div className="px-4 py-4 text-center">
-        <p className="font-[family-name:var(--font-display)] text-[24px] italic leading-none sm:text-[28px]" style={{ color: ink }}>
+        <p
+          className="font-[family-name:var(--font-display)] text-[24px] italic leading-none sm:text-[28px]"
+          style={{ color: ink }}
+        >
           Aïcha
         </p>
-        <p className="my-0.5 font-[family-name:var(--font-display)] text-xs italic" style={{ color: accent2 }}>
+        <p
+          className="my-0.5 font-[family-name:var(--font-display)] text-xs italic"
+          style={{ color: accent2 }}
+        >
           &
         </p>
-        <p className="font-[family-name:var(--font-display)] text-[24px] italic leading-none sm:text-[28px]" style={{ color: ink }}>
+        <p
+          className="font-[family-name:var(--font-display)] text-[24px] italic leading-none sm:text-[28px]"
+          style={{ color: ink }}
+        >
           Loïc
         </p>
-        <div className="mx-auto my-3 h-px w-8" style={{ backgroundColor: accent2 }} />
-        <p className="font-mono text-[8px] uppercase tracking-[0.3em]" style={{ color: ink, opacity: 0.7 }}>
+        <div
+          className="mx-auto my-3 h-px w-8"
+          style={{ backgroundColor: accent2 }}
+        />
+        <p
+          className="font-mono text-[8px] uppercase tracking-[0.3em]"
+          style={{ color: ink, opacity: 0.7 }}
+        >
           14 · 08 · 2027 · Abidjan
         </p>
       </div>
