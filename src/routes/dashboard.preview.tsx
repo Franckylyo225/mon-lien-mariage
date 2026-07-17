@@ -23,6 +23,9 @@ import {
 import { PageActionBar } from "@/components/dashboard/PageActionBar";
 
 export const Route = createFileRoute("/dashboard/preview")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    sheet: typeof search.sheet === "string" ? (search.sheet as string) : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Aperçu privé — MonInvit.com" },
