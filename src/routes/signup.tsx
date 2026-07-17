@@ -233,8 +233,17 @@ export function GoogleAuthButton({ label }: { label: string }) {
     setLoading(true);
     try {
       const { lovable } = await import("@/integrations/lovable/index");
+      // Force le flow OAuth via le domaine Lovable (le domaine custom moninvit.com
+      // passe par un proxy Vercel qui casse le callback Google). L'utilisateur
+      // termine la connexion sur moninvit.lovable.app où la session est établie.
+      const LOVABLE_ORIGIN = "https://moninvit.lovable.app";
+      const isLovableOrigin = window.location.origin === LOVABLE_ORIGIN;
+      if (!isLovableOrigin) {
+        window.location.href = `${LOVABLE_ORIGIN}/signup?google=1`;
+        return;
+      }
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
+        redirect_uri: LOVABLE_ORIGIN,
       });
       if (result.error) {
         setError(result.error.message ?? "Connexion Google impossible.");
@@ -242,7 +251,8 @@ export function GoogleAuthButton({ label }: { label: string }) {
         return;
       }
       if (result.redirected) return;
-      window.location.href = "/dashboard";
+      window.location.href = `${LOVABLE_ORIGIN}/dashboard`;
+
     } catch (e) {
       setError(e instanceof Error ? e.message : "Connexion Google impossible.");
       setLoading(false);
