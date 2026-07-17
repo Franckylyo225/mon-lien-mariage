@@ -88,16 +88,6 @@ function CeremoniesPage() {
                   >
                     Éditer
                   </button>
-                  <button
-                    onClick={() =>
-                      updateCeremony(c.id, {
-                        status: c.status === "publiée" ? "brouillon" : "publiée",
-                      })
-                    }
-                    className="flex-1 rounded-full border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest hover:bg-accent/20 sm:flex-none"
-                  >
-                    {c.status === "publiée" ? "Dépublier" : "Publier"}
-                  </button>
                 </div>
               </div>
             </li>
