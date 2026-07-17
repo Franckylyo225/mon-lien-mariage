@@ -258,7 +258,17 @@ export function GoogleAuthButton({ label }: { label: string }) {
       setError(e instanceof Error ? e.message : "Connexion Google impossible.");
       setLoading(false);
     }
-  };
+  }, []);
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("google") === "1" && window.location.origin === "https://moninvit.lovable.app") {
+      void handleClick();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   return (
     <>
