@@ -252,7 +252,23 @@ export function GoogleAuthButton({ label }: { label: string }) {
         return;
       }
       if (result.redirected) return;
+      // Session établie sur moninvit.lovable.app. On transporte les tokens
+      // vers moninvit.com via le fragment (#) pour que la session y soit recréée.
+      const { data: sessionData } = await supabase.auth.getSession();
+      const s = sessionData.session;
+      if (s) {
+        const hash = new URLSearchParams({
+          access_token: s.access_token,
+          refresh_token: s.refresh_token,
+          expires_in: String(s.expires_in ?? 3600),
+          token_type: s.token_type ?? "bearer",
+          type: "oauth",
+        }).toString();
+        window.location.href = `https://moninvit.com/auth/callback#${hash}`;
+        return;
+      }
       window.location.href = `${LOVABLE_ORIGIN}/dashboard`;
+
 
     } catch (e) {
       setError(e instanceof Error ? e.message : "Connexion Google impossible.");
