@@ -42,7 +42,6 @@ import { Route as DashboardInvitesRouteImport } from './routes/dashboard.invites
 import { Route as DashboardEventsRouteImport } from './routes/dashboard.events'
 import { Route as DashboardCeremoniesRouteImport } from './routes/dashboard.ceremonies'
 import { Route as DashboardBillingRouteImport } from './routes/dashboard.billing'
-import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as DashboardGuestsIndexRouteImport } from './routes/dashboard.guests.index'
 import { Route as DashboardGuestsNewRouteImport } from './routes/dashboard.guests.new'
@@ -218,11 +217,6 @@ const DashboardBillingRoute = DashboardBillingRouteImport.update({
   path: '/billing',
   getParentRoute: () => DashboardRoute,
 } as any)
-const AuthCallbackRoute = AuthCallbackRouteImport.update({
-  id: '/auth/callback',
-  path: '/auth/callback',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AppProfileRoute = AppProfileRouteImport.update({
   id: '/app/profile',
   path: '/app/profile',
@@ -284,7 +278,6 @@ export interface FileRoutesByFullPath {
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/verify-email': typeof VerifyEmailRoute
   '/app/profile': typeof AppProfileRoute
-  '/auth/callback': typeof AuthCallbackRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/events': typeof DashboardEventsRoute
@@ -327,7 +320,6 @@ export interface FileRoutesByTo {
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/verify-email': typeof VerifyEmailRoute
   '/app/profile': typeof AppProfileRoute
-  '/auth/callback': typeof AuthCallbackRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/events': typeof DashboardEventsRoute
@@ -372,7 +364,6 @@ export interface FileRoutesById {
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/verify-email': typeof VerifyEmailRoute
   '/app/profile': typeof AppProfileRoute
-  '/auth/callback': typeof AuthCallbackRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/events': typeof DashboardEventsRoute
@@ -418,7 +409,6 @@ export interface FileRouteTypes {
     | '/termes-et-conditions'
     | '/verify-email'
     | '/app/profile'
-    | '/auth/callback'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
     | '/dashboard/events'
@@ -461,7 +451,6 @@ export interface FileRouteTypes {
     | '/termes-et-conditions'
     | '/verify-email'
     | '/app/profile'
-    | '/auth/callback'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
     | '/dashboard/events'
@@ -505,7 +494,6 @@ export interface FileRouteTypes {
     | '/termes-et-conditions'
     | '/verify-email'
     | '/app/profile'
-    | '/auth/callback'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
     | '/dashboard/events'
@@ -550,7 +538,6 @@ export interface RootRouteChildren {
   TermesEtConditionsRoute: typeof TermesEtConditionsRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
   AppProfileRoute: typeof AppProfileRoute
-  AuthCallbackRoute: typeof AuthCallbackRoute
   ESlugRoute: typeof ESlugRoute
   ThemeThumbSlugRoute: typeof ThemeThumbSlugRoute
   ApiPublicWebhooksPaystackRoute: typeof ApiPublicWebhooksPaystackRoute
@@ -792,13 +779,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardBillingRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/auth/callback': {
-      id: '/auth/callback'
-      path: '/auth/callback'
-      fullPath: '/auth/callback'
-      preLoaderRoute: typeof AuthCallbackRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/app/profile': {
       id: '/app/profile'
       path: '/app/profile'
@@ -950,7 +930,6 @@ const rootRouteChildren: RootRouteChildren = {
   TermesEtConditionsRoute: TermesEtConditionsRoute,
   VerifyEmailRoute: VerifyEmailRoute,
   AppProfileRoute: AppProfileRoute,
-  AuthCallbackRoute: AuthCallbackRoute,
   ESlugRoute: ESlugRoute,
   ThemeThumbSlugRoute: ThemeThumbSlugRoute,
   ApiPublicWebhooksPaystackRoute: ApiPublicWebhooksPaystackRoute,
