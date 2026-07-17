@@ -259,15 +259,15 @@ function FeatureCards() {
       </div>
 
       <div className="mt-14 grid gap-6 md:grid-cols-6">
-        {/* Card 1 — Enveloppe */}
+        {/* Card 1 — Musique d'ambiance */}
         <FeatureCard
           className="md:col-span-3"
           tone="cream"
-          eyebrow="Enveloppe personnalisée"
-          title="Une enveloppe à vos initiales, avec sceau doré."
-          desc="Vos invités ouvrent une vraie enveloppe animée — comme un pli reçu de vos mains."
+          eyebrow="Musique d'ambiance"
+          title="Une bande-son romantique qui démarre à l'ouverture."
+          desc="Choisissez un morceau, activez le lecteur, et offrez à vos invités une immersion complète dès le premier clic."
         >
-          <EnvelopeMock />
+          <MusicMock />
         </FeatureCard>
 
         {/* Card 2 — RSVP dashboard */}
