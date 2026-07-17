@@ -61,8 +61,6 @@ function SignupPage() {
       title={<>Commençons <em className="text-[#c17c74]">votre histoire.</em></>}
       subtitle="En 10 minutes, votre page d'invitation est prête à être partagée."
     >
-      <GoogleAuthButton label="S'inscrire avec Google" />
-      <AuthDivider />
       <form onSubmit={submit} className="space-y-4">
         <Field label="Adresse email">
           <input
