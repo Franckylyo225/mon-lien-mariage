@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { useWedding, type Couple } from "@/lib/wedding-store";
 import { useAutosaveContext } from "@/lib/autosave-context";
