@@ -24,7 +24,7 @@ const typeOptions: { value: CeremonyType; label: string }[] = [
 ];
 
 
-const paletteChoices = ["#d97757", "#c17c74", "#8b6f5e", "#4a6741", "#c9a84c", "#4c0519"];
+
 
 function CeremoniesPage() {
   const { ceremonies, addCeremony, updateCeremony, removeCeremony, guests } = useWedding();
@@ -62,27 +62,12 @@ function CeremoniesPage() {
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <h3 className="font-serif text-lg">{c.name}</h3>
-                      <span
-                        className={
-                          "rounded-full px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest " +
-                          (c.status === "publiée"
-                            ? "bg-primary/10 text-primary"
-                            : "bg-muted text-muted-foreground")
-                        }
-                      >
-                        {c.status}
-                      </span>
                     </div>
                     <p className="mt-0.5 font-mono text-[10px] uppercase tracking-widest opacity-60">
                       {c.label} · {formatShortDate(c.date)} · {c.timeStart}
                       {c.timeEnd ? `–${c.timeEnd}` : ""}
                     </p>
                     <p className="mt-1 text-xs opacity-70">{c.venue}</p>
-                    {c.dressCode ? (
-                      <p className="mt-2 inline-block rounded-full bg-accent/20 px-2.5 py-0.5 text-[10px] opacity-80">
-                        {c.dressCode}
-                      </p>
-                    ) : null}
                     <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[10px] uppercase tracking-widest">
                       <span>
                         <span className="text-primary">{s.confirmés}</span> conf.
@@ -93,9 +78,6 @@ function CeremoniesPage() {
                       <span>
                         <span className="opacity-60">{s.déclinés}</span> décl.
                       </span>
-                      {c.capacity ? (
-                        <span className="opacity-60">/ {c.capacity} max</span>
-                      ) : null}
                     </div>
                   </div>
                 </div>
@@ -105,16 +87,6 @@ function CeremoniesPage() {
                     className="flex-1 rounded-full border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest hover:bg-accent/20 sm:flex-none"
                   >
                     Éditer
-                  </button>
-                  <button
-                    onClick={() =>
-                      updateCeremony(c.id, {
-                        status: c.status === "publiée" ? "brouillon" : "publiée",
-                      })
-                    }
-                    className="flex-1 rounded-full border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest hover:bg-accent/20 sm:flex-none"
-                  >
-                    {c.status === "publiée" ? "Dépublier" : "Publier"}
                   </button>
                 </div>
               </div>
@@ -170,11 +142,7 @@ function CeremonySheet({
   const [timeStart, setTimeStart] = useState(initial?.timeStart ?? "18:00");
   const [timeEnd, setTimeEnd] = useState(initial?.timeEnd ?? "");
   const [venue, setVenue] = useState(initial?.venue ?? "");
-  const [dressCode, setDressCode] = useState(initial?.dressCode ?? "");
-  const [color, setColor] = useState(initial?.color ?? "#d97757");
-  const [capacity, setCapacity] = useState<number | "">(initial?.capacity ?? "");
-  const [notes, setNotes] = useState(initial?.notes ?? "");
-  const [status, setStatus] = useState<Ceremony["status"]>(initial?.status ?? "brouillon");
+  const color = initial?.color ?? "#d97757";
   const [program, setProgram] = useState<ProgramItem[]>(initial?.program ?? []);
 
   const addProgramItem = () =>
@@ -265,64 +233,6 @@ function CeremonySheet({
               onChange={(e) => setTimeEnd(e.target.value)}
               className="rounded-full border border-input bg-background px-3 py-3 text-sm"
             />
-          </div>
-          <input
-            value={dressCode}
-            onChange={(e) => setDressCode(e.target.value)}
-            placeholder="Dress code / thème"
-            className="w-full rounded-full border border-input bg-background px-4 py-3 text-sm"
-          />
-          <div>
-            <p className="mb-2 font-mono text-[10px] uppercase tracking-widest opacity-60">
-              Couleur d'accent
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {paletteChoices.map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setColor(p)}
-                  className={
-                    "size-8 rounded-full transition " +
-                    (color === p ? "ring-2 ring-offset-2 ring-foreground" : "")
-                  }
-                  style={{ backgroundColor: p }}
-                  aria-label={p}
-                />
-              ))}
-            </div>
-          </div>
-          <input
-            type="number"
-            min={0}
-            value={capacity}
-            onChange={(e) => setCapacity(e.target.value ? Number(e.target.value) : "")}
-            placeholder="Capacité max (optionnel)"
-            className="w-full rounded-full border border-input bg-background px-4 py-3 text-sm"
-          />
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            rows={3}
-            placeholder="Notes internes (invisible pour les invités)"
-            className="w-full rounded-2xl border border-input bg-background px-4 py-3 text-sm"
-          />
-          <div className="flex items-center justify-between rounded-full border border-input px-4 py-2">
-            <span className="font-mono text-[10px] uppercase tracking-widest opacity-60">
-              Statut
-            </span>
-            <button
-              onClick={() =>
-                setStatus((s) => (s === "publiée" ? "brouillon" : "publiée"))
-              }
-              className={
-                "rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-widest " +
-                (status === "publiée"
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-foreground")
-              }
-            >
-              {status}
-            </button>
           </div>
 
           <div className="rounded-2xl border border-border bg-muted/30 p-4">
@@ -436,10 +346,10 @@ function CeremonySheet({
                 timeStart,
                 timeEnd: timeEnd || undefined,
                 venue: venue.trim(),
-                dressCode: dressCode.trim() || undefined,
+                dressCode: initial?.dressCode,
                 color,
-                capacity: capacity === "" ? undefined : capacity,
-                notes: notes.trim() || undefined,
+                capacity: initial?.capacity,
+                notes: initial?.notes,
                 program: program
                   .map((it) => ({
                     ...it,
@@ -447,7 +357,7 @@ function CeremonySheet({
                     description: it.description?.trim() || undefined,
                   }))
                   .filter((it) => it.title.length > 0),
-                status,
+                status: "publiée",
               })
             }
             className="flex-1 rounded-full bg-primary py-3 font-mono text-[10px] uppercase tracking-widest text-primary-foreground disabled:opacity-40"
