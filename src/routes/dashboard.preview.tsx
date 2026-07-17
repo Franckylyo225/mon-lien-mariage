@@ -134,7 +134,7 @@ function PreviewPage() {
         />
       </div>
 
-      <PreviewEditor mode={mode} onToggle={toggle} />
+      <PreviewEditor mode={mode} onToggle={toggle} initialSheet={initialSheetParam} />
 
       {coupleTheme.particleEffectSlug ? (
         <ParticleCanvas
