@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { useWedding, type Couple } from "@/lib/wedding-store";
 import { useAutosaveContext } from "@/lib/autosave-context";
@@ -58,12 +58,27 @@ interface EditorProps {
   mode: "preview" | "edit";
   /** Kept for API compatibility; the toggle now lives in the sticky action bar. */
   onToggle?: () => void;
+  /** Optional sheet to open automatically on mount (deep-link from other pages). */
+  initialSheet?: string;
 }
 
-export function PreviewEditor({ mode }: EditorProps) {
+export function PreviewEditor({ mode, initialSheet }: EditorProps) {
   const { couple, updateCouple, weddingId } = useWedding();
   const [sheet, setSheet] = useState<Sheet>(null);
   const { status, schedule } = useAutosaveContext();
+
+  // Open a deep-linked sheet once, when the editor mounts / prop changes.
+  useEffect(() => {
+    if (!initialSheet) return;
+    const allowed: Sheet[] = [
+      "hero","caption","names","date","countdown","practical",
+      "dress","registry","story","gallery","theme","particles","music",
+    ];
+    if ((allowed as string[]).includes(initialSheet)) {
+      setSheet(initialSheet as Sheet);
+    }
+  }, [initialSheet]);
+
 
   // Local drafts (updated live in UI, persisted debounced)
   const [caption, setCaption] = useState(couple.caption ?? "");

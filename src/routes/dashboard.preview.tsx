@@ -23,6 +23,9 @@ import {
 import { PageActionBar } from "@/components/dashboard/PageActionBar";
 
 export const Route = createFileRoute("/dashboard/preview")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    sheet: typeof search.sheet === "string" ? (search.sheet as string) : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Aperçu privé — MonInvit.com" },
@@ -34,10 +37,16 @@ export const Route = createFileRoute("/dashboard/preview")({
 
 function PreviewPage() {
   const { couple, ceremonies, weddingId } = useWedding();
-  const { mode, toggle } = useEditMode();
+  const { mode, toggle, setMode } = useEditMode();
   const { setCenterNode, setActionBarNode } = usePageChrome();
   const { status: saveStatus } = useAutosaveContext();
   const navigate = useNavigate();
+  const { sheet: initialSheetParam } = Route.useSearch();
+
+  // Auto-enter edit mode when a sheet is requested via URL.
+  useEffect(() => {
+    if (initialSheetParam) setMode("edit");
+  }, [initialSheetParam, setMode]);
 
   const [isPublishing, setIsPublishing] = useState(false);
 
@@ -125,7 +134,7 @@ function PreviewPage() {
         />
       </div>
 
-      <PreviewEditor mode={mode} onToggle={toggle} />
+      <PreviewEditor mode={mode} onToggle={toggle} initialSheet={initialSheetParam} />
 
       {coupleTheme.particleEffectSlug ? (
         <ParticleCanvas
