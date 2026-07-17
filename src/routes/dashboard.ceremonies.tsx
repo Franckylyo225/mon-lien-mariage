@@ -234,64 +234,6 @@ function CeremonySheet({
               className="rounded-full border border-input bg-background px-3 py-3 text-sm"
             />
           </div>
-          <input
-            value={dressCode}
-            onChange={(e) => setDressCode(e.target.value)}
-            placeholder="Dress code / thème"
-            className="w-full rounded-full border border-input bg-background px-4 py-3 text-sm"
-          />
-          <div>
-            <p className="mb-2 font-mono text-[10px] uppercase tracking-widest opacity-60">
-              Couleur d'accent
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {paletteChoices.map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setColor(p)}
-                  className={
-                    "size-8 rounded-full transition " +
-                    (color === p ? "ring-2 ring-offset-2 ring-foreground" : "")
-                  }
-                  style={{ backgroundColor: p }}
-                  aria-label={p}
-                />
-              ))}
-            </div>
-          </div>
-          <input
-            type="number"
-            min={0}
-            value={capacity}
-            onChange={(e) => setCapacity(e.target.value ? Number(e.target.value) : "")}
-            placeholder="Capacité max (optionnel)"
-            className="w-full rounded-full border border-input bg-background px-4 py-3 text-sm"
-          />
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            rows={3}
-            placeholder="Notes internes (invisible pour les invités)"
-            className="w-full rounded-2xl border border-input bg-background px-4 py-3 text-sm"
-          />
-          <div className="flex items-center justify-between rounded-full border border-input px-4 py-2">
-            <span className="font-mono text-[10px] uppercase tracking-widest opacity-60">
-              Statut
-            </span>
-            <button
-              onClick={() =>
-                setStatus((s) => (s === "publiée" ? "brouillon" : "publiée"))
-              }
-              className={
-                "rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-widest " +
-                (status === "publiée"
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-foreground")
-              }
-            >
-              {status}
-            </button>
-          </div>
 
           <div className="rounded-2xl border border-border bg-muted/30 p-4">
             <div className="mb-3 flex items-center justify-between">
