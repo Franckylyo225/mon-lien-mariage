@@ -24,7 +24,7 @@ const typeOptions: { value: CeremonyType; label: string }[] = [
 ];
 
 
-const paletteChoices = ["#d97757", "#c17c74", "#8b6f5e", "#4a6741", "#c9a84c", "#4c0519"];
+
 
 function CeremoniesPage() {
   const { ceremonies, addCeremony, updateCeremony, removeCeremony, guests } = useWedding();
