@@ -453,6 +453,8 @@ function rowToCouple(w: WeddingRow): Couple {
     accent: w.accent ?? undefined,
     accentColor: w.accent_color ?? undefined,
     backgroundBase: (w.background_base as BackgroundBase | null) ?? undefined,
+    textColor: ((w as { text_color?: string | null }).text_color as string | null) ?? undefined,
+
     hashtag: w.hashtag ?? undefined,
     slug: w.slug ?? undefined,
     isPublished: !!w.is_published,
