@@ -137,3 +137,45 @@ export const verifyPaystackPayment = createServerFn({ method: "POST" })
 
     return { status: status ?? "unknown", success };
   });
+
+// ---------- Codes promo ----------
+// Table de codes actifs. Clé = code (uppercase), valeur = % de remise (0-100).
+const PROMO_CODES: Record<string, number> = {
+  TIANA100: 100,
+};
+
+interface PromoInput {
+  weddingId: string;
+  slug: string;
+  code: string;
+}
+
+export const applyPromoCode = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: PromoInput) => data)
+  .handler(async ({ data, context }) => {
+    const raw = (data.code || "").trim().toUpperCase();
+    if (!raw) throw new Error("Veuillez saisir un code promo.");
+    const discount = PROMO_CODES[raw];
+    if (discount === undefined) throw new Error("Code promo invalide.");
+
+    if (discount >= 100) {
+      // 100% → publication directe, aucun paiement requis.
+      const { error } = await context.supabase
+        .from("weddings")
+        .update({
+          is_published: true,
+          is_locked: true,
+          published_at: new Date().toISOString(),
+          slug: data.slug,
+          has_envelope_animation: false,
+        } as never)
+        .eq("id", data.weddingId);
+      if (error) throw new Error(`Publication échouée: ${error.message}`);
+      return { discount, published: true as const };
+    }
+
+    // Réservé : remises partielles futures.
+    return { discount, published: false as const };
+  });
+
