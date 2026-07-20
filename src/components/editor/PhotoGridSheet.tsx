@@ -81,6 +81,11 @@ export function PhotoGridSheet({
       return;
     }
     setError(null);
+    const authMsg = await ensureAuthOrMessage();
+    if (authMsg) {
+      setError(authMsg);
+      return;
+    }
     setUploading(true);
     try {
       const remaining = Math.max(0, maxImages - images.length);
