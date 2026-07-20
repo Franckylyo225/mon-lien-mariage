@@ -126,6 +126,7 @@ const skins: Record<ProgramTabsVariant, Skin> = {
       "w-14 shrink-0 font-mono text-[10px] uppercase tracking-[0.25em] text-[#c9a84c]",
     progTitle: "font-serif italic text-[#f0d78c]",
     progDesc: "mt-0.5 text-[11px] text-[#f0d78c]/70",
+  },
   "bleu-nuit": {
     wrap: "",
     tabsBar: "border-b border-[#c9b57b]/25",
