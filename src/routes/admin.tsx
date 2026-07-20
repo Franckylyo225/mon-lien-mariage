@@ -89,7 +89,8 @@ function AdminLayout() {
             return (
               <Link
                 key={t.to}
-                to={t.to}
+                to={t.to as "/admin"}
+
                 className={
                   "flex shrink-0 items-center gap-2 rounded-full px-3 py-1.5 text-[13px] transition " +
                   (active
