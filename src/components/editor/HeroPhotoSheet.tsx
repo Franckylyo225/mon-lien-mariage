@@ -4,6 +4,7 @@ import imageCompression from "browser-image-compression";
 import { supabase } from "@/integrations/supabase/client";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { Camera, ImageIcon, Loader2, RotateCw, Trash2 } from "lucide-react";
+import { ensureAuthOrMessage, friendlyUploadError } from "@/lib/upload-errors";
 
 
 
@@ -125,8 +126,13 @@ export function HeroPhotoSheet({
 
   const handleConfirm = async () => {
     if (!imageSrc || !croppedArea || !weddingId) return;
-    setStep("uploading");
     setError(null);
+    const authMsg = await ensureAuthOrMessage();
+    if (authMsg) {
+      setError(authMsg);
+      return;
+    }
+    setStep("uploading");
     try {
       // 1. Render cropped canvas (JPEG — universally supported on Android/iOS)
       const blob = await renderCroppedBlob(imageSrc, croppedArea, rotation);
@@ -158,9 +164,7 @@ export function HeroPhotoSheet({
       onOpenChange(false);
     } catch (err) {
       console.error("[hero upload]", err);
-      setError(
-        err instanceof Error ? err.message : "Erreur pendant l'envoi. Réessayez.",
-      );
+      setError(friendlyUploadError(err));
       setStep("crop");
     }
   };

@@ -3,6 +3,7 @@ import imageCompression from "browser-image-compression";
 import { supabase } from "@/integrations/supabase/client";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { Camera, ImageIcon, Loader2, Trash2, Plus } from "lucide-react";
+import { ensureAuthOrMessage, friendlyUploadError } from "@/lib/upload-errors";
 
 const SIGNED_URL_EXPIRY = 60 * 60 * 24 * 365 * 10;
 
@@ -80,6 +81,11 @@ export function PhotoGridSheet({
       return;
     }
     setError(null);
+    const authMsg = await ensureAuthOrMessage();
+    if (authMsg) {
+      setError(authMsg);
+      return;
+    }
     setUploading(true);
     try {
       const remaining = Math.max(0, maxImages - images.length);
@@ -130,7 +136,7 @@ export function PhotoGridSheet({
       }
     } catch (err) {
       console.error("[photo upload]", err);
-      setError(err instanceof Error ? err.message : "Erreur pendant l'envoi.");
+      setError(friendlyUploadError(err));
     } finally {
       setUploading(false);
       if (galleryInputRef.current) galleryInputRef.current.value = "";
