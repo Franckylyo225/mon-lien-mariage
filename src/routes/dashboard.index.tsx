@@ -32,7 +32,7 @@ type TodoItem = {
   label: string;
   description: string;
   Icon: typeof IconCalendarEvent;
-  to: "/dashboard/ceremonies" | "/dashboard/landing" | "/dashboard/guests";
+  to: "/dashboard/ceremonies" | "/dashboard/preview" | "/dashboard/guests";
 };
 
 function DashboardHome() {
@@ -112,7 +112,7 @@ function DashboardHome() {
       label: "Ma page d'invitation",
       description: "Photos, textes, mise en page",
       Icon: IconLayout,
-      to: "/dashboard/landing",
+      to: "/dashboard/preview",
       done: pageDone,
     },
     {
