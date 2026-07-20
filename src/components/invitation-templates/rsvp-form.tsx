@@ -434,44 +434,6 @@ function RsvpModal({
             </div>
           )}
 
-          <div
-            className={
-              "mt-6 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-2 " +
-              d.fieldRadius
-            }
-            style={{ border: `1px solid ${d.border}` }}
-          >
-            <span
-              className="min-w-0 truncate text-[10px] uppercase tracking-widest"
-              style={{ color: d.mutedInk, fontFamily: d.eyebrowFont }}
-            >
-              Accompagnants
-            </span>
-            <div className="flex shrink-0 items-center gap-3">
-              <button
-                type="button"
-                onClick={() => setPlus((v) => Math.max(0, v - 1))}
-                className="grid size-8 place-items-center rounded-full text-lg"
-                style={{ border: `1px solid ${d.border}`, color: d.ink }}
-              >
-                −
-              </button>
-              <span
-                className="w-6 text-center text-lg tabular-nums"
-                style={{ fontFamily: d.eyebrowFont, color: d.ink }}
-              >
-                {plus.toString().padStart(2, "0")}
-              </span>
-              <button
-                type="button"
-                onClick={() => setPlus((v) => Math.min(9, v + 1))}
-                className="grid size-8 place-items-center rounded-full text-lg"
-                style={{ border: `1px solid ${d.border}`, color: d.ink }}
-              >
-                +
-              </button>
-            </div>
-          </div>
 
           <div className="mt-6">
             <p
