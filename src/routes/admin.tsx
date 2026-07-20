@@ -25,7 +25,7 @@ function AdminLayout() {
   useEffect(() => {
     if (loading) return;
     if (!account.isAuthenticated) {
-      navigate({ to: "/login", replace: true });
+      navigate({ to: "/admin/login", replace: true });
       return;
     }
     check()
