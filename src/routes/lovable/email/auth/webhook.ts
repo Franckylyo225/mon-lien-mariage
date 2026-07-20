@@ -131,17 +131,39 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
           )
         }
 
+        // Force all confirmation links to redirect back to the canonical
+        // production domain (moninvit.com) rather than the Supabase SITE_URL
+        // fallback (which may still point to moninvit.lovable.app).
+        const REDIRECT_PATHS: Record<string, string> = {
+          signup: '/verify-email',
+          magiclink: '/dashboard',
+          recovery: '/reset-password',
+          invite: '/signup',
+          email_change: '/dashboard',
+          reauthentication: '/dashboard',
+        }
+        let confirmationUrl: string = payload.data.url ?? ''
+        try {
+          const u = new URL(confirmationUrl)
+          const desiredRedirect = `https://${ROOT_DOMAIN}${REDIRECT_PATHS[emailType] ?? '/'}`
+          u.searchParams.set('redirect_to', desiredRedirect)
+          confirmationUrl = u.toString()
+        } catch {
+          // leave as-is if not parseable
+        }
+
         // Build template props from payload.data (HookData structure)
         const templateProps = {
           siteName: SITE_NAME,
           siteUrl: `https://${ROOT_DOMAIN}`,
           recipient: payload.data.email,
-          confirmationUrl: payload.data.url,
+          confirmationUrl,
           token: payload.data.token,
           email: payload.data.email,
           oldEmail: payload.data.old_email,
           newEmail: payload.data.new_email,
         }
+
 
         // Render React Email to HTML and plain text
         const element = React.createElement(EmailTemplate, templateProps)
