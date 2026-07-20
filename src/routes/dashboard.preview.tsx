@@ -52,7 +52,7 @@ function PreviewPage() {
 
   const resolved = useMemo(
     () => resolveTheme(couple),
-    [couple.theme, couple.accentColor, couple.backgroundBase, couple.accent],
+    [couple.theme, couple.accentColor, couple.backgroundBase, couple.accent, couple.textColor],
   );
   useEffect(() => {
     if (typeof document === "undefined") return;
