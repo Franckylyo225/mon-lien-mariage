@@ -31,7 +31,7 @@ function FullscreenPreview() {
 
   const resolved = useMemo(
     () => resolveTheme(couple),
-    [couple.theme, couple.accentColor, couple.backgroundBase, couple.accent],
+    [couple.theme, couple.accentColor, couple.backgroundBase, couple.accent, couple.textColor],
   );
 
   useEffect(() => {
@@ -46,8 +46,11 @@ function FullscreenPreview() {
     <div
       className="fixed inset-0 z-50 overflow-y-auto"
       data-theme={coupleTheme.theme}
+      data-bg-override={couple.backgroundBase ? "" : undefined}
+      data-text-override={couple.textColor ? "" : undefined}
       style={{ backgroundColor: resolved.bg }}
     >
+
       <style dangerouslySetInnerHTML={{ __html: `:root{${themeCssString(resolved)}}` }} />
 
       {coupleTheme.particleEffectSlug ? (
