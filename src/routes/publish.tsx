@@ -15,7 +15,9 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useWedding, slugify } from "@/lib/wedding-store";
-import { initPaystackPayment } from "@/lib/paystack.functions";
+import { initPaystackPayment, applyPromoCode } from "@/lib/paystack.functions";
+import { useNavigate } from "@tanstack/react-router";
+import { Tag } from "lucide-react";
 
 export const Route = createFileRoute("/publish")({
   head: () => ({
@@ -42,9 +44,14 @@ function formatFrenchDate(iso: string): string | null {
 }
 
 function PublishPage() {
-  const { couple, weddingId, loading } = useWedding();
+  const { couple, weddingId, loading, refresh } = useWedding();
   const initPayment = useServerFn(initPaystackPayment);
+  const submitPromo = useServerFn(applyPromoCode);
+  const navigate = useNavigate();
   const [payLoading, setPayLoading] = useState(false);
+  const [promoOpen, setPromoOpen] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [promoLoading, setPromoLoading] = useState(false);
 
   const slug = useMemo(
     () =>
