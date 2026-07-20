@@ -60,12 +60,13 @@ function AdminLayout() {
     );
   }
 
-  const tabs = [
+  const tabs: Array<{ to: string; label: string; Icon: typeof IconUsers; exact?: boolean }> = [
     { to: "/admin", label: "Vue d'ensemble", Icon: IconLayoutDashboard, exact: true },
     { to: "/admin/users", label: "Utilisateurs", Icon: IconUsers },
     { to: "/admin/weddings", label: "Événements", Icon: IconCalendarHeart },
     { to: "/admin/payments", label: "Paiements", Icon: IconCash },
-  ] as const;
+  ];
+
 
   return (
     <div className="min-h-screen bg-neutral-50">

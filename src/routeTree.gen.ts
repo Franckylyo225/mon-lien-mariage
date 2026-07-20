@@ -24,8 +24,10 @@ import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CommentCaMarcheRouteImport } from './routes/comment-ca-marche'
 import { Route as BlogRouteImport } from './routes/blog'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ThemeThumbSlugRouteImport } from './routes/theme-thumb.$slug'
 import { Route as PublishSuccessRouteImport } from './routes/publish.success'
 import { Route as OnboardingThemeRouteImport } from './routes/onboarding.theme'
@@ -43,6 +45,9 @@ import { Route as DashboardEventsRouteImport } from './routes/dashboard.events'
 import { Route as DashboardCeremoniesRouteImport } from './routes/dashboard.ceremonies'
 import { Route as DashboardBillingRouteImport } from './routes/dashboard.billing'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
+import { Route as AdminWeddingsRouteImport } from './routes/admin.weddings'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as DashboardGuestsIndexRouteImport } from './routes/dashboard.guests.index'
 import { Route as DashboardGuestsNewRouteImport } from './routes/dashboard.guests.new'
 import { Route as DashboardCeremoniesIdRouteImport } from './routes/dashboard.ceremonies.$id'
@@ -127,6 +132,11 @@ const BlogRoute = BlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -136,6 +146,11 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => DashboardRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const ThemeThumbSlugRoute = ThemeThumbSlugRouteImport.update({
   id: '/theme-thumb/$slug',
@@ -222,6 +237,21 @@ const AppProfileRoute = AppProfileRouteImport.update({
   path: '/app/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminWeddingsRoute = AdminWeddingsRouteImport.update({
+  id: '/weddings',
+  path: '/weddings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => AdminRoute,
+} as any)
 const DashboardGuestsIndexRoute = DashboardGuestsIndexRouteImport.update({
   id: '/guests/',
   path: '/guests/',
@@ -262,6 +292,7 @@ const ApiPublicWebhooksPaystackRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/blog': typeof BlogRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/dashboard': typeof DashboardRouteWithChildren
@@ -277,6 +308,9 @@ export interface FileRoutesByFullPath {
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/weddings': typeof AdminWeddingsRoute
   '/app/profile': typeof AppProfileRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
@@ -294,6 +328,7 @@ export interface FileRoutesByFullPath {
   '/onboarding/theme': typeof OnboardingThemeRoute
   '/publish/success': typeof PublishSuccessRoute
   '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
@@ -319,6 +354,9 @@ export interface FileRoutesByTo {
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/weddings': typeof AdminWeddingsRoute
   '/app/profile': typeof AppProfileRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
@@ -336,6 +374,7 @@ export interface FileRoutesByTo {
   '/onboarding/theme': typeof OnboardingThemeRoute
   '/publish/success': typeof PublishSuccessRoute
   '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
+  '/admin': typeof AdminIndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
@@ -348,6 +387,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/blog': typeof BlogRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/dashboard': typeof DashboardRouteWithChildren
@@ -363,6 +403,9 @@ export interface FileRoutesById {
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/weddings': typeof AdminWeddingsRoute
   '/app/profile': typeof AppProfileRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
@@ -380,6 +423,7 @@ export interface FileRoutesById {
   '/onboarding/theme': typeof OnboardingThemeRoute
   '/publish/success': typeof PublishSuccessRoute
   '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
@@ -393,6 +437,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/blog'
     | '/comment-ca-marche'
     | '/dashboard'
@@ -408,6 +453,9 @@ export interface FileRouteTypes {
     | '/temoignages'
     | '/termes-et-conditions'
     | '/verify-email'
+    | '/admin/payments'
+    | '/admin/users'
+    | '/admin/weddings'
     | '/app/profile'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
@@ -425,6 +473,7 @@ export interface FileRouteTypes {
     | '/onboarding/theme'
     | '/publish/success'
     | '/theme-thumb/$slug'
+    | '/admin/'
     | '/dashboard/'
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
@@ -450,6 +499,9 @@ export interface FileRouteTypes {
     | '/temoignages'
     | '/termes-et-conditions'
     | '/verify-email'
+    | '/admin/payments'
+    | '/admin/users'
+    | '/admin/weddings'
     | '/app/profile'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
@@ -467,6 +519,7 @@ export interface FileRouteTypes {
     | '/onboarding/theme'
     | '/publish/success'
     | '/theme-thumb/$slug'
+    | '/admin'
     | '/dashboard'
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
@@ -478,6 +531,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/blog'
     | '/comment-ca-marche'
     | '/dashboard'
@@ -493,6 +547,9 @@ export interface FileRouteTypes {
     | '/temoignages'
     | '/termes-et-conditions'
     | '/verify-email'
+    | '/admin/payments'
+    | '/admin/users'
+    | '/admin/weddings'
     | '/app/profile'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
@@ -510,6 +567,7 @@ export interface FileRouteTypes {
     | '/onboarding/theme'
     | '/publish/success'
     | '/theme-thumb/$slug'
+    | '/admin/'
     | '/dashboard/'
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
@@ -522,6 +580,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   BlogRoute: typeof BlogRoute
   CommentCaMarcheRoute: typeof CommentCaMarcheRoute
   DashboardRoute: typeof DashboardRouteWithChildren
@@ -653,6 +712,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -666,6 +732,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/'
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/theme-thumb/$slug': {
       id: '/theme-thumb/$slug'
@@ -786,6 +859,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/weddings': {
+      id: '/admin/weddings'
+      path: '/weddings'
+      fullPath: '/admin/weddings'
+      preLoaderRoute: typeof AdminWeddingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/payments': {
+      id: '/admin/payments'
+      path: '/payments'
+      fullPath: '/admin/payments'
+      preLoaderRoute: typeof AdminPaymentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/dashboard/guests/': {
       id: '/dashboard/guests/'
       path: '/guests'
@@ -837,6 +931,22 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AdminRouteChildren {
+  AdminPaymentsRoute: typeof AdminPaymentsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminWeddingsRoute: typeof AdminWeddingsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminPaymentsRoute: AdminPaymentsRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminWeddingsRoute: AdminWeddingsRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface DashboardCeremoniesRouteChildren {
   DashboardCeremoniesIdRoute: typeof DashboardCeremoniesIdRoute
@@ -914,6 +1024,7 @@ const PublishRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   BlogRoute: BlogRoute,
   CommentCaMarcheRoute: CommentCaMarcheRoute,
   DashboardRoute: DashboardRouteWithChildren,
