@@ -17,7 +17,7 @@ const EVENT_TYPE_META: Record<
 
 export const eventTypeMeta = new Proxy(EVENT_TYPE_META, {
   get(target, prop: string | symbol) {
-    if (typeof prop !== "string") return target[prop as keyof typeof target];
+    if (typeof prop !== "string") return Reflect.get(target, prop);
     return target[prop as EventType] ?? target.mariage;
   },
 }) as typeof EVENT_TYPE_META;
