@@ -125,6 +125,8 @@ export interface Couple {
   accent?: string;
   accentColor?: string;
   backgroundBase?: BackgroundBase;
+  textColor?: string;
+
   hashtag?: string;
   slug?: string;
   isPublished: boolean;
