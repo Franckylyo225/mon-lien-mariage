@@ -302,14 +302,96 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
             )}
           </section>
 
+          <section>
+            <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+              Couleur secondaire (texte)
+            </p>
+            <p className="mb-3 text-[10px] opacity-60">
+              Utile lorsque le fond personnalisé rend le texte peu lisible.
+            </p>
+            <div className="grid grid-cols-6 gap-3">
+              {TEXT_PRESETS.map((t) => {
+                const active = hasCustomText && customTextHex.toLowerCase() === t.hex.toLowerCase();
+                return (
+                  <button
+                    key={t.hex}
+                    type="button"
+                    onClick={() => selectText(t.hex)}
+                    className="group flex flex-col items-center gap-1 text-center"
+                    title={t.name}
+                  >
+                    <span
+                      className={cn(
+                        "grid size-11 place-items-center rounded-full border border-black/10 transition",
+                        active ? "ring-2 ring-offset-2 ring-offset-background" : "",
+                      )}
+                      style={{ background: t.hex, ["--tw-ring-color" as string]: t.hex }}
+                    >
+                      {active && (
+                        <span className="grid size-5 place-items-center rounded-full bg-white">
+                          <Check className="size-3" style={{ color: t.hex }} />
+                        </span>
+                      )}
+                    </span>
+                    <span className="line-clamp-1 text-[9px] opacity-70">{t.name}</span>
+                  </button>
+                );
+              })}
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (!hasCustomText) onPatch({ textColor: customTextHex });
+                  setEditingText((v) => !v);
+                }}
+                className="flex flex-col items-center gap-1 text-center"
+                title="Personnalisé"
+              >
+                <span
+                  className={cn(
+                    "grid size-11 place-items-center rounded-full border-2 border-dashed border-border transition",
+                    hasCustomText && !TEXT_PRESETS.some((p) => p.hex.toLowerCase() === customTextHex.toLowerCase())
+                      ? "border-solid ring-2 ring-offset-2 ring-offset-background"
+                      : "",
+                  )}
+                  style={{
+                    background: hasCustomText ? customTextHex : "transparent",
+                    ["--tw-ring-color" as string]: customTextHex,
+                  }}
+                >
+                  <Plus className="size-4 opacity-60" />
+                </span>
+                <span className="line-clamp-1 text-[9px] opacity-70">Personnalisé</span>
+              </button>
+            </div>
+
+            {editingText && (
+              <HexEditor
+                value={customTextHex}
+                onChange={(v) => onPatch({ textColor: v })}
+                onClose={() => setEditingText(false)}
+                onRemove={
+                  hasCustomText
+                    ? () => {
+                        setEditingText(false);
+                        onPatch({ textColor: undefined });
+                      }
+                    : undefined
+                }
+                removeLabel="Retirer"
+              />
+            )}
+          </section>
+
           <button
             type="button"
             onClick={restoreDefaults}
-            disabled={!couple.accentColor && !couple.backgroundBase}
+            disabled={!couple.accentColor && !couple.backgroundBase && !couple.textColor}
             className="w-full rounded-full border border-border bg-background py-3 text-center font-mono text-[11px] uppercase tracking-widest transition hover:border-foreground/40 hover:bg-muted/40 disabled:cursor-not-allowed disabled:opacity-40"
           >
             Restaurer les valeurs du thème
           </button>
+
         </div>
       )}
 
