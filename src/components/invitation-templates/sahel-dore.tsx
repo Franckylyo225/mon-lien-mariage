@@ -92,7 +92,7 @@ export function SahelDoreTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
           className="mt-4 text-center italic"
           style={{ fontFamily: '"Cormorant Garamond", serif' }}
         >
-          {formatFrenchDate(couple.weddingDate)}
+          <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>
         </p>
         <p className="mt-1 text-center text-[10px] uppercase tracking-[0.35em] opacity-70">
           {couple.city}

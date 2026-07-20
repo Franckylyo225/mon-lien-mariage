@@ -129,7 +129,7 @@ export function AquarelleTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
           className="mt-8 text-center text-2xl italic"
           style={{ color: "#5c4653" }}
         >
-          {formatFrenchDate(couple.weddingDate)}
+          <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>
         </p>
         <p
           className="mt-1 text-center text-[11px] uppercase tracking-[0.4em]"

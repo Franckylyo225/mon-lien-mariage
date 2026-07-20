@@ -126,7 +126,7 @@ export function ConfettiTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
             className="text-base italic"
             style={{ fontFamily: '"Fraunces", serif', color: "#2f2a2e" }}
           >
-            {formatFrenchDate(couple.weddingDate)}
+            <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>
           </p>
           <span className="text-xl">🎉</span>
         </div>

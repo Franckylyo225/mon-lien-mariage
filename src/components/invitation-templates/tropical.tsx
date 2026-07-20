@@ -52,7 +52,7 @@ export function TropicalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
               <span className="block">{couple.groomName}</span>
             </h1>
             <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.25em] opacity-80">
-              {formatFrenchDate(couple.weddingDate)} · {couple.city}
+              <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span> · {couple.city}
             </p>
           </div>
         </header>

@@ -84,7 +84,7 @@ export function JardinSauvageTemplate({ couple, ceremonies, rsvpSlot }: Template
             className="text-xs italic"
             style={{ fontFamily: '"Playfair Display", serif' }}
           >
-            {formatFrenchDate(couple.weddingDate)} · {couple.city}
+            <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span> · {couple.city}
           </span>
           <Sprig accent={accent} flip />
         </div>

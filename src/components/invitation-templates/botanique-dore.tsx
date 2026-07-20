@@ -34,7 +34,7 @@ export function BotaniqueDoreTemplate({ couple, ceremonies, rsvpSlot }: Template
             <span className="text-[#c9a84c]">❦</span>
             <span className="h-px w-8 bg-[#c9a84c]" />
           </div>
-          <p className="font-serif italic">{formatFrenchDate(couple.weddingDate)}</p>
+          <p className="font-serif italic"><span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span></p>
           <p className="mt-1 font-mono text-[10px] uppercase tracking-widest opacity-60">
             {couple.city}
           </p>

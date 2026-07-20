@@ -54,7 +54,7 @@ export function ManuscritTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
           />
           <div>
             <p className="text-[10px] uppercase tracking-[0.4em] opacity-60">
-              {formatFrenchDate(couple.weddingDate)} — {couple.city}
+              <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span> — {couple.city}
             </p>
             {couple.introMessage ? (
               <p

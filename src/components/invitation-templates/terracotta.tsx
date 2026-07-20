@@ -41,7 +41,7 @@ export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
               <span className="block">{couple.groomName}</span>
             </h1>
             <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.25em] opacity-70">
-              {formatFrenchDate(couple.weddingDate)} · {couple.city}
+              <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span> · {couple.city}
             </p>
           </div>
         </header>

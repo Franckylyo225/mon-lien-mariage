@@ -76,7 +76,7 @@ export function KenteRoyalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
             className="mt-5 italic"
             style={{ fontFamily: '"Playfair Display", serif' }}
           >
-            {formatFrenchDate(couple.weddingDate)}
+            <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>
           </p>
           <p
             className="mt-1 text-[10px] uppercase tracking-[0.4em]"

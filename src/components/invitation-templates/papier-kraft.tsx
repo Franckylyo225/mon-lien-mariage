@@ -157,7 +157,7 @@ export function PapierKraftTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
               className="text-center text-sm uppercase tracking-[0.3em]"
               style={{ color: accent }}
             >
-              {formatFrenchDate(couple.weddingDate)}
+              <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>
             </p>
             <span className="h-px" style={{ background: `${accent}66` }} />
           </div>

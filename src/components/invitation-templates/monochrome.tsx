@@ -36,7 +36,7 @@ export function MonochromeTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
             {couple.caption || "Wedding"}
           </span>
           <span className="text-right tabular-nums">
-            {formatFrenchDate(couple.weddingDate)}
+            <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>
           </span>
           <span className="text-right">{couple.city}</span>
         </header>

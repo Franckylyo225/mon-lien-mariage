@@ -84,7 +84,7 @@ export function BleuNuitTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
           className="mt-4 text-center italic"
           style={{ fontFamily: '"Playfair Display", serif', color: "#eae3d0" }}
         >
-          {formatFrenchDate(couple.weddingDate)}
+          <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>
         </p>
         <p
           className="mt-1 text-center text-[10px] uppercase tracking-[0.4em]"

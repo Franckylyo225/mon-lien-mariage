@@ -40,7 +40,7 @@ export function ArtDecoTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps)
             <span className="h-px w-10 bg-[#c9a84c]" />
           </div>
           <p className="font-serif italic text-[#f0d78c]/90">
-            {formatFrenchDate(couple.weddingDate)}
+            <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>
           </p>
           <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.4em] text-[#c9a84c]/70">
             {couple.city}
