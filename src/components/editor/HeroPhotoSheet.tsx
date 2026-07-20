@@ -4,6 +4,7 @@ import imageCompression from "browser-image-compression";
 import { supabase } from "@/integrations/supabase/client";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { Camera, ImageIcon, Loader2, RotateCw, Trash2 } from "lucide-react";
+import { ensureAuthOrMessage, friendlyUploadError } from "@/lib/upload-errors";
 
 
 
