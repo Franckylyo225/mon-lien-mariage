@@ -22,7 +22,10 @@ function AdminLayout() {
   const check = useServerFn(checkIsAdmin);
   const [status, setStatus] = useState<"checking" | "ok" | "denied">("checking");
 
+  const isLoginRoute = pathname === "/admin/login";
+
   useEffect(() => {
+    if (isLoginRoute) return;
     if (loading) return;
     if (!account.isAuthenticated) {
       navigate({ to: "/admin/login", replace: true });
@@ -31,7 +34,12 @@ function AdminLayout() {
     check()
       .then((r) => setStatus(r.isAdmin ? "ok" : "denied"))
       .catch(() => setStatus("denied"));
-  }, [loading, account.isAuthenticated, check, navigate]);
+  }, [loading, account.isAuthenticated, check, navigate, isLoginRoute]);
+
+  if (isLoginRoute) {
+    return <Outlet />;
+  }
+
 
   if (loading || status === "checking") {
     return (
