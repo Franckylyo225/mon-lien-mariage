@@ -10,7 +10,7 @@ export const Route = createFileRoute("/verify-email")({
       {
         name: "description",
         content:
-          "Saisissez le code à 6 chiffres reçu par email pour activer votre compte MonInvit.com.",
+          "Saisissez le code de confirmation reçu par email pour activer votre compte MonInvit.com.",
       },
     ],
   }),
@@ -19,6 +19,7 @@ export const Route = createFileRoute("/verify-email")({
   }),
   component: VerifyEmailPage,
 });
+
 
 function VerifyEmailPage() {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ function VerifyEmailPage() {
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
 
-  const canonicalCode = useMemo(() => code.replace(/\D/g, "").slice(0, 6), [code]);
+  const canonicalCode = useMemo(() => code.replace(/\D/g, "").slice(0, 10), [code]);
 
   useEffect(() => {
     setCode(canonicalCode);
@@ -41,13 +42,13 @@ function VerifyEmailPage() {
     setError(null);
     setInfo(null);
     if (!email.includes("@")) return setError("Adresse email invalide.");
-    if (canonicalCode.length !== 6)
-      return setError("Le code doit contenir 6 chiffres.");
+    if (canonicalCode.length < 6)
+      return setError("Saisissez le code reçu par email (au moins 6 chiffres).");
     setLoading(true);
     const { error: err } = await supabase.auth.verifyOtp({
       email,
       token: canonicalCode,
-      type: "signup",
+      type: "email",
     });
     setLoading(false);
     if (err) {
@@ -56,6 +57,7 @@ function VerifyEmailPage() {
     }
     navigate({ to: "/onboarding/prenoms" });
   };
+
 
   const resend = async () => {
     setError(null);
@@ -79,7 +81,7 @@ function VerifyEmailPage() {
     <AuthLayout
       eyebrow="Confirmez votre email"
       title={<>Un code vous <em className="text-[#c17c74]">attend.</em></>}
-      subtitle="Saisissez le code à 6 chiffres reçu par email pour activer votre compte."
+      subtitle="Saisissez le code de confirmation reçu par email pour activer votre compte."
     >
       <form onSubmit={submit} className="space-y-4">
         <Field label="Adresse email">
@@ -93,18 +95,19 @@ function VerifyEmailPage() {
             autoComplete="email"
           />
         </Field>
-        <Field label="Code à 6 chiffres">
+        <Field label="Code de confirmation">
           <input
             inputMode="numeric"
             autoComplete="one-time-code"
             required
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            className={inputClass + " text-center text-2xl tracking-[0.5em] font-mono"}
+            className={inputClass + " text-center text-2xl tracking-[0.4em] font-mono"}
             placeholder="••••••"
-            maxLength={6}
+            maxLength={10}
           />
         </Field>
+
         {error ? <p className="text-xs text-destructive">{error}</p> : null}
         {info ? (
           <p className="rounded-md border border-[#c17c74]/30 bg-[#c17c74]/10 px-3 py-2 text-xs text-[#7a2f3a]">
