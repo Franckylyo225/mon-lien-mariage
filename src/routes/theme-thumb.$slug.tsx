@@ -2,6 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { componentForTheme } from "@/components/invitation-templates";
 import { THEMES, resolveTheme } from "@/lib/wedding-theme";
+import { ThemeRoot } from "@/components/theme/ThemeRoot";
 import type { Ceremony, Couple, ThemeId } from "@/lib/wedding-store";
 
 /**
@@ -45,30 +46,9 @@ function ThemeThumbRoute() {
   const ceremonies: Ceremony[] = [];
 
   return (
-    <div style={parseCssText(themeCss(resolved))}>
+    <ThemeRoot couple={couple}>
       <Template couple={themedCouple} ceremonies={ceremonies} rsvpSlot={null} />
-    </div>
+    </ThemeRoot>
   );
 }
 
-function themeCss(r: ReturnType<typeof resolveTheme>): string {
-  return [
-    `--wedding-bg:${r.bg}`,
-    `--wedding-accent:${r.accent}`,
-    `--wedding-text-primary:${r.textPrimary}`,
-    `--wedding-text-secondary:${r.textSecondary}`,
-    `--wedding-border:${r.border}`,
-    `--wedding-surface:${r.surface}`,
-    `--wedding-font-heading:${r.fontHeading}`,
-    `--wedding-font-body:${r.fontBody}`,
-  ].join(";");
-}
-
-function parseCssText(css: string): React.CSSProperties {
-  const style: Record<string, string> = {};
-  for (const decl of css.split(";")) {
-    const [k, v] = decl.split(":");
-    if (k && v) style[k.trim()] = v.trim();
-  }
-  return style as React.CSSProperties;
-}

@@ -1,12 +1,12 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { IconX } from "@tabler/icons-react";
 import { useWedding } from "@/lib/wedding-store";
 import { componentForTheme } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
 import { ParticleCanvas, RsvpBurstOverlay } from "@/components/particles/ParticleCanvas";
 import { AmbientMusicPlayer } from "@/components/music/AmbientMusicPlayer";
-import { applyThemeVars, resolveTheme, themeCssString } from "@/lib/wedding-theme";
+import { ThemeRoot, useResolvedTheme } from "@/components/theme/ThemeRoot";
 import type {
   ParticleColorMode,
   ParticleIntensity,
@@ -29,29 +29,16 @@ function FullscreenPreview() {
   const navigate = useNavigate();
   const [rsvpBurst, setRsvpBurst] = useState(false);
 
-  const resolved = useMemo(
-    () => resolveTheme(couple),
-    [couple.theme, couple.accentColor, couple.backgroundBase, couple.accent, couple.textColor],
-  );
-
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    applyThemeVars(document.documentElement, resolved);
-  }, [resolved]);
-
+  const resolved = useResolvedTheme(couple);
   const coupleTheme = { ...couple, accent: resolved.accent };
   const Template = componentForTheme(coupleTheme.theme);
 
   return (
-    <div
+    <ThemeRoot
+      couple={couple}
       className="fixed inset-0 z-50 overflow-y-auto"
-      data-theme={coupleTheme.theme}
-      data-bg-override={couple.backgroundBase ? "" : undefined}
-      data-text-override={couple.textColor ? "" : undefined}
-      style={{ backgroundColor: resolved.bg }}
     >
 
-      <style dangerouslySetInnerHTML={{ __html: `:root{${themeCssString(resolved)}}` }} />
 
       {coupleTheme.particleEffectSlug ? (
         <ParticleCanvas
@@ -103,6 +90,6 @@ function FullscreenPreview() {
         <IconX size={14} strokeWidth={2.5} />
         <span>Fermer</span>
       </button>
-    </div>
+    </ThemeRoot>
   );
 }

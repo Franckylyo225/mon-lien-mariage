@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useWedding } from "@/lib/wedding-store";
 import { componentForTheme } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
@@ -8,7 +8,7 @@ import { useEditMode } from "@/lib/edit-mode";
 import { usePageChrome } from "@/lib/page-chrome";
 import { useAutosaveContext } from "@/lib/autosave-context";
 import { cn } from "@/lib/utils";
-import { applyThemeVars, resolveTheme } from "@/lib/wedding-theme";
+import { ThemeRoot, useResolvedTheme } from "@/components/theme/ThemeRoot";
 import { ParticleCanvas } from "@/components/particles/ParticleCanvas";
 import type {
   ParticleColorMode,
@@ -50,14 +50,7 @@ function PreviewPage() {
 
   const [isPublishing, setIsPublishing] = useState(false);
 
-  const resolved = useMemo(
-    () => resolveTheme(couple),
-    [couple.theme, couple.accentColor, couple.backgroundBase, couple.accent, couple.textColor],
-  );
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-    applyThemeVars(document.documentElement, resolved);
-  }, [resolved]);
+  const resolved = useResolvedTheme(couple);
 
   // Derive the status pill from mode + publish state.
   const status: PageStatus = isPublishing
@@ -114,7 +107,7 @@ function PreviewPage() {
   const Template = componentForTheme(coupleTheme.theme);
 
   return (
-    <div className="relative -mx-4 -my-8 sm:-mx-8" data-bg-override={couple.backgroundBase ? "" : undefined} data-text-override={couple.textColor ? "" : undefined} style={{ backgroundColor: resolved.bg }}>
+    <ThemeRoot couple={couple} className="relative -mx-4 -my-8 sm:-mx-8">
       <div
         className={cn(
           "mt-4 transition-all",
@@ -150,6 +143,6 @@ function PreviewPage() {
           loop={!!coupleTheme.particleTriggerLoop}
         />
       ) : null}
-    </div>
+    </ThemeRoot>
   );
 }

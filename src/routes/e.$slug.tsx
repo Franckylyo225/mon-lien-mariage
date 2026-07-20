@@ -8,7 +8,8 @@ import { ParticleCanvas, RsvpBurstOverlay } from "@/components/particles/Particl
 import { AmbientMusicPlayer } from "@/components/music/AmbientMusicPlayer";
 import { RevealOnScroll } from "@/components/site/RevealOnScroll";
 import type { BackgroundBase, Ceremony, Couple, EventType, TemplateId, ThemeId } from "@/lib/wedding-store";
-import { resolveTheme, themeCssString } from "@/lib/wedding-theme";
+import { resolveTheme } from "@/lib/wedding-theme";
+import { ThemeRoot } from "@/components/theme/ThemeRoot";
 import { normalizeEventType } from "@/lib/ceremony-meta";
 import type {
   ParticleColorMode,
@@ -189,8 +190,7 @@ function PublicInvitationPage() {
   const Template = componentForTheme(coupleTheme.theme);
 
   return (
-    <div className="relative" data-theme={coupleTheme.theme} data-bg-override={coupleTheme.backgroundBase ? "" : undefined} data-text-override={coupleTheme.textColor ? "" : undefined} style={{ backgroundColor: resolved.bg }}>
-      <style dangerouslySetInnerHTML={{ __html: `:root{${themeCssString(resolved)}}` }} />
+    <ThemeRoot couple={coupleTheme} className="relative">
       {coupleTheme.particleEffectSlug ? (
         <ParticleCanvas
           config={{
@@ -230,7 +230,7 @@ function PublicInvitationPage() {
         />
       </RevealOnScroll>
       <AmbientMusicPlayer slug={coupleTheme.musicSlug} enabled={coupleTheme.musicEnabled} />
-    </div>
+    </ThemeRoot>
   );
 }
 
