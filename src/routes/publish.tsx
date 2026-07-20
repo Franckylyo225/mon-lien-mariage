@@ -15,7 +15,9 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useWedding, slugify } from "@/lib/wedding-store";
-import { initPaystackPayment } from "@/lib/paystack.functions";
+import { initPaystackPayment, applyPromoCode } from "@/lib/paystack.functions";
+import { useNavigate } from "@tanstack/react-router";
+import { Tag } from "lucide-react";
 
 export const Route = createFileRoute("/publish")({
   head: () => ({
@@ -44,7 +46,12 @@ function formatFrenchDate(iso: string): string | null {
 function PublishPage() {
   const { couple, weddingId, loading } = useWedding();
   const initPayment = useServerFn(initPaystackPayment);
+  const submitPromo = useServerFn(applyPromoCode);
+  const navigate = useNavigate();
   const [payLoading, setPayLoading] = useState(false);
+  const [promoOpen, setPromoOpen] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [promoLoading, setPromoLoading] = useState(false);
 
   const slug = useMemo(
     () =>
@@ -93,6 +100,37 @@ function PublishPage() {
       setPayLoading(false);
     }
   };
+
+  const handlePromo = async () => {
+    if (!weddingId) {
+      toast.error("Aucun événement actif. Rechargez la page.");
+      return;
+    }
+    const code = promoCode.trim().toUpperCase();
+    if (!code) {
+      toast.error("Veuillez saisir un code promo.");
+      return;
+    }
+    setPromoLoading(true);
+    try {
+      const res = await submitPromo({
+        data: { weddingId, slug, code },
+      });
+      if (res.published) {
+        toast.success("Code appliqué — votre invitation est publiée !");
+        navigate({ to: "/publish/success", search: { wid: weddingId } });
+      } else {
+        toast.success(`Remise de ${res.discount}% appliquée.`);
+      }
+    } catch (e) {
+      toast.error(
+        e instanceof Error ? e.message : "Code promo invalide.",
+      );
+    } finally {
+      setPromoLoading(false);
+    }
+  };
+
 
   if (loading) {
     return (
@@ -341,7 +379,67 @@ function PublishPage() {
           </div>
         </div>
 
-        {/* 6. Note */}
+        {/* 5b. Code promo */}
+        <div className="mb-2">
+          {!promoOpen ? (
+            <button
+              type="button"
+              onClick={() => setPromoOpen(true)}
+              className="mx-auto flex items-center gap-1.5 text-[12px] text-muted-foreground underline underline-offset-2 transition hover:text-foreground"
+            >
+              <Tag className="size-3.5" strokeWidth={1.75} />
+              J'ai un code promo
+            </button>
+          ) : (
+            <div className="rounded-[12px] border border-border/60 bg-card p-3">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground/70">
+                  Code promo
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPromoOpen(false);
+                    setPromoCode("");
+                  }}
+                  className="text-[10px] text-muted-foreground underline underline-offset-2"
+                >
+                  Fermer
+                </button>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !promoLoading) handlePromo();
+                  }}
+                  placeholder="Ex : TIANA100"
+                  className="flex-1 rounded-[10px] border border-border/60 bg-background px-3 py-2.5 font-mono text-[12px] uppercase tracking-wider outline-none focus:ring-2 focus:ring-primary/40"
+                  spellCheck={false}
+                  autoCapitalize="characters"
+                  autoCorrect="off"
+                  maxLength={24}
+                />
+                <button
+                  type="button"
+                  onClick={handlePromo}
+                  disabled={promoLoading || !promoCode.trim() || !weddingId}
+                  className="inline-flex items-center justify-center gap-1.5 rounded-[10px] px-4 text-[12px] font-medium transition disabled:opacity-60"
+                  style={{ background: "#4B1528", color: "#FBEAF0" }}
+                >
+                  {promoLoading ? (
+                    <Loader2 className="size-3.5 animate-spin" strokeWidth={2} />
+                  ) : (
+                    "Appliquer"
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
         <p className="mt-3.5 text-center text-[10px] leading-[1.5] text-muted-foreground/70">
           Après publication, vous pouvez toujours modifier
           <br />
