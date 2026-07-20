@@ -30,39 +30,99 @@ function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
 
-  // Supabase places the recovery token in the URL hash (#access_token=...&type=recovery).
-  // The client parses it automatically and fires PASSWORD_RECOVERY. We just
-  // wait for a session (recovery or existing) before allowing the form.
+  // Supabase may deliver the recovery token as either:
+  //   - a PKCE code in the query string (?code=...), requiring exchangeCodeForSession
+  //   - hash tokens (#access_token=...&type=recovery), auto-parsed by the client
+  //   - a plain ?token_hash=...&type=recovery, requiring verifyOtp
   useEffect(() => {
     let cancelled = false;
+
+    const markReady = () => {
+      if (!cancelled) setReady(true);
+    };
+    const markInvalid = () => {
+      if (!cancelled) setInvalid(true);
+    };
+
+    const run = async () => {
+      try {
+        const url = new URL(window.location.href);
+        const code = url.searchParams.get("code");
+        const tokenHash = url.searchParams.get("token_hash");
+        const type = url.searchParams.get("type");
+        const errorDesc =
+          url.searchParams.get("error_description") ||
+          new URLSearchParams(window.location.hash.replace(/^#/, "")).get(
+            "error_description",
+          );
+
+        if (errorDesc) {
+          markInvalid();
+          return;
+        }
+
+        if (code) {
+          const { error: err } =
+            await supabase.auth.exchangeCodeForSession(code);
+          if (err) {
+            markInvalid();
+            return;
+          }
+          // Clean the URL to avoid re-using the code on refresh.
+          window.history.replaceState({}, "", "/reset-password");
+          markReady();
+          return;
+        }
+
+        if (tokenHash && type === "recovery") {
+          const { error: err } = await supabase.auth.verifyOtp({
+            type: "recovery",
+            token_hash: tokenHash,
+          });
+          if (err) {
+            markInvalid();
+            return;
+          }
+          window.history.replaceState({}, "", "/reset-password");
+          markReady();
+          return;
+        }
+
+        // Hash-based recovery flow (older links): the client parses
+        // #access_token automatically and fires PASSWORD_RECOVERY / SIGNED_IN.
+        const { data } = await supabase.auth.getSession();
+        if (data.session) {
+          markReady();
+          return;
+        }
+
+        // Give the hash-based recovery flow a moment to hydrate.
+        setTimeout(async () => {
+          if (cancelled) return;
+          const { data: d2 } = await supabase.auth.getSession();
+          if (d2.session) markReady();
+          else markInvalid();
+        }, 800);
+      } catch {
+        markInvalid();
+      }
+    };
+
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
       if (cancelled) return;
       if (event === "PASSWORD_RECOVERY" || (session && event === "SIGNED_IN")) {
-        setReady(true);
+        markReady();
       }
     });
-    supabase.auth.getSession().then(({ data }) => {
-      if (cancelled) return;
-      if (data.session) {
-        setReady(true);
-      } else {
-        // Give the hash-based recovery flow a moment to hydrate.
-        setTimeout(() => {
-          if (!cancelled) {
-            supabase.auth.getSession().then(({ data: d2 }) => {
-              if (cancelled) return;
-              if (d2.session) setReady(true);
-              else setInvalid(true);
-            });
-          }
-        }, 600);
-      }
-    });
+
+    void run();
+
     return () => {
       cancelled = true;
       sub.subscription.unsubscribe();
     };
   }, []);
+
 
   const check = useMemo(() => validatePassword(password), [password]);
 
