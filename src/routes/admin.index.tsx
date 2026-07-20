@@ -9,6 +9,7 @@ import {
   IconUsersGroup,
 } from "@tabler/icons-react";
 import { getPlatformStats } from "@/lib/admin.functions";
+import { useWedding } from "@/lib/wedding-store";
 
 export const Route = createFileRoute("/admin/")({
   component: AdminOverview,
@@ -19,11 +20,15 @@ function formatXof(n: number) {
 }
 
 function AdminOverview() {
+  const { account, loading } = useWedding();
   const fetchStats = useServerFn(getPlatformStats);
   const { data, isLoading, error } = useQuery({
     queryKey: ["admin", "stats"],
     queryFn: () => fetchStats(),
+    enabled: !loading && account.isAuthenticated,
+    retry: false,
   });
+
 
   if (isLoading) return <p className="text-sm text-muted-foreground">Chargement…</p>;
   if (error || !data)
