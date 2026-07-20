@@ -126,6 +126,25 @@ const skins: Record<ProgramTabsVariant, Skin> = {
       "w-14 shrink-0 font-mono text-[10px] uppercase tracking-[0.25em] text-[#c9a84c]",
     progTitle: "font-serif italic text-[#f0d78c]",
     progDesc: "mt-0.5 text-[11px] text-[#f0d78c]/70",
+  "bleu-nuit": {
+    wrap: "",
+    tabsBar: "border-b border-[#c9b57b]/25",
+    tab: (a) =>
+      "shrink-0 border-b-2 px-3 pb-2 pt-1 font-mono text-[10px] uppercase tracking-[0.3em] transition " +
+      (a
+        ? "border-[#c9b57b] text-[#eae3d0]"
+        : "border-transparent text-[#eae3d0]/45 hover:text-[#eae3d0]/80"),
+    card: "relative mt-6 rounded-2xl border border-[#c9b57b]/25 bg-white/[0.04] p-6 backdrop-blur-sm shadow-[0_10px_40px_-20px_rgba(0,0,0,0.6)]",
+    title: "text-2xl italic text-[#eae3d0]",
+    time: "font-mono text-xs uppercase tracking-[0.25em] text-[#c9b57b]",
+    meta: "mt-2 text-sm italic text-[#eae3d0]/75",
+    dress:
+      "mt-3 inline-flex items-center gap-2 rounded-full border border-[#c9b57b]/40 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.3em] text-[#c9b57b]",
+    divider: "mt-5 space-y-4 border-t border-[#c9b57b]/20 pt-5",
+    progTime:
+      "w-16 shrink-0 font-mono text-[10px] uppercase tracking-[0.3em] text-[#c9b57b]",
+    progTitle: "italic text-[#eae3d0]",
+    progDesc: "mt-0.5 text-[11px] text-[#eae3d0]/60",
   },
 };
 
