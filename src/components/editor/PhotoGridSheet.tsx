@@ -3,6 +3,7 @@ import imageCompression from "browser-image-compression";
 import { supabase } from "@/integrations/supabase/client";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { Camera, ImageIcon, Loader2, Trash2, Plus } from "lucide-react";
+import { ensureAuthOrMessage, friendlyUploadError } from "@/lib/upload-errors";
 
 const SIGNED_URL_EXPIRY = 60 * 60 * 24 * 365 * 10;
 
