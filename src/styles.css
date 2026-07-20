@@ -181,6 +181,16 @@
   transition: outline-color 200ms ease;
 }
 
+/* When the user explicitly picks a background color in the theme editor,
+   override the template's own hardcoded main background so the choice is
+   actually visible. Templates use `<main class="min-h-screen bg-[#...]">`
+   which would otherwise mask the wrapper's backgroundColor. */
+[data-bg-override] main,
+[data-bg-override] > main {
+  background-color: var(--wedding-bg) !important;
+}
+
+
 @layer base {
   * {
     border-color: var(--color-border);

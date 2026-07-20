@@ -114,7 +114,7 @@ function PreviewPage() {
   const Template = componentForTheme(coupleTheme.theme);
 
   return (
-    <div className="relative -mx-4 -my-8 sm:-mx-8">
+    <div className="relative -mx-4 -my-8 sm:-mx-8" data-bg-override={couple.backgroundBase ? "" : undefined} style={{ backgroundColor: resolved.bg }}>
       <div
         className={cn(
           "mt-4 transition-all",
