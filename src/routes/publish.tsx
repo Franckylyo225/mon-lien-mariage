@@ -379,7 +379,67 @@ function PublishPage() {
           </div>
         </div>
 
-        {/* 6. Note */}
+        {/* 5b. Code promo */}
+        <div className="mb-2">
+          {!promoOpen ? (
+            <button
+              type="button"
+              onClick={() => setPromoOpen(true)}
+              className="mx-auto flex items-center gap-1.5 text-[12px] text-muted-foreground underline underline-offset-2 transition hover:text-foreground"
+            >
+              <Tag className="size-3.5" strokeWidth={1.75} />
+              J'ai un code promo
+            </button>
+          ) : (
+            <div className="rounded-[12px] border border-border/60 bg-card p-3">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground/70">
+                  Code promo
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPromoOpen(false);
+                    setPromoCode("");
+                  }}
+                  className="text-[10px] text-muted-foreground underline underline-offset-2"
+                >
+                  Fermer
+                </button>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !promoLoading) handlePromo();
+                  }}
+                  placeholder="Ex : TIANA100"
+                  className="flex-1 rounded-[10px] border border-border/60 bg-background px-3 py-2.5 font-mono text-[12px] uppercase tracking-wider outline-none focus:ring-2 focus:ring-primary/40"
+                  spellCheck={false}
+                  autoCapitalize="characters"
+                  autoCorrect="off"
+                  maxLength={24}
+                />
+                <button
+                  type="button"
+                  onClick={handlePromo}
+                  disabled={promoLoading || !promoCode.trim() || !weddingId}
+                  className="inline-flex items-center justify-center gap-1.5 rounded-[10px] px-4 text-[12px] font-medium transition disabled:opacity-60"
+                  style={{ background: "#4B1528", color: "#FBEAF0" }}
+                >
+                  {promoLoading ? (
+                    <Loader2 className="size-3.5 animate-spin" strokeWidth={2} />
+                  ) : (
+                    "Appliquer"
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
         <p className="mt-3.5 text-center text-[10px] leading-[1.5] text-muted-foreground/70">
           Après publication, vous pouvez toujours modifier
           <br />
