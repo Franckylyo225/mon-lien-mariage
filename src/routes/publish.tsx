@@ -101,6 +101,37 @@ function PublishPage() {
     }
   };
 
+  const handlePromo = async () => {
+    if (!weddingId) {
+      toast.error("Aucun événement actif. Rechargez la page.");
+      return;
+    }
+    const code = promoCode.trim().toUpperCase();
+    if (!code) {
+      toast.error("Veuillez saisir un code promo.");
+      return;
+    }
+    setPromoLoading(true);
+    try {
+      const res = await submitPromo({
+        data: { weddingId, slug, code },
+      });
+      if (res.published) {
+        toast.success("Code appliqué — votre invitation est publiée !");
+        navigate({ to: "/publish/success", search: { wid: weddingId } });
+      } else {
+        toast.success(`Remise de ${res.discount}% appliquée.`);
+      }
+    } catch (e) {
+      toast.error(
+        e instanceof Error ? e.message : "Code promo invalide.",
+      );
+    } finally {
+      setPromoLoading(false);
+    }
+  };
+
+
   if (loading) {
     return (
       <div className="grid min-h-screen place-items-center bg-background">
