@@ -19,7 +19,7 @@ const TITLES: Record<string, string> = {
   "/dashboard/ceremonies": "Mes étapes",
   "/dashboard/guests": "Mes invités",
   "/dashboard/preview": "Aperçu de ma page",
-  "/dashboard/landing": "Ma page",
+  
   "/dashboard/invites": "Invitations",
   "/dashboard/share": "Liens & Partages",
   "/dashboard/stats": "Statistiques RSVP",
