@@ -31,7 +31,7 @@ export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
             <span className="block">{couple.groomName}</span>
           </h1>
           <p className="mt-6 text-center font-mono text-[10px] uppercase tracking-[0.4em] text-[#f5f3ee]/60">
-            {formatFrenchDate(couple.weddingDate)} · {couple.city}
+            <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span> · {couple.city}
           </p>
         </div>
 

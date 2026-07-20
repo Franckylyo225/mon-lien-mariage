@@ -70,7 +70,7 @@ export function TerracottaBohemeTemplate({
           style={{ background: accent + "18", color: accent }}
         >
           <span className="text-[10px] uppercase tracking-[0.3em]">
-            {formatFrenchDate(couple.weddingDate)}
+            <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>
           </span>
           <span className="opacity-60">·</span>
           <span className="text-[10px] uppercase tracking-[0.3em]">

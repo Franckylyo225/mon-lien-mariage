@@ -75,7 +75,7 @@ export function OrAntiqueTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
             className="italic"
             style={{ fontFamily: '"Cormorant Garamond", serif' }}
           >
-            {formatFrenchDate(couple.weddingDate)}
+            <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>
           </p>
           <p
             className="mt-1 text-[10px] uppercase tracking-[0.4em]"

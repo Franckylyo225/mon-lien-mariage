@@ -55,7 +55,7 @@ export function VertSaugeTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
           className="mt-6 text-center italic"
           style={{ fontFamily: '"Cormorant Garamond", serif' }}
         >
-          {formatFrenchDate(couple.weddingDate)}
+          <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>
         </p>
         <p className="mt-1 text-center text-[10px] uppercase tracking-[0.3em] opacity-70">
           {couple.city}

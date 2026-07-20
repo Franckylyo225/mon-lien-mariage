@@ -68,7 +68,7 @@ export function IvoireEpureTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
 
         <div className="mt-10 flex items-center gap-4 border-t border-black/10 pt-6">
           <p className="text-[10px] uppercase tracking-[0.4em] opacity-70">
-            {formatFrenchDate(couple.weddingDate)}
+            <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>
           </p>
           <span className="h-px flex-1" style={{ background: accent + "30" }} />
           <p className="text-[10px] uppercase tracking-[0.4em] opacity-70">
