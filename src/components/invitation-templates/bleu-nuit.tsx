@@ -128,15 +128,17 @@ export function BleuNuitTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
         ) : null}
 
         <section className="mt-16">
-          <div className="mb-6 text-center">
+          <div className="mb-6 flex items-center justify-center gap-3">
+            <span className="h-px w-10" style={{ background: accent + "80" }} />
             <p
               className="text-[10px] uppercase tracking-[0.5em]"
               style={{ color: accent }}
             >
-              — {eventTypeMeta[couple.eventType ?? "mariage"].programTitle} —
+              {eventTypeMeta[couple.eventType ?? "mariage"].programTitle}
             </p>
+            <span className="h-px w-10" style={{ background: accent + "80" }} />
           </div>
-          <CeremonyProgramTabs ceremonies={published} variant="deco" />
+          <CeremonyProgramTabs ceremonies={published} variant="bleu-nuit" />
         </section>
 
         {rsvpSlot}
