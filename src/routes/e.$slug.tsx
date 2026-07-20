@@ -190,8 +190,7 @@ function PublicInvitationPage() {
   const Template = componentForTheme(coupleTheme.theme);
 
   return (
-    <div className="relative" data-theme={coupleTheme.theme} data-bg-override={coupleTheme.backgroundBase ? "" : undefined} data-text-override={coupleTheme.textColor ? "" : undefined} style={{ backgroundColor: resolved.bg }}>
-      <style dangerouslySetInnerHTML={{ __html: `:root{${themeCssString(resolved)}}` }} />
+    <ThemeRoot couple={coupleTheme} className="relative">
       {coupleTheme.particleEffectSlug ? (
         <ParticleCanvas
           config={{
@@ -231,7 +230,7 @@ function PublicInvitationPage() {
         />
       </RevealOnScroll>
       <AmbientMusicPlayer slug={coupleTheme.musicSlug} enabled={coupleTheme.musicEnabled} />
-    </div>
+    </ThemeRoot>
   );
 }
 
