@@ -48,6 +48,7 @@ import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AdminWeddingsRouteImport } from './routes/admin.weddings'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as DashboardGuestsIndexRouteImport } from './routes/dashboard.guests.index'
 import { Route as DashboardGuestsNewRouteImport } from './routes/dashboard.guests.new'
 import { Route as DashboardCeremoniesIdRouteImport } from './routes/dashboard.ceremonies.$id'
@@ -252,6 +253,11 @@ const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
   path: '/payments',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AdminRoute,
+} as any)
 const DashboardGuestsIndexRoute = DashboardGuestsIndexRouteImport.update({
   id: '/guests/',
   path: '/guests/',
@@ -308,6 +314,7 @@ export interface FileRoutesByFullPath {
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/admin/login': typeof AdminLoginRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/weddings': typeof AdminWeddingsRoute
@@ -354,6 +361,7 @@ export interface FileRoutesByTo {
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/admin/login': typeof AdminLoginRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/weddings': typeof AdminWeddingsRoute
@@ -403,6 +411,7 @@ export interface FileRoutesById {
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/admin/login': typeof AdminLoginRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/weddings': typeof AdminWeddingsRoute
@@ -453,6 +462,7 @@ export interface FileRouteTypes {
     | '/temoignages'
     | '/termes-et-conditions'
     | '/verify-email'
+    | '/admin/login'
     | '/admin/payments'
     | '/admin/users'
     | '/admin/weddings'
@@ -499,6 +509,7 @@ export interface FileRouteTypes {
     | '/temoignages'
     | '/termes-et-conditions'
     | '/verify-email'
+    | '/admin/login'
     | '/admin/payments'
     | '/admin/users'
     | '/admin/weddings'
@@ -547,6 +558,7 @@ export interface FileRouteTypes {
     | '/temoignages'
     | '/termes-et-conditions'
     | '/verify-email'
+    | '/admin/login'
     | '/admin/payments'
     | '/admin/users'
     | '/admin/weddings'
@@ -880,6 +892,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPaymentsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/dashboard/guests/': {
       id: '/dashboard/guests/'
       path: '/guests'
@@ -933,6 +952,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminLoginRoute: typeof AdminLoginRoute
   AdminPaymentsRoute: typeof AdminPaymentsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminWeddingsRoute: typeof AdminWeddingsRoute
@@ -940,6 +960,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminLoginRoute: AdminLoginRoute,
   AdminPaymentsRoute: AdminPaymentsRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminWeddingsRoute: AdminWeddingsRoute,
