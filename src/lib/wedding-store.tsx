@@ -11,6 +11,7 @@ import {
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import type { GuestType } from "./guest-meta";
+import { normalizeEventType } from "./ceremony-meta";
 
 export type CeremonyType =
   | "dot"
@@ -443,7 +444,7 @@ function rowToCouple(w: WeddingRow): Couple {
     heroImageUrl: w.hero_image_url ?? undefined,
     templateId: (w.template_id as TemplateId) ?? "terracotta",
     theme: (w.theme as ThemeId) ?? "rose-elegance",
-    eventType: ((w.event_type as EventType) ?? "mariage"),
+    eventType: normalizeEventType(w.event_type),
 
     accent: w.accent ?? undefined,
     accentColor: w.accent_color ?? undefined,

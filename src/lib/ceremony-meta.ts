@@ -1,6 +1,6 @@
 import type { CeremonyType, EventType, TemplateId } from "./wedding-store";
 
-export const eventTypeMeta: Record<
+const EVENT_TYPE_META: Record<
   EventType,
   { label: string; programTitle: string }
 > = {
@@ -14,6 +14,17 @@ export const eventTypeMeta: Record<
   anniversaire: { label: "Anniversaire", programTitle: "Programme de l'anniversaire" },
   autre: { label: "Autre événement", programTitle: "Programme de l'événement" },
 };
+
+export const eventTypeMeta = new Proxy(EVENT_TYPE_META, {
+  get(target, prop: string | symbol) {
+    if (typeof prop !== "string") return target[prop as keyof typeof target];
+    return target[prop as EventType] ?? target.mariage;
+  },
+}) as typeof EVENT_TYPE_META;
+
+export function normalizeEventType(value: string | null | undefined): EventType {
+  return value && value in EVENT_TYPE_META ? (value as EventType) : "mariage";
+}
 
 export const eventTypeOrder: EventType[] = ["mariage", "coutumier", "anniversaire", "dot", "traditionnel", "autre"];
 

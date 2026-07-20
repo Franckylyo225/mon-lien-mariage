@@ -9,6 +9,7 @@ import { AmbientMusicPlayer } from "@/components/music/AmbientMusicPlayer";
 import { RevealOnScroll } from "@/components/site/RevealOnScroll";
 import type { BackgroundBase, Ceremony, Couple, EventType, TemplateId, ThemeId } from "@/lib/wedding-store";
 import { resolveTheme, themeCssString } from "@/lib/wedding-theme";
+import { normalizeEventType } from "@/lib/ceremony-meta";
 import type {
   ParticleColorMode,
   ParticleIntensity,
@@ -93,7 +94,7 @@ function PublicInvitationPage() {
     heroImageUrl: w.hero_image_url ?? undefined,
     templateId: (w.template_id as TemplateId) ?? "terracotta",
     theme: (w.theme as ThemeId) ?? "rose-elegance",
-    eventType: ((w as { event_type?: string }).event_type as EventType) ?? "mariage",
+    eventType: normalizeEventType((w as { event_type?: string | null }).event_type),
     accent: w.accent ?? undefined,
     accentColor: (w as { accent_color?: string | null }).accent_color ?? undefined,
     backgroundBase: ((w as { background_base?: string | null }).background_base as BackgroundBase | null) ?? undefined,
