@@ -125,6 +125,8 @@ export interface Couple {
   accent?: string;
   accentColor?: string;
   backgroundBase?: BackgroundBase;
+  textColor?: string;
+
   hashtag?: string;
   slug?: string;
   isPublished: boolean;
@@ -451,6 +453,8 @@ function rowToCouple(w: WeddingRow): Couple {
     accent: w.accent ?? undefined,
     accentColor: w.accent_color ?? undefined,
     backgroundBase: (w.background_base as BackgroundBase | null) ?? undefined,
+    textColor: ((w as { text_color?: string | null }).text_color as string | null) ?? undefined,
+
     hashtag: w.hashtag ?? undefined,
     slug: w.slug ?? undefined,
     isPublished: !!w.is_published,
@@ -539,6 +543,8 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.accent !== undefined) r.accent = p.accent;
   if (p.accentColor !== undefined) r.accent_color = p.accentColor || null;
   if (p.backgroundBase !== undefined) r.background_base = p.backgroundBase || null;
+  if (p.textColor !== undefined) r.text_color = p.textColor || null;
+
   if (p.hashtag !== undefined) r.hashtag = p.hashtag;
   if (p.slug !== undefined) r.slug = p.slug;
   if (p.isPublished !== undefined) r.is_published = p.isPublished;

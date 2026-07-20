@@ -52,7 +52,7 @@ function PreviewPage() {
 
   const resolved = useMemo(
     () => resolveTheme(couple),
-    [couple.theme, couple.accentColor, couple.backgroundBase, couple.accent],
+    [couple.theme, couple.accentColor, couple.backgroundBase, couple.accent, couple.textColor],
   );
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -114,7 +114,7 @@ function PreviewPage() {
   const Template = componentForTheme(coupleTheme.theme);
 
   return (
-    <div className="relative -mx-4 -my-8 sm:-mx-8" data-bg-override={couple.backgroundBase ? "" : undefined} style={{ backgroundColor: resolved.bg }}>
+    <div className="relative -mx-4 -my-8 sm:-mx-8" data-bg-override={couple.backgroundBase ? "" : undefined} data-text-override={couple.textColor ? "" : undefined} style={{ backgroundColor: resolved.bg }}>
       <div
         className={cn(
           "mt-4 transition-all",

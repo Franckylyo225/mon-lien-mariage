@@ -1017,7 +1017,7 @@ function themeChipValue(couple: Couple): string {
     "bleu-nuit": "Bleu Nuit",
     "or-antique": "Or Antique",
   } as Record<string, string>)[theme] ?? "Personnalisé";
-  const custom = couple.accentColor || couple.backgroundBase ? " ●" : "";
+  const custom = couple.accentColor || couple.backgroundBase || couple.textColor ? " ●" : "";
   return `${themeName}${custom}`;
 }
 

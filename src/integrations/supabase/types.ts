@@ -448,6 +448,7 @@ export type Database = {
           story_style: Json
           story_title: string | null
           template_id: string
+          text_color: string | null
           theme: string
           updated_at: string
           wedding_date: string | null
@@ -522,6 +523,7 @@ export type Database = {
           story_style?: Json
           story_title?: string | null
           template_id?: string
+          text_color?: string | null
           theme?: string
           updated_at?: string
           wedding_date?: string | null
@@ -596,6 +598,7 @@ export type Database = {
           story_style?: Json
           story_title?: string | null
           template_id?: string
+          text_color?: string | null
           theme?: string
           updated_at?: string
           wedding_date?: string | null

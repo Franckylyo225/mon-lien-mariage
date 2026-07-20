@@ -325,7 +325,7 @@ export interface ResolvedTheme {
 }
 
 export function resolveTheme(
-  couple: Pick<Couple, "theme" | "accentColor" | "backgroundBase" | "accent">,
+  couple: Pick<Couple, "theme" | "accentColor" | "backgroundBase" | "accent" | "textColor">,
 ): ResolvedTheme {
   const themeSlug: ThemeId = THEMES[couple.theme] ? couple.theme : "rose-elegance";
   const theme = THEMES[themeSlug];
@@ -344,13 +344,17 @@ export function resolveTheme(
       : couple.accent && /^#[0-9A-Fa-f]{6}$/.test(couple.accent)
         ? couple.accent
         : theme.defaultAccent;
+  const customText =
+    couple.textColor && /^#[0-9A-Fa-f]{6}$/.test(couple.textColor)
+      ? couple.textColor
+      : null;
 
   return {
     themeSlug,
     bg,
     accent,
-    textPrimary: "#1A1A1A",
-    textSecondary: "#6B6B6B",
+    textPrimary: customText ?? "#1A1A1A",
+    textSecondary: customText ?? "#6B6B6B",
     border: "rgba(0,0,0,0.08)",
     surface: "#FFFFFF",
     fontHeading: theme.fontHeading,

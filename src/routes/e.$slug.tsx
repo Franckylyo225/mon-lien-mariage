@@ -98,6 +98,8 @@ function PublicInvitationPage() {
     accent: w.accent ?? undefined,
     accentColor: (w as { accent_color?: string | null }).accent_color ?? undefined,
     backgroundBase: ((w as { background_base?: string | null }).background_base as BackgroundBase | null) ?? undefined,
+    textColor: ((w as { text_color?: string | null }).text_color as string | null) ?? undefined,
+
     hashtag: w.hashtag ?? undefined,
     slug: w.slug ?? undefined,
     isPublished: true,
@@ -187,7 +189,7 @@ function PublicInvitationPage() {
   const Template = componentForTheme(coupleTheme.theme);
 
   return (
-    <div className="relative" data-theme={coupleTheme.theme} data-bg-override={coupleTheme.backgroundBase ? "" : undefined} style={{ backgroundColor: resolved.bg }}>
+    <div className="relative" data-theme={coupleTheme.theme} data-bg-override={coupleTheme.backgroundBase ? "" : undefined} data-text-override={coupleTheme.textColor ? "" : undefined} style={{ backgroundColor: resolved.bg }}>
       <style dangerouslySetInnerHTML={{ __html: `:root{${themeCssString(resolved)}}` }} />
       {coupleTheme.particleEffectSlug ? (
         <ParticleCanvas
