@@ -136,7 +136,7 @@ export function PhotoGridSheet({
       }
     } catch (err) {
       console.error("[photo upload]", err);
-      setError(err instanceof Error ? err.message : "Erreur pendant l'envoi.");
+      setError(friendlyUploadError(err));
     } finally {
       setUploading(false);
       if (galleryInputRef.current) galleryInputRef.current.value = "";
