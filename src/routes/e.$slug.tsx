@@ -8,7 +8,8 @@ import { ParticleCanvas, RsvpBurstOverlay } from "@/components/particles/Particl
 import { AmbientMusicPlayer } from "@/components/music/AmbientMusicPlayer";
 import { RevealOnScroll } from "@/components/site/RevealOnScroll";
 import type { BackgroundBase, Ceremony, Couple, EventType, TemplateId, ThemeId } from "@/lib/wedding-store";
-import { resolveTheme, themeCssString } from "@/lib/wedding-theme";
+import { resolveTheme } from "@/lib/wedding-theme";
+import { ThemeRoot } from "@/components/theme/ThemeRoot";
 import { normalizeEventType } from "@/lib/ceremony-meta";
 import type {
   ParticleColorMode,

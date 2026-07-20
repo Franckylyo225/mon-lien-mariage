@@ -90,6 +90,6 @@ function FullscreenPreview() {
         <IconX size={14} strokeWidth={2.5} />
         <span>Fermer</span>
       </button>
-    </div>
+    </ThemeRoot>
   );
 }
