@@ -19,6 +19,14 @@ const SIZE_RANGE: Record<ParticleSize, [number, number]> = {
   large: [8, 14],
 };
 
+function normalizeIntensity(value: ParticleConfig["intensity"]): ParticleIntensity {
+  return value in INTENSITY_RATE ? value : "normal";
+}
+
+function normalizeSize(value: ParticleConfig["size"]): ParticleSize {
+  return value in SIZE_RANGE ? value : "normal";
+}
+
 function randBetween(a: number, b: number) {
   return a + Math.random() * (b - a);
 }
@@ -132,7 +140,7 @@ export class ParticleEngine {
     const style = PARTICLE_STYLES[slug];
     if (!style) return;
 
-    const [smin, smax] = SIZE_RANGE[this.cfg.size];
+    const [smin, smax] = SIZE_RANGE[normalizeSize(this.cfg.size)];
     const size = randBetween(smin, smax);
     const speedMult = Math.max(0.25, this.cfg.speed || 1);
     const rising = style.direction === "up";
@@ -164,7 +172,7 @@ export class ParticleEngine {
     const { ctx, canvas } = this;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const rate = INTENSITY_RATE[this.cfg.intensity];
+      const rate = INTENSITY_RATE[normalizeIntensity(this.cfg.intensity)];
     if (
       this.looping &&
       this.cfg.slug &&
