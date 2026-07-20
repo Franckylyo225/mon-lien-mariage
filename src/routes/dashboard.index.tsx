@@ -86,7 +86,7 @@ function DashboardHome() {
     doneItems.push({
       key: "page",
       label: "Photo du couple",
-      onEdit: () => navigate({ to: "/dashboard/landing" }),
+      onEdit: () => navigate({ to: "/dashboard/preview", search: { sheet: "hero" } }),
     });
   }
   if (invitesDone) {
