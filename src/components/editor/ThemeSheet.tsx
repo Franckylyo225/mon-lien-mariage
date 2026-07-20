@@ -29,12 +29,13 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
   const currentFamily: ThemeFamilyId = THEMES[couple.theme]?.family ?? "classiques";
   const [family, setFamily] = useState<ThemeFamilyId>(currentFamily);
   const [editingBg, setEditingBg] = useState(false);
+  const [editingText, setEditingText] = useState(false);
 
   const resolved = resolveTheme(couple);
 
   const selectTheme = (slug: ThemeId) => {
     // Applying a theme resets custom accent/background so the theme defaults kick in.
-    onPatch({ theme: slug, accentColor: undefined, backgroundBase: undefined });
+    onPatch({ theme: slug, accentColor: undefined, backgroundBase: undefined, textColor: undefined });
   };
 
   const selectAccent = (hex: string) => onPatch({ accentColor: hex });
@@ -42,10 +43,15 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
     setEditingBg(false);
     onPatch({ backgroundBase: slug });
   };
+  const selectText = (hex: string) => {
+    setEditingText(false);
+    onPatch({ textColor: hex });
+  };
 
   const restoreDefaults = () => {
     setEditingBg(false);
-    onPatch({ accentColor: undefined, backgroundBase: undefined });
+    setEditingText(false);
+    onPatch({ accentColor: undefined, backgroundBase: undefined, textColor: undefined });
   };
 
   const familyDef = THEME_FAMILIES.find((f) => f.id === family) ?? THEME_FAMILIES[0];
@@ -54,6 +60,21 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
   const rawBg = couple.backgroundBase;
   const isCustomBg = !!rawBg && /^#[0-9A-Fa-f]{6}$/.test(rawBg);
   const customBgHex = isCustomBg ? (rawBg as string) : resolved.bg;
+
+  const rawText = couple.textColor;
+  const hasCustomText = !!rawText && /^#[0-9A-Fa-f]{6}$/.test(rawText);
+  const customTextHex = hasCustomText ? (rawText as string) : resolved.textPrimary;
+
+  // Neutral text presets covering light + dark backgrounds.
+  const TEXT_PRESETS: { name: string; hex: string }[] = [
+    { name: "Noir", hex: "#1A1A1A" },
+    { name: "Gris foncé", hex: "#4B5563" },
+    { name: "Gris doux", hex: "#6B7280" },
+    { name: "Ivoire", hex: "#F5EFE7" },
+    { name: "Blanc", hex: "#FFFFFF" },
+    { name: "Bordeaux", hex: "#993556" },
+  ];
+
 
   return (
     <BottomSheet open={open} onOpenChange={onOpenChange} title="Thème & couleurs">
