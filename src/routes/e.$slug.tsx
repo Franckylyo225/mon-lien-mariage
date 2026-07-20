@@ -189,7 +189,7 @@ function PublicInvitationPage() {
   const Template = componentForTheme(coupleTheme.theme);
 
   return (
-    <div className="relative" data-theme={coupleTheme.theme} data-bg-override={coupleTheme.backgroundBase ? "" : undefined} style={{ backgroundColor: resolved.bg }}>
+    <div className="relative" data-theme={coupleTheme.theme} data-bg-override={coupleTheme.backgroundBase ? "" : undefined} data-text-override={coupleTheme.textColor ? "" : undefined} style={{ backgroundColor: resolved.bg }}>
       <style dangerouslySetInnerHTML={{ __html: `:root{${themeCssString(resolved)}}` }} />
       {coupleTheme.particleEffectSlug ? (
         <ParticleCanvas
