@@ -190,6 +190,16 @@
   background-color: var(--wedding-bg) !important;
 }
 
+/* When the user picks a custom secondary text color, override the template's
+   hardcoded text colors (Tailwind `text-[#xxx]` and opacity variants) while
+   preserving elements that carry an inline `color:` style (accent typography,
+   colored chips, etc.). */
+[data-text-override] main,
+[data-text-override] main *:not([style*="color"]) {
+  color: var(--wedding-text-primary) !important;
+}
+
+
 
 @layer base {
   * {
