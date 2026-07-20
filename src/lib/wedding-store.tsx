@@ -52,7 +52,9 @@ export type ThemeId =
   | "confetti"
   | "papier-kraft";
 
-export type BackgroundBase = "ivoire" | "creme" | "blanc" | "gris";
+export type BackgroundBaseSlug = "ivoire" | "creme" | "blanc" | "gris";
+// Either one of the 4 preset slugs, or a free hex color like "#RRGGBB".
+export type BackgroundBase = BackgroundBaseSlug | string;
 
 export type EventType = "mariage" | "dot" | "traditionnel" | "coutumier" | "anniversaire" | "autre";
 

@@ -329,9 +329,15 @@ export function resolveTheme(
 ): ResolvedTheme {
   const themeSlug: ThemeId = THEMES[couple.theme] ? couple.theme : "rose-elegance";
   const theme = THEMES[themeSlug];
-  const bgSlug: BackgroundSlug = isValidBgSlug(couple.backgroundBase)
-    ? couple.backgroundBase
-    : theme.defaultBg;
+  const rawBg = couple.backgroundBase;
+  let bg: string;
+  if (rawBg && /^#[0-9A-Fa-f]{6}$/.test(rawBg)) {
+    bg = rawBg;
+  } else if (isValidBgSlug(rawBg)) {
+    bg = BG_HEX[rawBg];
+  } else {
+    bg = BG_HEX[theme.defaultBg];
+  }
   const accent =
     couple.accentColor && /^#[0-9A-Fa-f]{6}$/.test(couple.accentColor)
       ? couple.accentColor
@@ -341,7 +347,7 @@ export function resolveTheme(
 
   return {
     themeSlug,
-    bg: BG_HEX[bgSlug],
+    bg,
     accent,
     textPrimary: "#1A1A1A",
     textSecondary: "#6B6B6B",

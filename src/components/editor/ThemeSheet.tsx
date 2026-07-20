@@ -8,11 +8,13 @@ import {
   THEMES,
   THEME_FAMILIES,
   resolveTheme,
+  isValidBgSlug,
   type BackgroundSlug,
   type ThemeFamilyId,
 } from "@/lib/wedding-theme";
-import { Check } from "lucide-react";
+import { Check, Plus } from "lucide-react";
 import { ThemeThumbnail } from "./ThemeThumbnail";
+import { HexEditor } from "./HexEditor";
 
 interface ThemeSheetProps {
   open: boolean;
@@ -26,6 +28,7 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
 
   const currentFamily: ThemeFamilyId = THEMES[couple.theme]?.family ?? "classiques";
   const [family, setFamily] = useState<ThemeFamilyId>(currentFamily);
+  const [editingBg, setEditingBg] = useState(false);
 
   const resolved = resolveTheme(couple);
 
@@ -35,12 +38,22 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
   };
 
   const selectAccent = (hex: string) => onPatch({ accentColor: hex });
-  const selectBg = (slug: BackgroundSlug) => onPatch({ backgroundBase: slug });
+  const selectBg = (slug: BackgroundSlug) => {
+    setEditingBg(false);
+    onPatch({ backgroundBase: slug });
+  };
 
-  const restoreDefaults = () =>
+  const restoreDefaults = () => {
+    setEditingBg(false);
     onPatch({ accentColor: undefined, backgroundBase: undefined });
+  };
 
   const familyDef = THEME_FAMILIES.find((f) => f.id === family) ?? THEME_FAMILIES[0];
+
+  // Detect a custom (hex) background vs a preset slug.
+  const rawBg = couple.backgroundBase;
+  const isCustomBg = !!rawBg && /^#[0-9A-Fa-f]{6}$/.test(rawBg);
+  const customBgHex = isCustomBg ? (rawBg as string) : resolved.bg;
 
   return (
     <BottomSheet open={open} onOpenChange={onOpenChange} title="Thème & couleurs">
@@ -175,9 +188,8 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
             </p>
             <div className="grid grid-cols-2 gap-3">
               {BACKGROUNDS.map((b) => {
-                const activeSlug =
-                  couple.backgroundBase ?? THEMES[couple.theme]?.defaultBg;
-                const active = activeSlug === b.slug;
+                const activeSlug = isValidBgSlug(rawBg) ? rawBg : undefined;
+                const active = !isCustomBg && activeSlug === b.slug;
                 return (
                   <button
                     key={b.slug}
@@ -207,7 +219,66 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
                   </button>
                 );
               })}
+
+              {/* Custom hex background tile */}
+              <button
+                type="button"
+                onClick={() => {
+                  if (!isCustomBg) {
+                    onPatch({ backgroundBase: customBgHex });
+                  }
+                  setEditingBg((v) => !v);
+                }}
+                className={cn(
+                  "flex flex-col items-center gap-2 rounded-2xl border-2 p-4 transition",
+                  isCustomBg ? "" : "border-dashed border-border",
+                )}
+                style={isCustomBg ? { borderColor: resolved.accent } : undefined}
+              >
+                <span
+                  className="grid h-16 w-full place-items-center rounded-lg border border-black/5"
+                  style={{
+                    background: isCustomBg
+                      ? customBgHex
+                      : "repeating-conic-gradient(#f3f4f6 0% 25%, #e5e7eb 0% 50%) 50% / 12px 12px",
+                  }}
+                >
+                  {isCustomBg ? (
+                    <span
+                      className="text-2xl italic"
+                      style={{
+                        fontFamily: 'Playfair Display, serif',
+                        color: "#1A1A1A",
+                      }}
+                    >
+                      Aa
+                    </span>
+                  ) : (
+                    <Plus className="size-5 opacity-60" />
+                  )}
+                </span>
+                <span className="text-[11px]">
+                  {isCustomBg ? customBgHex.toUpperCase() : "Personnalisé"}
+                </span>
+              </button>
             </div>
+
+            {editingBg && (
+              <HexEditor
+                value={customBgHex}
+                onChange={(v) => onPatch({ backgroundBase: v })}
+                onClose={() => setEditingBg(false)}
+                onRemove={
+                  isCustomBg
+                    ? () => {
+                        setEditingBg(false);
+                        onPatch({ backgroundBase: undefined });
+                      }
+                    : undefined
+                }
+                removeLabel="Retirer"
+              />
+            )}
           </section>
 
           <button
@@ -228,6 +299,3 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
   );
 }
 
-function bgHex(slug: BackgroundSlug): string {
-  return BACKGROUNDS.find((b) => b.slug === slug)?.hex ?? "#F5EFE7";
-}
