@@ -6,7 +6,8 @@ export type ProgramTabsVariant =
   | "noir"
   | "gold"
   | "tropical"
-  | "deco";
+  | "deco"
+  | "bleu-nuit";
 
 interface Props {
   ceremonies: Ceremony[];
