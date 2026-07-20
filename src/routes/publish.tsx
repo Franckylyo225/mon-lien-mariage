@@ -44,7 +44,7 @@ function formatFrenchDate(iso: string): string | null {
 }
 
 function PublishPage() {
-  const { couple, weddingId, loading, refresh } = useWedding();
+  const { couple, weddingId, loading } = useWedding();
   const initPayment = useServerFn(initPaystackPayment);
   const submitPromo = useServerFn(applyPromoCode);
   const navigate = useNavigate();
