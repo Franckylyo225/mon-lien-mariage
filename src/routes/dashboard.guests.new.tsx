@@ -50,11 +50,11 @@ function NewGuestPage() {
           />
         </Field>
         <Field label="Téléphone WhatsApp *">
-          <input
+          <PhoneField
             value={phone}
-            onChange={(e) => setPhone(formatIvorianPhone(e.target.value))}
-            className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-            placeholder="+225 XX XX XX XX XX"
+            onChange={setPhone}
+            placeholder="Numéro de téléphone"
+            showError
           />
         </Field>
         <Field label="Email (facultatif)">
