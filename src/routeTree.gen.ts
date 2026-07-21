@@ -47,8 +47,11 @@ import { Route as DashboardBillingRouteImport } from './routes/dashboard.billing
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AdminWeddingsRouteImport } from './routes/admin.weddings'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
+import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as DashboardGuestsIndexRouteImport } from './routes/dashboard.guests.index'
 import { Route as DashboardGuestsNewRouteImport } from './routes/dashboard.guests.new'
 import { Route as DashboardCeremoniesIdRouteImport } from './routes/dashboard.ceremonies.$id'
@@ -248,6 +251,11 @@ const AdminUsersRoute = AdminUsersRouteImport.update({
   path: '/users',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
   id: '/payments',
   path: '/payments',
@@ -256,6 +264,16 @@ const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEmailsRoute = AdminEmailsRouteImport.update({
+  id: '/emails',
+  path: '/emails',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminActivityRoute = AdminActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
   getParentRoute: () => AdminRoute,
 } as any)
 const DashboardGuestsIndexRoute = DashboardGuestsIndexRouteImport.update({
@@ -314,8 +332,11 @@ export interface FileRoutesByFullPath {
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/admin/activity': typeof AdminActivityRoute
+  '/admin/emails': typeof AdminEmailsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/weddings': typeof AdminWeddingsRoute
   '/app/profile': typeof AppProfileRoute
@@ -361,8 +382,11 @@ export interface FileRoutesByTo {
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/admin/activity': typeof AdminActivityRoute
+  '/admin/emails': typeof AdminEmailsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/weddings': typeof AdminWeddingsRoute
   '/app/profile': typeof AppProfileRoute
@@ -411,8 +435,11 @@ export interface FileRoutesById {
   '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/admin/activity': typeof AdminActivityRoute
+  '/admin/emails': typeof AdminEmailsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/payments': typeof AdminPaymentsRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/weddings': typeof AdminWeddingsRoute
   '/app/profile': typeof AppProfileRoute
@@ -462,8 +489,11 @@ export interface FileRouteTypes {
     | '/temoignages'
     | '/termes-et-conditions'
     | '/verify-email'
+    | '/admin/activity'
+    | '/admin/emails'
     | '/admin/login'
     | '/admin/payments'
+    | '/admin/settings'
     | '/admin/users'
     | '/admin/weddings'
     | '/app/profile'
@@ -509,8 +539,11 @@ export interface FileRouteTypes {
     | '/temoignages'
     | '/termes-et-conditions'
     | '/verify-email'
+    | '/admin/activity'
+    | '/admin/emails'
     | '/admin/login'
     | '/admin/payments'
+    | '/admin/settings'
     | '/admin/users'
     | '/admin/weddings'
     | '/app/profile'
@@ -558,8 +591,11 @@ export interface FileRouteTypes {
     | '/temoignages'
     | '/termes-et-conditions'
     | '/verify-email'
+    | '/admin/activity'
+    | '/admin/emails'
     | '/admin/login'
     | '/admin/payments'
+    | '/admin/settings'
     | '/admin/users'
     | '/admin/weddings'
     | '/app/profile'
@@ -885,6 +921,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/payments': {
       id: '/admin/payments'
       path: '/payments'
@@ -897,6 +940,20 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/admin/login'
       preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/emails': {
+      id: '/admin/emails'
+      path: '/emails'
+      fullPath: '/admin/emails'
+      preLoaderRoute: typeof AdminEmailsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/activity': {
+      id: '/admin/activity'
+      path: '/activity'
+      fullPath: '/admin/activity'
+      preLoaderRoute: typeof AdminActivityRouteImport
       parentRoute: typeof AdminRoute
     }
     '/dashboard/guests/': {
@@ -952,16 +1009,22 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminActivityRoute: typeof AdminActivityRoute
+  AdminEmailsRoute: typeof AdminEmailsRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminPaymentsRoute: typeof AdminPaymentsRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminWeddingsRoute: typeof AdminWeddingsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminActivityRoute: AdminActivityRoute,
+  AdminEmailsRoute: AdminEmailsRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminPaymentsRoute: AdminPaymentsRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminWeddingsRoute: AdminWeddingsRoute,
   AdminIndexRoute: AdminIndexRoute,
@@ -1072,13 +1135,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
