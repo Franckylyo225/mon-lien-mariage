@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useWedding, configProgress } from "@/lib/wedding-store";
+import { supabase } from "@/integrations/supabase/client";
 import { AppHeader } from "@/components/mobile-shell/AppHeader";
 import { BottomNav } from "@/components/mobile-shell/BottomNav";
 import { SideDrawer } from "@/components/mobile-shell/SideDrawer";
@@ -12,6 +13,7 @@ import { AutosaveProvider } from "@/lib/autosave-context";
 export const Route = createFileRoute("/dashboard")({
   component: DashboardLayout,
 });
+
 
 const TITLES: Record<string, string> = {
   "/dashboard": "",
