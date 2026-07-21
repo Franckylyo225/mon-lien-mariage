@@ -99,6 +99,7 @@ function DashboardLayout() {
             coupleInitials={coupleInitials}
             coupleLabel={coupleLabel}
             email={account.email}
+            userId={userId}
             hasNotifications={hasNotifications}
             isPublished={couple.isPublished}
             drawerOpen={drawerOpen}
@@ -108,6 +109,7 @@ function DashboardLayout() {
               navigate({ to: "/", replace: true });
             }}
           />
+
 
         </PageChromeProvider>
       </AutosaveProvider>
