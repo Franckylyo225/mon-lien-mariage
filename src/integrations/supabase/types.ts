@@ -285,6 +285,7 @@ export type Database = {
           email_notifications: boolean
           id: string
           user_first_name: string | null
+          user_last_name: string | null
         }
         Insert: {
           active_wedding_id?: string | null
@@ -295,6 +296,7 @@ export type Database = {
           email_notifications?: boolean
           id: string
           user_first_name?: string | null
+          user_last_name?: string | null
         }
         Update: {
           active_wedding_id?: string | null
@@ -305,6 +307,7 @@ export type Database = {
           email_notifications?: boolean
           id?: string
           user_first_name?: string | null
+          user_last_name?: string | null
         }
         Relationships: [
           {

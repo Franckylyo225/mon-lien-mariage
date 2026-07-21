@@ -18,6 +18,8 @@ export const Route = createFileRoute("/signup")({
 
 function SignupPage() {
   const navigate = useNavigate();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cgu, setCgu] = useState(false);
@@ -31,6 +33,8 @@ function SignupPage() {
     e.preventDefault();
     setError(null);
     setInfo(null);
+    if (!firstName.trim()) return setError("Merci d'indiquer votre prénom.");
+    if (!lastName.trim()) return setError("Merci d'indiquer votre nom.");
     if (!email.includes("@")) return setError("Adresse email invalide.");
     if (!pwCheck.valid)
       return setError(
@@ -41,7 +45,13 @@ function SignupPage() {
     const { data, error: err } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: "https://moninvit.com/verify-email" },
+      options: {
+        emailRedirectTo: "https://moninvit.com/verify-email",
+        data: {
+          first_name: firstName.trim(),
+          last_name: lastName.trim(),
+        },
+      },
     });
     setLoading(false);
     if (err) {
@@ -62,6 +72,32 @@ function SignupPage() {
       subtitle="En 10 minutes, votre page d'invitation est prête à être partagée."
     >
       <form onSubmit={submit} className="space-y-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Field label="Prénom">
+            <input
+              type="text"
+              required
+              maxLength={80}
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              className={inputClass}
+              placeholder="Aïcha"
+              autoComplete="given-name"
+            />
+          </Field>
+          <Field label="Nom">
+            <input
+              type="text"
+              required
+              maxLength={80}
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              className={inputClass}
+              placeholder="Kouassi"
+              autoComplete="family-name"
+            />
+          </Field>
+        </div>
         <Field label="Adresse email">
           <input
             type="email"
