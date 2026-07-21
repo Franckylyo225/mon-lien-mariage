@@ -114,7 +114,7 @@ export function TemplateRsvpForm({ theme, tone, weddingId, ceremonies = [], onCo
         wedding_id: weddingId,
         ceremony_id: c.id,
         guest_name: name.trim(),
-        guest_phone: phone.trim() || null,
+        guest_phone: phone || null,
         guest_type: guestType || null,
         attending: true,
         companions: plus,
