@@ -231,6 +231,50 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          data: Json
+          id: string
+          read_at: string | null
+          title: string
+          type: string
+          user_id: string
+          wedding_id: string | null
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          data?: Json
+          id?: string
+          read_at?: string | null
+          title: string
+          type: string
+          user_id: string
+          wedding_id?: string | null
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          data?: Json
+          id?: string
+          read_at?: string | null
+          title?: string
+          type?: string
+          user_id?: string
+          wedding_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           active_wedding_id: string | null
@@ -266,6 +310,32 @@ export type Database = {
           {
             foreignKeyName: "profiles_active_wedding_id_fkey"
             columns: ["active_wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rsvp_milestones_sent: {
+        Row: {
+          milestone: number
+          sent_at: string
+          wedding_id: string
+        }
+        Insert: {
+          milestone: number
+          sent_at?: string
+          wedding_id: string
+        }
+        Update: {
+          milestone?: number
+          sent_at?: string
+          wedding_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rsvp_milestones_sent_wedding_id_fkey"
+            columns: ["wedding_id"]
             isOneToOne: false
             referencedRelation: "weddings"
             referencedColumns: ["id"]
