@@ -3,24 +3,18 @@ import { useState } from "react";
 import { useWedding } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
 import { Field } from "./signup";
+import { PhoneField, isValidPhoneNumber } from "@/components/ui/PhoneField";
 
 export const Route = createFileRoute("/dashboard/guests/new")({
   head: () => ({ meta: [{ title: "Nouvel invité — MonInvit.com" }] }),
   component: NewGuestPage,
 });
 
-function formatIvorianPhone(raw: string) {
-  const digits = raw.replace(/\D/g, "").slice(0, 13);
-  const withoutCc = digits.startsWith("225") ? digits.slice(3) : digits;
-  const p = withoutCc.match(/.{1,2}/g)?.join(" ") ?? "";
-  return "+225 " + p;
-}
-
 function NewGuestPage() {
   const { ceremonies, addGuest } = useWedding();
   const navigate = useNavigate();
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("+225 ");
+  const [phone, setPhone] = useState<string | undefined>(undefined);
   const [email, setEmail] = useState("");
   const [type, setType] = useState<GuestType>("ami_mariee");
   const [ids, setIds] = useState<string[]>(ceremonies[0] ? [ceremonies[0].id] : []);
