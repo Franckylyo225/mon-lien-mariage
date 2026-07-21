@@ -363,7 +363,7 @@ function RsvpModal({
             />
             <PhoneField
               value={phone || undefined}
-              onChange={(v) => setPhone(v ?? "")}
+              onChange={(v: string | undefined) => setPhone(v ?? "")}
               placeholder="Téléphone WhatsApp (optionnel)"
               showError
             />
