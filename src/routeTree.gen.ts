@@ -63,6 +63,7 @@ import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/e
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as ApiPublicWebhooksPaystackRouteImport } from './routes/api/public/webhooks/paystack'
+import { Route as ApiPublicHooksRsvpMilestoneRouteImport } from './routes/api/public/hooks/rsvp-milestone'
 
 const VerifyEmailRoute = VerifyEmailRouteImport.update({
   id: '/verify-email',
@@ -339,6 +340,12 @@ const ApiPublicWebhooksPaystackRoute =
     path: '/api/public/webhooks/paystack',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksRsvpMilestoneRoute =
+  ApiPublicHooksRsvpMilestoneRouteImport.update({
+    id: '/api/public/hooks/rsvp-milestone',
+    path: '/api/public/hooks/rsvp-milestone',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -389,6 +396,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests/': typeof DashboardGuestsIndexRoute
+  '/api/public/hooks/rsvp-milestone': typeof ApiPublicHooksRsvpMilestoneRoute
   '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -443,6 +451,7 @@ export interface FileRoutesByTo {
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests': typeof DashboardGuestsIndexRoute
+  '/api/public/hooks/rsvp-milestone': typeof ApiPublicHooksRsvpMilestoneRoute
   '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -500,6 +509,7 @@ export interface FileRoutesById {
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests/': typeof DashboardGuestsIndexRoute
+  '/api/public/hooks/rsvp-milestone': typeof ApiPublicHooksRsvpMilestoneRoute
   '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
@@ -558,6 +568,7 @@ export interface FileRouteTypes {
     | '/dashboard/guests/new'
     | '/lovable/email/suppression'
     | '/dashboard/guests/'
+    | '/api/public/hooks/rsvp-milestone'
     | '/api/public/webhooks/paystack'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -612,6 +623,7 @@ export interface FileRouteTypes {
     | '/dashboard/guests/new'
     | '/lovable/email/suppression'
     | '/dashboard/guests'
+    | '/api/public/hooks/rsvp-milestone'
     | '/api/public/webhooks/paystack'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -668,6 +680,7 @@ export interface FileRouteTypes {
     | '/dashboard/guests/new'
     | '/lovable/email/suppression'
     | '/dashboard/guests/'
+    | '/api/public/hooks/rsvp-milestone'
     | '/api/public/webhooks/paystack'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
@@ -699,6 +712,7 @@ export interface RootRouteChildren {
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   ThemeThumbSlugRoute: typeof ThemeThumbSlugRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
+  ApiPublicHooksRsvpMilestoneRoute: typeof ApiPublicHooksRsvpMilestoneRoute
   ApiPublicWebhooksPaystackRoute: typeof ApiPublicWebhooksPaystackRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
@@ -1087,6 +1101,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWebhooksPaystackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/rsvp-milestone': {
+      id: '/api/public/hooks/rsvp-milestone'
+      path: '/api/public/hooks/rsvp-milestone'
+      fullPath: '/api/public/hooks/rsvp-milestone'
+      preLoaderRoute: typeof ApiPublicHooksRsvpMilestoneRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1211,6 +1232,7 @@ const rootRouteChildren: RootRouteChildren = {
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   ThemeThumbSlugRoute: ThemeThumbSlugRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
+  ApiPublicHooksRsvpMilestoneRoute: ApiPublicHooksRsvpMilestoneRoute,
   ApiPublicWebhooksPaystackRoute: ApiPublicWebhooksPaystackRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
