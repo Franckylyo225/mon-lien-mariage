@@ -145,10 +145,12 @@ function NewGuestPage() {
         <button
           onClick={() => {
             if (!name.trim()) return setErr("Le nom est obligatoire.");
+            if (!phone || !isValidPhoneNumber(phone))
+              return setErr("Numéro de téléphone invalide.");
             if (ids.length === 0) return setErr("Sélectionnez au moins une étape.");
             addGuest({
               name: name.trim(),
-              phone: phone.trim(),
+              phone,
               email: email.trim() || undefined,
               group: guestTypeMeta[type].short,
               guestType: type,
