@@ -5,6 +5,7 @@ import type { Ceremony, ThemeId } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
 import { resolveRsvpDesign, type RsvpDesign } from "@/lib/rsvp-design";
 import { RsvpOrnament } from "./rsvp-ornament";
+import { PhoneField } from "@/components/ui/PhoneField";
 
 /**
  * Public RSVP form.
@@ -114,7 +115,7 @@ export function TemplateRsvpForm({ theme, tone, weddingId, ceremonies = [], onCo
         wedding_id: weddingId,
         ceremony_id: c.id,
         guest_name: name.trim(),
-        guest_phone: phone.trim() || null,
+        guest_phone: phone || null,
         guest_type: guestType || null,
         attending: true,
         companions: plus,
@@ -360,15 +361,11 @@ function RsvpModal({
               }
               style={{ ...inputStyle, ...placeholderVar(d.placeholderInk) }}
             />
-            <input data-rsvp-input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+            <PhoneField
+              value={phone || undefined}
+              onChange={(v: string | undefined) => setPhone(v ?? "")}
               placeholder="Téléphone WhatsApp (optionnel)"
-              className={
-                "w-full max-w-full border px-4 py-3 text-sm outline-none " +
-                d.fieldRadius
-              }
-              style={{ ...inputStyle, ...placeholderVar(d.placeholderInk) }}
+              showError
             />
           </div>
 

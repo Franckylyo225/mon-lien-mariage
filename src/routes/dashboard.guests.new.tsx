@@ -3,24 +3,18 @@ import { useState } from "react";
 import { useWedding } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
 import { Field } from "./signup";
+import { PhoneField, isValidPhoneNumber } from "@/components/ui/PhoneField";
 
 export const Route = createFileRoute("/dashboard/guests/new")({
   head: () => ({ meta: [{ title: "Nouvel invité — MonInvit.com" }] }),
   component: NewGuestPage,
 });
 
-function formatIvorianPhone(raw: string) {
-  const digits = raw.replace(/\D/g, "").slice(0, 13);
-  const withoutCc = digits.startsWith("225") ? digits.slice(3) : digits;
-  const p = withoutCc.match(/.{1,2}/g)?.join(" ") ?? "";
-  return "+225 " + p;
-}
-
 function NewGuestPage() {
   const { ceremonies, addGuest } = useWedding();
   const navigate = useNavigate();
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("+225 ");
+  const [phone, setPhone] = useState<string | undefined>(undefined);
   const [email, setEmail] = useState("");
   const [type, setType] = useState<GuestType>("ami_mariee");
   const [ids, setIds] = useState<string[]>(ceremonies[0] ? [ceremonies[0].id] : []);
@@ -56,11 +50,11 @@ function NewGuestPage() {
           />
         </Field>
         <Field label="Téléphone WhatsApp *">
-          <input
+          <PhoneField
             value={phone}
-            onChange={(e) => setPhone(formatIvorianPhone(e.target.value))}
-            className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-            placeholder="+225 XX XX XX XX XX"
+            onChange={setPhone}
+            placeholder="Numéro de téléphone"
+            showError
           />
         </Field>
         <Field label="Email (facultatif)">
@@ -151,10 +145,12 @@ function NewGuestPage() {
         <button
           onClick={() => {
             if (!name.trim()) return setErr("Le nom est obligatoire.");
+            if (!phone || !isValidPhoneNumber(phone))
+              return setErr("Numéro de téléphone invalide.");
             if (ids.length === 0) return setErr("Sélectionnez au moins une étape.");
             addGuest({
               name: name.trim(),
-              phone: phone.trim(),
+              phone,
               email: email.trim() || undefined,
               group: guestTypeMeta[type].short,
               guestType: type,

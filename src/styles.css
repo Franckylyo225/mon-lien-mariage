@@ -254,3 +254,54 @@
 @media (prefers-reduced-motion: reduce) {
   .reveal-init { opacity: 1; transform: none; transition: none; }
 }
+
+/* ---- International phone input (react-phone-number-input) ---- */
+.PhoneInput {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  border-radius: var(--radius, 0.5rem);
+  border: 1px solid var(--input);
+  background: var(--card);
+  padding: 0.6rem 0.9rem;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+.PhoneInput:focus-within {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--ring) 25%, transparent);
+}
+.PhoneInput[data-invalid="true"],
+.PhoneInputInput[aria-invalid="true"] {
+  border-color: var(--destructive);
+}
+.PhoneInputCountry {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.PhoneInputCountrySelect {
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--foreground);
+}
+.PhoneInputCountryIcon--border {
+  box-shadow: none;
+  background: transparent;
+}
+.PhoneInputInput {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font-size: 16px; /* prevent iOS auto-zoom */
+  color: var(--foreground);
+  font-family: inherit;
+}
+.PhoneInputInput::placeholder {
+  color: var(--muted-foreground);
+}
