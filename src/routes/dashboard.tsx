@@ -124,6 +124,7 @@ function DashboardChrome({
   coupleInitials,
   coupleLabel,
   email,
+  userId,
   hasNotifications,
   isPublished,
   drawerOpen,
@@ -135,6 +136,7 @@ function DashboardChrome({
   coupleInitials: string;
   coupleLabel: string;
   email: string | null;
+  userId: string | null;
   hasNotifications: boolean;
   isPublished: boolean;
   drawerOpen: boolean;
@@ -153,8 +155,10 @@ function DashboardChrome({
         initial={initial}
         onOpenDrawer={() => setDrawerOpen(true)}
         hasNotifications={hasNotifications}
+        userId={userId}
         centerContent={centerNode}
       />
+
       {actionBarNode}
 
       <main className={`mx-auto max-w-xl px-4 pt-4 ${editing ? "pb-4" : "pb-24"}`}>
