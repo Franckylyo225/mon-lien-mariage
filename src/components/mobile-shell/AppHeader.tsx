@@ -1,11 +1,18 @@
 import type { ReactNode } from "react";
 import { IconBell } from "@tabler/icons-react";
+import { NotificationBell } from "./NotificationBell";
 
 interface AppHeaderProps {
   title?: string;
   initial: string;
   onOpenDrawer: () => void;
   hasNotifications?: boolean;
+  /**
+   * When provided, the bell shows a live unread badge and dropdown backed by
+   * the notifications table for this user. Falls back to the legacy static dot
+   * (based on `hasNotifications`) when no userId is available.
+   */
+  userId?: string | null;
   /**
    * Custom node rendered in the center slot. When provided, it replaces the
    * default h1 title (used on routes like /dashboard/preview that show a
@@ -19,6 +26,7 @@ export function AppHeader({
   initial,
   onOpenDrawer,
   hasNotifications,
+  userId,
   centerContent,
 }: AppHeaderProps) {
   return (
@@ -40,15 +48,19 @@ export function AppHeader({
           )}
         </div>
 
-        <button
-          aria-label="Notifications"
-          className="relative grid size-9 shrink-0 place-items-center rounded-full text-foreground/70 transition active:scale-95"
-        >
-          <IconBell size={20} strokeWidth={1.75} />
-          {hasNotifications ? (
-            <span className="absolute right-2 top-2 size-1.5 rounded-full bg-destructive" />
-          ) : null}
-        </button>
+        {userId ? (
+          <NotificationBell userId={userId} />
+        ) : (
+          <button
+            aria-label="Notifications"
+            className="relative grid size-9 shrink-0 place-items-center rounded-full text-foreground/70 transition active:scale-95"
+          >
+            <IconBell size={20} strokeWidth={1.75} />
+            {hasNotifications ? (
+              <span className="absolute right-2 top-2 size-1.5 rounded-full bg-destructive" />
+            ) : null}
+          </button>
+        )}
       </div>
     </header>
   );

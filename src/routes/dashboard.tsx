@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useWedding, configProgress } from "@/lib/wedding-store";
+import { supabase } from "@/integrations/supabase/client";
 import { AppHeader } from "@/components/mobile-shell/AppHeader";
 import { BottomNav } from "@/components/mobile-shell/BottomNav";
 import { SideDrawer } from "@/components/mobile-shell/SideDrawer";
@@ -12,6 +13,7 @@ import { AutosaveProvider } from "@/lib/autosave-context";
 export const Route = createFileRoute("/dashboard")({
   component: DashboardLayout,
 });
+
 
 const TITLES: Record<string, string> = {
   "/dashboard": "",
@@ -31,6 +33,7 @@ function DashboardLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && !account.isAuthenticated) {
@@ -38,10 +41,25 @@ function DashboardLayout() {
     }
   }, [loading, account.isAuthenticated, navigate]);
 
+  useEffect(() => {
+    if (!account.isAuthenticated) {
+      setUserId(null);
+      return;
+    }
+    let cancelled = false;
+    supabase.auth.getUser().then(({ data }) => {
+      if (!cancelled) setUserId(data.user?.id ?? null);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [account.isAuthenticated]);
+
   // Close drawer on route change
   useEffect(() => {
     setDrawerOpen(false);
   }, [pathname]);
+
 
   if (loading || !account.isAuthenticated) {
     return (
@@ -81,6 +99,7 @@ function DashboardLayout() {
             coupleInitials={coupleInitials}
             coupleLabel={coupleLabel}
             email={account.email}
+            userId={userId}
             hasNotifications={hasNotifications}
             isPublished={couple.isPublished}
             drawerOpen={drawerOpen}
@@ -90,6 +109,7 @@ function DashboardLayout() {
               navigate({ to: "/", replace: true });
             }}
           />
+
 
         </PageChromeProvider>
       </AutosaveProvider>
@@ -104,6 +124,7 @@ function DashboardChrome({
   coupleInitials,
   coupleLabel,
   email,
+  userId,
   hasNotifications,
   isPublished,
   drawerOpen,
@@ -115,6 +136,7 @@ function DashboardChrome({
   coupleInitials: string;
   coupleLabel: string;
   email: string | null;
+  userId: string | null;
   hasNotifications: boolean;
   isPublished: boolean;
   drawerOpen: boolean;
@@ -133,8 +155,10 @@ function DashboardChrome({
         initial={initial}
         onOpenDrawer={() => setDrawerOpen(true)}
         hasNotifications={hasNotifications}
+        userId={userId}
         centerContent={centerNode}
       />
+
       {actionBarNode}
 
       <main className={`mx-auto max-w-xl px-4 pt-4 ${editing ? "pb-4" : "pb-24"}`}>
