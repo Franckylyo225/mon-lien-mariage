@@ -33,6 +33,7 @@ function DashboardLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && !account.isAuthenticated) {
@@ -40,10 +41,25 @@ function DashboardLayout() {
     }
   }, [loading, account.isAuthenticated, navigate]);
 
+  useEffect(() => {
+    if (!account.isAuthenticated) {
+      setUserId(null);
+      return;
+    }
+    let cancelled = false;
+    supabase.auth.getUser().then(({ data }) => {
+      if (!cancelled) setUserId(data.user?.id ?? null);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [account.isAuthenticated]);
+
   // Close drawer on route change
   useEffect(() => {
     setDrawerOpen(false);
   }, [pathname]);
+
 
   if (loading || !account.isAuthenticated) {
     return (
