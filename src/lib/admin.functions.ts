@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const BASE_PRICE_XOF = 24900;
+const DAY_MS = 24 * 3600 * 1000;
 
 async function assertAdmin(context: { supabase: any; userId: string }) {
   const [adminRole, ownerRole] = await Promise.all([
@@ -17,7 +18,6 @@ async function assertAdmin(context: { supabase: any; userId: string }) {
   if (adminRole.error || ownerRole.error) throw new Error("Vérification du rôle échouée");
   if (!adminRole.data && !ownerRole.data) throw new Error("Accès refusé");
 }
-
 
 export const checkIsAdmin = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -36,29 +36,86 @@ export const checkIsAdmin = createServerFn({ method: "GET" })
     return { isAdmin: Boolean(adminRole.data || ownerRole.data) };
   });
 
+function dayKey(d: Date) {
+  return d.toISOString().slice(0, 10);
+}
+
+function buildDayMap(days: number) {
+  const map = new Map<string, number>();
+  for (let i = days - 1; i >= 0; i--) {
+    map.set(dayKey(new Date(Date.now() - i * DAY_MS)), 0);
+  }
+  return map;
+}
+
+function trend(current: number, previous: number) {
+  if (previous === 0) return current === 0 ? 0 : 100;
+  return Math.round(((current - previous) / previous) * 100);
+}
+
 export const getPlatformStats = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
+    const nowIso = new Date().toISOString();
+    const since30 = new Date(Date.now() - 30 * DAY_MS).toISOString();
+    const since60 = new Date(Date.now() - 60 * DAY_MS).toISOString();
+
     const [
       usersCount,
+      usersRecent,
+      usersPrev,
       weddingsCount,
+      weddingsRecent,
+      weddingsPrev,
       publishedCount,
+      publishedRecent,
+      publishedPrev,
       rsvpsCount,
+      rsvpsRecent,
+      rsvpsPrev,
       guestsCount,
       recentWeddings,
       recentUsers,
       publishedByDay,
+      rsvpByDay,
+      themeRows,
     ] = await Promise.all([
       supabaseAdmin.from("profiles").select("id", { count: "exact", head: true }),
+      supabaseAdmin.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", since30),
+      supabaseAdmin
+        .from("profiles")
+        .select("id", { count: "exact", head: true })
+        .gte("created_at", since60)
+        .lt("created_at", since30),
       supabaseAdmin.from("weddings").select("id", { count: "exact", head: true }),
+      supabaseAdmin.from("weddings").select("id", { count: "exact", head: true }).gte("created_at", since30),
       supabaseAdmin
         .from("weddings")
         .select("id", { count: "exact", head: true })
-        .eq("is_published", true),
+        .gte("created_at", since60)
+        .lt("created_at", since30),
+      supabaseAdmin.from("weddings").select("id", { count: "exact", head: true }).eq("is_published", true),
+      supabaseAdmin
+        .from("weddings")
+        .select("id", { count: "exact", head: true })
+        .eq("is_published", true)
+        .gte("published_at", since30),
+      supabaseAdmin
+        .from("weddings")
+        .select("id", { count: "exact", head: true })
+        .eq("is_published", true)
+        .gte("published_at", since60)
+        .lt("published_at", since30),
       supabaseAdmin.from("rsvps").select("id", { count: "exact", head: true }),
+      supabaseAdmin.from("rsvps").select("id", { count: "exact", head: true }).gte("created_at", since30),
+      supabaseAdmin
+        .from("rsvps")
+        .select("id", { count: "exact", head: true })
+        .gte("created_at", since60)
+        .lt("created_at", since30),
       supabaseAdmin.from("guests").select("id", { count: "exact", head: true }),
       supabaseAdmin
         .from("weddings")
@@ -75,36 +132,73 @@ export const getPlatformStats = createServerFn({ method: "GET" })
         .select("published_at")
         .eq("is_published", true)
         .not("published_at", "is", null)
-        .gte("published_at", new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString()),
+        .gte("published_at", since30),
+      supabaseAdmin.from("rsvps").select("created_at").gte("created_at", since30),
+      supabaseAdmin.from("weddings").select("theme").not("theme", "is", null),
     ]);
+
+    // Suppress unused nowIso warning
+    void nowIso;
 
     const published = publishedCount.count ?? 0;
     const revenueXof = published * BASE_PRICE_XOF;
 
-    // Aggregate published by day (last 30 days)
-    const dayMap = new Map<string, number>();
-    for (let i = 29; i >= 0; i--) {
-      const d = new Date(Date.now() - i * 24 * 3600 * 1000);
-      const key = d.toISOString().slice(0, 10);
-      dayMap.set(key, 0);
-    }
+    const publishedDayMap = buildDayMap(30);
     for (const row of publishedByDay.data ?? []) {
       const key = String(row.published_at).slice(0, 10);
-      if (dayMap.has(key)) dayMap.set(key, (dayMap.get(key) ?? 0) + 1);
+      if (publishedDayMap.has(key)) publishedDayMap.set(key, (publishedDayMap.get(key) ?? 0) + 1);
     }
-    const series = Array.from(dayMap.entries()).map(([date, count]) => ({ date, count }));
+    const publishedSeries = Array.from(publishedDayMap.entries()).map(([date, count]) => ({
+      date,
+      count,
+      revenueXof: count * BASE_PRICE_XOF,
+    }));
+
+    const rsvpDayMap = buildDayMap(30);
+    for (const row of rsvpByDay.data ?? []) {
+      const key = String(row.created_at).slice(0, 10);
+      if (rsvpDayMap.has(key)) rsvpDayMap.set(key, (rsvpDayMap.get(key) ?? 0) + 1);
+    }
+    const rsvpSeries = Array.from(rsvpDayMap.entries()).map(([date, count]) => ({ date, count }));
+
+    const themeCounts = new Map<string, number>();
+    for (const row of themeRows.data ?? []) {
+      const t = String((row as any).theme);
+      themeCounts.set(t, (themeCounts.get(t) ?? 0) + 1);
+    }
+    const topThemes = Array.from(themeCounts.entries())
+      .map(([theme, count]) => ({ theme, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 6);
+
+    const totalWed = weddingsCount.count ?? 0;
+    const conversion = totalWed === 0 ? 0 : Math.round((published / totalWed) * 100);
 
     return {
       users: usersCount.count ?? 0,
-      weddings: weddingsCount.count ?? 0,
+      weddings: totalWed,
       published,
       rsvps: rsvpsCount.count ?? 0,
       guests: guestsCount.count ?? 0,
       revenueXof,
+      revenue30Xof: (publishedRecent.count ?? 0) * BASE_PRICE_XOF,
       pricePerPublish: BASE_PRICE_XOF,
+      conversionRate: conversion,
+      trends: {
+        users: trend(usersRecent.count ?? 0, usersPrev.count ?? 0),
+        weddings: trend(weddingsRecent.count ?? 0, weddingsPrev.count ?? 0),
+        published: trend(publishedRecent.count ?? 0, publishedPrev.count ?? 0),
+        rsvps: trend(rsvpsRecent.count ?? 0, rsvpsPrev.count ?? 0),
+        revenue: trend(
+          (publishedRecent.count ?? 0) * BASE_PRICE_XOF,
+          (publishedPrev.count ?? 0) * BASE_PRICE_XOF,
+        ),
+      },
       recentWeddings: recentWeddings.data ?? [],
       recentUsers: recentUsers.data ?? [],
-      publishedSeries: series,
+      publishedSeries,
+      rsvpSeries,
+      topThemes,
     };
   });
 
@@ -118,7 +212,7 @@ export const listAllUsers = createServerFn({ method: "GET" })
       .from("profiles")
       .select("id, email, user_first_name, display_name, created_at, deletion_requested_at")
       .order("created_at", { ascending: false })
-      .limit(500);
+      .limit(1000);
 
     const ids = (profiles ?? []).map((p) => p.id);
     const { data: weddings } = ids.length
@@ -166,10 +260,10 @@ export const listAllWeddings = createServerFn({ method: "GET" })
     const { data: weddings } = await supabaseAdmin
       .from("weddings")
       .select(
-        "id, owner_id, bride_name, groom_name, event_type, city, slug, is_published, published_at, wedding_date, created_at",
+        "id, owner_id, bride_name, groom_name, event_type, city, slug, is_published, published_at, wedding_date, created_at, theme",
       )
       .order("created_at", { ascending: false })
-      .limit(500);
+      .limit(1000);
 
     const ownerIds = Array.from(new Set((weddings ?? []).map((w) => w.owner_id)));
     const { data: owners } = ownerIds.length
@@ -209,7 +303,7 @@ export const listPayments = createServerFn({ method: "GET" })
       .eq("is_published", true)
       .not("published_at", "is", null)
       .order("published_at", { ascending: false })
-      .limit(500);
+      .limit(1000);
 
     const ownerIds = Array.from(new Set((weddings ?? []).map((w) => w.owner_id)));
     const { data: owners } = ownerIds.length
@@ -228,6 +322,116 @@ export const listPayments = createServerFn({ method: "GET" })
       paid_at: w.published_at,
       amount_xof: BASE_PRICE_XOF,
     }));
+  });
+
+export const listEmailLog = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const [{ data: logs }, sentCount, failedCount, last24Count] = await Promise.all([
+      supabaseAdmin
+        .from("email_send_log")
+        .select("id, template_name, recipient_email, status, error_message, created_at")
+        .order("created_at", { ascending: false })
+        .limit(500),
+      supabaseAdmin.from("email_send_log").select("id", { count: "exact", head: true }).eq("status", "sent"),
+      supabaseAdmin.from("email_send_log").select("id", { count: "exact", head: true }).eq("status", "failed"),
+      supabaseAdmin
+        .from("email_send_log")
+        .select("id", { count: "exact", head: true })
+        .gte("created_at", new Date(Date.now() - DAY_MS).toISOString()),
+    ]);
+
+    return {
+      logs: logs ?? [],
+      totals: {
+        sent: sentCount.count ?? 0,
+        failed: failedCount.count ?? 0,
+        last24: last24Count.count ?? 0,
+      },
+    };
+  });
+
+type ActivityItem = {
+  id: string;
+  kind: "signup" | "wedding_created" | "wedding_published" | "rsvp";
+  label: string;
+  subtitle: string | null;
+  created_at: string;
+};
+
+export const listActivity = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<ActivityItem[]> => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const [signups, weddings, publications, rsvps] = await Promise.all([
+      supabaseAdmin
+        .from("profiles")
+        .select("id, email, user_first_name, created_at")
+        .order("created_at", { ascending: false })
+        .limit(40),
+      supabaseAdmin
+        .from("weddings")
+        .select("id, bride_name, groom_name, created_at, published_at, is_published")
+        .order("created_at", { ascending: false })
+        .limit(40),
+      supabaseAdmin
+        .from("weddings")
+        .select("id, bride_name, groom_name, published_at")
+        .eq("is_published", true)
+        .not("published_at", "is", null)
+        .order("published_at", { ascending: false })
+        .limit(40),
+      supabaseAdmin
+        .from("rsvps")
+        .select("id, guest_name, wedding_id, created_at")
+        .order("created_at", { ascending: false })
+        .limit(40),
+    ]);
+
+    const items: ActivityItem[] = [];
+    for (const s of signups.data ?? []) {
+      items.push({
+        id: `signup-${s.id}`,
+        kind: "signup",
+        label: `Nouvel inscrit : ${s.user_first_name || s.email || "utilisateur"}`,
+        subtitle: s.email ?? null,
+        created_at: s.created_at,
+      });
+    }
+    for (const w of weddings.data ?? []) {
+      items.push({
+        id: `wed-${w.id}`,
+        kind: "wedding_created",
+        label: `Événement créé : ${w.bride_name} & ${w.groom_name}`,
+        subtitle: null,
+        created_at: w.created_at,
+      });
+    }
+    for (const p of publications.data ?? []) {
+      items.push({
+        id: `pub-${p.id}`,
+        kind: "wedding_published",
+        label: `Publication : ${p.bride_name} & ${p.groom_name}`,
+        subtitle: null,
+        created_at: p.published_at as string,
+      });
+    }
+    for (const r of rsvps.data ?? []) {
+      items.push({
+        id: `rsvp-${r.id}`,
+        kind: "rsvp",
+        label: `RSVP : ${r.guest_name ?? "invité"}`,
+        subtitle: null,
+        created_at: r.created_at,
+      });
+    }
+    items.sort((a, b) => (a.created_at < b.created_at ? 1 : -1));
+    return items.slice(0, 80);
   });
 
 interface RoleInput {
