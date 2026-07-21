@@ -360,15 +360,11 @@ function RsvpModal({
               }
               style={{ ...inputStyle, ...placeholderVar(d.placeholderInk) }}
             />
-            <input data-rsvp-input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+            <PhoneField
+              value={phone || undefined}
+              onChange={(v) => setPhone(v ?? "")}
               placeholder="Téléphone WhatsApp (optionnel)"
-              className={
-                "w-full max-w-full border px-4 py-3 text-sm outline-none " +
-                d.fieldRadius
-              }
-              style={{ ...inputStyle, ...placeholderVar(d.placeholderInk) }}
+              showError
             />
           </div>
 
