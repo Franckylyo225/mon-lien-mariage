@@ -342,41 +342,24 @@ function PublishPage() {
           </div>
         </section>
 
-        {/* 5. Bouton */}
+        {/* 5. Bouton — Paiement temporairement indisponible */}
         <div className="mb-2.5">
           <button
-            onClick={handlePay}
-            disabled={payLoading || !weddingId}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-[14px] px-4 py-4 text-[15px] font-medium transition disabled:opacity-70"
-            style={{ background: "#4B1528", color: "#FBEAF0" }}
+            type="button"
+            disabled
+            aria-disabled="true"
+            title="Le paiement en ligne est temporairement indisponible"
+            className="inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-[14px] border border-border/60 bg-muted px-4 py-4 text-[15px] font-medium text-muted-foreground"
           >
-            {payLoading ? (
-              <>
-                <Loader2 className="size-4 animate-spin" strokeWidth={2} />
-                Redirection vers le paiement…
-              </>
-            ) : (
-              "Payer et publier"
-            )}
+            <Lock className="size-4" strokeWidth={1.75} />
+            Paiement bientôt disponible
           </button>
 
-          <div className="mt-2 flex items-center justify-center gap-1.5">
-            <Lock className="size-3 text-muted-foreground/70" strokeWidth={1.75} />
-            <span className="font-mono text-[10px] uppercase tracking-[0.04em] text-muted-foreground/70">
-              Paiement sécurisé
-            </span>
-          </div>
-
-          <div className="mt-1.5 flex flex-wrap justify-center gap-1.5">
-            {["Wave", "Orange Money", "MTN", "Moov", "Carte"].map((m) => (
-              <span
-                key={m}
-                className="rounded-full border border-border/60 bg-muted px-2 py-[3px] text-[9px] text-muted-foreground"
-              >
-                {m}
-              </span>
-            ))}
-          </div>
+          <p className="mt-2 text-center text-[11px] leading-[1.5] text-muted-foreground">
+            Le paiement en ligne est en cours de configuration.
+            <br />
+            En attendant, utilisez un code promo pour publier votre invitation.
+          </p>
         </div>
 
         {/* 5b. Code promo */}
