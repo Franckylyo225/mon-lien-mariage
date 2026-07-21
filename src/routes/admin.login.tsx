@@ -33,12 +33,18 @@ function AdminLoginPage() {
       setError(err?.message ?? "Identifiants invalides");
       return;
     }
-    const { data: role, error: roleErr } = await supabase.rpc("has_role", {
-      _user_id: signIn.user.id,
-      _role: "admin",
-    });
+    const [adminRole, ownerRole] = await Promise.all([
+      supabase.rpc("has_role", {
+        _user_id: signIn.user.id,
+        _role: "admin",
+      }),
+      supabase.rpc("has_role", {
+        _user_id: signIn.user.id,
+        _role: "owner",
+      }),
+    ]);
     setLoading(false);
-    if (roleErr || !role) {
+    if (adminRole.error || ownerRole.error || (!adminRole.data && !ownerRole.data)) {
       await supabase.auth.signOut();
       setError("Ce compte n'a pas les droits administrateur.");
       return;

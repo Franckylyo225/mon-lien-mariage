@@ -4,23 +4,36 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 const BASE_PRICE_XOF = 24900;
 
 async function assertAdmin(context: { supabase: any; userId: string }) {
-  const { data, error } = await context.supabase.rpc("has_role", {
-    _user_id: context.userId,
-    _role: "admin",
-  });
-  if (error) throw new Error("Vérification du rôle échouée");
-  if (!data) throw new Error("Accès refusé");
+  const [adminRole, ownerRole] = await Promise.all([
+    context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    }),
+    context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "owner",
+    }),
+  ]);
+  if (adminRole.error || ownerRole.error) throw new Error("Vérification du rôle échouée");
+  if (!adminRole.data && !ownerRole.data) throw new Error("Accès refusé");
 }
 
 
 export const checkIsAdmin = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    return { isAdmin: Boolean(data) };
+    const [adminRole, ownerRole] = await Promise.all([
+      context.supabase.rpc("has_role", {
+        _user_id: context.userId,
+        _role: "admin",
+      }),
+      context.supabase.rpc("has_role", {
+        _user_id: context.userId,
+        _role: "owner",
+      }),
+    ]);
+    if (adminRole.error || ownerRole.error) throw new Error("Vérification du rôle échouée");
+    return { isAdmin: Boolean(adminRole.data || ownerRole.data) };
   });
 
 export const getPlatformStats = createServerFn({ method: "GET" })

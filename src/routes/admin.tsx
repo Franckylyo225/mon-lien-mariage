@@ -1,6 +1,7 @@
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
+import type { User } from "@supabase/supabase-js";
 import {
   IconLayoutDashboard,
   IconUsers,
@@ -8,40 +9,55 @@ import {
   IconCash,
   IconArrowLeft,
 } from "@tabler/icons-react";
-import { useWedding } from "@/lib/wedding-store";
 import { checkIsAdmin } from "@/lib/admin.functions";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
 });
 
 function AdminLayout() {
-  const { account, loading } = useWedding();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const check = useServerFn(checkIsAdmin);
   const [status, setStatus] = useState<"checking" | "ok" | "denied">("checking");
+  const [user, setUser] = useState<User | null>(null);
 
   const isLoginRoute = pathname === "/admin/login";
 
   useEffect(() => {
-    if (isLoginRoute) return;
-    if (loading) return;
-    if (!account.isAuthenticated) {
-      navigate({ to: "/admin/login", replace: true });
+    if (isLoginRoute) {
+      setStatus("checking");
+      setUser(null);
       return;
     }
-    check()
-      .then((r) => setStatus(r.isAdmin ? "ok" : "denied"))
-      .catch(() => setStatus("denied"));
-  }, [loading, account.isAuthenticated, check, navigate, isLoginRoute]);
+    let cancelled = false;
+    setStatus("checking");
+    supabase.auth
+      .getUser()
+      .then(async ({ data, error }) => {
+        if (cancelled) return;
+        if (error || !data.user) {
+          navigate({ to: "/admin/login", replace: true });
+          return;
+        }
+        setUser(data.user);
+        const role = await check();
+        if (!cancelled) setStatus(role.isAdmin ? "ok" : "denied");
+      })
+      .catch(() => {
+        if (!cancelled) setStatus("denied");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [check, navigate, isLoginRoute]);
 
   if (isLoginRoute) {
     return <Outlet />;
   }
 
-
-  if (loading || status === "checking") {
+  if (status === "checking") {
     return (
       <div className="grid min-h-screen place-items-center bg-background">
         <p className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-40">Chargement…</p>
@@ -89,7 +105,7 @@ function AdminLayout() {
               MonInvit.com
             </span>
           </div>
-          <span className="truncate text-[12px] text-muted-foreground">{account.email}</span>
+          <span className="truncate text-[12px] text-muted-foreground">{user?.email}</span>
         </div>
         <nav className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-2 pb-1">
           {tabs.map((t) => {
