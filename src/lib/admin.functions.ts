@@ -425,7 +425,7 @@ export const listActivity = createServerFn({ method: "GET" })
       items.push({
         id: `rsvp-${r.id}`,
         kind: "rsvp",
-        label: `RSVP : ${r.first_name ?? ""} ${r.last_name ?? ""}`.trim() || "RSVP reçu",
+        label: `RSVP : ${r.guest_name ?? "invité"}`,
         subtitle: null,
         created_at: r.created_at,
       });
