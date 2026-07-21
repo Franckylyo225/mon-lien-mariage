@@ -388,7 +388,7 @@ export const listActivity = createServerFn({ method: "GET" })
         .limit(40),
       supabaseAdmin
         .from("rsvps")
-        .select("id, first_name, last_name, wedding_id, created_at")
+        .select("id, guest_name, wedding_id, created_at")
         .order("created_at", { ascending: false })
         .limit(40),
     ]);
