@@ -2,19 +2,25 @@ import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tan
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import type { User } from "@supabase/supabase-js";
-import {
-  IconLayoutDashboard,
-  IconUsers,
-  IconCalendarHeart,
-  IconCash,
-  IconArrowLeft,
-} from "@tabler/icons-react";
+import { IconArrowLeft, IconLogout } from "@tabler/icons-react";
 import { checkIsAdmin } from "@/lib/admin.functions";
 import { supabase } from "@/integrations/supabase/client";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AdminSidebar } from "@/components/admin/AdminSidebar";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
 });
+
+const CRUMB: Record<string, string> = {
+  "/admin": "Vue d'ensemble",
+  "/admin/users": "Utilisateurs",
+  "/admin/weddings": "Événements",
+  "/admin/payments": "Paiements",
+  "/admin/emails": "Emails",
+  "/admin/activity": "Activité",
+  "/admin/settings": "Paramètres",
+};
 
 function AdminLayout() {
   const navigate = useNavigate();
@@ -53,9 +59,7 @@ function AdminLayout() {
     };
   }, [check, navigate, isLoginRoute]);
 
-  if (isLoginRoute) {
-    return <Outlet />;
-  }
+  if (isLoginRoute) return <Outlet />;
 
   if (status === "checking") {
     return (
@@ -84,55 +88,39 @@ function AdminLayout() {
     );
   }
 
-  const tabs: Array<{ to: string; label: string; Icon: typeof IconUsers; exact?: boolean }> = [
-    { to: "/admin", label: "Vue d'ensemble", Icon: IconLayoutDashboard, exact: true },
-    { to: "/admin/users", label: "Utilisateurs", Icon: IconUsers },
-    { to: "/admin/weddings", label: "Événements", Icon: IconCalendarHeart },
-    { to: "/admin/payments", label: "Paiements", Icon: IconCash },
-  ];
+  const title = CRUMB[pathname] ?? "Admin";
 
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    navigate({ to: "/admin/login", replace: true });
+  }
 
   return (
-    <div className="min-h-screen bg-neutral-50">
-      <header className="sticky top-0 z-30 border-b border-border/70 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4">
-          <div className="flex items-center gap-3">
-            <Link to="/dashboard" className="text-muted-foreground hover:text-foreground">
-              <IconArrowLeft size={18} />
-            </Link>
-            <span className="font-serif text-lg italic">Admin</span>
-            <span className="hidden text-[11px] uppercase tracking-widest text-muted-foreground sm:inline">
-              MonInvit.com
-            </span>
+    <SidebarProvider>
+      <AdminSidebar email={user?.email} />
+      <SidebarInset className="bg-neutral-50">
+        <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border/70 bg-white/95 px-4 backdrop-blur">
+          <SidebarTrigger />
+          <div className="flex items-baseline gap-2">
+            <span className="text-[11px] uppercase tracking-widest text-muted-foreground">Admin</span>
+            <span className="text-muted-foreground">/</span>
+            <span className="font-serif text-base">{title}</span>
           </div>
-          <span className="truncate text-[12px] text-muted-foreground">{user?.email}</span>
-        </div>
-        <nav className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-2 pb-1">
-          {tabs.map((t) => {
-            const active = t.exact ? pathname === t.to : pathname === t.to || pathname.startsWith(t.to + "/");
-            return (
-              <Link
-                key={t.to}
-                to={t.to as "/admin"}
-
-                className={
-                  "flex shrink-0 items-center gap-2 rounded-full px-3 py-1.5 text-[13px] transition " +
-                  (active
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-secondary")
-                }
-              >
-                <t.Icon size={15} />
-                {t.label}
-              </Link>
-            );
-          })}
-        </nav>
-      </header>
-
-      <main className="mx-auto max-w-6xl px-4 py-6">
-        <Outlet />
-      </main>
-    </div>
+          <div className="ml-auto flex items-center gap-3">
+            <span className="hidden truncate text-[12px] text-muted-foreground sm:inline">{user?.email}</span>
+            <button
+              onClick={handleLogout}
+              title="Se déconnecter"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-white px-3 py-1.5 text-[12px] hover:bg-secondary"
+            >
+              <IconLogout size={13} /> Sortir
+            </button>
+          </div>
+        </header>
+        <main className="mx-auto w-full max-w-6xl px-4 py-6">
+          <Outlet />
+        </main>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
