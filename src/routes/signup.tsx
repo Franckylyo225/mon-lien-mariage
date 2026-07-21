@@ -18,6 +18,8 @@ export const Route = createFileRoute("/signup")({
 
 function SignupPage() {
   const navigate = useNavigate();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cgu, setCgu] = useState(false);
@@ -31,6 +33,8 @@ function SignupPage() {
     e.preventDefault();
     setError(null);
     setInfo(null);
+    if (!firstName.trim()) return setError("Merci d'indiquer votre prénom.");
+    if (!lastName.trim()) return setError("Merci d'indiquer votre nom.");
     if (!email.includes("@")) return setError("Adresse email invalide.");
     if (!pwCheck.valid)
       return setError(
@@ -41,7 +45,13 @@ function SignupPage() {
     const { data, error: err } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: "https://moninvit.com/verify-email" },
+      options: {
+        emailRedirectTo: "https://moninvit.com/verify-email",
+        data: {
+          first_name: firstName.trim(),
+          last_name: lastName.trim(),
+        },
+      },
     });
     setLoading(false);
     if (err) {
