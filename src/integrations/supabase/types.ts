@@ -175,6 +175,47 @@ export type Database = {
         }
         Relationships: []
       }
+      guestbook_messages: {
+        Row: {
+          author_name: string
+          author_relation: string | null
+          color_index: number
+          created_at: string
+          id: string
+          is_approved: boolean
+          message: string
+          wedding_id: string
+        }
+        Insert: {
+          author_name: string
+          author_relation?: string | null
+          color_index?: number
+          created_at?: string
+          id?: string
+          is_approved?: boolean
+          message: string
+          wedding_id: string
+        }
+        Update: {
+          author_name?: string
+          author_relation?: string | null
+          color_index?: number
+          created_at?: string
+          id?: string
+          is_approved?: boolean
+          message?: string
+          wedding_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guestbook_messages_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       guests: {
         Row: {
           allowed_plus_ones: number
@@ -479,7 +520,10 @@ export type Database = {
           gallery_images: string[] | null
           gallery_title: string | null
           groom_name: string
+          guestbook_subtitle: string | null
+          guestbook_title: string | null
           has_envelope_animation: boolean
+          has_guestbook: boolean
           has_opening_effect: boolean
           hashtag: string | null
           hero_image_url: string | null
@@ -554,7 +598,10 @@ export type Database = {
           gallery_images?: string[] | null
           gallery_title?: string | null
           groom_name?: string
+          guestbook_subtitle?: string | null
+          guestbook_title?: string | null
           has_envelope_animation?: boolean
+          has_guestbook?: boolean
           has_opening_effect?: boolean
           hashtag?: string | null
           hero_image_url?: string | null
@@ -629,7 +676,10 @@ export type Database = {
           gallery_images?: string[] | null
           gallery_title?: string | null
           groom_name?: string
+          guestbook_subtitle?: string | null
+          guestbook_title?: string | null
           has_envelope_animation?: boolean
+          has_guestbook?: boolean
           has_opening_effect?: boolean
           hashtag?: string | null
           hero_image_url?: string | null
