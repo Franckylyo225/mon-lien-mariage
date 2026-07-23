@@ -198,8 +198,10 @@ function SupportPage() {
               value={form.message}
               onChange={(e) => setForm({ ...form, message: e.target.value })}
               rows={5}
+              minLength={5}
               maxLength={5000}
               required
+
               className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[14px]"
               placeholder="Décrivez précisément votre besoin, les étapes déjà tentées, l'appareil utilisé…"
             />
