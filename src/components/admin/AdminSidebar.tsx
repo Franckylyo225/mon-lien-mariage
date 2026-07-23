@@ -8,6 +8,7 @@ import {
   IconActivity,
   IconSettings,
   IconArrowLeft,
+  IconLifebuoy,
 } from "@tabler/icons-react";
 import {
   Sidebar,
@@ -34,6 +35,7 @@ const growth: Item[] = [
 ];
 const finance: Item[] = [{ to: "/admin/payments", label: "Paiements", Icon: IconCash }];
 const system: Item[] = [
+  { to: "/admin/support", label: "Support", Icon: IconLifebuoy },
   { to: "/admin/emails", label: "Emails", Icon: IconMail },
   { to: "/admin/settings", label: "Paramètres", Icon: IconSettings },
 ];

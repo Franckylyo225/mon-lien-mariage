@@ -19,6 +19,7 @@ const CRUMB: Record<string, string> = {
   "/admin/payments": "Paiements",
   "/admin/emails": "Emails",
   "/admin/activity": "Activité",
+  "/admin/support": "Support",
   "/admin/settings": "Paramètres",
 };
 
