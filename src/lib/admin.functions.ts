@@ -462,3 +462,98 @@ export const setUserRole = createServerFn({ method: "POST" })
     }
     return { ok: true };
   });
+
+// ---------- Codes promo ----------
+
+export const listPromoCodes = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin
+      .from("promo_codes")
+      .select(
+        "id, code, discount_percent, max_uses, uses, valid_from, valid_until, is_active, notes, created_at, updated_at",
+      )
+      .order("created_at", { ascending: false });
+    if (error) throw new Error(error.message);
+    return data ?? [];
+  });
+
+interface PromoUpsertInput {
+  id?: string;
+  code: string;
+  discount_percent: number;
+  max_uses: number | null;
+  valid_from: string | null;
+  valid_until: string | null;
+  is_active: boolean;
+  notes: string | null;
+}
+
+function validatePromoInput(data: PromoUpsertInput) {
+  const code = (data.code || "").trim().toUpperCase();
+  if (!/^[A-Z0-9_-]{3,32}$/.test(code)) {
+    throw new Error("Code invalide (3-32 caractères A-Z, chiffres, - ou _).");
+  }
+  const discount = Math.round(Number(data.discount_percent));
+  if (!Number.isFinite(discount) || discount < 0 || discount > 100) {
+    throw new Error("La remise doit être entre 0 et 100.");
+  }
+  const max_uses =
+    data.max_uses === null || data.max_uses === undefined ? null : Math.max(1, Math.round(Number(data.max_uses)));
+  return { code, discount, max_uses };
+}
+
+export const upsertPromoCode = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: PromoUpsertInput) => data)
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { code, discount, max_uses } = validatePromoInput(data);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const payload = {
+      code,
+      discount_percent: discount,
+      max_uses,
+      valid_from: data.valid_from || null,
+      valid_until: data.valid_until || null,
+      is_active: data.is_active,
+      notes: data.notes?.trim() ? data.notes.trim() : null,
+    };
+
+    if (data.id) {
+      const { error } = await supabaseAdmin
+        .from("promo_codes")
+        .update(payload as never)
+        .eq("id", data.id);
+      if (error) throw new Error(error.message);
+      return { ok: true, id: data.id };
+    }
+
+    const { data: inserted, error } = await supabaseAdmin
+      .from("promo_codes")
+      .insert({ ...payload, created_by: context.userId } as never)
+      .select("id")
+      .single();
+    if (error) {
+      if (String(error.message).toLowerCase().includes("duplicate")) {
+        throw new Error("Ce code existe déjà.");
+      }
+      throw new Error(error.message);
+    }
+    return { ok: true, id: (inserted as { id: string }).id };
+  });
+
+export const deletePromoCode = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { id: string }) => data)
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.from("promo_codes").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
