@@ -63,7 +63,7 @@ function PublishPage() {
 
   const dateLabel = formatFrenchDate(couple.weddingDate);
   const subLine = [dateLabel, couple.city].filter(Boolean).join(" · ");
-  const total = BASE_PRICE_XOF;
+  const total = BASE_PRICE_XOF + (includeGuestbook ? GUESTBOOK_ADDON_XOF : 0);
   const alreadyPublished = couple.isPublished === true;
 
   const handlePay = async () => {
