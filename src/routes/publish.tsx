@@ -12,12 +12,12 @@ import {
   BookHeart,
   Lock,
   Loader2,
+  Tag,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useWedding, slugify } from "@/lib/wedding-store";
-import { initPaystackPayment, applyPromoCode } from "@/lib/paystack.functions";
+import { validatePromoCode, publishWithPromo } from "@/lib/promo.functions";
 import { useNavigate } from "@tanstack/react-router";
-import { Tag } from "lucide-react";
 
 export const Route = createFileRoute("/publish")({
   head: () => ({
@@ -46,13 +46,17 @@ function formatFrenchDate(iso: string): string | null {
 
 function PublishPage() {
   const { couple, weddingId, loading } = useWedding();
-  const initPayment = useServerFn(initPaystackPayment);
-  const submitPromo = useServerFn(applyPromoCode);
+  const validatePromo = useServerFn(validatePromoCode);
+  const publishFn = useServerFn(publishWithPromo);
   const navigate = useNavigate();
-  const [payLoading, setPayLoading] = useState(false);
   const [promoOpen, setPromoOpen] = useState(false);
   const [promoCode, setPromoCode] = useState("");
   const [promoLoading, setPromoLoading] = useState(false);
+  const [appliedPromo, setAppliedPromo] = useState<{
+    code: string;
+    discount: number;
+  } | null>(null);
+  const [publishing, setPublishing] = useState(false);
   const [includeGuestbook, setIncludeGuestbook] = useState(false);
 
   const slug = useMemo(
@@ -65,50 +69,9 @@ function PublishPage() {
   const subLine = [dateLabel, couple.city].filter(Boolean).join(" · ");
   const total = BASE_PRICE_XOF + (includeGuestbook ? GUESTBOOK_ADDON_XOF : 0);
   const alreadyPublished = couple.isPublished === true;
-
-  const handlePay = async () => {
-    if (!weddingId) {
-      toast.error("Aucun événement actif. Rechargez la page.");
-      return;
-    }
-    setPayLoading(true);
-    try {
-      const { checkoutUrl } = await initPayment({
-        data: {
-          weddingId,
-          slug,
-          envelopeAnimation: false,
-          includeGuestbook,
-          amount: total,
-          brideName: couple.brideName,
-          groomName: couple.groomName,
-        },
-      });
-      try {
-        sessionStorage.setItem(
-          "moninvit:pending-publish",
-          JSON.stringify({ weddingId, slug, envelope: false, guestbook: includeGuestbook }),
-        );
-      } catch {
-        /* noop */
-      }
-      window.location.href = checkoutUrl;
-    } catch (e) {
-      console.error(e);
-      toast.error(
-        e instanceof Error
-          ? e.message
-          : "Le paiement n'a pas abouti. Réessayez.",
-      );
-      setPayLoading(false);
-    }
-  };
+  const canPublish = !!appliedPromo && appliedPromo.discount >= 100;
 
   const handlePromo = async () => {
-    if (!weddingId) {
-      toast.error("Aucun événement actif. Rechargez la page.");
-      return;
-    }
     const code = promoCode.trim().toUpperCase();
     if (!code) {
       toast.error("Veuillez saisir un code promo.");
@@ -116,23 +79,47 @@ function PublishPage() {
     }
     setPromoLoading(true);
     try {
-      const res = await submitPromo({
-        data: { weddingId, slug, code, includeGuestbook },
-      });
-      if (res.published) {
-        toast.success("Code appliqué — votre invitation est publiée !");
-        navigate({ to: "/publish/success", search: { wid: weddingId } });
+      const res = await validatePromo({ data: { code } });
+      setAppliedPromo({ code: res.code, discount: res.discount });
+      if (res.discount >= 100) {
+        toast.success("Code appliqué — vous pouvez publier gratuitement.");
       } else {
         toast.success(`Remise de ${res.discount}% appliquée.`);
       }
     } catch (e) {
-      toast.error(
-        e instanceof Error ? e.message : "Code promo invalide.",
-      );
+      setAppliedPromo(null);
+      toast.error(e instanceof Error ? e.message : "Code promo invalide.");
     } finally {
       setPromoLoading(false);
     }
   };
+
+  const handlePublish = async () => {
+    if (!weddingId) {
+      toast.error("Aucun événement actif. Rechargez la page.");
+      return;
+    }
+    if (!appliedPromo) return;
+    setPublishing(true);
+    try {
+      await publishFn({
+        data: {
+          weddingId,
+          slug,
+          code: appliedPromo.code,
+          includeGuestbook,
+        },
+      });
+      toast.success("Votre invitation est publiée !");
+      navigate({ to: "/dashboard/share" });
+    } catch (e) {
+      toast.error(
+        e instanceof Error ? e.message : "Publication impossible.",
+      );
+      setPublishing(false);
+    }
+  };
+
 
 
   if (loading) {
@@ -379,25 +366,55 @@ function PublishPage() {
           </div>
         </section>
 
-        {/* 5. Bouton — Paiement temporairement indisponible */}
+        {/* 5. Bouton — Publier (activé après code promo) */}
         <div className="mb-2.5">
           <button
             type="button"
-            disabled
-            aria-disabled="true"
-            title="Le paiement en ligne est temporairement indisponible"
-            className="inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-[14px] border border-border/60 bg-muted px-4 py-4 text-[15px] font-medium text-muted-foreground"
+            onClick={handlePublish}
+            disabled={!canPublish || publishing || !weddingId}
+            aria-disabled={!canPublish || publishing || !weddingId}
+            title={
+              canPublish
+                ? "Publier votre invitation"
+                : "Le paiement en ligne est temporairement indisponible. Appliquez un code promo pour publier."
+            }
+            className={
+              canPublish
+                ? "inline-flex w-full items-center justify-center gap-2 rounded-[14px] px-4 py-4 text-[15px] font-medium transition disabled:opacity-60"
+                : "inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-[14px] border border-border/60 bg-muted px-4 py-4 text-[15px] font-medium text-muted-foreground"
+            }
+            style={
+              canPublish ? { background: "#4B1528", color: "#FBEAF0" } : undefined
+            }
           >
-            <Lock className="size-4" strokeWidth={1.75} />
-            Paiement bientôt disponible
+            {publishing ? (
+              <Loader2 className="size-4 animate-spin" strokeWidth={2} />
+            ) : canPublish ? (
+              <Check className="size-4" strokeWidth={2} />
+            ) : (
+              <Lock className="size-4" strokeWidth={1.75} />
+            )}
+            {publishing
+              ? "Publication en cours…"
+              : canPublish
+                ? "Publier mon invitation"
+                : "Paiement bientôt disponible"}
           </button>
 
-          <p className="mt-2 text-center text-[11px] leading-[1.5] text-muted-foreground">
-            Le paiement en ligne est en cours de configuration.
-            <br />
-            En attendant, utilisez un code promo pour publier votre invitation.
-          </p>
+          {!canPublish ? (
+            <p className="mt-2 text-center text-[11px] leading-[1.5] text-muted-foreground">
+              Le paiement en ligne est en cours de configuration.
+              <br />
+              En attendant, utilisez un code promo pour publier votre invitation.
+            </p>
+          ) : (
+            <p className="mt-2 text-center text-[11px] leading-[1.5] text-muted-foreground">
+              Code <span className="font-mono">{appliedPromo!.code}</span> appliqué —
+              publication gratuite.
+            </p>
+          )}
         </div>
+
 
         {/* 5b. Code promo */}
         <div className="mb-2">

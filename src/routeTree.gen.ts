@@ -29,7 +29,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ThemeThumbSlugRouteImport } from './routes/theme-thumb.$slug'
-import { Route as PublishSuccessRouteImport } from './routes/publish.success'
 import { Route as OnboardingThemeRouteImport } from './routes/onboarding.theme'
 import { Route as OnboardingPrenomsRouteImport } from './routes/onboarding.prenoms'
 import { Route as OnboardingEvenementRouteImport } from './routes/onboarding.evenement'
@@ -64,7 +63,6 @@ import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/l
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
-import { Route as ApiPublicWebhooksPaystackRouteImport } from './routes/api/public/webhooks/paystack'
 import { Route as ApiPublicHooksRsvpMilestoneRouteImport } from './routes/api/public/hooks/rsvp-milestone'
 
 const VerifyEmailRoute = VerifyEmailRouteImport.update({
@@ -167,11 +165,6 @@ const ThemeThumbSlugRoute = ThemeThumbSlugRouteImport.update({
   id: '/theme-thumb/$slug',
   path: '/theme-thumb/$slug',
   getParentRoute: () => rootRouteImport,
-} as any)
-const PublishSuccessRoute = PublishSuccessRouteImport.update({
-  id: '/success',
-  path: '/success',
-  getParentRoute: () => PublishRoute,
 } as any)
 const OnboardingThemeRoute = OnboardingThemeRouteImport.update({
   id: '/theme',
@@ -346,12 +339,6 @@ const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
   path: '/lovable/email/auth/preview',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicWebhooksPaystackRoute =
-  ApiPublicWebhooksPaystackRouteImport.update({
-    id: '/api/public/webhooks/paystack',
-    path: '/api/public/webhooks/paystack',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const ApiPublicHooksRsvpMilestoneRoute =
   ApiPublicHooksRsvpMilestoneRouteImport.update({
     id: '/api/public/hooks/rsvp-milestone',
@@ -370,7 +357,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRouteWithChildren
   '/politique-de-confidentialite': typeof PolitiqueDeConfidentialiteRoute
-  '/publish': typeof PublishRouteWithChildren
+  '/publish': typeof PublishRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -401,7 +388,6 @@ export interface FileRoutesByFullPath {
   '/onboarding/evenement': typeof OnboardingEvenementRoute
   '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
-  '/publish/success': typeof PublishSuccessRoute
   '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -411,7 +397,6 @@ export interface FileRoutesByFullPath {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests/': typeof DashboardGuestsIndexRoute
   '/api/public/hooks/rsvp-milestone': typeof ApiPublicHooksRsvpMilestoneRoute
-  '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -427,7 +412,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRouteWithChildren
   '/politique-de-confidentialite': typeof PolitiqueDeConfidentialiteRoute
-  '/publish': typeof PublishRouteWithChildren
+  '/publish': typeof PublishRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -458,7 +443,6 @@ export interface FileRoutesByTo {
   '/onboarding/evenement': typeof OnboardingEvenementRoute
   '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
-  '/publish/success': typeof PublishSuccessRoute
   '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
   '/admin': typeof AdminIndexRoute
   '/dashboard': typeof DashboardIndexRoute
@@ -468,7 +452,6 @@ export interface FileRoutesByTo {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests': typeof DashboardGuestsIndexRoute
   '/api/public/hooks/rsvp-milestone': typeof ApiPublicHooksRsvpMilestoneRoute
-  '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -487,7 +470,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRouteWithChildren
   '/politique-de-confidentialite': typeof PolitiqueDeConfidentialiteRoute
-  '/publish': typeof PublishRouteWithChildren
+  '/publish': typeof PublishRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -518,7 +501,6 @@ export interface FileRoutesById {
   '/onboarding/evenement': typeof OnboardingEvenementRoute
   '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
-  '/publish/success': typeof PublishSuccessRoute
   '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -528,7 +510,6 @@ export interface FileRoutesById {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests/': typeof DashboardGuestsIndexRoute
   '/api/public/hooks/rsvp-milestone': typeof ApiPublicHooksRsvpMilestoneRoute
-  '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -579,7 +560,6 @@ export interface FileRouteTypes {
     | '/onboarding/evenement'
     | '/onboarding/prenoms'
     | '/onboarding/theme'
-    | '/publish/success'
     | '/theme-thumb/$slug'
     | '/admin/'
     | '/dashboard/'
@@ -589,7 +569,6 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/dashboard/guests/'
     | '/api/public/hooks/rsvp-milestone'
-    | '/api/public/webhooks/paystack'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -636,7 +615,6 @@ export interface FileRouteTypes {
     | '/onboarding/evenement'
     | '/onboarding/prenoms'
     | '/onboarding/theme'
-    | '/publish/success'
     | '/theme-thumb/$slug'
     | '/admin'
     | '/dashboard'
@@ -646,7 +624,6 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/dashboard/guests'
     | '/api/public/hooks/rsvp-milestone'
-    | '/api/public/webhooks/paystack'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -695,7 +672,6 @@ export interface FileRouteTypes {
     | '/onboarding/evenement'
     | '/onboarding/prenoms'
     | '/onboarding/theme'
-    | '/publish/success'
     | '/theme-thumb/$slug'
     | '/admin/'
     | '/dashboard/'
@@ -705,7 +681,6 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/dashboard/guests/'
     | '/api/public/hooks/rsvp-milestone'
-    | '/api/public/webhooks/paystack'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -724,7 +699,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRouteWithChildren
   PolitiqueDeConfidentialiteRoute: typeof PolitiqueDeConfidentialiteRoute
-  PublishRoute: typeof PublishRouteWithChildren
+  PublishRoute: typeof PublishRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -739,7 +714,6 @@ export interface RootRouteChildren {
   GuestbookPrintIdRoute: typeof GuestbookPrintIdRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicHooksRsvpMilestoneRoute: typeof ApiPublicHooksRsvpMilestoneRoute
-  ApiPublicWebhooksPaystackRoute: typeof ApiPublicWebhooksPaystackRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
@@ -888,13 +862,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/theme-thumb/$slug'
       preLoaderRoute: typeof ThemeThumbSlugRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/publish/success': {
-      id: '/publish/success'
-      path: '/success'
-      fullPath: '/publish/success'
-      preLoaderRoute: typeof PublishSuccessRouteImport
-      parentRoute: typeof PublishRoute
     }
     '/onboarding/theme': {
       id: '/onboarding/theme'
@@ -1134,13 +1101,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/webhooks/paystack': {
-      id: '/api/public/webhooks/paystack'
-      path: '/api/public/webhooks/paystack'
-      fullPath: '/api/public/webhooks/paystack'
-      preLoaderRoute: typeof ApiPublicWebhooksPaystackRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/public/hooks/rsvp-milestone': {
       id: '/api/public/hooks/rsvp-milestone'
       path: '/api/public/hooks/rsvp-milestone'
@@ -1238,17 +1198,6 @@ const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
   OnboardingRouteChildren,
 )
 
-interface PublishRouteChildren {
-  PublishSuccessRoute: typeof PublishSuccessRoute
-}
-
-const PublishRouteChildren: PublishRouteChildren = {
-  PublishSuccessRoute: PublishSuccessRoute,
-}
-
-const PublishRouteWithChildren =
-  PublishRoute._addFileChildren(PublishRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
@@ -1260,7 +1209,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRouteWithChildren,
   PolitiqueDeConfidentialiteRoute: PolitiqueDeConfidentialiteRoute,
-  PublishRoute: PublishRouteWithChildren,
+  PublishRoute: PublishRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
@@ -1275,7 +1224,6 @@ const rootRouteChildren: RootRouteChildren = {
   GuestbookPrintIdRoute: GuestbookPrintIdRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicHooksRsvpMilestoneRoute: ApiPublicHooksRsvpMilestoneRoute,
-  ApiPublicWebhooksPaystackRoute: ApiPublicWebhooksPaystackRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
