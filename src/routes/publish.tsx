@@ -12,12 +12,12 @@ import {
   BookHeart,
   Lock,
   Loader2,
+  Tag,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useWedding, slugify } from "@/lib/wedding-store";
-import { initPaystackPayment, applyPromoCode } from "@/lib/paystack.functions";
+import { validatePromoCode, publishWithPromo } from "@/lib/promo.functions";
 import { useNavigate } from "@tanstack/react-router";
-import { Tag } from "lucide-react";
 
 export const Route = createFileRoute("/publish")({
   head: () => ({
