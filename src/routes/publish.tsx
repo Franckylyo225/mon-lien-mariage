@@ -78,6 +78,7 @@ function PublishPage() {
           weddingId,
           slug,
           envelopeAnimation: false,
+          includeGuestbook,
           amount: total,
           brideName: couple.brideName,
           groomName: couple.groomName,
@@ -86,7 +87,7 @@ function PublishPage() {
       try {
         sessionStorage.setItem(
           "moninvit:pending-publish",
-          JSON.stringify({ weddingId, slug, envelope: false }),
+          JSON.stringify({ weddingId, slug, envelope: false, guestbook: includeGuestbook }),
         );
       } catch {
         /* noop */
