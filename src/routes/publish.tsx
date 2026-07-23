@@ -334,6 +334,40 @@ function PublishPage() {
             ))}
           </ul>
 
+          <div className="mt-3 border-t border-border/60 pt-3">
+            <label className="flex cursor-pointer items-start gap-3">
+              <input
+                type="checkbox"
+                checked={includeGuestbook}
+                onChange={(e) => setIncludeGuestbook(e.target.checked)}
+                className="mt-0.5 size-4 shrink-0 accent-[#993556]"
+              />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-baseline justify-between gap-2">
+                  <p className="text-[12px] font-medium leading-tight">
+                    Livre d'or numérique
+                    <span
+                      className="ml-2 rounded-full px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-wider"
+                      style={{ background: "#FBEAF0", color: "#993556" }}
+                    >
+                      Option
+                    </span>
+                  </p>
+                  <span className="whitespace-nowrap font-serif text-[13px] italic">
+                    + {GUESTBOOK_ADDON_XOF.toLocaleString("fr-FR")}
+                    <span className="ml-0.5 font-sans text-[9px] not-italic text-muted-foreground">
+                      XOF
+                    </span>
+                  </span>
+                </div>
+                <p className="mt-0.5 text-[10px] leading-[1.4] text-muted-foreground">
+                  Vos invités laissent un mot doux. PDF souvenir téléchargeable.
+                </p>
+              </div>
+            </label>
+          </div>
+
+
           <div className="mt-1 flex items-baseline justify-between border-t border-border/60 pt-3">
             <span className="text-[13px] font-medium">Total</span>
             <span className="font-serif text-[22px] italic leading-none">
