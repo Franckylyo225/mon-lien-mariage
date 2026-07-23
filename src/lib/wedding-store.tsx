@@ -133,6 +133,9 @@ export interface Couple {
   isLocked: boolean;
   publishedAt?: string;
   hasEnvelopeAnimation?: boolean;
+  hasGuestbook?: boolean;
+  guestbookTitle?: string;
+  guestbookSubtitle?: string;
   hasOpeningEffect?: boolean;
   openingEffectSlug?:
     | "envelope-wax-sage"
@@ -461,6 +464,9 @@ function rowToCouple(w: WeddingRow): Couple {
     isLocked: !!w.is_locked,
     publishedAt: w.published_at ?? undefined,
     hasEnvelopeAnimation: !!w.has_envelope_animation,
+    hasGuestbook: !!(w as { has_guestbook?: boolean | null }).has_guestbook,
+    guestbookTitle: (w as { guestbook_title?: string | null }).guestbook_title ?? undefined,
+    guestbookSubtitle: (w as { guestbook_subtitle?: string | null }).guestbook_subtitle ?? undefined,
     hasOpeningEffect: !!(w as { has_opening_effect?: boolean | null }).has_opening_effect,
     openingEffectSlug:
       ((w as { opening_effect_slug?: string | null }).opening_effect_slug as Couple["openingEffectSlug"]) ?? undefined,
@@ -551,6 +557,9 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.isLocked !== undefined) r.is_locked = p.isLocked;
   if (p.publishedAt !== undefined) r.published_at = p.publishedAt;
   if (p.hasEnvelopeAnimation !== undefined) r.has_envelope_animation = p.hasEnvelopeAnimation;
+  if (p.hasGuestbook !== undefined) r.has_guestbook = p.hasGuestbook;
+  if (p.guestbookTitle !== undefined) r.guestbook_title = p.guestbookTitle;
+  if (p.guestbookSubtitle !== undefined) r.guestbook_subtitle = p.guestbookSubtitle;
   if (p.hasOpeningEffect !== undefined) r.has_opening_effect = p.hasOpeningEffect;
   if (p.openingEffectSlug !== undefined) r.opening_effect_slug = p.openingEffectSlug ?? null;
   if (p.contactName !== undefined) r.contact_name = p.contactName;

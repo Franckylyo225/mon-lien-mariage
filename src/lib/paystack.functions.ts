@@ -15,6 +15,7 @@ interface InitInput {
   weddingId: string;
   slug: string;
   envelopeAnimation: boolean;
+  includeGuestbook?: boolean;
   amount: number; // montant affiché (XOF)
   brideName: string;
   groomName: string;
@@ -44,6 +45,7 @@ export const initPaystackPayment = createServerFn({ method: "POST" })
         user_id: context.userId,
         slug: data.slug,
         envelope: data.envelopeAnimation ? "1" : "0",
+        guestbook: data.includeGuestbook ? "1" : "0",
         bride_name: data.brideName,
         groom_name: data.groomName,
         description: `Publication invitation ${data.brideName} & ${data.groomName}`,
@@ -85,6 +87,7 @@ interface VerifyInput {
   weddingId: string;
   slug: string;
   envelopeAnimation: boolean;
+  includeGuestbook?: boolean;
 }
 
 export const verifyPaystackPayment = createServerFn({ method: "POST" })
@@ -118,16 +121,19 @@ export const verifyPaystackPayment = createServerFn({ method: "POST" })
     const success = status === "success";
 
     if (success) {
-      // Sécurité : on ne fait confiance qu'à weddingId côté serveur, scopé à l'user via RLS.
+      const metaGuestbook = (json.data?.metadata as { guestbook?: string } | undefined)?.guestbook === "1";
+      const includeGuestbook = data.includeGuestbook ?? metaGuestbook;
+      const update: Record<string, unknown> = {
+        is_published: true,
+        is_locked: true,
+        published_at: new Date().toISOString(),
+        slug: data.slug,
+        has_envelope_animation: data.envelopeAnimation,
+      };
+      if (includeGuestbook) update.has_guestbook = true;
       const { error } = await context.supabase
         .from("weddings")
-        .update({
-          is_published: true,
-          is_locked: true,
-          published_at: new Date().toISOString(),
-          slug: data.slug,
-          has_envelope_animation: data.envelopeAnimation,
-        } as never)
+        .update(update as never)
         .eq("id", data.weddingId);
       if (error) {
         console.error("[paystack] wedding update failed", error);
@@ -139,7 +145,6 @@ export const verifyPaystackPayment = createServerFn({ method: "POST" })
   });
 
 // ---------- Codes promo ----------
-// Table de codes actifs. Clé = code (uppercase), valeur = % de remise (0-100).
 const PROMO_CODES: Record<string, number> = {
   TIANA100: 100,
 };
@@ -148,6 +153,7 @@ interface PromoInput {
   weddingId: string;
   slug: string;
   code: string;
+  includeGuestbook?: boolean;
 }
 
 export const applyPromoCode = createServerFn({ method: "POST" })
@@ -160,22 +166,23 @@ export const applyPromoCode = createServerFn({ method: "POST" })
     if (discount === undefined) throw new Error("Code promo invalide.");
 
     if (discount >= 100) {
-      // 100% → publication directe, aucun paiement requis.
+      const update: Record<string, unknown> = {
+        is_published: true,
+        is_locked: true,
+        published_at: new Date().toISOString(),
+        slug: data.slug,
+        has_envelope_animation: false,
+      };
+      if (data.includeGuestbook) update.has_guestbook = true;
       const { error } = await context.supabase
         .from("weddings")
-        .update({
-          is_published: true,
-          is_locked: true,
-          published_at: new Date().toISOString(),
-          slug: data.slug,
-          has_envelope_animation: false,
-        } as never)
+        .update(update as never)
         .eq("id", data.weddingId);
       if (error) throw new Error(`Publication échouée: ${error.message}`);
       return { discount, published: true as const };
     }
 
-    // Réservé : remises partielles futures.
     return { discount, published: false as const };
   });
+
 

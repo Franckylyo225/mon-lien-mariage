@@ -30,6 +30,7 @@ export const Route = createFileRoute("/publish")({
 });
 
 const BASE_PRICE_XOF = 24900;
+const GUESTBOOK_ADDON_XOF = 1990;
 
 function formatFrenchDate(iso: string): string | null {
   if (!iso) return null;
@@ -52,6 +53,7 @@ function PublishPage() {
   const [promoOpen, setPromoOpen] = useState(false);
   const [promoCode, setPromoCode] = useState("");
   const [promoLoading, setPromoLoading] = useState(false);
+  const [includeGuestbook, setIncludeGuestbook] = useState(false);
 
   const slug = useMemo(
     () =>
@@ -61,7 +63,7 @@ function PublishPage() {
 
   const dateLabel = formatFrenchDate(couple.weddingDate);
   const subLine = [dateLabel, couple.city].filter(Boolean).join(" · ");
-  const total = BASE_PRICE_XOF;
+  const total = BASE_PRICE_XOF + (includeGuestbook ? GUESTBOOK_ADDON_XOF : 0);
   const alreadyPublished = couple.isPublished === true;
 
   const handlePay = async () => {
@@ -76,6 +78,7 @@ function PublishPage() {
           weddingId,
           slug,
           envelopeAnimation: false,
+          includeGuestbook,
           amount: total,
           brideName: couple.brideName,
           groomName: couple.groomName,
@@ -84,7 +87,7 @@ function PublishPage() {
       try {
         sessionStorage.setItem(
           "moninvit:pending-publish",
-          JSON.stringify({ weddingId, slug, envelope: false }),
+          JSON.stringify({ weddingId, slug, envelope: false, guestbook: includeGuestbook }),
         );
       } catch {
         /* noop */
@@ -114,7 +117,7 @@ function PublishPage() {
     setPromoLoading(true);
     try {
       const res = await submitPromo({
-        data: { weddingId, slug, code },
+        data: { weddingId, slug, code, includeGuestbook },
       });
       if (res.published) {
         toast.success("Code appliqué — votre invitation est publiée !");
@@ -330,6 +333,40 @@ function PublishPage() {
               </li>
             ))}
           </ul>
+
+          <div className="mt-3 border-t border-border/60 pt-3">
+            <label className="flex cursor-pointer items-start gap-3">
+              <input
+                type="checkbox"
+                checked={includeGuestbook}
+                onChange={(e) => setIncludeGuestbook(e.target.checked)}
+                className="mt-0.5 size-4 shrink-0 accent-[#993556]"
+              />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-baseline justify-between gap-2">
+                  <p className="text-[12px] font-medium leading-tight">
+                    Livre d'or numérique
+                    <span
+                      className="ml-2 rounded-full px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-wider"
+                      style={{ background: "#FBEAF0", color: "#993556" }}
+                    >
+                      Option
+                    </span>
+                  </p>
+                  <span className="whitespace-nowrap font-serif text-[13px] italic">
+                    + {GUESTBOOK_ADDON_XOF.toLocaleString("fr-FR")}
+                    <span className="ml-0.5 font-sans text-[9px] not-italic text-muted-foreground">
+                      XOF
+                    </span>
+                  </span>
+                </div>
+                <p className="mt-0.5 text-[10px] leading-[1.4] text-muted-foreground">
+                  Vos invités laissent un mot doux. PDF souvenir téléchargeable.
+                </p>
+              </div>
+            </label>
+          </div>
+
 
           <div className="mt-1 flex items-baseline justify-between border-t border-border/60 pt-3">
             <span className="text-[13px] font-medium">Total</span>

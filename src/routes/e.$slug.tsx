@@ -6,6 +6,7 @@ import { componentForTheme } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
 import { ParticleCanvas, RsvpBurstOverlay } from "@/components/particles/ParticleCanvas";
 import { AmbientMusicPlayer } from "@/components/music/AmbientMusicPlayer";
+import { GuestbookSection } from "@/components/invitation-templates/guestbook-section";
 import { RevealOnScroll } from "@/components/site/RevealOnScroll";
 import type { BackgroundBase, Ceremony, Couple, EventType, TemplateId, ThemeId } from "@/lib/wedding-store";
 import { resolveTheme } from "@/lib/wedding-theme";
@@ -162,6 +163,9 @@ function PublicInvitationPage() {
       (w as { particle_trigger_rsvp?: boolean | null }).particle_trigger_rsvp ?? true,
     musicEnabled: (w as { music_enabled?: boolean | null }).music_enabled ?? false,
     musicSlug: ((w as { music_slug?: string | null }).music_slug as string | null) ?? null,
+    hasGuestbook: !!(w as { has_guestbook?: boolean | null }).has_guestbook,
+    guestbookTitle: (w as { guestbook_title?: string | null }).guestbook_title ?? undefined,
+    guestbookSubtitle: (w as { guestbook_subtitle?: string | null }).guestbook_subtitle ?? undefined,
   };
 
   const ceremonies: Ceremony[] = (data.ceremonies ?? []).map((c) => ({
@@ -229,6 +233,15 @@ function PublicInvitationPage() {
           }
         />
       </RevealOnScroll>
+      {coupleTheme.hasGuestbook ? (
+        <RevealOnScroll>
+          <GuestbookSection
+            weddingId={w.id}
+            title={coupleTheme.guestbookTitle}
+            subtitle={coupleTheme.guestbookSubtitle}
+          />
+        </RevealOnScroll>
+      ) : null}
       <AmbientMusicPlayer slug={coupleTheme.musicSlug} enabled={coupleTheme.musicEnabled} />
     </ThemeRoot>
   );

@@ -11,6 +11,7 @@ import {
   IconX,
   IconCalendarHeart,
   IconChevronRight,
+  IconBook,
 } from "@tabler/icons-react";
 
 interface SideDrawerProps {
@@ -25,6 +26,7 @@ interface SideDrawerProps {
 
 const items = [
   { label: "Mon profil", Icon: IconUser, to: "/app/profile" as const },
+  { label: "Livre d'or", Icon: IconBook, to: "/app/guestbook" as const },
   { label: "Statistiques RSVP", Icon: IconChartBar, to: "/dashboard/stats" as const },
   { label: "Liens & partages", Icon: IconShare, to: "/dashboard/share" as const },
   { label: "Paiement & facture", Icon: IconCreditCard, to: "/dashboard/billing" as const },

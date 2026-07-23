@@ -46,6 +46,7 @@ import { Route as DashboardEventsRouteImport } from './routes/dashboard.events'
 import { Route as DashboardCeremoniesRouteImport } from './routes/dashboard.ceremonies'
 import { Route as DashboardBillingRouteImport } from './routes/dashboard.billing'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
+import { Route as AppGuestbookRouteImport } from './routes/app.guestbook'
 import { Route as AdminWeddingsRouteImport } from './routes/admin.weddings'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
@@ -55,6 +56,7 @@ import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
 import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as DashboardGuestsIndexRouteImport } from './routes/dashboard.guests.index'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
+import { Route as GuestbookPrintIdRouteImport } from './routes/guestbook.print.$id'
 import { Route as DashboardGuestsNewRouteImport } from './routes/dashboard.guests.new'
 import { Route as DashboardCeremoniesIdRouteImport } from './routes/dashboard.ceremonies.$id'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
@@ -251,6 +253,11 @@ const AppProfileRoute = AppProfileRouteImport.update({
   path: '/app/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppGuestbookRoute = AppGuestbookRouteImport.update({
+  id: '/app/guestbook',
+  path: '/app/guestbook',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminWeddingsRoute = AdminWeddingsRouteImport.update({
   id: '/weddings',
   path: '/weddings',
@@ -294,6 +301,11 @@ const DashboardGuestsIndexRoute = DashboardGuestsIndexRouteImport.update({
 const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
   id: '/lovable/email/suppression',
   path: '/lovable/email/suppression',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuestbookPrintIdRoute = GuestbookPrintIdRouteImport.update({
+  id: '/guestbook/print/$id',
+  path: '/guestbook/print/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardGuestsNewRoute = DashboardGuestsNewRouteImport.update({
@@ -372,6 +384,7 @@ export interface FileRoutesByFullPath {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/weddings': typeof AdminWeddingsRoute
+  '/app/guestbook': typeof AppGuestbookRoute
   '/app/profile': typeof AppProfileRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
@@ -394,6 +407,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
+  '/guestbook/print/$id': typeof GuestbookPrintIdRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests/': typeof DashboardGuestsIndexRoute
   '/api/public/hooks/rsvp-milestone': typeof ApiPublicHooksRsvpMilestoneRoute
@@ -427,6 +441,7 @@ export interface FileRoutesByTo {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/weddings': typeof AdminWeddingsRoute
+  '/app/guestbook': typeof AppGuestbookRoute
   '/app/profile': typeof AppProfileRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
@@ -449,6 +464,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardIndexRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
+  '/guestbook/print/$id': typeof GuestbookPrintIdRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests': typeof DashboardGuestsIndexRoute
   '/api/public/hooks/rsvp-milestone': typeof ApiPublicHooksRsvpMilestoneRoute
@@ -485,6 +501,7 @@ export interface FileRoutesById {
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/weddings': typeof AdminWeddingsRoute
+  '/app/guestbook': typeof AppGuestbookRoute
   '/app/profile': typeof AppProfileRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
@@ -507,6 +524,7 @@ export interface FileRoutesById {
   '/dashboard/': typeof DashboardIndexRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
+  '/guestbook/print/$id': typeof GuestbookPrintIdRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests/': typeof DashboardGuestsIndexRoute
   '/api/public/hooks/rsvp-milestone': typeof ApiPublicHooksRsvpMilestoneRoute
@@ -544,6 +562,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/users'
     | '/admin/weddings'
+    | '/app/guestbook'
     | '/app/profile'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
@@ -566,6 +585,7 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
+    | '/guestbook/print/$id'
     | '/lovable/email/suppression'
     | '/dashboard/guests/'
     | '/api/public/hooks/rsvp-milestone'
@@ -599,6 +619,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/users'
     | '/admin/weddings'
+    | '/app/guestbook'
     | '/app/profile'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
@@ -621,6 +642,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
+    | '/guestbook/print/$id'
     | '/lovable/email/suppression'
     | '/dashboard/guests'
     | '/api/public/hooks/rsvp-milestone'
@@ -656,6 +678,7 @@ export interface FileRouteTypes {
     | '/admin/settings'
     | '/admin/users'
     | '/admin/weddings'
+    | '/app/guestbook'
     | '/app/profile'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
@@ -678,6 +701,7 @@ export interface FileRouteTypes {
     | '/dashboard/'
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
+    | '/guestbook/print/$id'
     | '/lovable/email/suppression'
     | '/dashboard/guests/'
     | '/api/public/hooks/rsvp-milestone'
@@ -707,10 +731,12 @@ export interface RootRouteChildren {
   TemoignagesRoute: typeof TemoignagesRoute
   TermesEtConditionsRoute: typeof TermesEtConditionsRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
+  AppGuestbookRoute: typeof AppGuestbookRoute
   AppProfileRoute: typeof AppProfileRoute
   ESlugRoute: typeof ESlugRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   ThemeThumbSlugRoute: typeof ThemeThumbSlugRoute
+  GuestbookPrintIdRoute: typeof GuestbookPrintIdRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicHooksRsvpMilestoneRoute: typeof ApiPublicHooksRsvpMilestoneRoute
   ApiPublicWebhooksPaystackRoute: typeof ApiPublicWebhooksPaystackRoute
@@ -982,6 +1008,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/guestbook': {
+      id: '/app/guestbook'
+      path: '/app/guestbook'
+      fullPath: '/app/guestbook'
+      preLoaderRoute: typeof AppGuestbookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/weddings': {
       id: '/admin/weddings'
       path: '/weddings'
@@ -1043,6 +1076,13 @@ declare module '@tanstack/react-router' {
       path: '/lovable/email/suppression'
       fullPath: '/lovable/email/suppression'
       preLoaderRoute: typeof LovableEmailSuppressionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guestbook/print/$id': {
+      id: '/guestbook/print/$id'
+      path: '/guestbook/print/$id'
+      fullPath: '/guestbook/print/$id'
+      preLoaderRoute: typeof GuestbookPrintIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard/guests/new': {
@@ -1227,10 +1267,12 @@ const rootRouteChildren: RootRouteChildren = {
   TemoignagesRoute: TemoignagesRoute,
   TermesEtConditionsRoute: TermesEtConditionsRoute,
   VerifyEmailRoute: VerifyEmailRoute,
+  AppGuestbookRoute: AppGuestbookRoute,
   AppProfileRoute: AppProfileRoute,
   ESlugRoute: ESlugRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   ThemeThumbSlugRoute: ThemeThumbSlugRoute,
+  GuestbookPrintIdRoute: GuestbookPrintIdRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicHooksRsvpMilestoneRoute: ApiPublicHooksRsvpMilestoneRoute,
   ApiPublicWebhooksPaystackRoute: ApiPublicWebhooksPaystackRoute,
@@ -1243,13 +1285,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
