@@ -464,6 +464,9 @@ function rowToCouple(w: WeddingRow): Couple {
     isLocked: !!w.is_locked,
     publishedAt: w.published_at ?? undefined,
     hasEnvelopeAnimation: !!w.has_envelope_animation,
+    hasGuestbook: !!(w as { has_guestbook?: boolean | null }).has_guestbook,
+    guestbookTitle: (w as { guestbook_title?: string | null }).guestbook_title ?? undefined,
+    guestbookSubtitle: (w as { guestbook_subtitle?: string | null }).guestbook_subtitle ?? undefined,
     hasOpeningEffect: !!(w as { has_opening_effect?: boolean | null }).has_opening_effect,
     openingEffectSlug:
       ((w as { opening_effect_slug?: string | null }).opening_effect_slug as Couple["openingEffectSlug"]) ?? undefined,
