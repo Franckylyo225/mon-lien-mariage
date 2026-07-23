@@ -87,6 +87,20 @@ function SupportPage() {
     reload();
   }, [reload]);
 
+  // Mark all support_reply notifications as read when opening the support page
+  useEffect(() => {
+    (async () => {
+      const { data: u } = await supabase.auth.getUser();
+      if (!u.user) return;
+      await supabase
+        .from("notifications")
+        .update({ read_at: new Date().toISOString() })
+        .eq("user_id", u.user.id)
+        .eq("type", "support_reply")
+        .is("read_at", null);
+    })();
+  }, []);
+
   const openTicket = useCallback(
     (id: string) => {
       setSelectedId(id);
