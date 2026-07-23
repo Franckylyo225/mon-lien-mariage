@@ -123,18 +123,26 @@ export function SideDrawer({
             </Link>
           </li>
 
-          {items.map((item) => (
-            <li key={item.label}>
-              <Link
-                to={item.to}
-                onClick={onClose}
-                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] text-foreground/85 transition active:bg-secondary"
-              >
-                <item.Icon size={18} strokeWidth={1.75} className="text-muted-foreground" />
-                <span>{item.label}</span>
-              </Link>
-            </li>
-          ))}
+          {items.map((item) => {
+            const count = item.badgeType ? badgeCounts[item.badgeType] ?? 0 : 0;
+            return (
+              <li key={item.label}>
+                <Link
+                  to={item.to}
+                  onClick={onClose}
+                  className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] text-foreground/85 transition active:bg-secondary"
+                >
+                  <item.Icon size={18} strokeWidth={1.75} className="text-muted-foreground" />
+                  <span className="flex-1">{item.label}</span>
+                  {count > 0 && (
+                    <span className="inline-flex min-w-[18px] items-center justify-center rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-semibold leading-none text-primary-foreground">
+                      {count > 99 ? "99+" : count}
+                    </span>
+                  )}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
 
 
