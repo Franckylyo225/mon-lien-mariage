@@ -44,10 +44,12 @@ import { Route as DashboardInvitesRouteImport } from './routes/dashboard.invites
 import { Route as DashboardEventsRouteImport } from './routes/dashboard.events'
 import { Route as DashboardCeremoniesRouteImport } from './routes/dashboard.ceremonies'
 import { Route as DashboardBillingRouteImport } from './routes/dashboard.billing'
+import { Route as AppSupportRouteImport } from './routes/app.support'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppGuestbookRouteImport } from './routes/app.guestbook'
 import { Route as AdminWeddingsRouteImport } from './routes/admin.weddings'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminSupportRouteImport } from './routes/admin.support'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
@@ -241,6 +243,11 @@ const DashboardBillingRoute = DashboardBillingRouteImport.update({
   path: '/billing',
   getParentRoute: () => DashboardRoute,
 } as any)
+const AppSupportRoute = AppSupportRouteImport.update({
+  id: '/app/support',
+  path: '/app/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppProfileRoute = AppProfileRouteImport.update({
   id: '/app/profile',
   path: '/app/profile',
@@ -259,6 +266,11 @@ const AdminWeddingsRoute = AdminWeddingsRouteImport.update({
 const AdminUsersRoute = AdminUsersRouteImport.update({
   id: '/users',
   path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSupportRoute = AdminSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
@@ -369,10 +381,12 @@ export interface FileRoutesByFullPath {
   '/admin/login': typeof AdminLoginRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/support': typeof AdminSupportRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/weddings': typeof AdminWeddingsRoute
   '/app/guestbook': typeof AppGuestbookRoute
   '/app/profile': typeof AppProfileRoute
+  '/app/support': typeof AppSupportRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/events': typeof DashboardEventsRoute
@@ -424,10 +438,12 @@ export interface FileRoutesByTo {
   '/admin/login': typeof AdminLoginRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/support': typeof AdminSupportRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/weddings': typeof AdminWeddingsRoute
   '/app/guestbook': typeof AppGuestbookRoute
   '/app/profile': typeof AppProfileRoute
+  '/app/support': typeof AppSupportRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/events': typeof DashboardEventsRoute
@@ -482,10 +498,12 @@ export interface FileRoutesById {
   '/admin/login': typeof AdminLoginRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/support': typeof AdminSupportRoute
   '/admin/users': typeof AdminUsersRoute
   '/admin/weddings': typeof AdminWeddingsRoute
   '/app/guestbook': typeof AppGuestbookRoute
   '/app/profile': typeof AppProfileRoute
+  '/app/support': typeof AppSupportRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/events': typeof DashboardEventsRoute
@@ -541,10 +559,12 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/payments'
     | '/admin/settings'
+    | '/admin/support'
     | '/admin/users'
     | '/admin/weddings'
     | '/app/guestbook'
     | '/app/profile'
+    | '/app/support'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
     | '/dashboard/events'
@@ -596,10 +616,12 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/payments'
     | '/admin/settings'
+    | '/admin/support'
     | '/admin/users'
     | '/admin/weddings'
     | '/app/guestbook'
     | '/app/profile'
+    | '/app/support'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
     | '/dashboard/events'
@@ -653,10 +675,12 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/payments'
     | '/admin/settings'
+    | '/admin/support'
     | '/admin/users'
     | '/admin/weddings'
     | '/app/guestbook'
     | '/app/profile'
+    | '/app/support'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
     | '/dashboard/events'
@@ -708,6 +732,7 @@ export interface RootRouteChildren {
   VerifyEmailRoute: typeof VerifyEmailRoute
   AppGuestbookRoute: typeof AppGuestbookRoute
   AppProfileRoute: typeof AppProfileRoute
+  AppSupportRoute: typeof AppSupportRoute
   ESlugRoute: typeof ESlugRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   ThemeThumbSlugRoute: typeof ThemeThumbSlugRoute
@@ -968,6 +993,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardBillingRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/app/support': {
+      id: '/app/support'
+      path: '/app/support'
+      fullPath: '/app/support'
+      preLoaderRoute: typeof AppSupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/profile': {
       id: '/app/profile'
       path: '/app/profile'
@@ -994,6 +1026,13 @@ declare module '@tanstack/react-router' {
       path: '/users'
       fullPath: '/admin/users'
       preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/support': {
+      id: '/admin/support'
+      path: '/support'
+      fullPath: '/admin/support'
+      preLoaderRoute: typeof AdminSupportRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/settings': {
@@ -1117,6 +1156,7 @@ interface AdminRouteChildren {
   AdminLoginRoute: typeof AdminLoginRoute
   AdminPaymentsRoute: typeof AdminPaymentsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminSupportRoute: typeof AdminSupportRoute
   AdminUsersRoute: typeof AdminUsersRoute
   AdminWeddingsRoute: typeof AdminWeddingsRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -1128,6 +1168,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminLoginRoute: AdminLoginRoute,
   AdminPaymentsRoute: AdminPaymentsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
+  AdminSupportRoute: AdminSupportRoute,
   AdminUsersRoute: AdminUsersRoute,
   AdminWeddingsRoute: AdminWeddingsRoute,
   AdminIndexRoute: AdminIndexRoute,
@@ -1218,6 +1259,7 @@ const rootRouteChildren: RootRouteChildren = {
   VerifyEmailRoute: VerifyEmailRoute,
   AppGuestbookRoute: AppGuestbookRoute,
   AppProfileRoute: AppProfileRoute,
+  AppSupportRoute: AppSupportRoute,
   ESlugRoute: ESlugRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   ThemeThumbSlugRoute: ThemeThumbSlugRoute,
