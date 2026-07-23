@@ -44,7 +44,13 @@ export function SideDrawer({
   email,
   initials,
   onSignOut,
+  userId,
 }: SideDrawerProps) {
+  const { items: notifs } = useNotifications(userId ?? null);
+  const badgeCounts: Record<string, number> = {};
+  for (const n of notifs) {
+    if (!n.read_at) badgeCounts[n.type] = (badgeCounts[n.type] ?? 0) + 1;
+  }
 
   useEffect(() => {
     if (!open) return;
