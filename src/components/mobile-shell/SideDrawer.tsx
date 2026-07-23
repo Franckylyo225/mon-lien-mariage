@@ -13,6 +13,7 @@ import {
   IconChevronRight,
   IconBook,
 } from "@tabler/icons-react";
+import { useNotifications } from "@/hooks/use-notifications";
 
 interface SideDrawerProps {
   open: boolean;
@@ -21,17 +22,18 @@ interface SideDrawerProps {
   email: string | null;
   initials: string;
   onSignOut: () => void;
+  userId?: string | null;
 }
 
 
 const items = [
-  { label: "Mon profil", Icon: IconUser, to: "/app/profile" as const },
-  { label: "Livre d'or", Icon: IconBook, to: "/app/guestbook" as const },
-  { label: "Statistiques RSVP", Icon: IconChartBar, to: "/dashboard/stats" as const },
-  { label: "Liens & partages", Icon: IconShare, to: "/dashboard/share" as const },
-  { label: "Paiement & facture", Icon: IconCreditCard, to: "/dashboard/billing" as const },
-  { label: "Aide & FAQ", Icon: IconHelpCircle, to: "/app/help" as const },
-  { label: "Contacter le support", Icon: IconMessageCircle, to: "/app/support" as const },
+  { label: "Mon profil", Icon: IconUser, to: "/app/profile" as const, badgeType: null as string | null },
+  { label: "Livre d'or", Icon: IconBook, to: "/app/guestbook" as const, badgeType: null as string | null },
+  { label: "Statistiques RSVP", Icon: IconChartBar, to: "/dashboard/stats" as const, badgeType: null as string | null },
+  { label: "Liens & partages", Icon: IconShare, to: "/dashboard/share" as const, badgeType: null as string | null },
+  { label: "Paiement & facture", Icon: IconCreditCard, to: "/dashboard/billing" as const, badgeType: null as string | null },
+  { label: "Aide & FAQ", Icon: IconHelpCircle, to: "/app/help" as const, badgeType: null as string | null },
+  { label: "Contacter le support", Icon: IconMessageCircle, to: "/app/support" as const, badgeType: "support_reply" as string | null },
 ];
 
 
