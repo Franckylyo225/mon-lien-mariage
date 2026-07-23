@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { ArrowLeft, Loader2, MessageCircle, Plus, Send } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import {
   listMyTickets,
   getTicket,
