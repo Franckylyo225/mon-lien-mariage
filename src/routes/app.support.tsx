@@ -102,9 +102,19 @@ function SupportPage() {
 
   async function submitNew(e: React.FormEvent) {
     e.preventDefault();
+    const subject = form.subject.trim();
+    const message = form.message.trim();
+    if (subject.length < 3) {
+      toast.error("Le sujet doit contenir au moins 3 caractères.");
+      return;
+    }
+    if (message.length < 5) {
+      toast.error("Le message doit contenir au moins 5 caractères.");
+      return;
+    }
     setCreating(true);
     try {
-      const r = await createFn({ data: form });
+      const r = await createFn({ data: { ...form, subject, message } });
       toast.success("Ticket créé");
       setShowNew(false);
       setForm({ subject: "", category: "general", message: "" });
@@ -116,6 +126,7 @@ function SupportPage() {
       setCreating(false);
     }
   }
+
 
   async function submitReply(e: React.FormEvent) {
     e.preventDefault();
