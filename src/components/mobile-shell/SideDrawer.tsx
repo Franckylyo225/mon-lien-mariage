@@ -13,6 +13,7 @@ import {
   IconChevronRight,
   IconBook,
 } from "@tabler/icons-react";
+import { useNotifications } from "@/hooks/use-notifications";
 
 interface SideDrawerProps {
   open: boolean;
@@ -21,17 +22,18 @@ interface SideDrawerProps {
   email: string | null;
   initials: string;
   onSignOut: () => void;
+  userId?: string | null;
 }
 
 
 const items = [
-  { label: "Mon profil", Icon: IconUser, to: "/app/profile" as const },
-  { label: "Livre d'or", Icon: IconBook, to: "/app/guestbook" as const },
-  { label: "Statistiques RSVP", Icon: IconChartBar, to: "/dashboard/stats" as const },
-  { label: "Liens & partages", Icon: IconShare, to: "/dashboard/share" as const },
-  { label: "Paiement & facture", Icon: IconCreditCard, to: "/dashboard/billing" as const },
-  { label: "Aide & FAQ", Icon: IconHelpCircle, to: "/app/help" as const },
-  { label: "Contacter le support", Icon: IconMessageCircle, to: "/app/support" as const },
+  { label: "Mon profil", Icon: IconUser, to: "/app/profile" as const, badgeType: null as string | null },
+  { label: "Livre d'or", Icon: IconBook, to: "/app/guestbook" as const, badgeType: null as string | null },
+  { label: "Statistiques RSVP", Icon: IconChartBar, to: "/dashboard/stats" as const, badgeType: null as string | null },
+  { label: "Liens & partages", Icon: IconShare, to: "/dashboard/share" as const, badgeType: null as string | null },
+  { label: "Paiement & facture", Icon: IconCreditCard, to: "/dashboard/billing" as const, badgeType: null as string | null },
+  { label: "Aide & FAQ", Icon: IconHelpCircle, to: "/app/help" as const, badgeType: null as string | null },
+  { label: "Contacter le support", Icon: IconMessageCircle, to: "/app/support" as const, badgeType: "support_reply" as string | null },
 ];
 
 
@@ -42,7 +44,13 @@ export function SideDrawer({
   email,
   initials,
   onSignOut,
+  userId,
 }: SideDrawerProps) {
+  const { items: notifs } = useNotifications(userId ?? null);
+  const badgeCounts: Record<string, number> = {};
+  for (const n of notifs) {
+    if (!n.read_at) badgeCounts[n.type] = (badgeCounts[n.type] ?? 0) + 1;
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -115,18 +123,26 @@ export function SideDrawer({
             </Link>
           </li>
 
-          {items.map((item) => (
-            <li key={item.label}>
-              <Link
-                to={item.to}
-                onClick={onClose}
-                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] text-foreground/85 transition active:bg-secondary"
-              >
-                <item.Icon size={18} strokeWidth={1.75} className="text-muted-foreground" />
-                <span>{item.label}</span>
-              </Link>
-            </li>
-          ))}
+          {items.map((item) => {
+            const count = item.badgeType ? badgeCounts[item.badgeType] ?? 0 : 0;
+            return (
+              <li key={item.label}>
+                <Link
+                  to={item.to}
+                  onClick={onClose}
+                  className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] text-foreground/85 transition active:bg-secondary"
+                >
+                  <item.Icon size={18} strokeWidth={1.75} className="text-muted-foreground" />
+                  <span className="flex-1">{item.label}</span>
+                  {count > 0 && (
+                    <span className="inline-flex min-w-[18px] items-center justify-center rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-semibold leading-none text-primary-foreground">
+                      {count > 99 ? "99+" : count}
+                    </span>
+                  )}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
 
 

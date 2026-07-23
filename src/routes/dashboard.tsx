@@ -174,6 +174,7 @@ function DashboardChrome({
         email={email}
         initials={coupleInitials}
         onSignOut={onSignOut}
+        userId={userId}
       />
 
     </div>
