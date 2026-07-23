@@ -102,9 +102,19 @@ function SupportPage() {
 
   async function submitNew(e: React.FormEvent) {
     e.preventDefault();
+    const subject = form.subject.trim();
+    const message = form.message.trim();
+    if (subject.length < 3) {
+      toast.error("Le sujet doit contenir au moins 3 caractères.");
+      return;
+    }
+    if (message.length < 5) {
+      toast.error("Le message doit contenir au moins 5 caractères.");
+      return;
+    }
     setCreating(true);
     try {
-      const r = await createFn({ data: form });
+      const r = await createFn({ data: { ...form, subject, message } });
       toast.success("Ticket créé");
       setShowNew(false);
       setForm({ subject: "", category: "general", message: "" });
@@ -116,6 +126,7 @@ function SupportPage() {
       setCreating(false);
     }
   }
+
 
   async function submitReply(e: React.FormEvent) {
     e.preventDefault();
@@ -161,8 +172,10 @@ function SupportPage() {
             <input
               value={form.subject}
               onChange={(e) => setForm({ ...form, subject: e.target.value })}
+              minLength={3}
               maxLength={140}
               required
+
               className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[14px]"
               placeholder="Décrivez votre problème en quelques mots"
             />
@@ -185,8 +198,10 @@ function SupportPage() {
               value={form.message}
               onChange={(e) => setForm({ ...form, message: e.target.value })}
               rows={5}
+              minLength={5}
               maxLength={5000}
               required
+
               className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[14px]"
               placeholder="Décrivez précisément votre besoin, les étapes déjà tentées, l'appareil utilisé…"
             />
