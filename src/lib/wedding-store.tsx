@@ -557,6 +557,9 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.isLocked !== undefined) r.is_locked = p.isLocked;
   if (p.publishedAt !== undefined) r.published_at = p.publishedAt;
   if (p.hasEnvelopeAnimation !== undefined) r.has_envelope_animation = p.hasEnvelopeAnimation;
+  if (p.hasGuestbook !== undefined) r.has_guestbook = p.hasGuestbook;
+  if (p.guestbookTitle !== undefined) r.guestbook_title = p.guestbookTitle;
+  if (p.guestbookSubtitle !== undefined) r.guestbook_subtitle = p.guestbookSubtitle;
   if (p.hasOpeningEffect !== undefined) r.has_opening_effect = p.hasOpeningEffect;
   if (p.openingEffectSlug !== undefined) r.opening_effect_slug = p.openingEffectSlug ?? null;
   if (p.contactName !== undefined) r.contact_name = p.contactName;
