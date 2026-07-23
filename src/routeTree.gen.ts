@@ -46,6 +46,7 @@ import { Route as DashboardCeremoniesRouteImport } from './routes/dashboard.cere
 import { Route as DashboardBillingRouteImport } from './routes/dashboard.billing'
 import { Route as AppSupportRouteImport } from './routes/app.support'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
+import { Route as AppHelpRouteImport } from './routes/app.help'
 import { Route as AppGuestbookRouteImport } from './routes/app.guestbook'
 import { Route as AdminWeddingsRouteImport } from './routes/admin.weddings'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
@@ -253,6 +254,11 @@ const AppProfileRoute = AppProfileRouteImport.update({
   path: '/app/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppHelpRoute = AppHelpRouteImport.update({
+  id: '/app/help',
+  path: '/app/help',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppGuestbookRoute = AppGuestbookRouteImport.update({
   id: '/app/guestbook',
   path: '/app/guestbook',
@@ -385,6 +391,7 @@ export interface FileRoutesByFullPath {
   '/admin/users': typeof AdminUsersRoute
   '/admin/weddings': typeof AdminWeddingsRoute
   '/app/guestbook': typeof AppGuestbookRoute
+  '/app/help': typeof AppHelpRoute
   '/app/profile': typeof AppProfileRoute
   '/app/support': typeof AppSupportRoute
   '/dashboard/billing': typeof DashboardBillingRoute
@@ -442,6 +449,7 @@ export interface FileRoutesByTo {
   '/admin/users': typeof AdminUsersRoute
   '/admin/weddings': typeof AdminWeddingsRoute
   '/app/guestbook': typeof AppGuestbookRoute
+  '/app/help': typeof AppHelpRoute
   '/app/profile': typeof AppProfileRoute
   '/app/support': typeof AppSupportRoute
   '/dashboard/billing': typeof DashboardBillingRoute
@@ -502,6 +510,7 @@ export interface FileRoutesById {
   '/admin/users': typeof AdminUsersRoute
   '/admin/weddings': typeof AdminWeddingsRoute
   '/app/guestbook': typeof AppGuestbookRoute
+  '/app/help': typeof AppHelpRoute
   '/app/profile': typeof AppProfileRoute
   '/app/support': typeof AppSupportRoute
   '/dashboard/billing': typeof DashboardBillingRoute
@@ -563,6 +572,7 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/admin/weddings'
     | '/app/guestbook'
+    | '/app/help'
     | '/app/profile'
     | '/app/support'
     | '/dashboard/billing'
@@ -620,6 +630,7 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/admin/weddings'
     | '/app/guestbook'
+    | '/app/help'
     | '/app/profile'
     | '/app/support'
     | '/dashboard/billing'
@@ -679,6 +690,7 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/admin/weddings'
     | '/app/guestbook'
+    | '/app/help'
     | '/app/profile'
     | '/app/support'
     | '/dashboard/billing'
@@ -731,6 +743,7 @@ export interface RootRouteChildren {
   TermesEtConditionsRoute: typeof TermesEtConditionsRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
   AppGuestbookRoute: typeof AppGuestbookRoute
+  AppHelpRoute: typeof AppHelpRoute
   AppProfileRoute: typeof AppProfileRoute
   AppSupportRoute: typeof AppSupportRoute
   ESlugRoute: typeof ESlugRoute
@@ -1007,6 +1020,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/help': {
+      id: '/app/help'
+      path: '/app/help'
+      fullPath: '/app/help'
+      preLoaderRoute: typeof AppHelpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/guestbook': {
       id: '/app/guestbook'
       path: '/app/guestbook'
@@ -1258,6 +1278,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermesEtConditionsRoute: TermesEtConditionsRoute,
   VerifyEmailRoute: VerifyEmailRoute,
   AppGuestbookRoute: AppGuestbookRoute,
+  AppHelpRoute: AppHelpRoute,
   AppProfileRoute: AppProfileRoute,
   AppSupportRoute: AppSupportRoute,
   ESlugRoute: ESlugRoute,

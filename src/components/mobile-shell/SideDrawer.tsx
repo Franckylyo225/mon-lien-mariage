@@ -30,7 +30,7 @@ const items = [
   { label: "Statistiques RSVP", Icon: IconChartBar, to: "/dashboard/stats" as const },
   { label: "Liens & partages", Icon: IconShare, to: "/dashboard/share" as const },
   { label: "Paiement & facture", Icon: IconCreditCard, to: "/dashboard/billing" as const },
-  { label: "Aide & FAQ", Icon: IconHelpCircle, to: "/comment-ca-marche" as const },
+  { label: "Aide & FAQ", Icon: IconHelpCircle, to: "/app/help" as const },
   { label: "Contacter le support", Icon: IconMessageCircle, to: "/app/support" as const },
 ];
 
