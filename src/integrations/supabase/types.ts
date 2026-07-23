@@ -360,6 +360,86 @@ export type Database = {
           },
         ]
       }
+      promo_code_redemptions: {
+        Row: {
+          code: string
+          created_at: string
+          id: string
+          promo_code_id: string
+          user_id: string | null
+          wedding_id: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          id?: string
+          promo_code_id: string
+          user_id?: string | null
+          wedding_id?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          id?: string
+          promo_code_id?: string
+          user_id?: string | null
+          wedding_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "promo_code_redemptions_promo_code_id_fkey"
+            columns: ["promo_code_id"]
+            isOneToOne: false
+            referencedRelation: "promo_codes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      promo_codes: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          discount_percent: number
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          notes: string | null
+          updated_at: string
+          uses: number
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          discount_percent?: number
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          notes?: string | null
+          updated_at?: string
+          uses?: number
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          discount_percent?: number
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          notes?: string | null
+          updated_at?: string
+          uses?: number
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: []
+      }
       rsvp_milestones_sent: {
         Row: {
           milestone: number
