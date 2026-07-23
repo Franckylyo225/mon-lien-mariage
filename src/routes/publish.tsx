@@ -30,6 +30,7 @@ export const Route = createFileRoute("/publish")({
 });
 
 const BASE_PRICE_XOF = 24900;
+const GUESTBOOK_ADDON_XOF = 1990;
 
 function formatFrenchDate(iso: string): string | null {
   if (!iso) return null;
