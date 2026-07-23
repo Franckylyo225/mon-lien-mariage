@@ -45,6 +45,7 @@ export const initPaystackPayment = createServerFn({ method: "POST" })
         user_id: context.userId,
         slug: data.slug,
         envelope: data.envelopeAnimation ? "1" : "0",
+        guestbook: data.includeGuestbook ? "1" : "0",
         bride_name: data.brideName,
         groom_name: data.groomName,
         description: `Publication invitation ${data.brideName} & ${data.groomName}`,
