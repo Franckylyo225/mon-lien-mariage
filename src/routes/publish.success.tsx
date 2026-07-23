@@ -47,8 +47,12 @@ function SuccessPage() {
     let cancelled = false;
     (async () => {
       try {
-        let pending: { weddingId: string; slug: string; envelope: boolean } | null =
-          null;
+        let pending: {
+          weddingId: string;
+          slug: string;
+          envelope: boolean;
+          guestbook?: boolean;
+        } | null = null;
         try {
           const raw = sessionStorage.getItem("moninvit:pending-publish");
           if (raw) pending = JSON.parse(raw);
@@ -66,6 +70,7 @@ function SuccessPage() {
             weddingId,
             slug: pending?.slug ?? couple.slug ?? "",
             envelopeAnimation: pending?.envelope ?? !!couple.hasEnvelopeAnimation,
+            includeGuestbook: pending?.guestbook ?? false,
           },
         });
         if (cancelled) return;
