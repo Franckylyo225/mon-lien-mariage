@@ -46,13 +46,17 @@ function formatFrenchDate(iso: string): string | null {
 
 function PublishPage() {
   const { couple, weddingId, loading } = useWedding();
-  const initPayment = useServerFn(initPaystackPayment);
-  const submitPromo = useServerFn(applyPromoCode);
+  const validatePromo = useServerFn(validatePromoCode);
+  const publishFn = useServerFn(publishWithPromo);
   const navigate = useNavigate();
-  const [payLoading, setPayLoading] = useState(false);
   const [promoOpen, setPromoOpen] = useState(false);
   const [promoCode, setPromoCode] = useState("");
   const [promoLoading, setPromoLoading] = useState(false);
+  const [appliedPromo, setAppliedPromo] = useState<{
+    code: string;
+    discount: number;
+  } | null>(null);
+  const [publishing, setPublishing] = useState(false);
   const [includeGuestbook, setIncludeGuestbook] = useState(false);
 
   const slug = useMemo(
@@ -65,50 +69,9 @@ function PublishPage() {
   const subLine = [dateLabel, couple.city].filter(Boolean).join(" · ");
   const total = BASE_PRICE_XOF + (includeGuestbook ? GUESTBOOK_ADDON_XOF : 0);
   const alreadyPublished = couple.isPublished === true;
-
-  const handlePay = async () => {
-    if (!weddingId) {
-      toast.error("Aucun événement actif. Rechargez la page.");
-      return;
-    }
-    setPayLoading(true);
-    try {
-      const { checkoutUrl } = await initPayment({
-        data: {
-          weddingId,
-          slug,
-          envelopeAnimation: false,
-          includeGuestbook,
-          amount: total,
-          brideName: couple.brideName,
-          groomName: couple.groomName,
-        },
-      });
-      try {
-        sessionStorage.setItem(
-          "moninvit:pending-publish",
-          JSON.stringify({ weddingId, slug, envelope: false, guestbook: includeGuestbook }),
-        );
-      } catch {
-        /* noop */
-      }
-      window.location.href = checkoutUrl;
-    } catch (e) {
-      console.error(e);
-      toast.error(
-        e instanceof Error
-          ? e.message
-          : "Le paiement n'a pas abouti. Réessayez.",
-      );
-      setPayLoading(false);
-    }
-  };
+  const canPublish = !!appliedPromo && appliedPromo.discount >= 100;
 
   const handlePromo = async () => {
-    if (!weddingId) {
-      toast.error("Aucun événement actif. Rechargez la page.");
-      return;
-    }
     const code = promoCode.trim().toUpperCase();
     if (!code) {
       toast.error("Veuillez saisir un code promo.");
@@ -116,23 +79,47 @@ function PublishPage() {
     }
     setPromoLoading(true);
     try {
-      const res = await submitPromo({
-        data: { weddingId, slug, code, includeGuestbook },
-      });
-      if (res.published) {
-        toast.success("Code appliqué — votre invitation est publiée !");
-        navigate({ to: "/publish/success", search: { wid: weddingId } });
+      const res = await validatePromo({ data: { code } });
+      setAppliedPromo({ code: res.code, discount: res.discount });
+      if (res.discount >= 100) {
+        toast.success("Code appliqué — vous pouvez publier gratuitement.");
       } else {
         toast.success(`Remise de ${res.discount}% appliquée.`);
       }
     } catch (e) {
-      toast.error(
-        e instanceof Error ? e.message : "Code promo invalide.",
-      );
+      setAppliedPromo(null);
+      toast.error(e instanceof Error ? e.message : "Code promo invalide.");
     } finally {
       setPromoLoading(false);
     }
   };
+
+  const handlePublish = async () => {
+    if (!weddingId) {
+      toast.error("Aucun événement actif. Rechargez la page.");
+      return;
+    }
+    if (!appliedPromo) return;
+    setPublishing(true);
+    try {
+      await publishFn({
+        data: {
+          weddingId,
+          slug,
+          code: appliedPromo.code,
+          includeGuestbook,
+        },
+      });
+      toast.success("Votre invitation est publiée !");
+      navigate({ to: "/dashboard/share" });
+    } catch (e) {
+      toast.error(
+        e instanceof Error ? e.message : "Publication impossible.",
+      );
+      setPublishing(false);
+    }
+  };
+
 
 
   if (loading) {
