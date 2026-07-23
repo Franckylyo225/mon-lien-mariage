@@ -53,6 +53,7 @@ function PublishPage() {
   const [promoOpen, setPromoOpen] = useState(false);
   const [promoCode, setPromoCode] = useState("");
   const [promoLoading, setPromoLoading] = useState(false);
+  const [includeGuestbook, setIncludeGuestbook] = useState(false);
 
   const slug = useMemo(
     () =>
