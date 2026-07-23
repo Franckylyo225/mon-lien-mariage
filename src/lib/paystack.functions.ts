@@ -15,6 +15,7 @@ interface InitInput {
   weddingId: string;
   slug: string;
   envelopeAnimation: boolean;
+  includeGuestbook?: boolean;
   amount: number; // montant affiché (XOF)
   brideName: string;
   groomName: string;
