@@ -133,6 +133,9 @@ export interface Couple {
   isLocked: boolean;
   publishedAt?: string;
   hasEnvelopeAnimation?: boolean;
+  hasGuestbook?: boolean;
+  guestbookTitle?: string;
+  guestbookSubtitle?: string;
   hasOpeningEffect?: boolean;
   openingEffectSlug?:
     | "envelope-wax-sage"
