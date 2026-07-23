@@ -117,7 +117,7 @@ function PublishPage() {
     setPromoLoading(true);
     try {
       const res = await submitPromo({
-        data: { weddingId, slug, code },
+        data: { weddingId, slug, code, includeGuestbook },
       });
       if (res.published) {
         toast.success("Code appliqué — votre invitation est publiée !");
