@@ -172,8 +172,10 @@ function SupportPage() {
             <input
               value={form.subject}
               onChange={(e) => setForm({ ...form, subject: e.target.value })}
+              minLength={3}
               maxLength={140}
               required
+
               className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[14px]"
               placeholder="Décrivez votre problème en quelques mots"
             />
