@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import {
   ArrowLeft,
@@ -12,11 +12,14 @@ import {
   BookHeart,
   Loader2,
   Tag,
+  AlertTriangle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useWedding, slugify } from "@/lib/wedding-store";
 import { validatePromoCode, publishWithPromo } from "@/lib/promo.functions";
+import { checkSlugAvailability } from "@/lib/public-wedding.functions";
 import { useNavigate } from "@tanstack/react-router";
+
 
 export const Route = createFileRoute("/publish")({
   head: () => ({
@@ -44,9 +47,10 @@ function formatFrenchDate(iso: string): string | null {
 }
 
 function PublishPage() {
-  const { couple, weddingId, loading } = useWedding();
+  const { couple, weddingId, loading, updateCouple } = useWedding();
   const validatePromo = useServerFn(validatePromoCode);
   const publishFn = useServerFn(publishWithPromo);
+  const checkSlug = useServerFn(checkSlugAvailability);
   const navigate = useNavigate();
   const [promoOpen, setPromoOpen] = useState(false);
   const [promoCode, setPromoCode] = useState("");
@@ -58,17 +62,99 @@ function PublishPage() {
   const [publishing, setPublishing] = useState(false);
   const [includeGuestbook, setIncludeGuestbook] = useState(false);
 
-  const slug = useMemo(
+  const baseSlug = useMemo(
     () =>
       couple.slug || slugify(`${couple.brideName}-et-${couple.groomName}`) || "",
     [couple.slug, couple.brideName, couple.groomName],
   );
 
+  // Slug availability state
+  type SlugStatus = "idle" | "checking" | "available" | "taken" | "invalid";
+  const [slug, setSlug] = useState(baseSlug);
+  const [slugStatus, setSlugStatus] = useState<SlugStatus>("idle");
+  const [suggestion, setSuggestion] = useState<string>("");
+  const [customOpen, setCustomOpen] = useState(false);
+  const [customSlug, setCustomSlug] = useState("");
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Sync slug when store slug changes (e.g. after initial load)
+  useEffect(() => {
+    setSlug(baseSlug);
+  }, [baseSlug]);
+
+  const runCheck = async (candidate: string): Promise<SlugStatus> => {
+    const s = candidate.trim().toLowerCase();
+    if (!/^[a-z0-9][a-z0-9-]{1,59}$/.test(s)) return "invalid";
+    try {
+      const res = await checkSlug({ data: { slug: s, excludeId: weddingId ?? undefined } });
+      return res.available ? "available" : "taken";
+    } catch {
+      return "available"; // fail-open
+    }
+  };
+
+  const genSuggestion = (base: string) => {
+    const clean = base.replace(/-\d+$/, "").slice(0, 40);
+    const suffix = Math.floor(100 + Math.random() * 900);
+    return `${clean}-${suffix}`;
+  };
+
+  // Auto-check current slug on load / change
+  useEffect(() => {
+    if (!slug || !weddingId) return;
+    setSlugStatus("checking");
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      const status = await runCheck(slug);
+      setSlugStatus(status);
+      if (status === "taken") {
+        // Find an available suggestion
+        for (let i = 0; i < 5; i++) {
+          const s = genSuggestion(slug);
+          const st = await runCheck(s);
+          if (st === "available") {
+            setSuggestion(s);
+            return;
+          }
+        }
+        setSuggestion("");
+      } else {
+        setSuggestion("");
+      }
+    }, 350);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug, weddingId]);
+
+  const applySlug = async (newSlug: string) => {
+    const s = newSlug.trim().toLowerCase();
+    const status = await runCheck(s);
+    if (status !== "available") {
+      setSlugStatus(status);
+      toast.error(
+        status === "invalid"
+          ? "Format invalide (lettres, chiffres, tirets, 2-60 caractères)."
+          : "Ce lien est déjà pris.",
+      );
+      return;
+    }
+    await updateCouple({ slug: s });
+    setSlug(s);
+    setSlugStatus("available");
+    setCustomOpen(false);
+    setCustomSlug("");
+    toast.success("Lien mis à jour.");
+  };
+
   const dateLabel = formatFrenchDate(couple.weddingDate);
   const subLine = [dateLabel, couple.city].filter(Boolean).join(" · ");
   const total = BASE_PRICE_XOF + (includeGuestbook ? GUESTBOOK_ADDON_XOF : 0);
   const alreadyPublished = couple.isPublished === true;
-  const canPublish = true;
+  const slugOk = slugStatus === "available";
+  const canPublish = slugOk;
+
 
   const handlePromo = async () => {
     const code = promoCode.trim().toUpperCase();
@@ -98,7 +184,12 @@ function PublishPage() {
       toast.error("Aucun événement actif. Rechargez la page.");
       return;
     }
+    if (!slugOk) {
+      toast.error("Le lien public n'est pas disponible. Choisissez-en un autre.");
+      return;
+    }
     if (!appliedPromo && !confirm("Publier en mode test (sans paiement) ?")) return;
+
     setPublishing(true);
     try {
       await publishFn({
@@ -249,25 +340,112 @@ function PublishPage() {
           </p>
         </section>
 
-        {/* 3. Carte URL */}
-        <div className="mb-4 flex items-center gap-3 rounded-[10px] bg-muted px-[14px] py-2.5">
+        {/* 3. Carte URL + vérification disponibilité */}
+        <div className="mb-4">
           <div
-            className="grid size-7 shrink-0 place-items-center rounded-md"
-            style={{ background: "#FBEAF0" }}
+            className={`flex items-center gap-3 rounded-[10px] px-[14px] py-2.5 ${
+              slugStatus === "taken" || slugStatus === "invalid"
+                ? "bg-[#fef2f2]"
+                : "bg-muted"
+            }`}
           >
-            <Link2 className="size-3.5" style={{ color: "#993556" }} strokeWidth={1.75} />
+            <div
+              className="grid size-7 shrink-0 place-items-center rounded-md"
+              style={{ background: "#FBEAF0" }}
+            >
+              <Link2 className="size-3.5" style={{ color: "#993556" }} strokeWidth={1.75} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground/70">
+                Votre adresse
+              </p>
+              <p className="truncate text-[12px] font-medium">
+                <span className="text-foreground">moninvit.com/e/</span>
+                <span style={{ color: "#993556" }}>{slug}</span>
+              </p>
+            </div>
+            {slugStatus === "checking" ? (
+              <Loader2 className="size-3.5 shrink-0 animate-spin text-muted-foreground" strokeWidth={2} />
+            ) : slugStatus === "available" ? (
+              <Check className="size-3.5 shrink-0" style={{ color: "#059669" }} strokeWidth={2} />
+            ) : (
+              <AlertTriangle className="size-3.5 shrink-0" style={{ color: "#b91c1c" }} strokeWidth={2} />
+            )}
           </div>
-          <div className="min-w-0 flex-1">
-            <p className="font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground/70">
-              Votre adresse
-            </p>
-            <p className="truncate text-[12px] font-medium">
-              <span className="text-foreground">moninvit.com/e/</span>
-              <span style={{ color: "#993556" }}>{slug}</span>
-            </p>
-          </div>
-          <Check className="size-3.5 shrink-0" style={{ color: "#059669" }} strokeWidth={2} />
+
+          {(slugStatus === "taken" || slugStatus === "invalid") && (
+            <div className="mt-2 rounded-[12px] border border-[#fecaca] bg-[#fff7f7] p-3">
+              <p className="text-[12px] leading-[1.5] text-[#7f1d1d]">
+                {slugStatus === "taken"
+                  ? "Ce lien public est déjà utilisé par un autre événement."
+                  : "Le format de ce lien n'est pas valide."}
+              </p>
+              {suggestion && slugStatus === "taken" ? (
+                <div className="mt-2 flex items-center justify-between gap-2 rounded-[10px] bg-white/70 px-3 py-2">
+                  <div className="min-w-0 truncate text-[12px]">
+                    <span className="text-muted-foreground">Suggestion : </span>
+                    <span className="font-medium" style={{ color: "#993556" }}>
+                      moninvit.com/e/{suggestion}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => applySlug(suggestion)}
+                    className="shrink-0 rounded-[8px] px-2.5 py-1.5 text-[11px] font-medium"
+                    style={{ background: "#4B1528", color: "#FBEAF0" }}
+                  >
+                    Utiliser
+                  </button>
+                </div>
+              ) : null}
+              <button
+                type="button"
+                onClick={() => {
+                  setCustomOpen((v) => !v);
+                  setCustomSlug(slug);
+                }}
+                className="mt-2 text-[11px] text-muted-foreground underline underline-offset-2"
+              >
+                {customOpen ? "Fermer" : "Proposer mon propre lien"}
+              </button>
+              {customOpen && (
+                <div className="mt-2 flex gap-2">
+                  <div className="flex flex-1 items-center gap-1 rounded-[10px] border border-border/60 bg-background px-2">
+                    <span className="text-[11px] text-muted-foreground">moninvit.com/e/</span>
+                    <input
+                      type="text"
+                      value={customSlug}
+                      onChange={(e) =>
+                        setCustomSlug(
+                          e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"),
+                        )
+                      }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") applySlug(customSlug);
+                      }}
+                      placeholder="mon-lien"
+                      className="min-w-0 flex-1 bg-transparent py-2 text-[12px] outline-none"
+                      maxLength={60}
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      spellCheck={false}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => applySlug(customSlug)}
+                    disabled={!customSlug.trim()}
+                    className="shrink-0 rounded-[10px] px-3 text-[12px] font-medium disabled:opacity-60"
+                    style={{ background: "#4B1528", color: "#FBEAF0" }}
+                  >
+                    Vérifier
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
+
 
         {/* 4. Carte formule */}
         <section className="mb-3 rounded-[14px] border border-border/60 bg-card p-4">
