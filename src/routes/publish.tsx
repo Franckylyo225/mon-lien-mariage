@@ -69,7 +69,7 @@ function PublishPage() {
   const subLine = [dateLabel, couple.city].filter(Boolean).join(" · ");
   const total = BASE_PRICE_XOF + (includeGuestbook ? GUESTBOOK_ADDON_XOF : 0);
   const alreadyPublished = couple.isPublished === true;
-  const canPublish = !!appliedPromo && appliedPromo.discount >= 100;
+  const canPublish = true;
 
   const handlePromo = async () => {
     const code = promoCode.trim().toUpperCase();
