@@ -340,25 +340,112 @@ function PublishPage() {
           </p>
         </section>
 
-        {/* 3. Carte URL */}
-        <div className="mb-4 flex items-center gap-3 rounded-[10px] bg-muted px-[14px] py-2.5">
+        {/* 3. Carte URL + vérification disponibilité */}
+        <div className="mb-4">
           <div
-            className="grid size-7 shrink-0 place-items-center rounded-md"
-            style={{ background: "#FBEAF0" }}
+            className={`flex items-center gap-3 rounded-[10px] px-[14px] py-2.5 ${
+              slugStatus === "taken" || slugStatus === "invalid"
+                ? "bg-[#fef2f2]"
+                : "bg-muted"
+            }`}
           >
-            <Link2 className="size-3.5" style={{ color: "#993556" }} strokeWidth={1.75} />
+            <div
+              className="grid size-7 shrink-0 place-items-center rounded-md"
+              style={{ background: "#FBEAF0" }}
+            >
+              <Link2 className="size-3.5" style={{ color: "#993556" }} strokeWidth={1.75} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground/70">
+                Votre adresse
+              </p>
+              <p className="truncate text-[12px] font-medium">
+                <span className="text-foreground">moninvit.com/e/</span>
+                <span style={{ color: "#993556" }}>{slug}</span>
+              </p>
+            </div>
+            {slugStatus === "checking" ? (
+              <Loader2 className="size-3.5 shrink-0 animate-spin text-muted-foreground" strokeWidth={2} />
+            ) : slugStatus === "available" ? (
+              <Check className="size-3.5 shrink-0" style={{ color: "#059669" }} strokeWidth={2} />
+            ) : (
+              <AlertTriangle className="size-3.5 shrink-0" style={{ color: "#b91c1c" }} strokeWidth={2} />
+            )}
           </div>
-          <div className="min-w-0 flex-1">
-            <p className="font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground/70">
-              Votre adresse
-            </p>
-            <p className="truncate text-[12px] font-medium">
-              <span className="text-foreground">moninvit.com/e/</span>
-              <span style={{ color: "#993556" }}>{slug}</span>
-            </p>
-          </div>
-          <Check className="size-3.5 shrink-0" style={{ color: "#059669" }} strokeWidth={2} />
+
+          {(slugStatus === "taken" || slugStatus === "invalid") && (
+            <div className="mt-2 rounded-[12px] border border-[#fecaca] bg-[#fff7f7] p-3">
+              <p className="text-[12px] leading-[1.5] text-[#7f1d1d]">
+                {slugStatus === "taken"
+                  ? "Ce lien public est déjà utilisé par un autre événement."
+                  : "Le format de ce lien n'est pas valide."}
+              </p>
+              {suggestion && slugStatus === "taken" ? (
+                <div className="mt-2 flex items-center justify-between gap-2 rounded-[10px] bg-white/70 px-3 py-2">
+                  <div className="min-w-0 truncate text-[12px]">
+                    <span className="text-muted-foreground">Suggestion : </span>
+                    <span className="font-medium" style={{ color: "#993556" }}>
+                      moninvit.com/e/{suggestion}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => applySlug(suggestion)}
+                    className="shrink-0 rounded-[8px] px-2.5 py-1.5 text-[11px] font-medium"
+                    style={{ background: "#4B1528", color: "#FBEAF0" }}
+                  >
+                    Utiliser
+                  </button>
+                </div>
+              ) : null}
+              <button
+                type="button"
+                onClick={() => {
+                  setCustomOpen((v) => !v);
+                  setCustomSlug(slug);
+                }}
+                className="mt-2 text-[11px] text-muted-foreground underline underline-offset-2"
+              >
+                {customOpen ? "Fermer" : "Proposer mon propre lien"}
+              </button>
+              {customOpen && (
+                <div className="mt-2 flex gap-2">
+                  <div className="flex flex-1 items-center gap-1 rounded-[10px] border border-border/60 bg-background px-2">
+                    <span className="text-[11px] text-muted-foreground">moninvit.com/e/</span>
+                    <input
+                      type="text"
+                      value={customSlug}
+                      onChange={(e) =>
+                        setCustomSlug(
+                          e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"),
+                        )
+                      }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") applySlug(customSlug);
+                      }}
+                      placeholder="mon-lien"
+                      className="min-w-0 flex-1 bg-transparent py-2 text-[12px] outline-none"
+                      maxLength={60}
+                      autoCapitalize="none"
+                      autoCorrect="off"
+                      spellCheck={false}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => applySlug(customSlug)}
+                    disabled={!customSlug.trim()}
+                    className="shrink-0 rounded-[10px] px-3 text-[12px] font-medium disabled:opacity-60"
+                    style={{ background: "#4B1528", color: "#FBEAF0" }}
+                  >
+                    Vérifier
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
+
 
         {/* 4. Carte formule */}
         <section className="mb-3 rounded-[14px] border border-border/60 bg-card p-4">
