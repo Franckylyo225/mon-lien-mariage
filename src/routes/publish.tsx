@@ -184,7 +184,12 @@ function PublishPage() {
       toast.error("Aucun événement actif. Rechargez la page.");
       return;
     }
+    if (!slugOk) {
+      toast.error("Le lien public n'est pas disponible. Choisissez-en un autre.");
+      return;
+    }
     if (!appliedPromo && !confirm("Publier en mode test (sans paiement) ?")) return;
+
     setPublishing(true);
     try {
       await publishFn({
