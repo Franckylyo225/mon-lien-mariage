@@ -1,44 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-
-function normalize(code: string): string {
-  return (code || "").trim().toUpperCase();
-}
-
-interface PromoRow {
-  id: string;
-  code: string;
-  discount_percent: number;
-  max_uses: number | null;
-  uses: number;
-  valid_from: string | null;
-  valid_until: string | null;
-  is_active: boolean;
-}
-
-async function loadUsable(code: string): Promise<PromoRow> {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data, error } = await supabaseAdmin
-    .from("promo_codes")
-    .select("id, code, discount_percent, max_uses, uses, valid_from, valid_until, is_active")
-    .eq("code", code)
-    .maybeSingle();
-  if (error) throw new Error("Vérification du code impossible.");
-  const row = data as PromoRow | null;
-  if (!row) throw new Error("Code promo invalide.");
-  if (!row.is_active) throw new Error("Ce code promo est désactivé.");
-  const now = Date.now();
-  if (row.valid_from && new Date(row.valid_from).getTime() > now) {
-    throw new Error("Ce code promo n'est pas encore actif.");
-  }
-  if (row.valid_until && new Date(row.valid_until).getTime() < now) {
-    throw new Error("Ce code promo est expiré.");
-  }
-  if (row.max_uses !== null && row.uses >= row.max_uses) {
-    throw new Error("Ce code promo a atteint sa limite d'utilisation.");
-  }
-  return row;
-}
+import { loadUsablePromo, normalizePromoCode, type PromoRow } from "./promo.server";
 
 interface ValidateInput {
   code: string;
@@ -48,9 +10,9 @@ export const validatePromoCode = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: ValidateInput) => data)
   .handler(async ({ data }) => {
-    const raw = normalize(data.code);
+    const raw = normalizePromoCode(data.code);
     if (!raw) throw new Error("Veuillez saisir un code promo.");
-    const row = await loadUsable(raw);
+    const row = await loadUsablePromo(raw);
     return { code: row.code, discount: row.discount_percent };
   });
 
@@ -65,10 +27,10 @@ export const publishWithPromo = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: PublishInput) => data)
   .handler(async ({ data, context }) => {
-    const raw = normalize(data.code ?? "");
+    const raw = normalizePromoCode(data.code ?? "");
     let row: PromoRow | null = null;
     if (raw) {
-      row = await loadUsable(raw);
+      row = await loadUsablePromo(raw);
       if (row.discount_percent < 100) {
         throw new Error("Ce code ne couvre pas la totalité du paiement.");
       }

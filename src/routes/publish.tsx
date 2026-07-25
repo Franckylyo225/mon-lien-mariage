@@ -229,6 +229,14 @@ function PublishPage() {
           includeGuestbook,
         },
       });
+      await updateCouple({
+        slug,
+        isPublished: true,
+        isLocked: true,
+        publishedAt: new Date().toISOString(),
+        hasEnvelopeAnimation: false,
+        ...(includeGuestbook ? { hasGuestbook: true } : {}),
+      });
       toast.success("Votre invitation est publiée !");
       navigate({ to: "/dashboard/share" });
     } catch (e) {
