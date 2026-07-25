@@ -10,7 +10,7 @@ import {
   Users,
   CalendarHeart,
   BookHeart,
-  Lock,
+  
   Loader2,
   Tag,
 } from "lucide-react";
