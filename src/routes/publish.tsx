@@ -47,9 +47,10 @@ function formatFrenchDate(iso: string): string | null {
 }
 
 function PublishPage() {
-  const { couple, weddingId, loading } = useWedding();
+  const { couple, weddingId, loading, updateCouple } = useWedding();
   const validatePromo = useServerFn(validatePromoCode);
   const publishFn = useServerFn(publishWithPromo);
+  const checkSlug = useServerFn(checkSlugAvailability);
   const navigate = useNavigate();
   const [promoOpen, setPromoOpen] = useState(false);
   const [promoCode, setPromoCode] = useState("");
@@ -61,17 +62,99 @@ function PublishPage() {
   const [publishing, setPublishing] = useState(false);
   const [includeGuestbook, setIncludeGuestbook] = useState(false);
 
-  const slug = useMemo(
+  const baseSlug = useMemo(
     () =>
       couple.slug || slugify(`${couple.brideName}-et-${couple.groomName}`) || "",
     [couple.slug, couple.brideName, couple.groomName],
   );
 
+  // Slug availability state
+  type SlugStatus = "idle" | "checking" | "available" | "taken" | "invalid";
+  const [slug, setSlug] = useState(baseSlug);
+  const [slugStatus, setSlugStatus] = useState<SlugStatus>("idle");
+  const [suggestion, setSuggestion] = useState<string>("");
+  const [customOpen, setCustomOpen] = useState(false);
+  const [customSlug, setCustomSlug] = useState("");
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Sync slug when store slug changes (e.g. after initial load)
+  useEffect(() => {
+    setSlug(baseSlug);
+  }, [baseSlug]);
+
+  const runCheck = async (candidate: string): Promise<SlugStatus> => {
+    const s = candidate.trim().toLowerCase();
+    if (!/^[a-z0-9][a-z0-9-]{1,59}$/.test(s)) return "invalid";
+    try {
+      const res = await checkSlug({ data: { slug: s, excludeId: weddingId ?? undefined } });
+      return res.available ? "available" : "taken";
+    } catch {
+      return "available"; // fail-open
+    }
+  };
+
+  const genSuggestion = (base: string) => {
+    const clean = base.replace(/-\d+$/, "").slice(0, 40);
+    const suffix = Math.floor(100 + Math.random() * 900);
+    return `${clean}-${suffix}`;
+  };
+
+  // Auto-check current slug on load / change
+  useEffect(() => {
+    if (!slug || !weddingId) return;
+    setSlugStatus("checking");
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(async () => {
+      const status = await runCheck(slug);
+      setSlugStatus(status);
+      if (status === "taken") {
+        // Find an available suggestion
+        for (let i = 0; i < 5; i++) {
+          const s = genSuggestion(slug);
+          const st = await runCheck(s);
+          if (st === "available") {
+            setSuggestion(s);
+            return;
+          }
+        }
+        setSuggestion("");
+      } else {
+        setSuggestion("");
+      }
+    }, 350);
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug, weddingId]);
+
+  const applySlug = async (newSlug: string) => {
+    const s = newSlug.trim().toLowerCase();
+    const status = await runCheck(s);
+    if (status !== "available") {
+      setSlugStatus(status);
+      toast.error(
+        status === "invalid"
+          ? "Format invalide (lettres, chiffres, tirets, 2-60 caractères)."
+          : "Ce lien est déjà pris.",
+      );
+      return;
+    }
+    await updateCouple({ slug: s });
+    setSlug(s);
+    setSlugStatus("available");
+    setCustomOpen(false);
+    setCustomSlug("");
+    toast.success("Lien mis à jour.");
+  };
+
   const dateLabel = formatFrenchDate(couple.weddingDate);
   const subLine = [dateLabel, couple.city].filter(Boolean).join(" · ");
   const total = BASE_PRICE_XOF + (includeGuestbook ? GUESTBOOK_ADDON_XOF : 0);
   const alreadyPublished = couple.isPublished === true;
-  const canPublish = true;
+  const slugOk = slugStatus === "available";
+  const canPublish = slugOk;
+
 
   const handlePromo = async () => {
     const code = promoCode.trim().toUpperCase();
