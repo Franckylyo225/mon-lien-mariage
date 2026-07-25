@@ -57,7 +57,7 @@ export const validatePromoCode = createServerFn({ method: "POST" })
 interface PublishInput {
   weddingId: string;
   slug: string;
-  code: string;
+  code?: string;
   includeGuestbook?: boolean;
 }
 
@@ -65,13 +65,13 @@ export const publishWithPromo = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: PublishInput) => data)
   .handler(async ({ data, context }) => {
-    const raw = normalize(data.code);
-    if (!raw) throw new Error("Code promo invalide.");
-    const row = await loadUsable(raw);
-    if (row.discount_percent < 100) {
-      throw new Error(
-        "Le paiement en ligne est temporairement indisponible. Ce code ne couvre pas la totalité.",
-      );
+    const raw = normalize(data.code ?? "");
+    let row: PromoRow | null = null;
+    if (raw) {
+      row = await loadUsable(raw);
+      if (row.discount_percent < 100) {
+        throw new Error("Ce code ne couvre pas la totalité du paiement.");
+      }
     }
 
     const update: Record<string, unknown> = {
@@ -89,21 +89,22 @@ export const publishWithPromo = createServerFn({ method: "POST" })
       .eq("id", data.weddingId);
     if (error) throw new Error(`Publication échouée: ${error.message}`);
 
-    // Record redemption + increment counter (best-effort).
-    try {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      await supabaseAdmin.from("promo_code_redemptions").insert({
-        promo_code_id: row.id,
-        code: row.code,
-        wedding_id: data.weddingId,
-        user_id: context.userId,
-      } as never);
-      await supabaseAdmin
-        .from("promo_codes")
-        .update({ uses: row.uses + 1 } as never)
-        .eq("id", row.id);
-    } catch (e) {
-      console.warn("[promo] redemption tracking failed", e);
+    if (row) {
+      try {
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        await supabaseAdmin.from("promo_code_redemptions").insert({
+          promo_code_id: row.id,
+          code: row.code,
+          wedding_id: data.weddingId,
+          user_id: context.userId,
+        } as never);
+        await supabaseAdmin
+          .from("promo_codes")
+          .update({ uses: row.uses + 1 } as never)
+          .eq("id", row.id);
+      } catch (e) {
+        console.warn("[promo] redemption tracking failed", e);
+      }
     }
 
     return { published: true as const };

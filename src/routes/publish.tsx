@@ -10,7 +10,7 @@ import {
   Users,
   CalendarHeart,
   BookHeart,
-  Lock,
+  
   Loader2,
   Tag,
 } from "lucide-react";
@@ -69,7 +69,7 @@ function PublishPage() {
   const subLine = [dateLabel, couple.city].filter(Boolean).join(" · ");
   const total = BASE_PRICE_XOF + (includeGuestbook ? GUESTBOOK_ADDON_XOF : 0);
   const alreadyPublished = couple.isPublished === true;
-  const canPublish = !!appliedPromo && appliedPromo.discount >= 100;
+  const canPublish = true;
 
   const handlePromo = async () => {
     const code = promoCode.trim().toUpperCase();
@@ -99,14 +99,14 @@ function PublishPage() {
       toast.error("Aucun événement actif. Rechargez la page.");
       return;
     }
-    if (!appliedPromo) return;
+    if (!appliedPromo && !confirm("Publier en mode test (sans paiement) ?")) return;
     setPublishing(true);
     try {
       await publishFn({
         data: {
           weddingId,
           slug,
-          code: appliedPromo.code,
+          code: appliedPromo?.code,
           includeGuestbook,
         },
       });
@@ -373,44 +373,32 @@ function PublishPage() {
             onClick={handlePublish}
             disabled={!canPublish || publishing || !weddingId}
             aria-disabled={!canPublish || publishing || !weddingId}
-            title={
-              canPublish
-                ? "Publier votre invitation"
-                : "Le paiement en ligne est temporairement indisponible. Appliquez un code promo pour publier."
-            }
-            className={
-              canPublish
-                ? "inline-flex w-full items-center justify-center gap-2 rounded-[14px] px-4 py-4 text-[15px] font-medium transition disabled:opacity-60"
-                : "inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-[14px] border border-border/60 bg-muted px-4 py-4 text-[15px] font-medium text-muted-foreground"
-            }
-            style={
-              canPublish ? { background: "#4B1528", color: "#FBEAF0" } : undefined
-            }
+            title="Publier votre invitation (mode test)"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-[14px] px-4 py-4 text-[15px] font-medium transition disabled:opacity-60"
+            style={{ background: "#4B1528", color: "#FBEAF0" }}
           >
             {publishing ? (
               <Loader2 className="size-4 animate-spin" strokeWidth={2} />
-            ) : canPublish ? (
-              <Check className="size-4" strokeWidth={2} />
             ) : (
-              <Lock className="size-4" strokeWidth={1.75} />
+              <Check className="size-4" strokeWidth={2} />
             )}
             {publishing
               ? "Publication en cours…"
-              : canPublish
+              : appliedPromo
                 ? "Publier mon invitation"
-                : "Paiement bientôt disponible"}
+                : "Publier (mode test)"}
           </button>
 
-          {!canPublish ? (
+          {appliedPromo ? (
             <p className="mt-2 text-center text-[11px] leading-[1.5] text-muted-foreground">
-              Le paiement en ligne est en cours de configuration.
-              <br />
-              En attendant, utilisez un code promo pour publier votre invitation.
+              Code <span className="font-mono">{appliedPromo.code}</span> appliqué —
+              publication gratuite.
             </p>
           ) : (
             <p className="mt-2 text-center text-[11px] leading-[1.5] text-muted-foreground">
-              Code <span className="font-mono">{appliedPromo!.code}</span> appliqué —
-              publication gratuite.
+              Mode test : le paiement en ligne est désactivé.
+              <br />
+              Vous pouvez publier gratuitement ou appliquer un code promo.
             </p>
           )}
         </div>
