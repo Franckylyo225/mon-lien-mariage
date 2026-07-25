@@ -99,14 +99,14 @@ function PublishPage() {
       toast.error("Aucun événement actif. Rechargez la page.");
       return;
     }
-    if (!appliedPromo) return;
+    if (!appliedPromo && !confirm("Publier en mode test (sans paiement) ?")) return;
     setPublishing(true);
     try {
       await publishFn({
         data: {
           weddingId,
           slug,
-          code: appliedPromo.code,
+          code: appliedPromo?.code,
           includeGuestbook,
         },
       });
