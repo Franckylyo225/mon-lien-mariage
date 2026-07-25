@@ -75,6 +75,7 @@ function PublishPage() {
   const [suggestion, setSuggestion] = useState<string>("");
   const [customOpen, setCustomOpen] = useState(false);
   const [customSlug, setCustomSlug] = useState("");
+  const [hasPicked, setHasPicked] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Sync slug when store slug changes (e.g. after initial load)
@@ -95,38 +96,66 @@ function PublishPage() {
 
   const genSuggestion = (base: string) => {
     const clean = base.replace(/-\d+$/, "").slice(0, 40);
-    const suffix = Math.floor(100 + Math.random() * 900);
+    const suffix = Math.floor(1000 + Math.random() * 9000);
     return `${clean}-${suffix}`;
   };
 
-  // Auto-check current slug on load / change
+  // On first load, propose an available slug (base or auto-generated suggestion)
   useEffect(() => {
-    if (!slug || !weddingId) return;
+    if (!baseSlug || !weddingId || hasPicked) return;
+    let cancelled = false;
+    const pick = async () => {
+      setSlugStatus("checking");
+      const baseStatus = await runCheck(baseSlug);
+      if (cancelled) return;
+      if (baseStatus === "available") {
+        setSlug(baseSlug);
+        setSlugStatus("available");
+        setSuggestion("");
+      } else {
+        let found: string | null = null;
+        for (let i = 0; i < 10; i++) {
+          const s = genSuggestion(baseSlug);
+          const st = await runCheck(s);
+          if (cancelled) return;
+          if (st === "available") {
+            found = s;
+            break;
+          }
+        }
+        if (found) {
+          setSlug(found);
+          setSlugStatus("available");
+          setSuggestion(found);
+        } else {
+          setSlug(baseSlug);
+          setSlugStatus(baseStatus);
+          setSuggestion("");
+        }
+      }
+      setHasPicked(true);
+    };
+    pick();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [baseSlug, weddingId, hasPicked]);
+
+  // Validate current slug whenever user changes it
+  useEffect(() => {
+    if (!slug || !weddingId || !hasPicked) return;
     setSlugStatus("checking");
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(async () => {
       const status = await runCheck(slug);
       setSlugStatus(status);
-      if (status === "taken") {
-        // Find an available suggestion
-        for (let i = 0; i < 5; i++) {
-          const s = genSuggestion(slug);
-          const st = await runCheck(s);
-          if (st === "available") {
-            setSuggestion(s);
-            return;
-          }
-        }
-        setSuggestion("");
-      } else {
-        setSuggestion("");
-      }
     }, 350);
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slug, weddingId]);
+  }, [slug, weddingId, hasPicked]);
 
   const applySlug = async (newSlug: string) => {
     const s = newSlug.trim().toLowerCase();
