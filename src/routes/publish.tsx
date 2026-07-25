@@ -75,6 +75,7 @@ function PublishPage() {
   const [suggestion, setSuggestion] = useState<string>("");
   const [customOpen, setCustomOpen] = useState(false);
   const [customSlug, setCustomSlug] = useState("");
+  const [hasPicked, setHasPicked] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Sync slug when store slug changes (e.g. after initial load)
@@ -95,38 +96,66 @@ function PublishPage() {
 
   const genSuggestion = (base: string) => {
     const clean = base.replace(/-\d+$/, "").slice(0, 40);
-    const suffix = Math.floor(100 + Math.random() * 900);
+    const suffix = Math.floor(1000 + Math.random() * 9000);
     return `${clean}-${suffix}`;
   };
 
-  // Auto-check current slug on load / change
+  // On first load, propose an available slug (base or auto-generated suggestion)
   useEffect(() => {
-    if (!slug || !weddingId) return;
+    if (!baseSlug || !weddingId || hasPicked) return;
+    let cancelled = false;
+    const pick = async () => {
+      setSlugStatus("checking");
+      const baseStatus = await runCheck(baseSlug);
+      if (cancelled) return;
+      if (baseStatus === "available") {
+        setSlug(baseSlug);
+        setSlugStatus("available");
+        setSuggestion("");
+      } else {
+        let found: string | null = null;
+        for (let i = 0; i < 10; i++) {
+          const s = genSuggestion(baseSlug);
+          const st = await runCheck(s);
+          if (cancelled) return;
+          if (st === "available") {
+            found = s;
+            break;
+          }
+        }
+        if (found) {
+          setSlug(found);
+          setSlugStatus("available");
+          setSuggestion(found);
+        } else {
+          setSlug(baseSlug);
+          setSlugStatus(baseStatus);
+          setSuggestion("");
+        }
+      }
+      setHasPicked(true);
+    };
+    pick();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [baseSlug, weddingId, hasPicked]);
+
+  // Validate current slug whenever user changes it
+  useEffect(() => {
+    if (!slug || !weddingId || !hasPicked) return;
     setSlugStatus("checking");
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(async () => {
       const status = await runCheck(slug);
       setSlugStatus(status);
-      if (status === "taken") {
-        // Find an available suggestion
-        for (let i = 0; i < 5; i++) {
-          const s = genSuggestion(slug);
-          const st = await runCheck(s);
-          if (st === "available") {
-            setSuggestion(s);
-            return;
-          }
-        }
-        setSuggestion("");
-      } else {
-        setSuggestion("");
-      }
     }, 350);
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slug, weddingId]);
+  }, [slug, weddingId, hasPicked]);
 
   const applySlug = async (newSlug: string) => {
     const s = newSlug.trim().toLowerCase();
@@ -340,7 +369,7 @@ function PublishPage() {
           </p>
         </section>
 
-        {/* 3. Carte URL + vérification disponibilité */}
+        {/* 3. Carte URL : lien suggéré + choix personnalisé */}
         <div className="mb-4">
           <div
             className={`flex items-center gap-3 rounded-[10px] px-[14px] py-2.5 ${
@@ -357,7 +386,7 @@ function PublishPage() {
             </div>
             <div className="min-w-0 flex-1">
               <p className="font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground/70">
-                Votre adresse
+                Votre lien
               </p>
               <p className="truncate text-[12px] font-medium">
                 <span className="text-foreground">moninvit.com/e/</span>
@@ -373,75 +402,72 @@ function PublishPage() {
             )}
           </div>
 
+          <div className="mt-2 flex items-center justify-between gap-2">
+            <p className="text-[11px] leading-[1.5] text-muted-foreground">
+              {suggestion && suggestion === slug && suggestion !== baseSlug
+                ? "Lien suggéré automatiquement car l'adresse idéale était déjà prise."
+                : slugStatus === "available"
+                  ? "Ce lien est disponible."
+                  : "Vérification du lien…"}
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setCustomOpen((v) => !v);
+                setCustomSlug(slug);
+              }}
+              className="shrink-0 text-[11px] font-medium underline underline-offset-2"
+              style={{ color: "#993556" }}
+            >
+              {customOpen ? "Fermer" : "Choisir un autre lien"}
+            </button>
+          </div>
+
           {(slugStatus === "taken" || slugStatus === "invalid") && (
-            <div className="mt-2 rounded-[12px] border border-[#fecaca] bg-[#fff7f7] p-3">
-              <p className="text-[12px] leading-[1.5] text-[#7f1d1d]">
-                {slugStatus === "taken"
-                  ? "Ce lien public est déjà utilisé par un autre événement."
-                  : "Le format de ce lien n'est pas valide."}
+            <p className="mt-2 text-[12px] leading-[1.5] text-[#7f1d1d]">
+              {slugStatus === "taken"
+                ? "Ce lien public est déjà utilisé par un autre événement."
+                : "Le format de ce lien n'est pas valide."}
+            </p>
+          )}
+
+          {customOpen && (
+            <div className="mt-3 rounded-[12px] border border-border/60 bg-card p-3">
+              <p className="mb-2 text-[11px] leading-[1.4] text-muted-foreground">
+                Saisissez le lien souhaité. Nous vérifions sa disponibilité en temps réel.
               </p>
-              {suggestion && slugStatus === "taken" ? (
-                <div className="mt-2 flex items-center justify-between gap-2 rounded-[10px] bg-white/70 px-3 py-2">
-                  <div className="min-w-0 truncate text-[12px]">
-                    <span className="text-muted-foreground">Suggestion : </span>
-                    <span className="font-medium" style={{ color: "#993556" }}>
-                      moninvit.com/e/{suggestion}
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => applySlug(suggestion)}
-                    className="shrink-0 rounded-[8px] px-2.5 py-1.5 text-[11px] font-medium"
-                    style={{ background: "#4B1528", color: "#FBEAF0" }}
-                  >
-                    Utiliser
-                  </button>
+              <div className="flex gap-2">
+                <div className="flex flex-1 items-center gap-1 rounded-[10px] border border-border/60 bg-background px-2">
+                  <span className="text-[11px] text-muted-foreground">moninvit.com/e/</span>
+                  <input
+                    type="text"
+                    value={customSlug}
+                    onChange={(e) =>
+                      setCustomSlug(
+                        e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"),
+                      )
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") applySlug(customSlug);
+                    }}
+                    placeholder="mon-lien"
+                    className="min-w-0 flex-1 bg-transparent py-2 text-[12px] outline-none"
+                    maxLength={60}
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
+                  />
                 </div>
-              ) : null}
-              <button
-                type="button"
-                onClick={() => {
-                  setCustomOpen((v) => !v);
-                  setCustomSlug(slug);
-                }}
-                className="mt-2 text-[11px] text-muted-foreground underline underline-offset-2"
-              >
-                {customOpen ? "Fermer" : "Proposer mon propre lien"}
-              </button>
-              {customOpen && (
-                <div className="mt-2 flex gap-2">
-                  <div className="flex flex-1 items-center gap-1 rounded-[10px] border border-border/60 bg-background px-2">
-                    <span className="text-[11px] text-muted-foreground">moninvit.com/e/</span>
-                    <input
-                      type="text"
-                      value={customSlug}
-                      onChange={(e) =>
-                        setCustomSlug(
-                          e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"),
-                        )
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") applySlug(customSlug);
-                      }}
-                      placeholder="mon-lien"
-                      className="min-w-0 flex-1 bg-transparent py-2 text-[12px] outline-none"
-                      maxLength={60}
-                      autoCapitalize="none"
-                      autoCorrect="off"
-                      spellCheck={false}
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => applySlug(customSlug)}
-                    disabled={!customSlug.trim()}
-                    className="shrink-0 rounded-[10px] px-3 text-[12px] font-medium disabled:opacity-60"
-                    style={{ background: "#4B1528", color: "#FBEAF0" }}
-                  >
-                    Vérifier
-                  </button>
-                </div>
-              )}
+                <button
+                  type="button"
+                  onClick={() => applySlug(customSlug)}
+                  disabled={!customSlug.trim()}
+                  className="shrink-0 rounded-[10px] px-3 text-[12px] font-medium disabled:opacity-60"
+                  style={{ background: "#4B1528", color: "#FBEAF0" }}
+                >
+                  Vérifier
+                </button>
+              </div>
             </div>
           )}
         </div>
