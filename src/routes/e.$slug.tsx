@@ -72,8 +72,10 @@ function PublicInvitationPage() {
   const { slug } = Route.useParams();
   const { data } = useSuspenseQuery(publicWeddingQuery(slug));
   const [rsvpBurst, setRsvpBurst] = useState(false);
+  usePageView(data.wedding?.id);
 
   if (!data.wedding) throw notFound();
+
 
   const w = data.wedding;
   const couple: Couple = {
