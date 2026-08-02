@@ -276,7 +276,7 @@ export function PricingSection() {
             return (
               <div
                 key={f.q}
-                className="mx-auto max-w-[480px] border-t-[0.5px] border-[#F0F0F0] py-3.5"
+                className="mx-auto max-w-[680px] border-t-[0.5px] border-[#F0F0F0] py-3.5"
               >
                 <button
                   type="button"
