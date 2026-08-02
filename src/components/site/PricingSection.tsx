@@ -232,15 +232,10 @@ export function PricingSection() {
             ))}
           </div>
         </div>
-
-        {/* Price anchoring */}
-        <p className="mx-auto mt-5 max-w-[400px] text-center text-[12px] italic leading-[1.6] text-[#6B6B6B] sm:text-[13px]">
-          💡 Pour comparaison : un carton d'invitation papier coûte entre 500 et 2 000 XOF
-          par invité. Avec MonInvit, un seul paiement pour tous vos invités, à vie.
-        </p>
+        </div>
 
         {/* Guarantee */}
-        <div className="mx-auto mt-4 flex max-w-[480px] items-start gap-3.5 rounded-[14px] border-[0.5px] border-[#EDE8E0] bg-[#F9F6F2] px-6 py-5">
+        <div className="mx-auto mt-12 flex max-w-[680px] items-start gap-3.5 rounded-[14px] border-[0.5px] border-[#EDE8E0] bg-[#F9F6F2] px-6 py-5">
           <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#FBEAF0]">
             <Lock size={18} className="text-[#993556]" aria-hidden />
           </span>
