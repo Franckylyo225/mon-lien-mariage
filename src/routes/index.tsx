@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { templateMeta, templateOrder } from "@/lib/ceremony-meta";
 import { SiteHeader as SharedSiteHeader, SiteFooter as SharedSiteFooter } from "@/components/site/SiteChrome";
+import { PricingSection } from "@/components/site/PricingSection";
 import heroCouple from "@/assets/home-couple.jpg";
 import romanceImg from "@/assets/home-romance.jpg";
 import tableImg from "@/assets/home-table.jpg";
@@ -122,6 +123,7 @@ function Landing() {
       <IncludedChecklist />
       <TimeArgument />
       <StepsSection />
+      <PricingSection />
       <EditorialCouple />
       <PromiseBlock />
       <FaqBlock />

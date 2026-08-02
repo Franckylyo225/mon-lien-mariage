@@ -4,12 +4,20 @@ import { Link, useRouterState } from "@tanstack/react-router";
 const NAV = [
   { to: "/", label: "Accueil" },
   { to: "/comment-ca-marche", label: "Comment ça marche ?" },
-  { to: "/blog", label: "Blog" },
+  { to: "/", hash: "tarifs", label: "Tarifs" },
   { to: "/temoignages", label: "Témoignages" },
+  { to: "/blog", label: "Blog" },
 ] as const;
 
-function isActive(pathname: string, to: string) {
+function isActive(pathname: string, to: string, hash?: string) {
+  if (hash) return false;
   return to === "/" ? pathname === "/" : pathname.startsWith(to);
+}
+
+function scrollToHash(hash?: string) {
+  if (!hash) return;
+  const el = document.getElementById(hash);
+  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 export function SiteHeader() {
@@ -48,11 +56,16 @@ export function SiteHeader() {
         {/* Desktop nav */}
         <nav aria-label="Navigation principale" className="hidden items-center gap-1 md:flex">
           {NAV.map((n) => {
-            const active = isActive(pathname, n.to);
+            const hash = "hash" in n ? n.hash : undefined;
+            const active = isActive(pathname, n.to, hash);
             return (
               <Link
-                key={n.to}
+                key={n.label}
                 to={n.to}
+                hash={hash}
+                onClick={() => {
+                  if (hash && pathname === n.to) scrollToHash(hash);
+                }}
                 aria-current={active ? "page" : undefined}
                 className={
                   "relative rounded-full px-3 py-2 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c17c74] focus-visible:ring-offset-2 focus-visible:ring-offset-[#fdf7f3] " +
@@ -157,13 +170,20 @@ export function SiteHeader() {
         <nav aria-label="Navigation mobile" className="px-3 pb-4">
           <ul className="flex flex-col">
             {NAV.map((n) => {
-              const active = isActive(pathname, n.to);
+              const hash = "hash" in n ? n.hash : undefined;
+              const active = isActive(pathname, n.to, hash);
               return (
-                <li key={n.to}>
+                <li key={n.label}>
                   <Link
                     to={n.to}
+                    hash={hash}
                     aria-current={active ? "page" : undefined}
-                    onClick={() => setOpen(false)}
+                    onClick={() => {
+                      setOpen(false);
+                      if (hash && pathname === n.to) {
+                        setTimeout(() => scrollToHash(hash), 60);
+                      }
+                    }}
                     className={
                       "flex min-h-12 items-center justify-between rounded-2xl px-4 text-[15px] transition " +
                       (active
