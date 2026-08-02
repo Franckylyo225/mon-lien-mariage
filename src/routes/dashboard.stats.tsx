@@ -17,6 +17,8 @@ import {
   IconX,
   IconClock,
   IconLink,
+  IconEye,
+
   IconMessage,
   IconBook,
   IconSalad,
@@ -94,6 +96,7 @@ function StatsPage() {
   const { ceremonies, couple, weddingId } = useWedding();
   const { allGuests, publicGuests, publicRsvps, loading } = useAllGuests();
   const [guestbookCount, setGuestbookCount] = useState<number | null>(null);
+  const [viewCount, setViewCount] = useState<number | null>(null);
 
   useEffect(() => {
     if (!weddingId || !couple.hasGuestbook) return;
@@ -109,6 +112,22 @@ function StatsPage() {
       cancelled = true;
     };
   }, [weddingId, couple.hasGuestbook]);
+
+  useEffect(() => {
+    if (!weddingId) return;
+    let cancelled = false;
+    (async () => {
+      const { count } = await supabase
+        .from("page_views")
+        .select("id", { count: "exact", head: true })
+        .eq("wedding_id", weddingId);
+      if (!cancelled) setViewCount(count ?? 0);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [weddingId]);
+
 
   const perCeremony = useMemo(
     () => ceremonies.map((c) => computeCeremonyStats(allGuests, c)),
@@ -284,6 +303,12 @@ function StatsPage() {
       {/* Engagement via le lien public */}
       <section className="grid grid-cols-3 gap-2">
         <SmallCard
+          Icon={IconEye}
+          label="Vues"
+          value={viewCount ?? "—"}
+          hint="Visites de la page"
+        />
+        <SmallCard
           Icon={IconLink}
           label="Auto-inscriptions"
           value={publicGuests.length}
@@ -297,6 +322,7 @@ function StatsPage() {
           hint={couple.hasGuestbook ? "Messages reçus" : "Non activé"}
         />
       </section>
+
 
       {/* Per ceremony */}
       <section>
