@@ -56,11 +56,16 @@ export function SiteHeader() {
         {/* Desktop nav */}
         <nav aria-label="Navigation principale" className="hidden items-center gap-1 md:flex">
           {NAV.map((n) => {
-            const active = isActive(pathname, n.to);
+            const hash = "hash" in n ? n.hash : undefined;
+            const active = isActive(pathname, n.to, hash);
             return (
               <Link
-                key={n.to}
+                key={n.label}
                 to={n.to}
+                hash={hash}
+                onClick={() => {
+                  if (hash && pathname === n.to) scrollToHash(hash);
+                }}
                 aria-current={active ? "page" : undefined}
                 className={
                   "relative rounded-full px-3 py-2 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c17c74] focus-visible:ring-offset-2 focus-visible:ring-offset-[#fdf7f3] " +
