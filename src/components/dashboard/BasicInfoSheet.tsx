@@ -191,7 +191,7 @@ export function BasicInfoSheet({ open, onOpenChange }: Props) {
 
             {/* Dates */}
             <Section title="Dates">
-              <Field label="Date du mariage">
+              <Field label="Date">
                 <input
                   type="date"
                   value={weddingDate}
@@ -217,7 +217,7 @@ export function BasicInfoSheet({ open, onOpenChange }: Props) {
 
             {/* Lieu */}
             <Section title="Lieu">
-              <Field label="Ville du mariage">
+              <Field label="Ville">
                 <input
                   type="text"
                   value={city}
