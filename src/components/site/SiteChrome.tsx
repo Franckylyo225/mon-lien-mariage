@@ -4,12 +4,20 @@ import { Link, useRouterState } from "@tanstack/react-router";
 const NAV = [
   { to: "/", label: "Accueil" },
   { to: "/comment-ca-marche", label: "Comment ça marche ?" },
-  { to: "/blog", label: "Blog" },
+  { to: "/", hash: "tarifs", label: "Tarifs" },
   { to: "/temoignages", label: "Témoignages" },
+  { to: "/blog", label: "Blog" },
 ] as const;
 
-function isActive(pathname: string, to: string) {
+function isActive(pathname: string, to: string, hash?: string) {
+  if (hash) return false;
   return to === "/" ? pathname === "/" : pathname.startsWith(to);
+}
+
+function scrollToHash(hash?: string) {
+  if (!hash) return;
+  const el = document.getElementById(hash);
+  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 export function SiteHeader() {
