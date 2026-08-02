@@ -301,6 +301,12 @@ function StatsPage() {
       {/* Engagement via le lien public */}
       <section className="grid grid-cols-3 gap-2">
         <SmallCard
+          Icon={IconEye}
+          label="Vues"
+          value={viewCount ?? "—"}
+          hint="Visites de la page"
+        />
+        <SmallCard
           Icon={IconLink}
           label="Auto-inscriptions"
           value={publicGuests.length}
@@ -314,6 +320,7 @@ function StatsPage() {
           hint={couple.hasGuestbook ? "Messages reçus" : "Non activé"}
         />
       </section>
+
 
       {/* Per ceremony */}
       <section>
