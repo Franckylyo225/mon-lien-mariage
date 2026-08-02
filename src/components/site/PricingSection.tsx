@@ -11,6 +11,7 @@ import {
   BookHeart,
   Infinity as InfinityIcon,
   Lock,
+  MessageCircle,
   Plus,
 } from "lucide-react";
 
@@ -29,6 +30,24 @@ const ITEMS: {
   { icon: Clock, title: "Compte à rebours", sub: "Automatique dès la publication" },
   { icon: BookHeart, title: "Livre d'or", sub: "Option activable avant ou après", addon: true },
   { icon: InfinityIcon, title: "Accès à vie", sub: "Vos données protégées" },
+];
+
+const ARGS: { icon: typeof Globe; title: string; text: string }[] = [
+  {
+    icon: Lock,
+    title: "Créez sans risque",
+    text: "Personnalisez autant que vous voulez avant de payer un centime.",
+  },
+  {
+    icon: MessageCircle,
+    title: "Partagé là où tout le monde est",
+    text: "Vos invités reçoivent le lien sur WhatsApp — aucune app à télécharger.",
+  },
+  {
+    icon: InfinityIcon,
+    title: "Une seule fois, pour toujours",
+    text: "Pas d'abonnement, pas de renouvellement. Votre page reste après le mariage.",
+  },
 ];
 
 const FAQS: { q: string; a: string }[] = [
@@ -80,7 +99,7 @@ export function PricingSection() {
       }}
       className="scroll-mt-24 border-t border-[#e8c5b6]/40 bg-[#FAF8F5] py-20 sm:py-24"
     >
-      <div className="mx-auto max-w-6xl px-5">
+      <div className="mx-auto max-w-[1100px] px-5 md:px-10">
         {/* Header */}
         <div className="text-center">
           <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-[#993556]">
@@ -96,9 +115,63 @@ export function PricingSection() {
           </p>
         </div>
 
+        <div className="mt-12 grid items-start gap-8 md:grid-cols-[45fr_55fr] md:gap-12">
+          {/* Left column — arguments */}
+          <div className="min-w-0">
+            <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#993556]">
+              Pourquoi 24 900 XOF ?
+            </p>
+            <p className="mt-2.5 font-[family-name:var(--font-display)] text-[26px] italic leading-[1.3] text-[#1A1A1A] sm:text-[28px]">
+              Pour une invitation qui restera dans les mémoires de vos invités — bien
+              après le mariage.
+            </p>
+
+            <div className="my-6 rounded-r-xl border-[0.5px] border-l-[3px] border-[#EDE8E0] border-l-[#993556] bg-[#F9F6F2] px-5 py-[18px] text-[13px] leading-[1.7] text-[#4B4B4B]">
+              <p>
+                💡 Un carton d'invitation papier coûte entre 500 et 2 000 XOF par invité.
+              </p>
+              <p className="mt-2">
+                Pour 200 invités :{" "}
+                <strong className="font-semibold text-[#1A1A1A]">
+                  jusqu'à 400 000 XOF
+                </strong>{" "}
+                en cartons seuls.
+              </p>
+              <p className="mt-2">
+                Avec MonInvit :{" "}
+                <strong className="font-semibold text-[#1A1A1A]">24 900 XOF</strong> pour
+                tous, à vie, modifiable à tout moment.
+              </p>
+            </div>
+
+            <ul>
+              {ARGS.map(({ icon: Icon, title, text }) => (
+                <li key={title} className="mb-5 flex items-start gap-3.5">
+                  <span className="grid size-[38px] shrink-0 place-items-center rounded-full bg-[#FBEAF0]">
+                    <Icon size={18} className="text-[#993556]" aria-hidden />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="mb-1 text-[14px] font-semibold text-[#1A1A1A]">{title}</p>
+                    <p className="text-[13px] leading-[1.55] text-[#6B6B6B]">{text}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            <div className="mt-1 border-t-[0.5px] border-[#EDE8E0] pt-5">
+              <blockquote className="mb-3 font-[family-name:var(--font-display)] text-[15px] italic leading-[1.65] text-[#4B4B4B]">
+                « On hésitait sur le prix au début. Puis on a calculé ce qu'on aurait
+                dépensé en cartons papier. C'est vite devenu une évidence. »
+              </blockquote>
+              <cite className="text-[11px] not-italic text-[#9CA3AF]">
+                — Adjoua &amp; Koffi · Mariage · Abidjan
+              </cite>
+            </div>
+          </div>
+
         {/* Card */}
         <div
-          className="relative mx-auto mt-12 max-w-[480px] overflow-hidden rounded-[20px] border-[0.5px] border-[#E5E5E5] bg-white p-6 sm:p-[36px_32px]"
+          className="relative w-full min-w-0 overflow-hidden rounded-[20px] border-[0.5px] border-[#E5E5E5] bg-white p-6 sm:p-[36px_32px]"
           style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04)" }}
         >
           <span
@@ -178,15 +251,10 @@ export function PricingSection() {
             ))}
           </div>
         </div>
-
-        {/* Price anchoring */}
-        <p className="mx-auto mt-5 max-w-[400px] text-center text-[12px] italic leading-[1.6] text-[#6B6B6B] sm:text-[13px]">
-          💡 Pour comparaison : un carton d'invitation papier coûte entre 500 et 2 000 XOF
-          par invité. Avec MonInvit, un seul paiement pour tous vos invités, à vie.
-        </p>
+        </div>
 
         {/* Guarantee */}
-        <div className="mx-auto mt-4 flex max-w-[480px] items-start gap-3.5 rounded-[14px] border-[0.5px] border-[#EDE8E0] bg-[#F9F6F2] px-6 py-5">
+        <div className="mx-auto mt-12 flex max-w-[680px] items-start gap-3.5 rounded-[14px] border-[0.5px] border-[#EDE8E0] bg-[#F9F6F2] px-6 py-5">
           <span className="grid size-9 shrink-0 place-items-center rounded-full bg-[#FBEAF0]">
             <Lock size={18} className="text-[#993556]" aria-hidden />
           </span>
@@ -208,7 +276,7 @@ export function PricingSection() {
             return (
               <div
                 key={f.q}
-                className="mx-auto max-w-[480px] border-t-[0.5px] border-[#F0F0F0] py-3.5"
+                className="mx-auto max-w-[680px] border-t-[0.5px] border-[#F0F0F0] py-3.5"
               >
                 <button
                   type="button"
