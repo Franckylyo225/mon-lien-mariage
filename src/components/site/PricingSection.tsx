@@ -31,6 +31,24 @@ const ITEMS: {
   { icon: InfinityIcon, title: "Accès à vie", sub: "Vos données protégées" },
 ];
 
+const ARGS: { icon: typeof Globe; title: string; text: string }[] = [
+  {
+    icon: Lock,
+    title: "Créez sans risque",
+    text: "Personnalisez autant que vous voulez avant de payer un centime.",
+  },
+  {
+    icon: MessageCircle,
+    title: "Partagé là où tout le monde est",
+    text: "Vos invités reçoivent le lien sur WhatsApp — aucune app à télécharger.",
+  },
+  {
+    icon: InfinityIcon,
+    title: "Une seule fois, pour toujours",
+    text: "Pas d'abonnement, pas de renouvellement. Votre page reste après le mariage.",
+  },
+];
+
 const FAQS: { q: string; a: string }[] = [
   {
     q: "Et si je veux annuler après publication ?",
