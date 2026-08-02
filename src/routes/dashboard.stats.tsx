@@ -94,6 +94,7 @@ function StatsPage() {
   const { ceremonies, couple, weddingId } = useWedding();
   const { allGuests, publicGuests, publicRsvps, loading } = useAllGuests();
   const [guestbookCount, setGuestbookCount] = useState<number | null>(null);
+  const [viewCount, setViewCount] = useState<number | null>(null);
 
   useEffect(() => {
     if (!weddingId || !couple.hasGuestbook) return;
@@ -109,6 +110,22 @@ function StatsPage() {
       cancelled = true;
     };
   }, [weddingId, couple.hasGuestbook]);
+
+  useEffect(() => {
+    if (!weddingId) return;
+    let cancelled = false;
+    (async () => {
+      const { count } = await supabase
+        .from("page_views")
+        .select("id", { count: "exact", head: true })
+        .eq("wedding_id", weddingId);
+      if (!cancelled) setViewCount(count ?? 0);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [weddingId]);
+
 
   const perCeremony = useMemo(
     () => ceremonies.map((c) => computeCeremonyStats(allGuests, c)),
