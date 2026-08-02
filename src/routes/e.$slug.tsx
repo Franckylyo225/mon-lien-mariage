@@ -1,5 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
+import { usePageView } from "@/hooks/use-page-view";
+
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { getPublicWedding } from "@/lib/public-wedding.functions";
 import { componentForTheme } from "@/components/invitation-templates";
