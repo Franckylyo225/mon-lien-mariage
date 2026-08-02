@@ -11,6 +11,7 @@ import {
   BookHeart,
   Infinity as InfinityIcon,
   Lock,
+  MessageCircle,
   Plus,
 } from "lucide-react";
 
