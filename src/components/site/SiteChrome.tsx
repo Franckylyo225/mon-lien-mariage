@@ -170,13 +170,20 @@ export function SiteHeader() {
         <nav aria-label="Navigation mobile" className="px-3 pb-4">
           <ul className="flex flex-col">
             {NAV.map((n) => {
-              const active = isActive(pathname, n.to);
+              const hash = "hash" in n ? n.hash : undefined;
+              const active = isActive(pathname, n.to, hash);
               return (
-                <li key={n.to}>
+                <li key={n.label}>
                   <Link
                     to={n.to}
+                    hash={hash}
                     aria-current={active ? "page" : undefined}
-                    onClick={() => setOpen(false)}
+                    onClick={() => {
+                      setOpen(false);
+                      if (hash && pathname === n.to) {
+                        setTimeout(() => scrollToHash(hash), 60);
+                      }
+                    }}
                     className={
                       "flex min-h-12 items-center justify-between rounded-2xl px-4 text-[15px] transition " +
                       (active
