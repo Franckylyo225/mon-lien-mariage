@@ -122,6 +122,7 @@ function Landing() {
       <IncludedChecklist />
       <TimeArgument />
       <StepsSection />
+      <PricingSection />
       <EditorialCouple />
       <PromiseBlock />
       <FaqBlock />
