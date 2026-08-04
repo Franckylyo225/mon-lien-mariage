@@ -345,6 +345,62 @@ export type Database = {
           },
         ]
       }
+      payments: {
+        Row: {
+          amount_fcfa: number
+          created_at: string
+          currency: string
+          id: string
+          metadata: Json
+          payment_method: string | null
+          payment_type: string
+          paystack_reference: string
+          paystack_transaction_id: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          wedding_id: string | null
+        }
+        Insert: {
+          amount_fcfa: number
+          created_at?: string
+          currency?: string
+          id?: string
+          metadata?: Json
+          payment_method?: string | null
+          payment_type?: string
+          paystack_reference: string
+          paystack_transaction_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          wedding_id?: string | null
+        }
+        Update: {
+          amount_fcfa?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          metadata?: Json
+          payment_method?: string | null
+          payment_type?: string
+          paystack_reference?: string
+          paystack_transaction_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          wedding_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           active_wedding_id: string | null

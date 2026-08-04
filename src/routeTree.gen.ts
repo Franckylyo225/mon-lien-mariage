@@ -29,6 +29,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ThemeThumbSlugRouteImport } from './routes/theme-thumb.$slug'
+import { Route as PaymentCallbackRouteImport } from './routes/payment.callback'
 import { Route as OnboardingThemeRouteImport } from './routes/onboarding.theme'
 import { Route as OnboardingPrenomsRouteImport } from './routes/onboarding.prenoms'
 import { Route as OnboardingEvenementRouteImport } from './routes/onboarding.evenement'
@@ -66,6 +67,7 @@ import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/l
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
+import { Route as ApiPublicWebhooksPaystackRouteImport } from './routes/api/public/webhooks/paystack'
 import { Route as ApiPublicHooksRsvpMilestoneRouteImport } from './routes/api/public/hooks/rsvp-milestone'
 
 const VerifyEmailRoute = VerifyEmailRouteImport.update({
@@ -167,6 +169,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
 const ThemeThumbSlugRoute = ThemeThumbSlugRouteImport.update({
   id: '/theme-thumb/$slug',
   path: '/theme-thumb/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentCallbackRoute = PaymentCallbackRouteImport.update({
+  id: '/payment/callback',
+  path: '/payment/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingThemeRoute = OnboardingThemeRouteImport.update({
@@ -357,6 +364,12 @@ const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
   path: '/lovable/email/auth/preview',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicWebhooksPaystackRoute =
+  ApiPublicWebhooksPaystackRouteImport.update({
+    id: '/api/public/webhooks/paystack',
+    path: '/api/public/webhooks/paystack',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksRsvpMilestoneRoute =
   ApiPublicHooksRsvpMilestoneRouteImport.update({
     id: '/api/public/hooks/rsvp-milestone',
@@ -409,6 +422,7 @@ export interface FileRoutesByFullPath {
   '/onboarding/evenement': typeof OnboardingEvenementRoute
   '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
+  '/payment/callback': typeof PaymentCallbackRoute
   '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -418,6 +432,7 @@ export interface FileRoutesByFullPath {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests/': typeof DashboardGuestsIndexRoute
   '/api/public/hooks/rsvp-milestone': typeof ApiPublicHooksRsvpMilestoneRoute
+  '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -467,6 +482,7 @@ export interface FileRoutesByTo {
   '/onboarding/evenement': typeof OnboardingEvenementRoute
   '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
+  '/payment/callback': typeof PaymentCallbackRoute
   '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
   '/admin': typeof AdminIndexRoute
   '/dashboard': typeof DashboardIndexRoute
@@ -476,6 +492,7 @@ export interface FileRoutesByTo {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests': typeof DashboardGuestsIndexRoute
   '/api/public/hooks/rsvp-milestone': typeof ApiPublicHooksRsvpMilestoneRoute
+  '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -528,6 +545,7 @@ export interface FileRoutesById {
   '/onboarding/evenement': typeof OnboardingEvenementRoute
   '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
+  '/payment/callback': typeof PaymentCallbackRoute
   '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -537,6 +555,7 @@ export interface FileRoutesById {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests/': typeof DashboardGuestsIndexRoute
   '/api/public/hooks/rsvp-milestone': typeof ApiPublicHooksRsvpMilestoneRoute
+  '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -590,6 +609,7 @@ export interface FileRouteTypes {
     | '/onboarding/evenement'
     | '/onboarding/prenoms'
     | '/onboarding/theme'
+    | '/payment/callback'
     | '/theme-thumb/$slug'
     | '/admin/'
     | '/dashboard/'
@@ -599,6 +619,7 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/dashboard/guests/'
     | '/api/public/hooks/rsvp-milestone'
+    | '/api/public/webhooks/paystack'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -648,6 +669,7 @@ export interface FileRouteTypes {
     | '/onboarding/evenement'
     | '/onboarding/prenoms'
     | '/onboarding/theme'
+    | '/payment/callback'
     | '/theme-thumb/$slug'
     | '/admin'
     | '/dashboard'
@@ -657,6 +679,7 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/dashboard/guests'
     | '/api/public/hooks/rsvp-milestone'
+    | '/api/public/webhooks/paystack'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -708,6 +731,7 @@ export interface FileRouteTypes {
     | '/onboarding/evenement'
     | '/onboarding/prenoms'
     | '/onboarding/theme'
+    | '/payment/callback'
     | '/theme-thumb/$slug'
     | '/admin/'
     | '/dashboard/'
@@ -717,6 +741,7 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/dashboard/guests/'
     | '/api/public/hooks/rsvp-milestone'
+    | '/api/public/webhooks/paystack'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -748,10 +773,12 @@ export interface RootRouteChildren {
   AppSupportRoute: typeof AppSupportRoute
   ESlugRoute: typeof ESlugRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
+  PaymentCallbackRoute: typeof PaymentCallbackRoute
   ThemeThumbSlugRoute: typeof ThemeThumbSlugRoute
   GuestbookPrintIdRoute: typeof GuestbookPrintIdRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicHooksRsvpMilestoneRoute: typeof ApiPublicHooksRsvpMilestoneRoute
+  ApiPublicWebhooksPaystackRoute: typeof ApiPublicWebhooksPaystackRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
@@ -899,6 +926,13 @@ declare module '@tanstack/react-router' {
       path: '/theme-thumb/$slug'
       fullPath: '/theme-thumb/$slug'
       preLoaderRoute: typeof ThemeThumbSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment/callback': {
+      id: '/payment/callback'
+      path: '/payment/callback'
+      fullPath: '/payment/callback'
+      preLoaderRoute: typeof PaymentCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding/theme': {
@@ -1160,6 +1194,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/webhooks/paystack': {
+      id: '/api/public/webhooks/paystack'
+      path: '/api/public/webhooks/paystack'
+      fullPath: '/api/public/webhooks/paystack'
+      preLoaderRoute: typeof ApiPublicWebhooksPaystackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/rsvp-milestone': {
       id: '/api/public/hooks/rsvp-milestone'
       path: '/api/public/hooks/rsvp-milestone'
@@ -1283,10 +1324,12 @@ const rootRouteChildren: RootRouteChildren = {
   AppSupportRoute: AppSupportRoute,
   ESlugRoute: ESlugRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
+  PaymentCallbackRoute: PaymentCallbackRoute,
   ThemeThumbSlugRoute: ThemeThumbSlugRoute,
   GuestbookPrintIdRoute: GuestbookPrintIdRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicHooksRsvpMilestoneRoute: ApiPublicHooksRsvpMilestoneRoute,
+  ApiPublicWebhooksPaystackRoute: ApiPublicWebhooksPaystackRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
@@ -1296,13 +1339,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -8,6 +8,9 @@ import {
   listOwnGuestbook,
   deleteGuestbookMessage,
 } from "@/lib/guestbook.functions";
+import { initializePaystackPayment } from "@/lib/paystack.functions";
+
+const GUESTBOOK_ADDON_XOF = 1990;
 
 export const Route = createFileRoute("/app/guestbook")({
   head: () => ({
@@ -44,8 +47,31 @@ function OwnerGuestbookPage() {
   const { weddingId, couple, loading } = useWedding();
   const listFn = useServerFn(listOwnGuestbook);
   const delFn = useServerFn(deleteGuestbookMessage);
+  const payFn = useServerFn(initializePaystackPayment);
   const [messages, setMessages] = useState<Message[]>([]);
   const [busy, setBusy] = useState(true);
+  const [paying, setPaying] = useState(false);
+
+  const handleGuestbookPayment = async () => {
+    if (!weddingId) return;
+    setPaying(true);
+    try {
+      const { authorization_url } = await payFn({
+        data: {
+          weddingId,
+          paymentType: "addon_guestbook",
+          amountFcfa: GUESTBOOK_ADDON_XOF,
+          callbackUrl: `${window.location.origin}/payment/callback`,
+        },
+      });
+      window.location.href = authorization_url;
+    } catch (e) {
+      toast.error(
+        e instanceof Error ? e.message : "Erreur de paiement. Réessayez.",
+      );
+      setPaying(false);
+    }
+  };
 
   useEffect(() => {
     if (!weddingId) return;
@@ -120,12 +146,32 @@ function OwnerGuestbookPage() {
             <p className="text-sm text-muted-foreground">
               Le livre d'or n'est pas activé pour cet événement.
             </p>
-            <Link
-              to="/publish"
-              className="mt-4 inline-flex items-center rounded-full bg-primary px-5 py-2.5 text-[12px] font-medium text-primary-foreground"
-            >
-              Activer le livre d'or
-            </Link>
+            {couple.isPublished ? (
+              <>
+                <p className="mt-2 text-[12px] text-muted-foreground">
+                  Activez-le dès maintenant pour{" "}
+                  {GUESTBOOK_ADDON_XOF.toLocaleString("fr-FR")} F CFA.
+                </p>
+                <button
+                  type="button"
+                  onClick={handleGuestbookPayment}
+                  disabled={paying || !weddingId}
+                  className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-[12px] font-medium text-primary-foreground disabled:opacity-60"
+                >
+                  {paying ? <Loader2 className="size-3.5 animate-spin" /> : null}
+                  {paying
+                    ? "Redirection…"
+                    : `Activer pour ${GUESTBOOK_ADDON_XOF.toLocaleString("fr-FR")} F CFA`}
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/publish"
+                className="mt-4 inline-flex items-center rounded-full bg-primary px-5 py-2.5 text-[12px] font-medium text-primary-foreground"
+              >
+                Activer le livre d'or
+              </Link>
+            )}
           </div>
         ) : busy ? (
           <div className="grid place-items-center py-16">

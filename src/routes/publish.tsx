@@ -17,6 +17,7 @@ import {
 import { toast } from "sonner";
 import { useWedding, slugify } from "@/lib/wedding-store";
 import { validatePromoCode, publishWithPromo } from "@/lib/promo.functions";
+import { initializePaystackPayment } from "@/lib/paystack.functions";
 import { checkSlugAvailability } from "@/lib/public-wedding.functions";
 import { useNavigate } from "@tanstack/react-router";
 
@@ -51,6 +52,7 @@ function PublishPage() {
   const validatePromo = useServerFn(validatePromoCode);
   const publishFn = useServerFn(publishWithPromo);
   const checkSlug = useServerFn(checkSlugAvailability);
+  const payFn = useServerFn(initializePaystackPayment);
   const navigate = useNavigate();
   const [promoOpen, setPromoOpen] = useState(false);
   const [promoCode, setPromoCode] = useState("");
@@ -217,31 +219,48 @@ function PublishPage() {
       toast.error("Le lien public n'est pas disponible. Choisissez-en un autre.");
       return;
     }
-    if (!appliedPromo && !confirm("Publier en mode test (sans paiement) ?")) return;
 
     setPublishing(true);
+
+    // Code promo 100 % : publication directe, sans paiement
+    if (appliedPromo && appliedPromo.discount >= 100) {
+      try {
+        await publishFn({
+          data: { weddingId, slug, code: appliedPromo.code, includeGuestbook },
+        });
+        await updateCouple({
+          slug,
+          isPublished: true,
+          isLocked: true,
+          publishedAt: new Date().toISOString(),
+          hasEnvelopeAnimation: false,
+          ...(includeGuestbook ? { hasGuestbook: true } : {}),
+        });
+        toast.success("Votre invitation est publiée !");
+        navigate({ to: "/dashboard/share" });
+      } catch (e) {
+        toast.error(e instanceof Error ? e.message : "Publication impossible.");
+        setPublishing(false);
+      }
+      return;
+    }
+
+    // Paiement Paystack (mode test)
     try {
-      await publishFn({
+      const { authorization_url } = await payFn({
         data: {
           weddingId,
+          paymentType: "publication",
+          amountFcfa: total,
           slug,
-          code: appliedPromo?.code,
           includeGuestbook,
+          callbackUrl: `${window.location.origin}/payment/callback`,
         },
       });
-      await updateCouple({
-        slug,
-        isPublished: true,
-        isLocked: true,
-        publishedAt: new Date().toISOString(),
-        hasEnvelopeAnimation: false,
-        ...(includeGuestbook ? { hasGuestbook: true } : {}),
-      });
-      toast.success("Votre invitation est publiée !");
-      navigate({ to: "/dashboard/share" });
+      window.location.href = authorization_url;
     } catch (e) {
       toast.error(
-        e instanceof Error ? e.message : "Publication impossible.",
+        e instanceof Error ? e.message : "Impossible de lancer le paiement. Réessayez.",
       );
       setPublishing(false);
     }
@@ -584,7 +603,7 @@ function PublishPage() {
             onClick={handlePublish}
             disabled={!canPublish || publishing || !weddingId}
             aria-disabled={!canPublish || publishing || !weddingId}
-            title="Publier votre invitation (mode test)"
+            title="Publier votre invitation"
             className="inline-flex w-full items-center justify-center gap-2 rounded-[14px] px-4 py-4 text-[15px] font-medium transition disabled:opacity-60"
             style={{ background: "#4B1528", color: "#FBEAF0" }}
           >
@@ -594,22 +613,24 @@ function PublishPage() {
               <Check className="size-4" strokeWidth={2} />
             )}
             {publishing
-              ? "Publication en cours…"
-              : appliedPromo
+              ? appliedPromo && appliedPromo.discount >= 100
+                ? "Publication en cours…"
+                : "Redirection vers le paiement…"
+              : appliedPromo && appliedPromo.discount >= 100
                 ? "Publier mon invitation"
-                : "Publier (mode test)"}
+                : `Payer ${total.toLocaleString("fr-FR")} XOF et publier`}
           </button>
 
-          {appliedPromo ? (
+          {appliedPromo && appliedPromo.discount >= 100 ? (
             <p className="mt-2 text-center text-[11px] leading-[1.5] text-muted-foreground">
               Code <span className="font-mono">{appliedPromo.code}</span> appliqué —
               publication gratuite.
             </p>
           ) : (
             <p className="mt-2 text-center text-[11px] leading-[1.5] text-muted-foreground">
-              Mode test : le paiement en ligne est désactivé.
+              Paiement sécurisé par Paystack (mode test).
               <br />
-              Vous pouvez publier gratuitement ou appliquer un code promo.
+              Carte bancaire, Mobile Money ou USSD.
             </p>
           )}
         </div>
