@@ -8,6 +8,9 @@ import {
   listOwnGuestbook,
   deleteGuestbookMessage,
 } from "@/lib/guestbook.functions";
+import { initializePaystackPayment } from "@/lib/paystack.functions";
+
+const GUESTBOOK_ADDON_XOF = 1990;
 
 export const Route = createFileRoute("/app/guestbook")({
   head: () => ({
