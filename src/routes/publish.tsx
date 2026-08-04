@@ -603,7 +603,7 @@ function PublishPage() {
             onClick={handlePublish}
             disabled={!canPublish || publishing || !weddingId}
             aria-disabled={!canPublish || publishing || !weddingId}
-            title="Publier votre invitation (mode test)"
+            title="Publier votre invitation"
             className="inline-flex w-full items-center justify-center gap-2 rounded-[14px] px-4 py-4 text-[15px] font-medium transition disabled:opacity-60"
             style={{ background: "#4B1528", color: "#FBEAF0" }}
           >
@@ -613,22 +613,24 @@ function PublishPage() {
               <Check className="size-4" strokeWidth={2} />
             )}
             {publishing
-              ? "Publication en cours…"
-              : appliedPromo
+              ? appliedPromo && appliedPromo.discount >= 100
+                ? "Publication en cours…"
+                : "Redirection vers le paiement…"
+              : appliedPromo && appliedPromo.discount >= 100
                 ? "Publier mon invitation"
-                : "Publier (mode test)"}
+                : `Payer ${total.toLocaleString("fr-FR")} XOF et publier`}
           </button>
 
-          {appliedPromo ? (
+          {appliedPromo && appliedPromo.discount >= 100 ? (
             <p className="mt-2 text-center text-[11px] leading-[1.5] text-muted-foreground">
               Code <span className="font-mono">{appliedPromo.code}</span> appliqué —
               publication gratuite.
             </p>
           ) : (
             <p className="mt-2 text-center text-[11px] leading-[1.5] text-muted-foreground">
-              Mode test : le paiement en ligne est désactivé.
+              Paiement sécurisé par Paystack (mode test).
               <br />
-              Vous pouvez publier gratuitement ou appliquer un code promo.
+              Carte bancaire, Mobile Money ou USSD.
             </p>
           )}
         </div>
