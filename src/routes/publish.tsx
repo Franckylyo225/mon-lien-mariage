@@ -218,31 +218,48 @@ function PublishPage() {
       toast.error("Le lien public n'est pas disponible. Choisissez-en un autre.");
       return;
     }
-    if (!appliedPromo && !confirm("Publier en mode test (sans paiement) ?")) return;
 
     setPublishing(true);
+
+    // Code promo 100 % : publication directe, sans paiement
+    if (appliedPromo && appliedPromo.discount >= 100) {
+      try {
+        await publishFn({
+          data: { weddingId, slug, code: appliedPromo.code, includeGuestbook },
+        });
+        await updateCouple({
+          slug,
+          isPublished: true,
+          isLocked: true,
+          publishedAt: new Date().toISOString(),
+          hasEnvelopeAnimation: false,
+          ...(includeGuestbook ? { hasGuestbook: true } : {}),
+        });
+        toast.success("Votre invitation est publiée !");
+        navigate({ to: "/dashboard/share" });
+      } catch (e) {
+        toast.error(e instanceof Error ? e.message : "Publication impossible.");
+        setPublishing(false);
+      }
+      return;
+    }
+
+    // Paiement Paystack (mode test)
     try {
-      await publishFn({
+      const { authorization_url } = await payFn({
         data: {
           weddingId,
+          paymentType: "publication",
+          amountFcfa: total,
           slug,
-          code: appliedPromo?.code,
           includeGuestbook,
+          callbackUrl: `${window.location.origin}/payment/callback`,
         },
       });
-      await updateCouple({
-        slug,
-        isPublished: true,
-        isLocked: true,
-        publishedAt: new Date().toISOString(),
-        hasEnvelopeAnimation: false,
-        ...(includeGuestbook ? { hasGuestbook: true } : {}),
-      });
-      toast.success("Votre invitation est publiée !");
-      navigate({ to: "/dashboard/share" });
+      window.location.href = authorization_url;
     } catch (e) {
       toast.error(
-        e instanceof Error ? e.message : "Publication impossible.",
+        e instanceof Error ? e.message : "Impossible de lancer le paiement. Réessayez.",
       );
       setPublishing(false);
     }
