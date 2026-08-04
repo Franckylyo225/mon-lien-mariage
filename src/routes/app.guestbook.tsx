@@ -9,6 +9,7 @@ import {
   deleteGuestbookMessage,
 } from "@/lib/guestbook.functions";
 import { initializePaystackPayment } from "@/lib/paystack.functions";
+import { redirectToCheckout } from "@/lib/checkout-redirect";
 
 const GUESTBOOK_ADDON_XOF = 1990;
 
@@ -64,7 +65,8 @@ function OwnerGuestbookPage() {
           callbackUrl: `${window.location.origin}/payment/callback`,
         },
       });
-      window.location.href = authorization_url;
+      if (!authorization_url) throw new Error("Passerelle indisponible.");
+      redirectToCheckout(authorization_url);
     } catch (e) {
       toast.error(
         e instanceof Error ? e.message : "Erreur de paiement. Réessayez.",

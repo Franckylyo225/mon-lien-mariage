@@ -15,6 +15,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { toast } from "sonner";
+import { redirectToCheckout } from "@/lib/checkout-redirect";
 import { useWedding, slugify } from "@/lib/wedding-store";
 import { validatePromoCode, publishWithPromo } from "@/lib/promo.functions";
 import { initializePaystackPayment } from "@/lib/paystack.functions";
@@ -266,7 +267,7 @@ function PublishPage() {
       if (!res?.authorization_url) {
         throw new Error("Passerelle de paiement indisponible. Réessayez.");
       }
-      window.location.assign(res.authorization_url);
+      redirectToCheckout(res.authorization_url);
     } catch (e) {
       console.error("[paywall] payment init failed", e);
       const msg =
