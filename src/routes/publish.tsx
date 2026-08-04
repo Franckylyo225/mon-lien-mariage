@@ -634,6 +634,16 @@ function PublishPage() {
                 : `Payer ${total.toLocaleString("fr-FR")} XOF et publier`}
           </button>
 
+          {payError ? (
+            <p
+              role="alert"
+              className="mt-2 rounded-[10px] border border-destructive/30 bg-destructive/10 px-3 py-2 text-center text-[11px] leading-[1.5] text-destructive"
+            >
+              {payError}
+            </p>
+          ) : null}
+
+
           {appliedPromo && appliedPromo.discount >= 100 ? (
             <p className="mt-2 text-center text-[11px] leading-[1.5] text-muted-foreground">
               Code <span className="font-mono">{appliedPromo.code}</span> appliqué —
