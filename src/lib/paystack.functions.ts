@@ -23,7 +23,11 @@ export const initializePaystackPayment = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const secretKey =
       process.env["PAYSTACK_SECRET_KEY"] || process.env["STRIPE_TEST_API_KEY"];
-    if (!secretKey) throw new Error("Paiement indisponible (clé manquante).");
+    if (!secretKey) {
+      throw new Error(
+        "Paiement indisponible : la clé Paystack n'est pas configurée sur ce déploiement. Essayez depuis l'adresse officielle de l'application.",
+      );
+    }
 
     if (data.paymentType !== "publication" && data.paymentType !== "addon_guestbook") {
       throw new Error("Type de paiement invalide.");
