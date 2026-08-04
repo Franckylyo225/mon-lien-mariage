@@ -62,6 +62,7 @@ function PublishPage() {
     discount: number;
   } | null>(null);
   const [publishing, setPublishing] = useState(false);
+  const [payError, setPayError] = useState<string | null>(null);
   const [includeGuestbook, setIncludeGuestbook] = useState(false);
 
   const baseSlug = useMemo(
