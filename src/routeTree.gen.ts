@@ -63,6 +63,7 @@ import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/em
 import { Route as GuestbookPrintIdRouteImport } from './routes/guestbook.print.$id'
 import { Route as DashboardGuestsNewRouteImport } from './routes/dashboard.guests.new'
 import { Route as DashboardCeremoniesIdRouteImport } from './routes/dashboard.ceremonies.$id'
+import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
@@ -342,6 +343,11 @@ const DashboardCeremoniesIdRoute = DashboardCeremoniesIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => DashboardCeremoniesRoute,
 } as any)
+const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
+  id: '/api/public/health',
+  path: '/api/public/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LovableEmailTransactionalSendRoute =
   LovableEmailTransactionalSendRouteImport.update({
     id: '/lovable/email/transactional/send',
@@ -433,6 +439,7 @@ export interface FileRoutesByFullPath {
   '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
   '/guestbook/print/$id': typeof GuestbookPrintIdRoute
@@ -494,6 +501,7 @@ export interface FileRoutesByTo {
   '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
   '/admin': typeof AdminIndexRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
   '/guestbook/print/$id': typeof GuestbookPrintIdRoute
@@ -558,6 +566,7 @@ export interface FileRoutesById {
   '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/api/public/health': typeof ApiPublicHealthRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
   '/guestbook/print/$id': typeof GuestbookPrintIdRoute
@@ -623,6 +632,7 @@ export interface FileRouteTypes {
     | '/theme-thumb/$slug'
     | '/admin/'
     | '/dashboard/'
+    | '/api/public/health'
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
     | '/guestbook/print/$id'
@@ -684,6 +694,7 @@ export interface FileRouteTypes {
     | '/theme-thumb/$slug'
     | '/admin'
     | '/dashboard'
+    | '/api/public/health'
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
     | '/guestbook/print/$id'
@@ -747,6 +758,7 @@ export interface FileRouteTypes {
     | '/theme-thumb/$slug'
     | '/admin/'
     | '/dashboard/'
+    | '/api/public/health'
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
     | '/guestbook/print/$id'
@@ -788,6 +800,7 @@ export interface RootRouteChildren {
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   PaymentCallbackRoute: typeof PaymentCallbackRoute
   ThemeThumbSlugRoute: typeof ThemeThumbSlugRoute
+  ApiPublicHealthRoute: typeof ApiPublicHealthRoute
   GuestbookPrintIdRoute: typeof GuestbookPrintIdRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicHooksRsvpMilestoneRoute: typeof ApiPublicHooksRsvpMilestoneRoute
@@ -1179,6 +1192,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardCeremoniesIdRouteImport
       parentRoute: typeof DashboardCeremoniesRoute
     }
+    '/api/public/health': {
+      id: '/api/public/health'
+      path: '/api/public/health'
+      fullPath: '/api/public/health'
+      preLoaderRoute: typeof ApiPublicHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/transactional/send': {
       id: '/lovable/email/transactional/send'
       path: '/lovable/email/transactional/send'
@@ -1347,6 +1367,7 @@ const rootRouteChildren: RootRouteChildren = {
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   PaymentCallbackRoute: PaymentCallbackRoute,
   ThemeThumbSlugRoute: ThemeThumbSlugRoute,
+  ApiPublicHealthRoute: ApiPublicHealthRoute,
   GuestbookPrintIdRoute: GuestbookPrintIdRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicHooksRsvpMilestoneRoute: ApiPublicHooksRsvpMilestoneRoute,
@@ -1360,3 +1381,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
