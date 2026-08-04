@@ -52,6 +52,7 @@ function PublishPage() {
   const validatePromo = useServerFn(validatePromoCode);
   const publishFn = useServerFn(publishWithPromo);
   const checkSlug = useServerFn(checkSlugAvailability);
+  const payFn = useServerFn(initializePaystackPayment);
   const navigate = useNavigate();
   const [promoOpen, setPromoOpen] = useState(false);
   const [promoCode, setPromoCode] = useState("");
