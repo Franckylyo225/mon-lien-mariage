@@ -22,6 +22,8 @@ function timeAgo(iso: string) {
 function iconFor(type: string) {
   if (type === "rsvp_milestone") return "🎉";
   if (type === "rsvp_confirmed") return "💌";
+  if (type === "publication_activated") return "🚀";
+  if (type === "guestbook_activated") return "📖";
   return "🔔";
 }
 

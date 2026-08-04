@@ -137,11 +137,38 @@ export const Route = createFileRoute("/api/public/webhooks/paystack")({
               ...(includeGuestbook ? { has_guestbook: true } : {}),
             })
             .eq("id", payment.wedding_id);
+          if (payment.user_id) {
+            await admin.from("notifications").insert({
+              user_id: payment.user_id,
+              wedding_id: payment.wedding_id,
+              type: "publication_activated",
+              title: "Votre invitation est publiée",
+              body: includeGuestbook
+                ? "Le paiement est confirmé : votre page est en ligne et le livre d'or est activé."
+                : "Le paiement est confirmé : votre page est désormais en ligne.",
+              data: {
+                slug,
+                reference,
+                include_guestbook: includeGuestbook,
+              },
+            });
+          }
         } else if (paymentType === "addon_guestbook" && payment.wedding_id) {
           await admin
             .from("weddings")
             .update({ has_guestbook: true })
             .eq("id", payment.wedding_id);
+
+          if (payment.user_id) {
+            await admin.from("notifications").insert({
+              user_id: payment.user_id,
+              wedding_id: payment.wedding_id,
+              type: "guestbook_activated",
+              title: "Livre d'or activé",
+              body: "Le paiement est confirmé : vos invités peuvent maintenant vous laisser un message.",
+              data: { reference },
+            });
+          }
         }
 
         return new Response("OK", { status: 200 });
