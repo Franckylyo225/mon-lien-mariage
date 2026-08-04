@@ -121,10 +121,55 @@ export const getPaymentStatus = createServerFn({ method: "POST" })
       .eq("paystack_reference", data.reference)
       .maybeSingle();
     if (!row) return { found: false as const };
+
+    let status = row.status as string;
+
+    // Repli : si le webhook n'a pas (encore) activé le paiement, on vérifie
+    // directement auprès de Paystack. Idempotent grâce à activatePaystackPayment.
+    if (status === "pending") {
+      const secretKey =
+        process.env["PAYSTACK_SECRET_KEY"] || process.env["STRIPE_TEST_API_KEY"];
+      if (secretKey) {
+        try {
+          const res = await fetch(
+            `https://api.paystack.co/transaction/verify/${encodeURIComponent(data.reference)}`,
+            { headers: { Authorization: `Bearer ${secretKey}` } },
+          );
+          const json = (await res.json().catch(() => null)) as
+            | { status?: boolean; data?: { status?: string; id?: number; channel?: string; metadata?: any } }
+            | null;
+          const trx = json?.data;
+          if (json?.status && trx?.status === "success") {
+            const { supabaseAdmin } = await import(
+              "@/integrations/supabase/client.server"
+            );
+            const { activatePaystackPayment } = await import(
+              "@/lib/paystack-activate.server"
+            );
+            await activatePaystackPayment(
+              supabaseAdmin as unknown as { from: (t: string) => any },
+              data.reference,
+              {
+                id: trx.id,
+                channel: trx.channel ?? null,
+                metadata: trx.metadata ?? null,
+              },
+            );
+            status = "success";
+          } else if (trx?.status === "failed" || trx?.status === "abandoned") {
+            status = trx.status;
+          }
+        } catch (e) {
+          console.error("[paystack] verify fallback failed", e);
+        }
+      }
+    }
+
     return {
       found: true as const,
-      status: row.status as string,
+      status,
       paymentType: row.payment_type as PaystackPaymentType,
       weddingId: row.wedding_id as string | null,
     };
   });
+
