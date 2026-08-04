@@ -15,6 +15,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { toast } from "sonner";
+import { redirectToCheckout } from "@/lib/checkout-redirect";
 import { useWedding, slugify } from "@/lib/wedding-store";
 import { validatePromoCode, publishWithPromo } from "@/lib/promo.functions";
 import { initializePaystackPayment } from "@/lib/paystack.functions";
