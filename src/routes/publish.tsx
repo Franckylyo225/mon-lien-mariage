@@ -17,6 +17,7 @@ import {
 import { toast } from "sonner";
 import { useWedding, slugify } from "@/lib/wedding-store";
 import { validatePromoCode, publishWithPromo } from "@/lib/promo.functions";
+import { initializePaystackPayment } from "@/lib/paystack.functions";
 import { checkSlugAvailability } from "@/lib/public-wedding.functions";
 import { useNavigate } from "@tanstack/react-router";
 

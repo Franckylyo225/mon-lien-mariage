@@ -29,6 +29,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ThemeThumbSlugRouteImport } from './routes/theme-thumb.$slug'
+import { Route as PaymentCallbackRouteImport } from './routes/payment.callback'
 import { Route as OnboardingThemeRouteImport } from './routes/onboarding.theme'
 import { Route as OnboardingPrenomsRouteImport } from './routes/onboarding.prenoms'
 import { Route as OnboardingEvenementRouteImport } from './routes/onboarding.evenement'
@@ -168,6 +169,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
 const ThemeThumbSlugRoute = ThemeThumbSlugRouteImport.update({
   id: '/theme-thumb/$slug',
   path: '/theme-thumb/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentCallbackRoute = PaymentCallbackRouteImport.update({
+  id: '/payment/callback',
+  path: '/payment/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingThemeRoute = OnboardingThemeRouteImport.update({
@@ -416,6 +422,7 @@ export interface FileRoutesByFullPath {
   '/onboarding/evenement': typeof OnboardingEvenementRoute
   '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
+  '/payment/callback': typeof PaymentCallbackRoute
   '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -475,6 +482,7 @@ export interface FileRoutesByTo {
   '/onboarding/evenement': typeof OnboardingEvenementRoute
   '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
+  '/payment/callback': typeof PaymentCallbackRoute
   '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
   '/admin': typeof AdminIndexRoute
   '/dashboard': typeof DashboardIndexRoute
@@ -537,6 +545,7 @@ export interface FileRoutesById {
   '/onboarding/evenement': typeof OnboardingEvenementRoute
   '/onboarding/prenoms': typeof OnboardingPrenomsRoute
   '/onboarding/theme': typeof OnboardingThemeRoute
+  '/payment/callback': typeof PaymentCallbackRoute
   '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
@@ -600,6 +609,7 @@ export interface FileRouteTypes {
     | '/onboarding/evenement'
     | '/onboarding/prenoms'
     | '/onboarding/theme'
+    | '/payment/callback'
     | '/theme-thumb/$slug'
     | '/admin/'
     | '/dashboard/'
@@ -659,6 +669,7 @@ export interface FileRouteTypes {
     | '/onboarding/evenement'
     | '/onboarding/prenoms'
     | '/onboarding/theme'
+    | '/payment/callback'
     | '/theme-thumb/$slug'
     | '/admin'
     | '/dashboard'
@@ -720,6 +731,7 @@ export interface FileRouteTypes {
     | '/onboarding/evenement'
     | '/onboarding/prenoms'
     | '/onboarding/theme'
+    | '/payment/callback'
     | '/theme-thumb/$slug'
     | '/admin/'
     | '/dashboard/'
@@ -761,6 +773,7 @@ export interface RootRouteChildren {
   AppSupportRoute: typeof AppSupportRoute
   ESlugRoute: typeof ESlugRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
+  PaymentCallbackRoute: typeof PaymentCallbackRoute
   ThemeThumbSlugRoute: typeof ThemeThumbSlugRoute
   GuestbookPrintIdRoute: typeof GuestbookPrintIdRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
@@ -913,6 +926,13 @@ declare module '@tanstack/react-router' {
       path: '/theme-thumb/$slug'
       fullPath: '/theme-thumb/$slug'
       preLoaderRoute: typeof ThemeThumbSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment/callback': {
+      id: '/payment/callback'
+      path: '/payment/callback'
+      fullPath: '/payment/callback'
+      preLoaderRoute: typeof PaymentCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding/theme': {
@@ -1304,6 +1324,7 @@ const rootRouteChildren: RootRouteChildren = {
   AppSupportRoute: AppSupportRoute,
   ESlugRoute: ESlugRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
+  PaymentCallbackRoute: PaymentCallbackRoute,
   ThemeThumbSlugRoute: ThemeThumbSlugRoute,
   GuestbookPrintIdRoute: GuestbookPrintIdRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
