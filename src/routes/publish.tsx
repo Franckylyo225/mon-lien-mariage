@@ -266,7 +266,7 @@ function PublishPage() {
       if (!res?.authorization_url) {
         throw new Error("Passerelle de paiement indisponible. Réessayez.");
       }
-      window.location.assign(res.authorization_url);
+      redirectToCheckout(res.authorization_url);
     } catch (e) {
       console.error("[paywall] payment init failed", e);
       const msg =
