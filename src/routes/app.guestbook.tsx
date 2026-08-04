@@ -9,6 +9,7 @@ import {
   deleteGuestbookMessage,
 } from "@/lib/guestbook.functions";
 import { initializePaystackPayment } from "@/lib/paystack.functions";
+import { redirectToCheckout } from "@/lib/checkout-redirect";
 
 const GUESTBOOK_ADDON_XOF = 1990;
 
