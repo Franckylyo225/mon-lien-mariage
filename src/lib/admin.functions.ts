@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireAuth as requireSupabaseAuth } from "@/lib/auth-middleware";
 
 const BASE_PRICE_XOF = 24900;
 const DAY_MS = 24 * 3600 * 1000;

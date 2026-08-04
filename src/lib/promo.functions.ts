@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireAuth as requireSupabaseAuth } from "@/lib/auth-middleware";
 import { loadUsablePromo, normalizePromoCode, type PromoRow } from "./promo.server";
 
 interface ValidateInput {
