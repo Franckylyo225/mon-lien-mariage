@@ -201,6 +201,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <WeddingProvider>
         <Outlet />
+        <Toaster position="top-center" richColors closeButton />
       </WeddingProvider>
     </QueryClientProvider>
   );
