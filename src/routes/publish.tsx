@@ -212,11 +212,14 @@ function PublishPage() {
   };
 
   const handlePublish = async () => {
+    setPayError(null);
     if (!weddingId) {
+      setPayError("Aucun événement actif. Rechargez la page.");
       toast.error("Aucun événement actif. Rechargez la page.");
       return;
     }
     if (!slugOk) {
+      setPayError("Le lien public n'est pas disponible. Choisissez-en un autre.");
       toast.error("Le lien public n'est pas disponible. Choisissez-en un autre.");
       return;
     }
@@ -240,7 +243,9 @@ function PublishPage() {
         toast.success("Votre invitation est publiée !");
         navigate({ to: "/dashboard/share" });
       } catch (e) {
-        toast.error(e instanceof Error ? e.message : "Publication impossible.");
+        const msg = e instanceof Error ? e.message : "Publication impossible.";
+        setPayError(msg);
+        toast.error(msg);
         setPublishing(false);
       }
       return;
@@ -248,7 +253,7 @@ function PublishPage() {
 
     // Paiement Paystack (mode test)
     try {
-      const { authorization_url } = await payFn({
+      const res = await payFn({
         data: {
           weddingId,
           paymentType: "publication",
@@ -258,11 +263,18 @@ function PublishPage() {
           callbackUrl: `${window.location.origin}/payment/callback`,
         },
       });
-      window.location.href = authorization_url;
+      if (!res?.authorization_url) {
+        throw new Error("Passerelle de paiement indisponible. Réessayez.");
+      }
+      window.location.assign(res.authorization_url);
     } catch (e) {
-      toast.error(
-        e instanceof Error ? e.message : "Impossible de lancer le paiement. Réessayez.",
-      );
+      console.error("[paywall] payment init failed", e);
+      const msg =
+        e instanceof Error
+          ? e.message
+          : "Impossible de lancer le paiement. Réessayez.";
+      setPayError(msg);
+      toast.error(msg);
       setPublishing(false);
     }
   };
