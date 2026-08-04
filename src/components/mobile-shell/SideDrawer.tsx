@@ -12,6 +12,7 @@ import {
   IconCalendarHeart,
   IconChevronRight,
   IconBook,
+  IconBell,
 } from "@tabler/icons-react";
 import { useNotifications } from "@/hooks/use-notifications";
 
