@@ -297,32 +297,55 @@ export const listPayments = createServerFn({ method: "GET" })
     await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const { data: weddings } = await supabaseAdmin
-      .from("weddings")
-      .select("id, owner_id, bride_name, groom_name, slug, published_at")
-      .eq("is_published", true)
-      .not("published_at", "is", null)
-      .order("published_at", { ascending: false })
+    const { data: payments } = await supabaseAdmin
+      .from("payments")
+      .select(
+        "id, user_id, wedding_id, amount_fcfa, currency, payment_type, status, paystack_reference, paystack_transaction_id, payment_method, created_at, updated_at",
+      )
+      .order("created_at", { ascending: false })
       .limit(1000);
 
-    const ownerIds = Array.from(new Set((weddings ?? []).map((w) => w.owner_id)));
-    const { data: owners } = ownerIds.length
+    const rows = payments ?? [];
+
+    const weddingIds = Array.from(
+      new Set(rows.map((p) => p.wedding_id).filter(Boolean) as string[]),
+    );
+    const userIds = Array.from(new Set(rows.map((p) => p.user_id).filter(Boolean)));
+
+    const { data: weddings } = weddingIds.length
       ? await supabaseAdmin
-          .from("profiles")
-          .select("id, email")
-          .in("id", ownerIds)
+          .from("weddings")
+          .select("id, bride_name, groom_name, slug")
+          .in("id", weddingIds)
+      : { data: [] as Array<{ id: string; bride_name: string; groom_name: string; slug: string | null }> };
+    const weddingMap = new Map((weddings ?? []).map((w) => [w.id, w]));
+
+    const { data: owners } = userIds.length
+      ? await supabaseAdmin.from("profiles").select("id, email").in("id", userIds)
       : { data: [] as Array<{ id: string; email: string | null }> };
     const ownerMap = new Map((owners ?? []).map((o) => [o.id, o]));
 
-    return (weddings ?? []).map((w) => ({
-      wedding_id: w.id,
-      couple: `${w.bride_name} & ${w.groom_name}`,
-      slug: w.slug,
-      owner_email: ownerMap.get(w.owner_id)?.email ?? null,
-      paid_at: w.published_at,
-      amount_xof: BASE_PRICE_XOF,
-    }));
+    return rows.map((p) => {
+      const w = p.wedding_id ? weddingMap.get(p.wedding_id) : null;
+      return {
+        id: p.id,
+        wedding_id: p.wedding_id,
+        couple: w ? `${w.bride_name} & ${w.groom_name}` : "—",
+        slug: w?.slug ?? null,
+        owner_email: ownerMap.get(p.user_id)?.email ?? null,
+        amount_xof: Number(p.amount_fcfa ?? 0),
+        currency: p.currency ?? "XOF",
+        payment_type: p.payment_type as string,
+        status: p.status as string,
+        reference: p.paystack_reference as string,
+        transaction_id: p.paystack_transaction_id as string | null,
+        method: p.payment_method as string | null,
+        created_at: p.created_at as string,
+        updated_at: p.updated_at as string,
+      };
+    });
   });
+
 
 export const listEmailLog = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
