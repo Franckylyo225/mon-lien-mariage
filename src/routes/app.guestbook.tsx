@@ -65,7 +65,8 @@ function OwnerGuestbookPage() {
           callbackUrl: `${window.location.origin}/payment/callback`,
         },
       });
-      window.location.href = authorization_url;
+      if (!authorization_url) throw new Error("Passerelle indisponible.");
+      redirectToCheckout(authorization_url);
     } catch (e) {
       toast.error(
         e instanceof Error ? e.message : "Erreur de paiement. Réessayez.",
