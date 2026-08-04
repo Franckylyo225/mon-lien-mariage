@@ -120,12 +120,32 @@ function OwnerGuestbookPage() {
             <p className="text-sm text-muted-foreground">
               Le livre d'or n'est pas activé pour cet événement.
             </p>
-            <Link
-              to="/publish"
-              className="mt-4 inline-flex items-center rounded-full bg-primary px-5 py-2.5 text-[12px] font-medium text-primary-foreground"
-            >
-              Activer le livre d'or
-            </Link>
+            {couple.isPublished ? (
+              <>
+                <p className="mt-2 text-[12px] text-muted-foreground">
+                  Activez-le dès maintenant pour{" "}
+                  {GUESTBOOK_ADDON_XOF.toLocaleString("fr-FR")} F CFA.
+                </p>
+                <button
+                  type="button"
+                  onClick={handleGuestbookPayment}
+                  disabled={paying || !weddingId}
+                  className="mt-4 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-[12px] font-medium text-primary-foreground disabled:opacity-60"
+                >
+                  {paying ? <Loader2 className="size-3.5 animate-spin" /> : null}
+                  {paying
+                    ? "Redirection…"
+                    : `Activer pour ${GUESTBOOK_ADDON_XOF.toLocaleString("fr-FR")} F CFA`}
+                </button>
+              </>
+            ) : (
+              <Link
+                to="/publish"
+                className="mt-4 inline-flex items-center rounded-full bg-primary px-5 py-2.5 text-[12px] font-medium text-primary-foreground"
+              >
+                Activer le livre d'or
+              </Link>
+            )}
           </div>
         ) : busy ? (
           <div className="grid place-items-center py-16">
