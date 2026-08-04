@@ -47,8 +47,31 @@ function OwnerGuestbookPage() {
   const { weddingId, couple, loading } = useWedding();
   const listFn = useServerFn(listOwnGuestbook);
   const delFn = useServerFn(deleteGuestbookMessage);
+  const payFn = useServerFn(initializePaystackPayment);
   const [messages, setMessages] = useState<Message[]>([]);
   const [busy, setBusy] = useState(true);
+  const [paying, setPaying] = useState(false);
+
+  const handleGuestbookPayment = async () => {
+    if (!weddingId) return;
+    setPaying(true);
+    try {
+      const { authorization_url } = await payFn({
+        data: {
+          weddingId,
+          paymentType: "addon_guestbook",
+          amountFcfa: GUESTBOOK_ADDON_XOF,
+          callbackUrl: `${window.location.origin}/payment/callback`,
+        },
+      });
+      window.location.href = authorization_url;
+    } catch (e) {
+      toast.error(
+        e instanceof Error ? e.message : "Erreur de paiement. Réessayez.",
+      );
+      setPaying(false);
+    }
+  };
 
   useEffect(() => {
     if (!weddingId) return;
