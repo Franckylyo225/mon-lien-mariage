@@ -49,8 +49,24 @@ function AdminLayout() {
           return;
         }
         setUser(data.user);
-        const role = await check();
-        if (!cancelled) setStatus(role.isAdmin ? "ok" : "denied");
+
+        // Source de vérité : RPC has_role côté client (jeton utilisateur).
+        const [adminRole, ownerRole] = await Promise.all([
+          supabase.rpc("has_role", { _user_id: data.user.id, _role: "admin" }),
+          supabase.rpc("has_role", { _user_id: data.user.id, _role: "owner" }),
+        ]);
+        if (cancelled) return;
+        if (!adminRole.error && !ownerRole.error) {
+          setStatus(adminRole.data || ownerRole.data ? "ok" : "denied");
+          return;
+        }
+        // Repli : vérification côté serveur si le RPC échoue.
+        try {
+          const role = await check();
+          if (!cancelled) setStatus(role.isAdmin ? "ok" : "denied");
+        } catch {
+          if (!cancelled) setStatus("denied");
+        }
       })
       .catch(() => {
         if (!cancelled) setStatus("denied");
