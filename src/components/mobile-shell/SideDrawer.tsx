@@ -12,6 +12,7 @@ import {
   IconCalendarHeart,
   IconChevronRight,
   IconBook,
+  IconBell,
 } from "@tabler/icons-react";
 import { useNotifications } from "@/hooks/use-notifications";
 
@@ -28,6 +29,7 @@ interface SideDrawerProps {
 
 const items = [
   { label: "Mon profil", Icon: IconUser, to: "/app/profile" as const, badgeType: null as string | null },
+  { label: "Notifications", Icon: IconBell, to: "/app/notifications" as const, badgeType: null as string | null },
   { label: "Livre d'or", Icon: IconBook, to: "/app/guestbook" as const, badgeType: null as string | null },
   { label: "Statistiques RSVP", Icon: IconChartBar, to: "/dashboard/stats" as const, badgeType: null as string | null },
   { label: "Liens & partages", Icon: IconShare, to: "/dashboard/share" as const, badgeType: null as string | null },

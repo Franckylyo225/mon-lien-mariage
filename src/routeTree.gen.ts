@@ -47,6 +47,7 @@ import { Route as DashboardCeremoniesRouteImport } from './routes/dashboard.cere
 import { Route as DashboardBillingRouteImport } from './routes/dashboard.billing'
 import { Route as AppSupportRouteImport } from './routes/app.support'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
+import { Route as AppNotificationsRouteImport } from './routes/app.notifications'
 import { Route as AppHelpRouteImport } from './routes/app.help'
 import { Route as AppGuestbookRouteImport } from './routes/app.guestbook'
 import { Route as AdminWeddingsRouteImport } from './routes/admin.weddings'
@@ -261,6 +262,11 @@ const AppProfileRoute = AppProfileRouteImport.update({
   path: '/app/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppNotificationsRoute = AppNotificationsRouteImport.update({
+  id: '/app/notifications',
+  path: '/app/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppHelpRoute = AppHelpRouteImport.update({
   id: '/app/help',
   path: '/app/help',
@@ -405,6 +411,7 @@ export interface FileRoutesByFullPath {
   '/admin/weddings': typeof AdminWeddingsRoute
   '/app/guestbook': typeof AppGuestbookRoute
   '/app/help': typeof AppHelpRoute
+  '/app/notifications': typeof AppNotificationsRoute
   '/app/profile': typeof AppProfileRoute
   '/app/support': typeof AppSupportRoute
   '/dashboard/billing': typeof DashboardBillingRoute
@@ -465,6 +472,7 @@ export interface FileRoutesByTo {
   '/admin/weddings': typeof AdminWeddingsRoute
   '/app/guestbook': typeof AppGuestbookRoute
   '/app/help': typeof AppHelpRoute
+  '/app/notifications': typeof AppNotificationsRoute
   '/app/profile': typeof AppProfileRoute
   '/app/support': typeof AppSupportRoute
   '/dashboard/billing': typeof DashboardBillingRoute
@@ -528,6 +536,7 @@ export interface FileRoutesById {
   '/admin/weddings': typeof AdminWeddingsRoute
   '/app/guestbook': typeof AppGuestbookRoute
   '/app/help': typeof AppHelpRoute
+  '/app/notifications': typeof AppNotificationsRoute
   '/app/profile': typeof AppProfileRoute
   '/app/support': typeof AppSupportRoute
   '/dashboard/billing': typeof DashboardBillingRoute
@@ -592,6 +601,7 @@ export interface FileRouteTypes {
     | '/admin/weddings'
     | '/app/guestbook'
     | '/app/help'
+    | '/app/notifications'
     | '/app/profile'
     | '/app/support'
     | '/dashboard/billing'
@@ -652,6 +662,7 @@ export interface FileRouteTypes {
     | '/admin/weddings'
     | '/app/guestbook'
     | '/app/help'
+    | '/app/notifications'
     | '/app/profile'
     | '/app/support'
     | '/dashboard/billing'
@@ -714,6 +725,7 @@ export interface FileRouteTypes {
     | '/admin/weddings'
     | '/app/guestbook'
     | '/app/help'
+    | '/app/notifications'
     | '/app/profile'
     | '/app/support'
     | '/dashboard/billing'
@@ -769,6 +781,7 @@ export interface RootRouteChildren {
   VerifyEmailRoute: typeof VerifyEmailRoute
   AppGuestbookRoute: typeof AppGuestbookRoute
   AppHelpRoute: typeof AppHelpRoute
+  AppNotificationsRoute: typeof AppNotificationsRoute
   AppProfileRoute: typeof AppProfileRoute
   AppSupportRoute: typeof AppSupportRoute
   ESlugRoute: typeof ESlugRoute
@@ -1054,6 +1067,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/notifications': {
+      id: '/app/notifications'
+      path: '/app/notifications'
+      fullPath: '/app/notifications'
+      preLoaderRoute: typeof AppNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/help': {
       id: '/app/help'
       path: '/app/help'
@@ -1320,6 +1340,7 @@ const rootRouteChildren: RootRouteChildren = {
   VerifyEmailRoute: VerifyEmailRoute,
   AppGuestbookRoute: AppGuestbookRoute,
   AppHelpRoute: AppHelpRoute,
+  AppNotificationsRoute: AppNotificationsRoute,
   AppProfileRoute: AppProfileRoute,
   AppSupportRoute: AppSupportRoute,
   ESlugRoute: ESlugRoute,
