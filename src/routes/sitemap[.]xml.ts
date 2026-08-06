@@ -26,7 +26,23 @@ export const Route = createFileRoute("/sitemap.xml")({
     handlers: {
       GET: async () => {
         const lastmod = new Date().toISOString().split("T")[0];
-        const urls = entries
+
+        const all: SitemapEntry[] = [...entries];
+        try {
+          const { supabase } = await import("@/integrations/supabase/client");
+          const { data } = await supabase
+            .from("blog_posts")
+            .select("slug")
+            .eq("is_published", true);
+          for (const p of data ?? []) {
+            all.push({ path: `/blog/${p.slug}`, changefreq: "monthly", priority: "0.6" });
+          }
+        } catch {
+          /* sitemap stays static if the blog cannot be read */
+        }
+
+        const urls = all
+
           .map((e) =>
             [
               `  <url>`,
