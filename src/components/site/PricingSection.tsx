@@ -32,21 +32,6 @@ const ITEMS: {
 
 const PREVIEW_URL = "https://www.moninvit.com/e/basile-et-armelle1";
 
-const FAQS: { q: string; a: string }[] = [
-  {
-    q: "Et si je veux annuler après publication ?",
-    a: "Votre page reste en ligne à vie. Si vous souhaitez la supprimer, vous pouvez le faire depuis votre profil à tout moment. Aucun remboursement n'est prévu pour les publications confirmées, mais vous pouvez modifier votre invitation autant que vous voulez.",
-  },
-  {
-    q: "Le livre d'or est-il inclus ?",
-    a: "Le livre d'or est un add-on optionnel à 1 990 XOF, activable au moment de la publication ou après coup, depuis votre tableau de bord. Il n'est pas inclus dans le prix de base.",
-  },
-  {
-    q: "Est-ce que le prix peut changer ?",
-    a: "Le prix que vous payez à la publication est définitif pour votre événement. Si nos tarifs évoluent, cela ne concerne que les nouvelles publications — jamais les pages déjà créées.",
-  },
-];
-
 export function PricingSection() {
   const ref = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
