@@ -29,6 +29,7 @@ import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ThemeThumbSlugRouteImport } from './routes/theme-thumb.$slug'
 import { Route as PaymentCallbackRouteImport } from './routes/payment.callback'
@@ -175,6 +176,11 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => DashboardRoute,
+} as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BlogRoute,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
@@ -405,7 +411,7 @@ const ApiPublicHooksRsvpMilestoneRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/blog': typeof BlogRoute
+  '/blog': typeof BlogRouteWithChildren
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/conditions-generales-de-vente': typeof ConditionsGeneralesDeVenteRoute
   '/contact': typeof ContactRoute
@@ -453,6 +459,7 @@ export interface FileRoutesByFullPath {
   '/payment/callback': typeof PaymentCallbackRoute
   '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/blog/': typeof BlogIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
@@ -470,7 +477,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/blog': typeof BlogRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/conditions-generales-de-vente': typeof ConditionsGeneralesDeVenteRoute
   '/contact': typeof ContactRoute
@@ -517,6 +523,7 @@ export interface FileRoutesByTo {
   '/payment/callback': typeof PaymentCallbackRoute
   '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
   '/admin': typeof AdminIndexRoute
+  '/blog': typeof BlogIndexRoute
   '/dashboard': typeof DashboardIndexRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
@@ -536,7 +543,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/blog': typeof BlogRoute
+  '/blog': typeof BlogRouteWithChildren
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/conditions-generales-de-vente': typeof ConditionsGeneralesDeVenteRoute
   '/contact': typeof ContactRoute
@@ -584,6 +591,7 @@ export interface FileRoutesById {
   '/payment/callback': typeof PaymentCallbackRoute
   '/theme-thumb/$slug': typeof ThemeThumbSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/blog/': typeof BlogIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
@@ -652,6 +660,7 @@ export interface FileRouteTypes {
     | '/payment/callback'
     | '/theme-thumb/$slug'
     | '/admin/'
+    | '/blog/'
     | '/dashboard/'
     | '/api/public/health'
     | '/dashboard/ceremonies/$id'
@@ -669,7 +678,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/blog'
     | '/comment-ca-marche'
     | '/conditions-generales-de-vente'
     | '/contact'
@@ -716,6 +724,7 @@ export interface FileRouteTypes {
     | '/payment/callback'
     | '/theme-thumb/$slug'
     | '/admin'
+    | '/blog'
     | '/dashboard'
     | '/api/public/health'
     | '/dashboard/ceremonies/$id'
@@ -782,6 +791,7 @@ export interface FileRouteTypes {
     | '/payment/callback'
     | '/theme-thumb/$slug'
     | '/admin/'
+    | '/blog/'
     | '/dashboard/'
     | '/api/public/health'
     | '/dashboard/ceremonies/$id'
@@ -801,7 +811,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
-  BlogRoute: typeof BlogRoute
+  BlogRoute: typeof BlogRouteWithChildren
   CommentCaMarcheRoute: typeof CommentCaMarcheRoute
   ConditionsGeneralesDeVenteRoute: typeof ConditionsGeneralesDeVenteRoute
   ContactRoute: typeof ContactRoute
@@ -980,6 +990,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/'
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof BlogRoute
     }
     '/admin/': {
       id: '/admin/'
@@ -1318,6 +1335,16 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface BlogRouteChildren {
+  BlogIndexRoute: typeof BlogIndexRoute
+}
+
+const BlogRouteChildren: BlogRouteChildren = {
+  BlogIndexRoute: BlogIndexRoute,
+}
+
+const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
+
 interface DashboardCeremoniesRouteChildren {
   DashboardCeremoniesIdRoute: typeof DashboardCeremoniesIdRoute
 }
@@ -1384,7 +1411,7 @@ const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
-  BlogRoute: BlogRoute,
+  BlogRoute: BlogRouteWithChildren,
   CommentCaMarcheRoute: CommentCaMarcheRoute,
   ConditionsGeneralesDeVenteRoute: ConditionsGeneralesDeVenteRoute,
   ContactRoute: ContactRoute,
@@ -1424,13 +1451,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
