@@ -146,7 +146,7 @@ export function GuestbookFab({ weddingId, brideName, groomName }: Props) {
               <div style={{ padding: "20px 20px 12px" }}>
                 <div style={{ textAlign: "center", marginBottom: 18 }}>
                   <div className="sheet-icon">
-                    <BookHeartIcon color="#993556" size={26} />
+                    <BookHeartIcon color="#C8973A" size={26} />
                   </div>
                   <p className="sheet-title">Livre d'or</p>
                   <p className="sheet-subtitle">

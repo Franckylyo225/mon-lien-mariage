@@ -513,22 +513,22 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #FBEAF0, #F5D5E0);
+  background: linear-gradient(135deg, #FFF7E0, #F8E6B8);
   margin: 0 auto 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 12px rgba(153, 53, 86, 0.2);
+  box-shadow: 0 2px 12px rgba(200, 151, 58, 0.2);
 }
 .sheet-title {
   font-family: 'Playfair Display', serif;
   font-style: italic;
   font-size: 22px;
-  color: #1A1A1A;
+  color: #C8973A;
   margin-bottom: 6px;
 }
 .sheet-subtitle { font-size: 13px; color: #9CA3AF; line-height: 1.6; }
-.sheet-subtitle strong { color: #993556; }
+.sheet-subtitle strong { color: #C8973A; }
 .sheet-input,
 .sheet-textarea {
   width: 100%;
@@ -562,8 +562,9 @@
   color: #9CA3AF;
 }
 .sheet-submit.active {
-  background: linear-gradient(135deg, #4B1528 0%, #993556 100%);
-  color: #FBEAF0;
+  background: linear-gradient(135deg, #8B6914 0%, #C8973A 50%, #E8C46A 100%);
+  color: #1A1A1A;
+  box-shadow: 0 4px 16px rgba(200, 151, 58, 0.35);
 }
 .sheet-privacy { font-size: 10px; color: #C5C5C5; text-align: center; margin-top: 10px; line-height: 1.5; }
 .success-check {
