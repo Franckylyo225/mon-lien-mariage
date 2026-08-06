@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_secrets: {
+        Row: {
+          created_at: string
+          key: string
+          value_hash: string
+        }
+        Insert: {
+          created_at?: string
+          key: string
+          value_hash: string
+        }
+        Update: {
+          created_at?: string
+          key?: string
+          value_hash?: string
+        }
+        Relationships: []
+      }
       ceremonies: {
         Row: {
           capacity: number | null
@@ -969,6 +987,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      activate_payment_secure: {
+        Args: {
+          _channel?: string
+          _metadata?: Json
+          _reference: string
+          _token: string
+          _transaction_id?: string
+        }
+        Returns: string
+      }
       delete_email: {
         Args: { message_id: number; queue_name: string }
         Returns: boolean
@@ -1002,6 +1030,7 @@ export type Database = {
           read_ct: number
         }[]
       }
+      unaccent_fallback: { Args: { _t: string }; Returns: string }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user" | "owner"
