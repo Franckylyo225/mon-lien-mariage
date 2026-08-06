@@ -35,8 +35,6 @@ const TONE_TO_THEME: Record<LegacyTone, ThemeId> = {
   deco: "or-antique",
 };
 
-const DIETARY_TAGS = [] as const;
-
 export function TemplateRsvpForm({ theme, tone, weddingId, ceremonies = [], onConfirmed }: Props) {
   const resolvedTheme: ThemeId | undefined =
     theme ?? (tone ? TONE_TO_THEME[tone] : undefined);
