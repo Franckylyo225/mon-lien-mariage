@@ -23,6 +23,7 @@ import { Route as InvitationRouteImport } from './routes/invitation'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ConditionsGeneralesDeVenteRouteImport } from './routes/conditions-generales-de-vente'
 import { Route as CommentCaMarcheRouteImport } from './routes/comment-ca-marche'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -144,6 +145,12 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConditionsGeneralesDeVenteRoute =
+  ConditionsGeneralesDeVenteRouteImport.update({
+    id: '/conditions-generales-de-vente',
+    path: '/conditions-generales-de-vente',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const CommentCaMarcheRoute = CommentCaMarcheRouteImport.update({
   id: '/comment-ca-marche',
   path: '/comment-ca-marche',
@@ -400,6 +407,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/blog': typeof BlogRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
+  '/conditions-generales-de-vente': typeof ConditionsGeneralesDeVenteRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
@@ -464,6 +472,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/blog': typeof BlogRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
+  '/conditions-generales-de-vente': typeof ConditionsGeneralesDeVenteRoute
   '/contact': typeof ContactRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/invitation': typeof InvitationRoute
@@ -529,6 +538,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/blog': typeof BlogRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
+  '/conditions-generales-de-vente': typeof ConditionsGeneralesDeVenteRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
@@ -596,6 +606,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/blog'
     | '/comment-ca-marche'
+    | '/conditions-generales-de-vente'
     | '/contact'
     | '/dashboard'
     | '/forgot-password'
@@ -660,6 +671,7 @@ export interface FileRouteTypes {
     | '/'
     | '/blog'
     | '/comment-ca-marche'
+    | '/conditions-generales-de-vente'
     | '/contact'
     | '/forgot-password'
     | '/invitation'
@@ -724,6 +736,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/blog'
     | '/comment-ca-marche'
+    | '/conditions-generales-de-vente'
     | '/contact'
     | '/dashboard'
     | '/forgot-password'
@@ -790,6 +803,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   BlogRoute: typeof BlogRoute
   CommentCaMarcheRoute: typeof CommentCaMarcheRoute
+  ConditionsGeneralesDeVenteRoute: typeof ConditionsGeneralesDeVenteRoute
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   ForgotPasswordRoute: typeof ForgotPasswordRoute
@@ -923,6 +937,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conditions-generales-de-vente': {
+      id: '/conditions-generales-de-vente'
+      path: '/conditions-generales-de-vente'
+      fullPath: '/conditions-generales-de-vente'
+      preLoaderRoute: typeof ConditionsGeneralesDeVenteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/comment-ca-marche': {
@@ -1365,6 +1386,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   BlogRoute: BlogRoute,
   CommentCaMarcheRoute: CommentCaMarcheRoute,
+  ConditionsGeneralesDeVenteRoute: ConditionsGeneralesDeVenteRoute,
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRouteWithChildren,
   ForgotPasswordRoute: ForgotPasswordRoute,
@@ -1402,13 +1424,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
