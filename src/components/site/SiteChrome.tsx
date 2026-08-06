@@ -279,10 +279,15 @@ export function SiteFooter() {
           </FooterColumn>
 
           <FooterColumn title="Légal">
+            <FooterLink to="/contact">Contact</FooterLink>
+            <FooterLink to="/conditions-generales-de-vente">
+              Conditions générales de vente
+            </FooterLink>
             <FooterLink to="/termes-et-conditions">Termes & conditions</FooterLink>
             <FooterLink to="/politique-de-confidentialite">
               Politique de confidentialité
             </FooterLink>
+
             <li>
               <button
                 type="button"
