@@ -11,7 +11,6 @@ import {
   BookHeart,
   Infinity as InfinityIcon,
   Lock,
-  Plus,
 } from "lucide-react";
 
 const ITEMS: {
@@ -33,25 +32,9 @@ const ITEMS: {
 
 const PREVIEW_URL = "https://www.moninvit.com/e/basile-et-armelle1";
 
-const FAQS: { q: string; a: string }[] = [
-  {
-    q: "Et si je veux annuler après publication ?",
-    a: "Votre page reste en ligne à vie. Si vous souhaitez la supprimer, vous pouvez le faire depuis votre profil à tout moment. Aucun remboursement n'est prévu pour les publications confirmées, mais vous pouvez modifier votre invitation autant que vous voulez.",
-  },
-  {
-    q: "Le livre d'or est-il inclus ?",
-    a: "Le livre d'or est un add-on optionnel à 1 990 XOF, activable au moment de la publication ou après coup, depuis votre tableau de bord. Il n'est pas inclus dans le prix de base.",
-  },
-  {
-    q: "Est-ce que le prix peut changer ?",
-    a: "Le prix que vous payez à la publication est définitif pour votre événement. Si nos tarifs évoluent, cela ne concerne que les nouvelles publications — jamais les pages déjà créées.",
-  },
-];
-
 export function PricingSection() {
   const ref = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
-  const [open, setOpen] = useState<number | null>(null);
 
   useEffect(() => {
     const el = ref.current;
@@ -245,40 +228,6 @@ export function PricingSection() {
           </div>
         </div>
 
-        {/* Mini FAQ */}
-        <div className="mt-8">
-          {FAQS.map((f, i) => {
-            const isOpen = open === i;
-            return (
-              <div
-                key={f.q}
-                className="mx-auto max-w-[680px] border-t-[0.5px] border-[#F0F0F0] py-3.5"
-              >
-                <button
-                  type="button"
-                  onClick={() => setOpen(isOpen ? null : i)}
-                  aria-expanded={isOpen}
-                  className="flex w-full items-center justify-between gap-3 text-left text-[13px] font-medium text-[#1A1A1A]"
-                >
-                  <span>{f.q}</span>
-                  <Plus
-                    size={16}
-                    aria-hidden
-                    className={
-                      "shrink-0 text-[#9CA3AF] transition-transform duration-200 " +
-                      (isOpen ? "rotate-45" : "")
-                    }
-                  />
-                </button>
-                {isOpen ? (
-                  <p className="mt-2.5 pr-6 text-[12px] leading-[1.65] text-[#6B6B6B]">
-                    {f.a}
-                  </p>
-                ) : null}
-              </div>
-            );
-          })}
-        </div>
       </div>
     </section>
   );
