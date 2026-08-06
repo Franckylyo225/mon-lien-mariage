@@ -9,6 +9,7 @@ import {
   IconSettings,
   IconArrowLeft,
   IconLifebuoy,
+  IconArticle,
 } from "@tabler/icons-react";
 import {
   Sidebar,
@@ -87,6 +88,7 @@ export function AdminSidebar({ email }: { email?: string | null }) {
         <Section label="Analytique" items={analytics} pathname={pathname} />
         <Section label="Croissance" items={growth} pathname={pathname} />
         <Section label="Finance" items={finance} pathname={pathname} />
+        <Section label="Contenu" items={content} pathname={pathname} />
         <Section label="Système" items={system} pathname={pathname} />
       </SidebarContent>
       <SidebarFooter>
