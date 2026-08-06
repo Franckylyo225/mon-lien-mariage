@@ -1013,6 +1013,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      mark_payment_failed_secure: {
+        Args: { _reference: string; _status: string; _token: string }
+        Returns: string
+      }
       move_to_dlq: {
         Args: {
           dlq_name: string
