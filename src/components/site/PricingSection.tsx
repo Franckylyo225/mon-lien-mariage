@@ -228,40 +228,6 @@ export function PricingSection() {
           </div>
         </div>
 
-        {/* Mini FAQ */}
-        <div className="mt-8">
-          {FAQS.map((f, i) => {
-            const isOpen = open === i;
-            return (
-              <div
-                key={f.q}
-                className="mx-auto max-w-[680px] border-t-[0.5px] border-[#F0F0F0] py-3.5"
-              >
-                <button
-                  type="button"
-                  onClick={() => setOpen(isOpen ? null : i)}
-                  aria-expanded={isOpen}
-                  className="flex w-full items-center justify-between gap-3 text-left text-[13px] font-medium text-[#1A1A1A]"
-                >
-                  <span>{f.q}</span>
-                  <Plus
-                    size={16}
-                    aria-hidden
-                    className={
-                      "shrink-0 text-[#9CA3AF] transition-transform duration-200 " +
-                      (isOpen ? "rotate-45" : "")
-                    }
-                  />
-                </button>
-                {isOpen ? (
-                  <p className="mt-2.5 pr-6 text-[12px] leading-[1.65] text-[#6B6B6B]">
-                    {f.a}
-                  </p>
-                ) : null}
-              </div>
-            );
-          })}
-        </div>
       </div>
     </section>
   );
