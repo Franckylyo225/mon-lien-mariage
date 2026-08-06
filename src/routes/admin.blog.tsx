@@ -459,28 +459,71 @@ function AdminBlog() {
                 />
               </label>
 
-              <label className="sm:col-span-2 space-y-1">
-                <span className="text-[12px] text-muted-foreground">
-                  Contenu (markdown simple : ##, -, paragraphes)
-                </span>
-                <textarea
-                  rows={12}
-                  className={`${inputCls} font-mono text-[12px]`}
+              <div className="sm:col-span-2 space-y-1">
+                <span className="text-[12px] text-muted-foreground">Contenu</span>
+                <RichTextEditor
                   value={form.content}
-                  onChange={(e) => setForm((f) => (f ? { ...f, content: e.target.value } : f))}
+                  onChange={(html) => setForm((f) => (f ? { ...f, content: html } : f))}
                 />
-              </label>
+              </div>
 
-              <label className="sm:col-span-2 space-y-1">
-                <span className="text-[12px] text-muted-foreground">Image de couverture (URL)</span>
-                <input
-                  className={inputCls}
-                  value={form.cover_image_url}
-                  onChange={(e) =>
-                    setForm((f) => (f ? { ...f, cover_image_url: e.target.value } : f))
-                  }
-                />
-              </label>
+              <div className="sm:col-span-2 space-y-2">
+                <span className="text-[12px] text-muted-foreground">Image de couverture</span>
+                {form.cover_image_url ? (
+                  <div className="relative overflow-hidden rounded-xl border border-border/70">
+                    <img
+                      src={form.cover_image_url}
+                      alt="Aperçu de la couverture"
+                      className="h-44 w-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setForm((f) => (f ? { ...f, cover_image_url: "" } : f))
+                      }
+                      className="absolute right-2 top-2 rounded-full bg-white/90 p-1.5 shadow hover:bg-white"
+                      title="Retirer l'image"
+                    >
+                      <IconTrash size={15} className="text-destructive" />
+                    </button>
+                  </div>
+                ) : null}
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => coverRef.current?.click()}
+                    disabled={coverUploading}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-border/70 px-3 py-1.5 text-[12px] hover:bg-secondary disabled:opacity-60"
+                  >
+                    {coverUploading ? (
+                      <IconLoader2 size={14} className="animate-spin" />
+                    ) : (
+                      <IconUpload size={14} />
+                    )}
+                    {form.cover_image_url ? "Remplacer l'image" : "Téléverser une image"}
+                  </button>
+                  <input
+                    ref={coverRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      e.target.value = "";
+                      if (f) void handleCoverUpload(f);
+                    }}
+                  />
+                  <input
+                    className={`${inputCls} flex-1 min-w-[220px]`}
+                    placeholder="…ou collez une URL d'image"
+                    value={form.cover_image_url}
+                    onChange={(e) =>
+                      setForm((f) => (f ? { ...f, cover_image_url: e.target.value } : f))
+                    }
+                  />
+                </div>
+              </div>
+
 
               <label className="space-y-1">
                 <span className="text-[12px] text-muted-foreground">Auteur</span>
