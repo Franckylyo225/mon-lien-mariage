@@ -8,7 +8,7 @@ import { componentForTheme } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
 import { ParticleCanvas, RsvpBurstOverlay } from "@/components/particles/ParticleCanvas";
 import { AmbientMusicPlayer } from "@/components/music/AmbientMusicPlayer";
-import { GuestbookSection } from "@/components/invitation-templates/guestbook-section";
+import { GuestbookFab } from "@/components/invitation-templates/guestbook-fab";
 import { RevealOnScroll } from "@/components/site/RevealOnScroll";
 import type { BackgroundBase, Ceremony, Couple, EventType, TemplateId, ThemeId } from "@/lib/wedding-store";
 import { resolveTheme } from "@/lib/wedding-theme";
