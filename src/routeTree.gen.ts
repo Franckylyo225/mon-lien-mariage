@@ -60,6 +60,7 @@ import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
+import { Route as AdminBlogRouteImport } from './routes/admin.blog'
 import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as DashboardGuestsIndexRouteImport } from './routes/dashboard.guests.index'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
@@ -332,6 +333,11 @@ const AdminEmailsRoute = AdminEmailsRouteImport.update({
   path: '/emails',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminBlogRoute = AdminBlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminActivityRoute = AdminActivityRouteImport.update({
   id: '/activity',
   path: '/activity',
@@ -428,6 +434,7 @@ export interface FileRoutesByFullPath {
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/verify-email': typeof VerifyEmailRoute
   '/admin/activity': typeof AdminActivityRoute
+  '/admin/blog': typeof AdminBlogRoute
   '/admin/emails': typeof AdminEmailsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/payments': typeof AdminPaymentsRoute
@@ -493,6 +500,7 @@ export interface FileRoutesByTo {
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/verify-email': typeof VerifyEmailRoute
   '/admin/activity': typeof AdminActivityRoute
+  '/admin/blog': typeof AdminBlogRoute
   '/admin/emails': typeof AdminEmailsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/payments': typeof AdminPaymentsRoute
@@ -561,6 +569,7 @@ export interface FileRoutesById {
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/verify-email': typeof VerifyEmailRoute
   '/admin/activity': typeof AdminActivityRoute
+  '/admin/blog': typeof AdminBlogRoute
   '/admin/emails': typeof AdminEmailsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/payments': typeof AdminPaymentsRoute
@@ -630,6 +639,7 @@ export interface FileRouteTypes {
     | '/termes-et-conditions'
     | '/verify-email'
     | '/admin/activity'
+    | '/admin/blog'
     | '/admin/emails'
     | '/admin/login'
     | '/admin/payments'
@@ -695,6 +705,7 @@ export interface FileRouteTypes {
     | '/termes-et-conditions'
     | '/verify-email'
     | '/admin/activity'
+    | '/admin/blog'
     | '/admin/emails'
     | '/admin/login'
     | '/admin/payments'
@@ -762,6 +773,7 @@ export interface FileRouteTypes {
     | '/termes-et-conditions'
     | '/verify-email'
     | '/admin/activity'
+    | '/admin/blog'
     | '/admin/emails'
     | '/admin/login'
     | '/admin/payments'
@@ -1211,6 +1223,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEmailsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/blog': {
+      id: '/admin/blog'
+      path: '/blog'
+      fullPath: '/admin/blog'
+      preLoaderRoute: typeof AdminBlogRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/activity': {
       id: '/admin/activity'
       path: '/activity'
@@ -1314,6 +1333,7 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminActivityRoute: typeof AdminActivityRoute
+  AdminBlogRoute: typeof AdminBlogRoute
   AdminEmailsRoute: typeof AdminEmailsRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminPaymentsRoute: typeof AdminPaymentsRoute
@@ -1326,6 +1346,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminActivityRoute: AdminActivityRoute,
+  AdminBlogRoute: AdminBlogRoute,
   AdminEmailsRoute: AdminEmailsRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminPaymentsRoute: AdminPaymentsRoute,
@@ -1445,13 +1466,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

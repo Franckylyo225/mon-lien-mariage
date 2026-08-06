@@ -34,6 +34,7 @@ const growth: Item[] = [
   { to: "/admin/weddings", label: "Événements", Icon: IconCalendarHeart },
 ];
 const finance: Item[] = [{ to: "/admin/payments", label: "Paiements", Icon: IconCash }];
+const content: Item[] = [{ to: "/admin/blog", label: "Blog", Icon: IconArticle }];
 const system: Item[] = [
   { to: "/admin/support", label: "Support", Icon: IconLifebuoy },
   { to: "/admin/emails", label: "Emails", Icon: IconMail },
