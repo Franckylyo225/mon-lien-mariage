@@ -238,13 +238,11 @@ function PublicInvitationPage() {
         />
       </RevealOnScroll>
       {coupleTheme.hasGuestbook ? (
-        <RevealOnScroll>
-          <GuestbookSection
-            weddingId={w.id}
-            title={coupleTheme.guestbookTitle}
-            subtitle={coupleTheme.guestbookSubtitle}
-          />
-        </RevealOnScroll>
+        <GuestbookFab
+          weddingId={w.id}
+          brideName={coupleTheme.brideName}
+          groomName={coupleTheme.groomName}
+        />
       ) : null}
       <AmbientMusicPlayer slug={coupleTheme.musicSlug} enabled={coupleTheme.musicEnabled} />
     </ThemeRoot>
