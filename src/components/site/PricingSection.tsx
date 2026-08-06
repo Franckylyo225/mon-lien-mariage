@@ -11,7 +11,6 @@ import {
   BookHeart,
   Infinity as InfinityIcon,
   Lock,
-  MessageCircle,
   Plus,
 } from "lucide-react";
 
@@ -32,23 +31,7 @@ const ITEMS: {
   { icon: InfinityIcon, title: "Accès à vie", sub: "Vos données protégées" },
 ];
 
-const ARGS: { icon: typeof Globe; title: string; text: string }[] = [
-  {
-    icon: Lock,
-    title: "Créez sans risque",
-    text: "Personnalisez autant que vous voulez avant de payer un centime.",
-  },
-  {
-    icon: MessageCircle,
-    title: "Partagé là où tout le monde est",
-    text: "Vos invités reçoivent le lien sur WhatsApp — aucune app à télécharger.",
-  },
-  {
-    icon: InfinityIcon,
-    title: "Une seule fois, pour toujours",
-    text: "Pas d'abonnement, pas de renouvellement. Votre page reste après le mariage.",
-  },
-];
+const PREVIEW_URL = "https://www.moninvit.com/e/basile-et-armelle1";
 
 const FAQS: { q: string; a: string }[] = [
   {
@@ -110,64 +93,57 @@ export function PricingSection() {
             <br />
             Sans surprise.
           </h2>
-          <p className="mx-auto mt-4 max-w-[480px] text-[16px] leading-relaxed text-[#6B6B6B]">
-            Vous créez gratuitement. Vous payez uniquement quand vous publiez.
+          <p className="mx-auto mt-4 max-w-[520px] text-[16px] leading-relaxed text-[#6B6B6B]">
+            Voici ce que reçoivent vos invités quand vous publiez.
+            <br />
+            Vous créez gratuitement. Vous payez à la publication.
           </p>
         </div>
 
-        <div className="mt-12 grid items-start gap-8 md:grid-cols-[45fr_55fr] md:gap-12">
+        <div className="mt-12 grid items-start gap-8 md:grid-cols-2 md:gap-10">
+
           {/* Left column — arguments */}
-          <div className="min-w-0">
-            <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[#993556]">
-              Pourquoi 24 900 XOF ?
-            </p>
-            <p className="mt-2.5 font-[family-name:var(--font-display)] text-[26px] italic leading-[1.3] text-[#1A1A1A] sm:text-[28px]">
-              Pour une invitation qui restera dans les mémoires de vos invités — bien
-              après le mariage.
-            </p>
+          <div className="order-2 min-w-0 md:order-1 md:sticky md:top-[100px]">
+            <div className="relative mx-auto w-full max-w-[280px] sm:max-w-[340px]">
+              <div
+                className="rounded-[44px] bg-[#1A1A1A] p-2.5"
+                style={{
+                  boxShadow:
+                    "0 32px 80px rgba(0,0,0,0.22), 0 8px 24px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(255,255,255,0.06)",
+                }}
+              >
+                <div className="relative h-[420px] overflow-hidden rounded-[36px] bg-white sm:h-[580px]">
+                  <span
+                    aria-hidden
+                    className="absolute left-1/2 top-0 z-10 h-7 w-[100px] -translate-x-1/2 rounded-b-[18px] bg-[#1A1A1A]"
+                  />
+                  {visible ? (
+                    <iframe
+                      src={PREVIEW_URL}
+                      title="Aperçu d'une invitation MonInvit — Basile & Armelle"
+                      loading="lazy"
+                      className="pricing-preview-iframe pointer-events-none absolute left-0 top-0 border-0"
+                    />
+                  ) : null}
+                </div>
+              </div>
 
-            <div className="my-6 rounded-r-xl border-[0.5px] border-l-[3px] border-[#EDE8E0] border-l-[#993556] bg-[#F9F6F2] px-5 py-[18px] text-[13px] leading-[1.7] text-[#4B4B4B]">
-              <p>
-                💡 Un carton d'invitation papier coûte entre 500 et 2 000 XOF par invité.
-              </p>
-              <p className="mt-2">
-                Pour 200 invités :{" "}
-                <strong className="font-semibold text-[#1A1A1A]">
-                  jusqu'à 400 000 XOF
-                </strong>{" "}
-                en cartons seuls.
-              </p>
-              <p className="mt-2">
-                Avec MonInvit :{" "}
-                <strong className="font-semibold text-[#1A1A1A]">24 900 XOF</strong> pour
-                tous, à vie, modifiable à tout moment.
-              </p>
+              <span className="absolute -bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-full bg-[#1A1A1A] px-3.5 py-1.5 text-[11px] font-medium text-[#FAF8F5] shadow-[0_4px_12px_rgba(0,0,0,0.15)]">
+                <span className="pricing-preview-dot size-1.5 rounded-full bg-[#059669]" />
+                Vraie invitation · Basile &amp; Armelle
+              </span>
             </div>
 
-            <ul>
-              {ARGS.map(({ icon: Icon, title, text }) => (
-                <li key={title} className="mb-5 flex items-start gap-3.5">
-                  <span className="grid size-[38px] shrink-0 place-items-center rounded-full bg-[#FBEAF0]">
-                    <Icon size={18} className="text-[#993556]" aria-hidden />
-                  </span>
-                  <div className="min-w-0">
-                    <p className="mb-1 text-[14px] font-semibold text-[#1A1A1A]">{title}</p>
-                    <p className="text-[13px] leading-[1.55] text-[#6B6B6B]">{text}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-1 border-t-[0.5px] border-[#EDE8E0] pt-5">
-              <blockquote className="mb-3 font-[family-name:var(--font-display)] text-[15px] italic leading-[1.65] text-[#4B4B4B]">
-                « On hésitait sur le prix au début. Puis on a calculé ce qu'on aurait
-                dépensé en cartons papier. C'est vite devenu une évidence. »
-              </blockquote>
-              <cite className="text-[11px] not-italic text-[#9CA3AF]">
-                — Adjoua &amp; Koffi · Mariage · Abidjan
-              </cite>
-            </div>
+            <a
+              href={PREVIEW_URL}
+              target="_blank"
+              rel="noopener"
+              className="mt-8 block text-center text-[12px] font-medium tracking-[0.02em] text-[#993556] hover:underline"
+            >
+              Voir la page complète →
+            </a>
           </div>
+
 
         {/* Card */}
         <div
