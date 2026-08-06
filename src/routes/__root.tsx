@@ -13,6 +13,9 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { WeddingProvider } from "../lib/wedding-store";
 import { Toaster } from "../components/ui/sonner";
+import { ConsentProvider } from "../lib/consent";
+import { ConsentManager } from "../components/consent/ConsentManager";
+
 
 function NotFoundComponent() {
   return (
@@ -206,10 +209,14 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <WeddingProvider>
-        <Outlet />
-        <Toaster position="top-center" richColors closeButton />
-      </WeddingProvider>
+      <ConsentProvider>
+        <WeddingProvider>
+          <Outlet />
+          <Toaster position="top-center" richColors closeButton />
+          <ConsentManager />
+        </WeddingProvider>
+      </ConsentProvider>
     </QueryClientProvider>
   );
 }
+
