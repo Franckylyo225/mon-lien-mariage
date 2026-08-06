@@ -562,8 +562,9 @@
   color: #9CA3AF;
 }
 .sheet-submit.active {
-  background: linear-gradient(135deg, #4B1528 0%, #993556 100%);
-  color: #FBEAF0;
+  background: linear-gradient(135deg, #8B6914 0%, #C8973A 50%, #E8C46A 100%);
+  color: #1A1A1A;
+  box-shadow: 0 4px 16px rgba(200, 151, 58, 0.35);
 }
 .sheet-privacy { font-size: 10px; color: #C5C5C5; text-align: center; margin-top: 10px; line-height: 1.5; }
 .success-check {
