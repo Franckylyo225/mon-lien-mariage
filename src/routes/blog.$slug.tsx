@@ -4,7 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import { SiteFooter, SiteHeader } from "@/components/site/SiteChrome";
 import { BlogCard, CategoryBadge, PostVisual } from "@/components/blog/BlogCard";
 import {
-  CATEGORY_LABELS,
   fetchPost,
   fetchPosts,
   formatDate,
@@ -68,7 +67,7 @@ export const Route = createFileRoute("/blog/$slug")({
       ],
     };
   },
-  component: BlogArticle;
+  component: BlogArticle,
 });
 
 function renderMarkdown(content: string) {
@@ -293,4 +292,3 @@ function BlogArticle() {
   );
 }
 
-export const _unused = CATEGORY_LABELS;
