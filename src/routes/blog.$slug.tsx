@@ -74,8 +74,22 @@ export const Route = createFileRoute("/blog/$slug")({
 });
 
 function renderMarkdown(content: string) {
+  // Content authored with the WYSIWYG admin editor is stored as HTML.
+  if (/^\s*<(p|h[1-6]|ul|ol|blockquote|figure|img|div)\b/i.test(content)) {
+    const safe = content
+      .replace(/<script[\s\S]*?<\/script>/gi, "")
+      .replace(/\son\w+="[^"]*"/gi, "")
+      .replace(/javascript:/gi, "");
+    return (
+      <div
+        className="blog-html text-[16px] leading-[1.75] text-[#4B4B4B]"
+        dangerouslySetInnerHTML={{ __html: safe }}
+      />
+    );
+  }
   const blocks = content.split(/\n{2,}/);
   return blocks.map((block, i) => {
+
     const trimmed = block.trim();
     if (!trimmed) return null;
     if (trimmed.startsWith("## ")) {
