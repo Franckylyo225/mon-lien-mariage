@@ -29,20 +29,15 @@ export const Route = createFileRoute("/api/public/webhooks/paystack")({
         const reference: string | undefined = event?.data?.reference;
         if (!reference) return new Response("OK", { status: 200 });
 
-        const { supabaseAdmin } = await import(
-          "@/integrations/supabase/client.server"
-        );
-        const admin = supabaseAdmin as unknown as { from: (t: string) => any };
-
         if (event.event !== "charge.success") {
           if (event.event === "charge.failed" || event.event === "charge.abandoned") {
-            await admin
-              .from("payments")
-              .update({
-                status: event.event === "charge.failed" ? "failed" : "abandoned",
-              })
-              .eq("paystack_reference", reference)
-              .eq("status", "pending");
+            const { markPaystackPaymentFailed } = await import(
+              "@/lib/paystack-activate.server"
+            );
+            await markPaystackPaymentFailed(
+              reference,
+              event.event === "charge.failed" ? "failed" : "abandoned",
+            );
           }
           return new Response("OK", { status: 200 });
         }
@@ -50,7 +45,7 @@ export const Route = createFileRoute("/api/public/webhooks/paystack")({
         const { activatePaystackPayment } = await import(
           "@/lib/paystack-activate.server"
         );
-        const result = await activatePaystackPayment(admin, reference, {
+        const result = await activatePaystackPayment(reference, {
           id: event.data?.id,
           channel: event.data?.channel ?? null,
           metadata: event.data?.metadata ?? null,
@@ -60,6 +55,10 @@ export const Route = createFileRoute("/api/public/webhooks/paystack")({
           console.error("[paystack] payment not found", reference);
           return new Response("Not found", { status: 404 });
         }
+        if (result === "unauthorized") {
+          return new Response("Not configured", { status: 500 });
+        }
+
 
         return new Response("OK", { status: 200 });
       },

@@ -144,21 +144,15 @@ export const getPaymentStatus = createServerFn({ method: "POST" })
             | null;
           const trx = json?.data;
           if (json?.status && trx?.status === "success") {
-            const { supabaseAdmin } = await import(
-              "@/integrations/supabase/client.server"
-            );
             const { activatePaystackPayment } = await import(
               "@/lib/paystack-activate.server"
             );
-            await activatePaystackPayment(
-              supabaseAdmin as unknown as { from: (t: string) => any },
-              data.reference,
-              {
-                id: trx.id,
-                channel: trx.channel ?? null,
-                metadata: trx.metadata ?? null,
-              },
-            );
+            await activatePaystackPayment(data.reference, {
+              id: trx.id,
+              channel: trx.channel ?? null,
+              metadata: trx.metadata ?? null,
+            });
+
             status = "success";
           } else if (trx?.status === "failed" || trx?.status === "abandoned") {
             status = trx.status;
