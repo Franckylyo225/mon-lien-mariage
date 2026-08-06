@@ -35,7 +35,6 @@ const PREVIEW_URL = "https://www.moninvit.com/e/basile-et-armelle1";
 export function PricingSection() {
   const ref = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
-  const [open, setOpen] = useState<number | null>(null);
 
   useEffect(() => {
     const el = ref.current;
