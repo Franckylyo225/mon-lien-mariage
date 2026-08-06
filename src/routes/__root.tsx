@@ -134,13 +134,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     scripts: [
       {
-        async: true,
-        src: "https://www.googletagmanager.com/gtag/js?id=G-YZ4VKXCWED",
-      },
-      {
         children:
-          "window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-YZ4VKXCWED');",
+          "window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});",
       },
+
       {
 
         type: "application/ld+json",
