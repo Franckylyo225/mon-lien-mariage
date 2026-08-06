@@ -3,10 +3,10 @@ import { templateMeta, templateOrder } from "@/lib/ceremony-meta";
 import { SiteHeader as SharedSiteHeader, SiteFooter as SharedSiteFooter } from "@/components/site/SiteChrome";
 import { PricingSection } from "@/components/site/PricingSection";
 import heroCouple from "@/assets/home-couple.jpg";
-import romanceImg from "@/assets/home-romance.jpg";
 import tableImg from "@/assets/home-table.jpg";
 import ogImage from "@/assets/og-image.jpg.asset.json";
 import whyMoninvitImg from "@/assets/side-view-married-couple-holding-hands.jpeg.asset.json";
+
 
 
 const OG_IMAGE_URL = `https://moninvit.com${ogImage.url}`;
