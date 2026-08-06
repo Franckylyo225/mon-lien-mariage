@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.activate_payment_secure(text, text, text, text, jsonb) FROM authenticated;
