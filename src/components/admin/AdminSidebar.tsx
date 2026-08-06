@@ -9,6 +9,7 @@ import {
   IconSettings,
   IconArrowLeft,
   IconLifebuoy,
+  IconArticle,
 } from "@tabler/icons-react";
 import {
   Sidebar,
@@ -34,6 +35,7 @@ const growth: Item[] = [
   { to: "/admin/weddings", label: "Événements", Icon: IconCalendarHeart },
 ];
 const finance: Item[] = [{ to: "/admin/payments", label: "Paiements", Icon: IconCash }];
+const content: Item[] = [{ to: "/admin/blog", label: "Blog", Icon: IconArticle }];
 const system: Item[] = [
   { to: "/admin/support", label: "Support", Icon: IconLifebuoy },
   { to: "/admin/emails", label: "Emails", Icon: IconMail },
@@ -86,6 +88,7 @@ export function AdminSidebar({ email }: { email?: string | null }) {
         <Section label="Analytique" items={analytics} pathname={pathname} />
         <Section label="Croissance" items={growth} pathname={pathname} />
         <Section label="Finance" items={finance} pathname={pathname} />
+        <Section label="Contenu" items={content} pathname={pathname} />
         <Section label="Système" items={system} pathname={pathname} />
       </SidebarContent>
       <SidebarFooter>

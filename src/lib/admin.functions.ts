@@ -580,3 +580,139 @@ export const deletePromoCode = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+
+// ---------------------------------------------------------------------------
+// Blog
+// ---------------------------------------------------------------------------
+
+const BLOG_SELECT =
+  "id, slug, title, excerpt, content, cover_image_url, category, author_name, author_avatar_url, reading_time_minutes, is_featured, is_published, published_at, seo_title, seo_description, created_at, updated_at";
+
+interface BlogUpsertInput {
+  id?: string;
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  content: string | null;
+  cover_image_url: string | null;
+  category: string;
+  author_name: string;
+  author_avatar_url: string | null;
+  reading_time_minutes: number;
+  is_featured: boolean;
+  is_published: boolean;
+  published_at: string | null;
+  seo_title: string | null;
+  seo_description: string | null;
+}
+
+const BLOG_CATEGORIES = ["traditions", "organisation", "style", "reception", "histoires"];
+
+function slugify(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+export const listBlogPosts = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin
+      .from("blog_posts")
+      .select(BLOG_SELECT)
+      .order("created_at", { ascending: false });
+    if (error) throw new Error(error.message);
+    return data ?? [];
+  });
+
+export const upsertBlogPost = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: BlogUpsertInput) => data)
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const title = (data.title || "").trim();
+    if (title.length < 3) throw new Error("Le titre est requis (3 caractères minimum).");
+    const slug = slugify(data.slug || title);
+    if (!slug) throw new Error("Slug invalide.");
+    if (!BLOG_CATEGORIES.includes(data.category)) throw new Error("Catégorie invalide.");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const payload = {
+      slug,
+      title,
+      excerpt: data.excerpt?.trim() || null,
+      content: data.content ?? null,
+      cover_image_url: data.cover_image_url?.trim() || null,
+      category: data.category,
+      author_name: data.author_name?.trim() || "L'équipe MonInvit",
+      author_avatar_url: data.author_avatar_url?.trim() || null,
+      reading_time_minutes: Math.max(1, Math.round(Number(data.reading_time_minutes) || 4)),
+      is_featured: !!data.is_featured,
+      is_published: !!data.is_published,
+      published_at: data.is_published ? (data.published_at || new Date().toISOString()) : null,
+      seo_title: data.seo_title?.trim() || null,
+      seo_description: data.seo_description?.trim() || null,
+    };
+
+    if (payload.is_featured) {
+      const q = supabaseAdmin.from("blog_posts").update({ is_featured: false } as never).eq("is_featured", true);
+      const { error: unfeatureError } = data.id ? await q.neq("id", data.id) : await q;
+      if (unfeatureError) throw new Error(unfeatureError.message);
+    }
+
+    if (data.id) {
+      const { error } = await supabaseAdmin
+        .from("blog_posts")
+        .update(payload as never)
+        .eq("id", data.id);
+      if (error) throw new Error(error.message);
+      return { ok: true, id: data.id };
+    }
+
+    const { data: inserted, error } = await supabaseAdmin
+      .from("blog_posts")
+      .insert(payload as never)
+      .select("id")
+      .single();
+    if (error) {
+      if (String(error.message).toLowerCase().includes("duplicate")) {
+        throw new Error("Ce slug existe déjà.");
+      }
+      throw new Error(error.message);
+    }
+    return { ok: true, id: (inserted as { id: string }).id };
+  });
+
+export const setBlogPostPublished = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { id: string; is_published: boolean }) => data)
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
+      .from("blog_posts")
+      .update({
+        is_published: data.is_published,
+        published_at: data.is_published ? new Date().toISOString() : null,
+      } as never)
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const deleteBlogPost = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { id: string }) => data)
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.from("blog_posts").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
