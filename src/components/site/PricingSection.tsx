@@ -31,6 +31,7 @@ const ITEMS: {
 ];
 
 const PREVIEW_URL = "https://www.moninvit.com/e/basile-et-armelle1";
+const PREVIEW_EMBED_URL = `${PREVIEW_URL}?embed=1`;
 
 export function PricingSection() {
   const ref = useRef<HTMLElement>(null);
@@ -102,10 +103,11 @@ export function PricingSection() {
                   />
                   {visible ? (
                     <iframe
-                      src={PREVIEW_URL}
+                      src={PREVIEW_EMBED_URL}
                       title="Aperçu d'une invitation MonInvit — Basile & Armelle"
                       loading="lazy"
-                      className="pricing-preview-iframe pointer-events-none absolute left-0 top-0 border-0"
+                      scrolling="yes"
+                      className="pricing-preview-iframe absolute left-0 top-0 border-0"
                     />
                   ) : null}
                 </div>

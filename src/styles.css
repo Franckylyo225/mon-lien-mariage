@@ -365,23 +365,14 @@
   height: 133.3%;
   transform-origin: top left;
   transform: scale(0.75);
-  animation: pricing-slow-scroll 30s ease-in-out infinite alternate;
+  -webkit-overflow-scrolling: touch;
 }
 @media (min-width: 640px) {
   .pricing-preview-iframe {
     width: 117.6%;
     height: 117.6%;
     transform: scale(0.85);
-    animation-name: pricing-slow-scroll-lg;
   }
-}
-@keyframes pricing-slow-scroll {
-  0% { transform: scale(0.75) translateY(0); }
-  100% { transform: scale(0.75) translateY(-62%); }
-}
-@keyframes pricing-slow-scroll-lg {
-  0% { transform: scale(0.85) translateY(0); }
-  100% { transform: scale(0.85) translateY(-62%); }
 }
 .pricing-preview-dot { animation: pricing-preview-pulse 2s ease-in-out infinite; }
 @keyframes pricing-preview-pulse {
