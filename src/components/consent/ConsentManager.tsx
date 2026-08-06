@@ -50,7 +50,12 @@ export function ConsentManager() {
     }
   }, [preferencesOpen, consent]);
 
-  if (!ready) return null;
+  const embedded =
+    typeof window !== "undefined" &&
+    (window.self !== window.top ||
+      new URLSearchParams(window.location.search).has("embed"));
+
+  if (!ready || embedded) return null;
 
   const showBanner = !consent && !preferencesOpen;
   if (!showBanner && !preferencesOpen) return null;
