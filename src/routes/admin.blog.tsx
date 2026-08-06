@@ -118,6 +118,23 @@ function AdminBlog() {
   const [form, setForm] = useState<FormState | null>(null);
   const [saving, setSaving] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [coverUploading, setCoverUploading] = useState(false);
+  const coverRef = useRef<HTMLInputElement>(null);
+
+  async function handleCoverUpload(file: File) {
+    setCoverUploading(true);
+    try {
+      const url = await uploadBlogImage(file);
+      setForm((f) => (f ? { ...f, cover_image_url: url } : f));
+      toast.success("Image de couverture ajoutée");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Envoi impossible");
+    } finally {
+      setCoverUploading(false);
+    }
+  }
+
+
 
   async function refresh() {
     setLoading(true);
