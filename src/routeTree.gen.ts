@@ -22,6 +22,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as InvitationRouteImport } from './routes/invitation'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CommentCaMarcheRouteImport } from './routes/comment-ca-marche'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -136,6 +137,11 @@ const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CommentCaMarcheRoute = CommentCaMarcheRouteImport.update({
@@ -394,6 +400,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/blog': typeof BlogRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
+  '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/invitation': typeof InvitationRoute
@@ -457,6 +464,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/blog': typeof BlogRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
+  '/contact': typeof ContactRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
@@ -521,6 +529,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/blog': typeof BlogRoute
   '/comment-ca-marche': typeof CommentCaMarcheRoute
+  '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/forgot-password': typeof ForgotPasswordRoute
   '/invitation': typeof InvitationRoute
@@ -587,6 +596,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/blog'
     | '/comment-ca-marche'
+    | '/contact'
     | '/dashboard'
     | '/forgot-password'
     | '/invitation'
@@ -650,6 +660,7 @@ export interface FileRouteTypes {
     | '/'
     | '/blog'
     | '/comment-ca-marche'
+    | '/contact'
     | '/forgot-password'
     | '/invitation'
     | '/login'
@@ -713,6 +724,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/blog'
     | '/comment-ca-marche'
+    | '/contact'
     | '/dashboard'
     | '/forgot-password'
     | '/invitation'
@@ -778,6 +790,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   BlogRoute: typeof BlogRoute
   CommentCaMarcheRoute: typeof CommentCaMarcheRoute
+  ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   InvitationRoute: typeof InvitationRoute
@@ -903,6 +916,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/comment-ca-marche': {
@@ -1345,6 +1365,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   BlogRoute: BlogRoute,
   CommentCaMarcheRoute: CommentCaMarcheRoute,
+  ContactRoute: ContactRoute,
   DashboardRoute: DashboardRouteWithChildren,
   ForgotPasswordRoute: ForgotPasswordRoute,
   InvitationRoute: InvitationRoute,
