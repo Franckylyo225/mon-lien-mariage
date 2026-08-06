@@ -92,8 +92,8 @@ export function TemplateRsvpForm({ theme, tone, weddingId, ceremonies = [], onCo
         guest_type: guestType || null,
         attending: true,
         companions: plus,
-        message: message.trim() || null,
-        dietary_notes: composedDietary || null,
+        message: null,
+        dietary_notes: null,
       }));
       const { error: err } = await supabase.from("rsvps").insert(rows as never);
       if (err) throw err;
