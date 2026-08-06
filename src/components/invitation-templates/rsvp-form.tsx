@@ -35,16 +35,6 @@ const TONE_TO_THEME: Record<LegacyTone, ThemeId> = {
   deco: "or-antique",
 };
 
-const DIETARY_TAGS = [
-  "Végétarien",
-  "Végétalien",
-  "Sans gluten",
-  "Sans lactose",
-  "Halal",
-  "Casher",
-  "Allergie",
-] as const;
-
 export function TemplateRsvpForm({ theme, tone, weddingId, ceremonies = [], onConfirmed }: Props) {
   const resolvedTheme: ThemeId | undefined =
     theme ?? (tone ? TONE_TO_THEME[tone] : undefined);
@@ -56,9 +46,6 @@ export function TemplateRsvpForm({ theme, tone, weddingId, ceremonies = [], onCo
   const [phone, setPhone] = useState("");
   const [guestType, setGuestType] = useState<GuestType | "">("");
   const [plus, setPlus] = useState(0);
-  const [message, setMessage] = useState("");
-  const [dietaryTags, setDietaryTags] = useState<string[]>([]);
-  const [dietaryDetail, setDietaryDetail] = useState("");
   const [done, setDone] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -77,28 +64,12 @@ export function TemplateRsvpForm({ theme, tone, weddingId, ceremonies = [], onCo
     [name, guestType, submitting],
   );
 
-  const toggleTag = (tag: string) =>
-    setDietaryTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
-    );
-
-  const composedDietary = useMemo(() => {
-    const parts: string[] = [];
-    if (dietaryTags.length > 0) parts.push(dietaryTags.join(", "));
-    const detail = dietaryDetail.trim();
-    if (detail) parts.push(detail);
-    return parts.join(" — ").slice(0, 500);
-  }, [dietaryTags, dietaryDetail]);
-
   const reset = () => {
     setDone(false);
     setName("");
     setPhone("");
     setGuestType("");
     setPlus(0);
-    setMessage("");
-    setDietaryTags([]);
-    setDietaryDetail("");
     setError(null);
   };
 
@@ -119,8 +90,8 @@ export function TemplateRsvpForm({ theme, tone, weddingId, ceremonies = [], onCo
         guest_type: guestType || null,
         attending: true,
         companions: plus,
-        message: message.trim() || null,
-        dietary_notes: composedDietary || null,
+        message: null,
+        dietary_notes: null,
       }));
       const { error: err } = await supabase.from("rsvps").insert(rows as never);
       if (err) throw err;
@@ -224,12 +195,6 @@ export function TemplateRsvpForm({ theme, tone, weddingId, ceremonies = [], onCo
               setGuestType={setGuestType}
               plus={plus}
               setPlus={setPlus}
-              message={message}
-              setMessage={setMessage}
-              dietaryTags={dietaryTags}
-              toggleTag={toggleTag}
-              dietaryDetail={dietaryDetail}
-              setDietaryDetail={setDietaryDetail}
               submitting={submitting}
               canSubmit={canSubmit}
               error={error}
@@ -257,12 +222,6 @@ interface ModalProps {
   setGuestType: (v: GuestType) => void;
   plus: number;
   setPlus: (fn: (v: number) => number) => void;
-  message: string;
-  setMessage: (v: string) => void;
-  dietaryTags: string[];
-  toggleTag: (tag: string) => void;
-  dietaryDetail: string;
-  setDietaryDetail: (v: string) => void;
   submitting: boolean;
   canSubmit: boolean;
   error: string | null;
@@ -281,12 +240,6 @@ function RsvpModal({
   setGuestType,
   plus,
   setPlus,
-  message,
-  setMessage,
-  dietaryTags,
-  toggleTag,
-  dietaryDetail,
-  setDietaryDetail,
   submitting,
   canSubmit,
   error,
@@ -431,50 +384,9 @@ function RsvpModal({
             </div>
           )}
 
-
-          <div className="mt-6">
-            <p
-              className="text-[10px] uppercase tracking-[0.25em]"
-              style={{ color: d.mutedInk, fontFamily: d.eyebrowFont }}
-            >
-              Allergies ou régime alimentaire
-            </p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {DIETARY_TAGS.map((tag) => {
-                const active = dietaryTags.includes(tag);
-                return (
-                  <Chip
-                    key={tag}
-                    active={active}
-                    design={d}
-                    onClick={() => toggleTag(tag)}
-                  >
-                    {tag}
-                  </Chip>
-                );
-              })}
-            </div>
-            <textarea data-rsvp-input
-              value={dietaryDetail}
-              onChange={(e) => setDietaryDetail(e.target.value.slice(0, 300))}
-              placeholder="Précisez si besoin (ex. allergie aux arachides, sans porc, etc.)"
-              rows={2}
-              className="mt-3 w-full max-w-full resize-none rounded-2xl border px-4 py-3 text-sm outline-none"
-              style={{ ...inputStyle, ...placeholderVar(d.placeholderInk) }}
-            />
-            <p className="mt-1 text-[10px]" style={{ color: d.mutedInk }}>
-              {dietaryDetail.length}/300
-            </p>
-          </div>
-
-          <textarea data-rsvp-input
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Un mot pour les mariés (optionnel)"
-            rows={3}
-            className="mt-4 w-full max-w-full resize-none rounded-2xl border px-4 py-3 text-sm outline-none"
-            style={{ ...inputStyle, ...placeholderVar(d.placeholderInk) }}
-          />
+          {error ? (
+            <p className="mt-3 text-center text-xs text-red-500">{error}</p>
+          ) : null}
 
           {error ? (
             <p className="mt-3 text-center text-xs text-red-500">{error}</p>
