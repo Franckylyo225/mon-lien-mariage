@@ -13,6 +13,9 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { WeddingProvider } from "../lib/wedding-store";
 import { Toaster } from "../components/ui/sonner";
+import { ConsentProvider } from "../lib/consent";
+import { ConsentManager } from "../components/consent/ConsentManager";
+
 
 function NotFoundComponent() {
   return (
@@ -134,13 +137,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     scripts: [
       {
-        async: true,
-        src: "https://www.googletagmanager.com/gtag/js?id=G-YZ4VKXCWED",
-      },
-      {
         children:
-          "window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-YZ4VKXCWED');",
+          "window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});",
       },
+
       {
 
         type: "application/ld+json",
@@ -209,10 +209,14 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <WeddingProvider>
-        <Outlet />
-        <Toaster position="top-center" richColors closeButton />
-      </WeddingProvider>
+      <ConsentProvider>
+        <WeddingProvider>
+          <Outlet />
+          <Toaster position="top-center" richColors closeButton />
+          <ConsentManager />
+        </WeddingProvider>
+      </ConsentProvider>
     </QueryClientProvider>
   );
 }
+

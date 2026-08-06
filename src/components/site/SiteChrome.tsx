@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
+import { openConsentPreferences } from "@/lib/consent";
+
 
 const NAV = [
   { to: "/", label: "Accueil" },
@@ -282,6 +284,15 @@ export function SiteFooter() {
               Politique de confidentialité
             </FooterLink>
             <li>
+              <button
+                type="button"
+                onClick={() => openConsentPreferences()}
+                className="text-sm text-[#fdf7f3]/70 transition hover:text-[#e8a89e]"
+              >
+                Gérer mes cookies
+              </button>
+            </li>
+            <li>
               <a
                 href="mailto:contact@moninvit.com"
                 className="text-sm text-[#fdf7f3]/70 transition hover:text-[#e8a89e]"
@@ -289,6 +300,7 @@ export function SiteFooter() {
                 contact@moninvit.com
               </a>
             </li>
+
           </FooterColumn>
         </div>
 
