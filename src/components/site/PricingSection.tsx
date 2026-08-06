@@ -88,18 +88,19 @@ export function PricingSection() {
 
           {/* Left column — live invitation preview */}
           <div className="order-2 min-w-0 md:order-1 md:sticky md:top-[100px]">
-            <div className="relative mx-auto w-full max-w-[280px] sm:max-w-[340px]">
+            <div className="relative mx-auto w-full max-w-[280px] sm:max-w-[330px]">
+              {/* iPhone 17 Pro — titanium frame, 19.5:9, Dynamic Island */}
               <div
-                className="rounded-[44px] bg-[#1A1A1A] p-2.5"
+                className="rounded-[54px] bg-[#1A1A1A] p-[10px]"
                 style={{
                   boxShadow:
-                    "0 32px 80px rgba(0,0,0,0.22), 0 8px 24px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(255,255,255,0.06)",
+                    "0 32px 80px rgba(0,0,0,0.22), 0 8px 24px rgba(0,0,0,0.12), inset 0 0 0 1px rgba(255,255,255,0.14), inset 0 0 0 3px rgba(255,255,255,0.05)",
                 }}
               >
-                <div className="relative h-[420px] overflow-hidden rounded-[36px] bg-white sm:h-[580px]">
+                <div className="relative aspect-[402/874] w-full overflow-hidden rounded-[46px] bg-white">
                   <span
                     aria-hidden
-                    className="absolute left-1/2 top-0 z-10 h-7 w-[100px] -translate-x-1/2 rounded-b-[18px] bg-[#1A1A1A]"
+                    className="absolute left-1/2 top-[10px] z-10 h-[26px] w-[96px] -translate-x-1/2 rounded-full bg-[#0A0A0A]"
                   />
                   {visible ? (
                     <iframe
@@ -112,6 +113,7 @@ export function PricingSection() {
                   ) : null}
                 </div>
               </div>
+
 
               <span className="absolute -bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-full bg-[#1A1A1A] px-3.5 py-1.5 text-[11px] font-medium text-[#FAF8F5] shadow-[0_4px_12px_rgba(0,0,0,0.15)]">
                 <span className="pricing-preview-dot size-1.5 rounded-full bg-[#059669]" />
