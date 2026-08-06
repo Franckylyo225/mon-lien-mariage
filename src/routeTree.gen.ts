@@ -75,6 +75,7 @@ import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/em
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as ApiPublicWebhooksPaystackRouteImport } from './routes/api/public/webhooks/paystack'
 import { Route as ApiPublicHooksRsvpMilestoneRouteImport } from './routes/api/public/hooks/rsvp-milestone'
+import { Route as ApiPublicBlogImageSplatRouteImport } from './routes/api/public/blog-image.$'
 
 const VerifyEmailRoute = VerifyEmailRouteImport.update({
   id: '/verify-email',
@@ -413,6 +414,11 @@ const ApiPublicHooksRsvpMilestoneRoute =
     path: '/api/public/hooks/rsvp-milestone',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicBlogImageSplatRoute = ApiPublicBlogImageSplatRouteImport.update({
+  id: '/api/public/blog-image/$',
+  path: '/api/public/blog-image/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -474,6 +480,7 @@ export interface FileRoutesByFullPath {
   '/guestbook/print/$id': typeof GuestbookPrintIdRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests/': typeof DashboardGuestsIndexRoute
+  '/api/public/blog-image/$': typeof ApiPublicBlogImageSplatRoute
   '/api/public/hooks/rsvp-milestone': typeof ApiPublicHooksRsvpMilestoneRoute
   '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -540,6 +547,7 @@ export interface FileRoutesByTo {
   '/guestbook/print/$id': typeof GuestbookPrintIdRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests': typeof DashboardGuestsIndexRoute
+  '/api/public/blog-image/$': typeof ApiPublicBlogImageSplatRoute
   '/api/public/hooks/rsvp-milestone': typeof ApiPublicHooksRsvpMilestoneRoute
   '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -609,6 +617,7 @@ export interface FileRoutesById {
   '/guestbook/print/$id': typeof GuestbookPrintIdRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests/': typeof DashboardGuestsIndexRoute
+  '/api/public/blog-image/$': typeof ApiPublicBlogImageSplatRoute
   '/api/public/hooks/rsvp-milestone': typeof ApiPublicHooksRsvpMilestoneRoute
   '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
@@ -679,6 +688,7 @@ export interface FileRouteTypes {
     | '/guestbook/print/$id'
     | '/lovable/email/suppression'
     | '/dashboard/guests/'
+    | '/api/public/blog-image/$'
     | '/api/public/hooks/rsvp-milestone'
     | '/api/public/webhooks/paystack'
     | '/lovable/email/auth/preview'
@@ -745,6 +755,7 @@ export interface FileRouteTypes {
     | '/guestbook/print/$id'
     | '/lovable/email/suppression'
     | '/dashboard/guests'
+    | '/api/public/blog-image/$'
     | '/api/public/hooks/rsvp-milestone'
     | '/api/public/webhooks/paystack'
     | '/lovable/email/auth/preview'
@@ -813,6 +824,7 @@ export interface FileRouteTypes {
     | '/guestbook/print/$id'
     | '/lovable/email/suppression'
     | '/dashboard/guests/'
+    | '/api/public/blog-image/$'
     | '/api/public/hooks/rsvp-milestone'
     | '/api/public/webhooks/paystack'
     | '/lovable/email/auth/preview'
@@ -855,6 +867,7 @@ export interface RootRouteChildren {
   ApiPublicHealthRoute: typeof ApiPublicHealthRoute
   GuestbookPrintIdRoute: typeof GuestbookPrintIdRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
+  ApiPublicBlogImageSplatRoute: typeof ApiPublicBlogImageSplatRoute
   ApiPublicHooksRsvpMilestoneRoute: typeof ApiPublicHooksRsvpMilestoneRoute
   ApiPublicWebhooksPaystackRoute: typeof ApiPublicWebhooksPaystackRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
@@ -1328,6 +1341,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksRsvpMilestoneRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/blog-image/$': {
+      id: '/api/public/blog-image/$'
+      path: '/api/public/blog-image/$'
+      fullPath: '/api/public/blog-image/$'
+      preLoaderRoute: typeof ApiPublicBlogImageSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1455,6 +1475,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHealthRoute: ApiPublicHealthRoute,
   GuestbookPrintIdRoute: GuestbookPrintIdRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
+  ApiPublicBlogImageSplatRoute: ApiPublicBlogImageSplatRoute,
   ApiPublicHooksRsvpMilestoneRoute: ApiPublicHooksRsvpMilestoneRoute,
   ApiPublicWebhooksPaystackRoute: ApiPublicWebhooksPaystackRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
@@ -1466,3 +1487,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
