@@ -35,15 +35,7 @@ const TONE_TO_THEME: Record<LegacyTone, ThemeId> = {
   deco: "or-antique",
 };
 
-const DIETARY_TAGS = [
-  "Végétarien",
-  "Végétalien",
-  "Sans gluten",
-  "Sans lactose",
-  "Halal",
-  "Casher",
-  "Allergie",
-] as const;
+const DIETARY_TAGS = [] as const;
 
 export function TemplateRsvpForm({ theme, tone, weddingId, ceremonies = [], onConfirmed }: Props) {
   const resolvedTheme: ThemeId | undefined =
