@@ -102,7 +102,7 @@ export function PricingSection() {
 
         <div className="mt-12 grid items-start gap-8 md:grid-cols-2 md:gap-10">
 
-          {/* Left column — arguments */}
+          {/* Left column — live invitation preview */}
           <div className="order-2 min-w-0 md:order-1 md:sticky md:top-[100px]">
             <div className="relative mx-auto w-full max-w-[280px] sm:max-w-[340px]">
               <div
@@ -147,7 +147,7 @@ export function PricingSection() {
 
         {/* Card */}
         <div
-          className="relative w-full min-w-0 overflow-hidden rounded-[20px] border-[0.5px] border-[#E5E5E5] bg-white p-6 sm:p-[36px_32px]"
+          className="relative order-1 w-full min-w-0 overflow-hidden rounded-[20px] border-[0.5px] border-[#E5E5E5] bg-white p-6 sm:p-[36px_32px] md:order-2"
           style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04)" }}
         >
           <span
