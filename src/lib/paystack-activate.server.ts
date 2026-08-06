@@ -77,3 +77,22 @@ export async function activatePaystackPayment(
 
   return (data as ActivationResult) ?? "not_found";
 }
+
+/** Marque un paiement en échec/abandon (sans clé d'administration). */
+export async function markPaystackPaymentFailed(
+  reference: string,
+  status: "failed" | "abandoned",
+): Promise<void> {
+  const token = process.env["PAYMENT_ACTIVATION_SECRET"];
+  if (!token) {
+    console.error("[paystack] PAYMENT_ACTIVATION_SECRET manquant");
+    return;
+  }
+  const supabase = createPublicClient();
+  const { error } = await supabase.rpc("mark_payment_failed_secure", {
+    _token: token,
+    _reference: reference,
+    _status: status,
+  } as never);
+  if (error) console.error("[paystack] mark failed rpc", error.message);
+}
