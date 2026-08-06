@@ -25,7 +25,6 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConditionsGeneralesDeVenteRouteImport } from './routes/conditions-generales-de-vente'
 import { Route as CommentCaMarcheRouteImport } from './routes/comment-ca-marche'
-import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard.index'
@@ -48,6 +47,7 @@ import { Route as DashboardInvitesRouteImport } from './routes/dashboard.invites
 import { Route as DashboardEventsRouteImport } from './routes/dashboard.events'
 import { Route as DashboardCeremoniesRouteImport } from './routes/dashboard.ceremonies'
 import { Route as DashboardBillingRouteImport } from './routes/dashboard.billing'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AppSupportRouteImport } from './routes/app.support'
 import { Route as AppProfileRouteImport } from './routes/app.profile'
 import { Route as AppNotificationsRouteImport } from './routes/app.notifications'
@@ -157,11 +157,6 @@ const CommentCaMarcheRoute = CommentCaMarcheRouteImport.update({
   path: '/comment-ca-marche',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BlogRoute = BlogRouteImport.update({
-  id: '/blog',
-  path: '/blog',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -178,9 +173,9 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   getParentRoute: () => DashboardRoute,
 } as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => BlogRoute,
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
@@ -271,6 +266,11 @@ const DashboardBillingRoute = DashboardBillingRouteImport.update({
   id: '/billing',
   path: '/billing',
   getParentRoute: () => DashboardRoute,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppSupportRoute = AppSupportRouteImport.update({
   id: '/app/support',
@@ -411,7 +411,6 @@ const ApiPublicHooksRsvpMilestoneRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/blog': typeof BlogRouteWithChildren
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/conditions-generales-de-vente': typeof ConditionsGeneralesDeVenteRoute
   '/contact': typeof ContactRoute
@@ -441,6 +440,7 @@ export interface FileRoutesByFullPath {
   '/app/notifications': typeof AppNotificationsRoute
   '/app/profile': typeof AppProfileRoute
   '/app/support': typeof AppSupportRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/events': typeof DashboardEventsRoute
@@ -505,6 +505,7 @@ export interface FileRoutesByTo {
   '/app/notifications': typeof AppNotificationsRoute
   '/app/profile': typeof AppProfileRoute
   '/app/support': typeof AppSupportRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/events': typeof DashboardEventsRoute
@@ -543,7 +544,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
-  '/blog': typeof BlogRouteWithChildren
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/conditions-generales-de-vente': typeof ConditionsGeneralesDeVenteRoute
   '/contact': typeof ContactRoute
@@ -573,6 +573,7 @@ export interface FileRoutesById {
   '/app/notifications': typeof AppNotificationsRoute
   '/app/profile': typeof AppProfileRoute
   '/app/support': typeof AppSupportRoute
+  '/blog/$slug': typeof BlogSlugRoute
   '/dashboard/billing': typeof DashboardBillingRoute
   '/dashboard/ceremonies': typeof DashboardCeremoniesRouteWithChildren
   '/dashboard/events': typeof DashboardEventsRoute
@@ -612,7 +613,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
-    | '/blog'
     | '/comment-ca-marche'
     | '/conditions-generales-de-vente'
     | '/contact'
@@ -642,6 +642,7 @@ export interface FileRouteTypes {
     | '/app/notifications'
     | '/app/profile'
     | '/app/support'
+    | '/blog/$slug'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
     | '/dashboard/events'
@@ -706,6 +707,7 @@ export interface FileRouteTypes {
     | '/app/notifications'
     | '/app/profile'
     | '/app/support'
+    | '/blog/$slug'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
     | '/dashboard/events'
@@ -743,7 +745,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
-    | '/blog'
     | '/comment-ca-marche'
     | '/conditions-generales-de-vente'
     | '/contact'
@@ -773,6 +774,7 @@ export interface FileRouteTypes {
     | '/app/notifications'
     | '/app/profile'
     | '/app/support'
+    | '/blog/$slug'
     | '/dashboard/billing'
     | '/dashboard/ceremonies'
     | '/dashboard/events'
@@ -811,7 +813,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
-  BlogRoute: typeof BlogRouteWithChildren
   CommentCaMarcheRoute: typeof CommentCaMarcheRoute
   ConditionsGeneralesDeVenteRoute: typeof ConditionsGeneralesDeVenteRoute
   ContactRoute: typeof ContactRoute
@@ -833,10 +834,12 @@ export interface RootRouteChildren {
   AppNotificationsRoute: typeof AppNotificationsRoute
   AppProfileRoute: typeof AppProfileRoute
   AppSupportRoute: typeof AppSupportRoute
+  BlogSlugRoute: typeof BlogSlugRoute
   ESlugRoute: typeof ESlugRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   PaymentCallbackRoute: typeof PaymentCallbackRoute
   ThemeThumbSlugRoute: typeof ThemeThumbSlugRoute
+  BlogIndexRoute: typeof BlogIndexRoute
   ApiPublicHealthRoute: typeof ApiPublicHealthRoute
   GuestbookPrintIdRoute: typeof GuestbookPrintIdRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
@@ -963,13 +966,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CommentCaMarcheRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/blog': {
-      id: '/blog'
-      path: '/blog'
-      fullPath: '/blog'
-      preLoaderRoute: typeof BlogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -993,10 +989,10 @@ declare module '@tanstack/react-router' {
     }
     '/blog/': {
       id: '/blog/'
-      path: '/'
+      path: '/blog'
       fullPath: '/blog/'
       preLoaderRoute: typeof BlogIndexRouteImport
-      parentRoute: typeof BlogRoute
+      parentRoute: typeof rootRouteImport
     }
     '/admin/': {
       id: '/admin/'
@@ -1123,6 +1119,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/billing'
       preLoaderRoute: typeof DashboardBillingRouteImport
       parentRoute: typeof DashboardRoute
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/app/support': {
       id: '/app/support'
@@ -1335,16 +1338,6 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
-interface BlogRouteChildren {
-  BlogIndexRoute: typeof BlogIndexRoute
-}
-
-const BlogRouteChildren: BlogRouteChildren = {
-  BlogIndexRoute: BlogIndexRoute,
-}
-
-const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
-
 interface DashboardCeremoniesRouteChildren {
   DashboardCeremoniesIdRoute: typeof DashboardCeremoniesIdRoute
 }
@@ -1411,7 +1404,6 @@ const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
-  BlogRoute: BlogRouteWithChildren,
   CommentCaMarcheRoute: CommentCaMarcheRoute,
   ConditionsGeneralesDeVenteRoute: ConditionsGeneralesDeVenteRoute,
   ContactRoute: ContactRoute,
@@ -1433,10 +1425,12 @@ const rootRouteChildren: RootRouteChildren = {
   AppNotificationsRoute: AppNotificationsRoute,
   AppProfileRoute: AppProfileRoute,
   AppSupportRoute: AppSupportRoute,
+  BlogSlugRoute: BlogSlugRoute,
   ESlugRoute: ESlugRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   PaymentCallbackRoute: PaymentCallbackRoute,
   ThemeThumbSlugRoute: ThemeThumbSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
   ApiPublicHealthRoute: ApiPublicHealthRoute,
   GuestbookPrintIdRoute: GuestbookPrintIdRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
