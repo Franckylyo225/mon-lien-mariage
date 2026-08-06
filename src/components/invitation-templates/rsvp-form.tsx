@@ -48,9 +48,6 @@ export function TemplateRsvpForm({ theme, tone, weddingId, ceremonies = [], onCo
   const [phone, setPhone] = useState("");
   const [guestType, setGuestType] = useState<GuestType | "">("");
   const [plus, setPlus] = useState(0);
-  const [message, setMessage] = useState("");
-  const [dietaryTags, setDietaryTags] = useState<string[]>([]);
-  const [dietaryDetail, setDietaryDetail] = useState("");
   const [done, setDone] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -69,28 +66,12 @@ export function TemplateRsvpForm({ theme, tone, weddingId, ceremonies = [], onCo
     [name, guestType, submitting],
   );
 
-  const toggleTag = (tag: string) =>
-    setDietaryTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
-    );
-
-  const composedDietary = useMemo(() => {
-    const parts: string[] = [];
-    if (dietaryTags.length > 0) parts.push(dietaryTags.join(", "));
-    const detail = dietaryDetail.trim();
-    if (detail) parts.push(detail);
-    return parts.join(" — ").slice(0, 500);
-  }, [dietaryTags, dietaryDetail]);
-
   const reset = () => {
     setDone(false);
     setName("");
     setPhone("");
     setGuestType("");
     setPlus(0);
-    setMessage("");
-    setDietaryTags([]);
-    setDietaryDetail("");
     setError(null);
   };
 
