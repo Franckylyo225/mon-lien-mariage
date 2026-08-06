@@ -3,9 +3,11 @@ import { templateMeta, templateOrder } from "@/lib/ceremony-meta";
 import { SiteHeader as SharedSiteHeader, SiteFooter as SharedSiteFooter } from "@/components/site/SiteChrome";
 import { PricingSection } from "@/components/site/PricingSection";
 import heroCouple from "@/assets/home-couple.jpg";
-import romanceImg from "@/assets/home-romance.jpg";
 import tableImg from "@/assets/home-table.jpg";
 import ogImage from "@/assets/og-image.jpg.asset.json";
+import whyMoninvitImg from "@/assets/side-view-married-couple-holding-hands.jpeg.asset.json";
+
+
 
 const OG_IMAGE_URL = `https://moninvit.com${ogImage.url}`;
 
@@ -565,13 +567,14 @@ function TimeArgument() {
       <div className="grid items-center gap-12 md:grid-cols-2">
         <div className="relative">
           <img
-            src={romanceImg}
-            alt="Roses et alliances dorées"
+            src={whyMoninvitImg.url}
+            alt="Couple marié se tenant par la main"
             width={1024}
             height={1024}
             loading="lazy"
             className="aspect-[4/5] w-full rounded-[2rem] object-cover shadow-xl shadow-[#c17c74]/15"
           />
+
           <div className="absolute -bottom-6 -right-4 hidden rounded-2xl bg-[#fdf7f3] p-4 shadow-lg sm:block">
             <p className="font-[family-name:var(--font-display)] text-sm italic text-[#6b4a3e]">
               « Prête en une soirée. »
