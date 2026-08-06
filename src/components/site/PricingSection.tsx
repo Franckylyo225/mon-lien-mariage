@@ -11,7 +11,6 @@ import {
   BookHeart,
   Infinity as InfinityIcon,
   Lock,
-  Plus,
 } from "lucide-react";
 
 const ITEMS: {
