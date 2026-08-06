@@ -38,8 +38,11 @@ export const Route = createFileRoute("/blog/$slug")({
       { name: "twitter:description", content: post.excerpt ?? desc },
     ];
     if (post.cover_image_url) {
-      meta.push({ property: "og:image", content: post.cover_image_url });
-      meta.push({ name: "twitter:image", content: post.cover_image_url });
+      const img = post.cover_image_url.startsWith("http")
+        ? post.cover_image_url
+        : `${SITE}${post.cover_image_url}`;
+      meta.push({ property: "og:image", content: img });
+      meta.push({ name: "twitter:image", content: img });
     }
     return {
       meta,
