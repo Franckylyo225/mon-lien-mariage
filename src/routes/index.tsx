@@ -6,6 +6,7 @@ import heroCouple from "@/assets/home-couple.jpg";
 import tableImg from "@/assets/home-table.jpg";
 import ogImage from "@/assets/og-image.jpg.asset.json";
 import whyMoninvitImg from "@/assets/side-view-married-couple-holding-hands.jpeg.asset.json";
+import abidjanCouple from "@/assets/abidjan-couple.jpg.asset.json";
 
 
 
@@ -683,7 +684,7 @@ function EditorialCouple() {
       <div className="grid items-center gap-12 md:grid-cols-5">
         <div className="md:col-span-3">
           <img
-            src={heroCouple}
+            src={abidjanCouple.url}
             alt="Couple mariés à Abidjan"
             width={1024}
             height={1024}
