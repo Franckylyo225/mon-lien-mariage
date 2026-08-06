@@ -45,7 +45,10 @@ function PaymentCallbackPage() {
     }
 
     let attempts = 0;
-    const maxAttempts = 15;
+    const maxAttempts = 12;
+    // Sondage rapide au début (le webhook arrive en général en <2 s),
+    // puis on espace progressivement.
+    const delayFor = (n: number) => (n <= 3 ? 600 : n <= 6 ? 1200 : 2500);
     let timer: ReturnType<typeof setTimeout>;
 
     const poll = async () => {
@@ -71,11 +74,12 @@ function PaymentCallbackPage() {
         // on réessaie
       }
       if (attempts < maxAttempts) {
-        timer = setTimeout(poll, 2000);
+        timer = setTimeout(poll, delayFor(attempts));
       } else {
         setStatus("unknown");
       }
     };
+
 
     poll();
     return () => clearTimeout(timer);
