@@ -10,7 +10,7 @@ import {
   IconCalendarHeart,
   IconReceipt,
   IconHelpCircle,
-  IconBrandWhatsapp,
+  IconMessageCircle,
   IconLogout,
   IconX,
   IconChevronRight,
