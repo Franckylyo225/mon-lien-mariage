@@ -220,7 +220,7 @@ export function SideDrawer({
 
   const helpItems: Item[] = [
     { label: "FAQ", Icon: IconHelpCircle, to: "/app/help" },
-    { label: "Support WhatsApp", Icon: IconBrandWhatsapp, href: SUPPORT_WHATSAPP },
+    { label: "Support", Icon: IconMessageCircle, to: "/app/support" },
   ];
 
   const isActive = (it: Item) =>
