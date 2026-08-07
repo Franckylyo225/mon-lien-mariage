@@ -10,7 +10,7 @@ import {
   IconCalendarHeart,
   IconReceipt,
   IconHelpCircle,
-  IconBrandWhatsapp,
+  IconMessageCircle,
   IconLogout,
   IconX,
   IconChevronRight,
@@ -39,7 +39,6 @@ interface SideDrawerProps {
   userId?: string | null;
 }
 
-const SUPPORT_WHATSAPP = "https://wa.me/2250700000000";
 
 type Item = {
   label: string;
@@ -220,7 +219,7 @@ export function SideDrawer({
 
   const helpItems: Item[] = [
     { label: "FAQ", Icon: IconHelpCircle, to: "/app/help" },
-    { label: "Support WhatsApp", Icon: IconBrandWhatsapp, href: SUPPORT_WHATSAPP },
+    { label: "Support", Icon: IconMessageCircle, to: "/app/support" },
   ];
 
   const isActive = (it: Item) =>
