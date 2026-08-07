@@ -170,6 +170,7 @@ function DashboardChrome({
       <SideDrawer
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
+        onOpen={() => setDrawerOpen(true)}
         coupleLabel={coupleLabel}
         email={email}
         initials={coupleInitials}
