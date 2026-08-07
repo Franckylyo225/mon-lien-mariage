@@ -39,7 +39,6 @@ interface SideDrawerProps {
   userId?: string | null;
 }
 
-const SUPPORT_WHATSAPP = "https://wa.me/2250700000000";
 
 type Item = {
   label: string;
