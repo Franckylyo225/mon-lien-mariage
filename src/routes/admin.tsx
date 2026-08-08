@@ -116,29 +116,34 @@ function AdminLayout() {
   return (
     <SidebarProvider>
       <AdminSidebar email={user?.email} />
-      <SidebarInset className="bg-neutral-50">
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border/70 bg-white/95 px-4 backdrop-blur">
-          <SidebarTrigger />
-          <div className="flex items-baseline gap-2">
-            <span className="text-[11px] uppercase tracking-widest text-muted-foreground">Admin</span>
-            <span className="text-muted-foreground">/</span>
-            <span className="font-serif text-base">{title}</span>
+      <SidebarInset className="bg-[#f6f6f7]">
+        <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border/60 bg-white/80 px-4 backdrop-blur-xl">
+          <SidebarTrigger className="rounded-lg" />
+          <div className="flex items-center gap-2">
+            <span className="rounded-md bg-secondary px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              Admin
+            </span>
+            <span className="text-muted-foreground/50">/</span>
+            <span className="font-serif text-[15px]">{title}</span>
           </div>
-          <div className="ml-auto flex items-center gap-3">
-            <span className="hidden truncate text-[12px] text-muted-foreground sm:inline">{user?.email}</span>
+          <div className="ml-auto flex items-center gap-2">
+            <span className="hidden max-w-[220px] truncate rounded-full bg-secondary/70 px-3 py-1.5 text-[12px] text-muted-foreground sm:inline">
+              {user?.email}
+            </span>
             <button
               onClick={handleLogout}
               title="Se déconnecter"
-              className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-white px-3 py-1.5 text-[12px] hover:bg-secondary"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-white px-3 py-1.5 text-[12px] shadow-sm transition hover:bg-secondary"
             >
               <IconLogout size={13} /> Sortir
             </button>
           </div>
         </header>
-        <main className="mx-auto w-full max-w-6xl px-4 py-6">
+        <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6">
           <Outlet />
         </main>
       </SidebarInset>
     </SidebarProvider>
   );
 }
+

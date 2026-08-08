@@ -45,17 +45,30 @@ const system: Item[] = [
 function Section({ label, items, pathname }: { label: string; items: Item[]; pathname: string }) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>{label}</SidebarGroupLabel>
+      <SidebarGroupLabel className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70">
+        {label}
+      </SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((it) => {
             const active = it.exact ? pathname === it.to : pathname === it.to || pathname.startsWith(it.to + "/");
             return (
               <SidebarMenuItem key={it.to}>
-                <SidebarMenuButton asChild isActive={active}>
-                  <Link to={it.to as "/admin"} className="flex items-center gap-2">
-                    <it.Icon size={16} />
-                    <span>{it.label}</span>
+                <SidebarMenuButton
+                  asChild
+                  isActive={active}
+                  className="rounded-lg data-[active=true]:bg-primary/10 data-[active=true]:font-medium data-[active=true]:text-primary"
+                >
+                  <Link to={it.to as "/admin"} className="flex items-center gap-2.5">
+                    <span
+                      className={
+                        "grid size-6 shrink-0 place-items-center rounded-md transition " +
+                        (active ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground")
+                      }
+                    >
+                      <it.Icon size={14} />
+                    </span>
+                    <span className="text-[13px]">{it.label}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -70,10 +83,10 @@ function Section({ label, items, pathname }: { label: string; items: Item[]; pat
 export function AdminSidebar({ email }: { email?: string | null }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   return (
-    <Sidebar collapsible="icon">
-      <SidebarHeader>
-        <div className="flex items-center gap-2 px-2 py-1">
-          <span className="grid size-7 place-items-center rounded-full bg-primary/10 font-serif text-sm italic text-primary">
+    <Sidebar collapsible="icon" className="border-r border-border/60">
+      <SidebarHeader className="border-b border-border/50">
+        <div className="flex items-center gap-2 px-2 py-1.5">
+          <span className="grid size-8 place-items-center rounded-xl bg-primary/10 font-serif text-sm italic text-primary">
             M
           </span>
           <div className="min-w-0 group-data-[collapsible=icon]:hidden">
@@ -91,6 +104,7 @@ export function AdminSidebar({ email }: { email?: string | null }) {
         <Section label="Contenu" items={content} pathname={pathname} />
         <Section label="Système" items={system} pathname={pathname} />
       </SidebarContent>
+
       <SidebarFooter>
         <div className="space-y-2 px-2 pb-2 text-[11px] text-muted-foreground group-data-[collapsible=icon]:hidden">
           {email && <p className="truncate">{email}</p>}
