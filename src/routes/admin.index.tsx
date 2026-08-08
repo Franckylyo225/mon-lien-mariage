@@ -206,12 +206,15 @@ function AdminOverview() {
 
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="rounded-2xl border border-border/60 bg-white p-5 shadow-sm">
-          <h2 className="mb-3 font-serif text-lg">Derniers événements</h2>
-          <ul className="divide-y divide-border/60">
+        <section className="rounded-2xl border border-border/60 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)]">
+          <h2 className="border-b border-border/50 px-5 py-4 font-serif text-lg">Derniers événements</h2>
+          <ul className="divide-y divide-border/50">
             {data.recentWeddings.map((w) => (
-              <li key={w.id} className="flex items-center justify-between gap-3 py-2 text-sm">
-                <div className="min-w-0">
+              <li key={w.id} className="flex items-center gap-3 px-5 py-3 text-sm transition hover:bg-neutral-50/70">
+                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-rose-50 font-serif text-[12px] italic text-rose-700">
+                  {(w.bride_name?.[0] ?? "?").toUpperCase()}
+                </span>
+                <div className="min-w-0 flex-1">
                   <p className="truncate">{w.bride_name} & {w.groom_name}</p>
                   <p className="text-[11px] text-muted-foreground">
                     {new Date(w.created_at).toLocaleDateString("fr-FR")}
@@ -219,9 +222,9 @@ function AdminOverview() {
                 </div>
                 <span
                   className={
-                    "shrink-0 rounded-full px-2 py-0.5 text-[10px] " +
+                    "shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-medium " +
                     (w.is_published
-                      ? "bg-emerald-100 text-emerald-700"
+                      ? "bg-emerald-50 text-emerald-700"
                       : "bg-neutral-100 text-neutral-600")
                   }
                 >
@@ -230,17 +233,20 @@ function AdminOverview() {
               </li>
             ))}
             {data.recentWeddings.length === 0 && (
-              <li className="py-2 text-sm text-muted-foreground">Aucun événement.</li>
+              <li className="px-5 py-4 text-sm text-muted-foreground">Aucun événement.</li>
             )}
           </ul>
         </section>
 
-        <section className="rounded-2xl border border-border/60 bg-white p-5 shadow-sm">
-          <h2 className="mb-3 font-serif text-lg">Derniers inscrits</h2>
-          <ul className="divide-y divide-border/60">
+        <section className="rounded-2xl border border-border/60 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)]">
+          <h2 className="border-b border-border/50 px-5 py-4 font-serif text-lg">Derniers inscrits</h2>
+          <ul className="divide-y divide-border/50">
             {data.recentUsers.map((u) => (
-              <li key={u.id} className="flex items-center justify-between gap-3 py-2 text-sm">
-                <div className="min-w-0">
+              <li key={u.id} className="flex items-center gap-3 px-5 py-3 text-sm transition hover:bg-neutral-50/70">
+                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-blue-50 text-[12px] font-medium text-blue-700">
+                  {(u.user_first_name?.[0] ?? u.email?.[0] ?? "?").toUpperCase()}
+                </span>
+                <div className="min-w-0 flex-1">
                   <p className="truncate">{u.user_first_name ?? u.email ?? "Utilisateur"}</p>
                   <p className="truncate text-[11px] text-muted-foreground">{u.email}</p>
                 </div>
@@ -252,6 +258,7 @@ function AdminOverview() {
           </ul>
         </section>
       </div>
+
     </div>
   );
 }
