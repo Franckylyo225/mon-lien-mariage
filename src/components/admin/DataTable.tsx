@@ -135,11 +135,12 @@ export function DataTable<T>({
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-border/60 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-2xl border border-border/60 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)]">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-neutral-50 text-left text-[11px] uppercase tracking-wider text-muted-foreground">
+            <thead className="border-b border-border/60 bg-neutral-50/80 text-left text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
               <tr>
+
                 {columns.map((c) => {
                   const active = sort?.key === c.key;
                   const sortable = Boolean(c.sortValue);

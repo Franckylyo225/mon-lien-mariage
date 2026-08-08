@@ -106,46 +106,54 @@ function AdminOverview() {
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="rounded-2xl border border-border/60 bg-white p-5 shadow-[0_1px_2px_rgba(16,24,40,0.05)]">
         <h1 className="font-serif text-2xl">Vue d'ensemble</h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="mt-1 text-sm text-muted-foreground">
           Pilotez la plateforme : croissance, publications, revenus.
         </p>
       </div>
 
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {cards.map((c) => (
-          <div key={c.label} className="rounded-2xl border border-border/60 bg-white p-4 shadow-sm">
-            <div className="mb-2 flex items-start justify-between">
-              <div className={`inline-grid size-8 place-items-center rounded-full ${c.tint}`}>
-                <c.Icon size={16} />
+          <div
+            key={c.label}
+            className="group rounded-2xl border border-border/60 bg-white p-4 shadow-[0_1px_2px_rgba(16,24,40,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-12px_rgba(16,24,40,0.25)]"
+          >
+            <div className="mb-3 flex items-start justify-between">
+              <div className={`inline-grid size-9 place-items-center rounded-xl ${c.tint}`}>
+                <c.Icon size={17} />
               </div>
               <TrendBadge value={c.trend} />
             </div>
-            <div className="text-lg font-semibold leading-tight">{c.value}</div>
-            <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{c.label}</div>
+            <div className="text-[20px] font-semibold leading-tight tracking-tight">{c.value}</div>
+            <div className="mt-0.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              {c.label}
+            </div>
           </div>
         ))}
       </section>
 
       <section className="grid gap-4 lg:grid-cols-3">
-        <div className="rounded-2xl border border-border/60 bg-white p-5 shadow-sm lg:col-span-2">
-          <div className="mb-4 flex items-center justify-between">
+        <div className="rounded-2xl border border-border/60 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)] lg:col-span-2">
+          <div className="flex items-center justify-between border-b border-border/50 px-5 py-4">
             <div>
               <h2 className="font-serif text-lg">Revenus — 30 derniers jours</h2>
               <p className="text-[12px] text-muted-foreground">
-                {formatXof(data.revenue30Xof)} · 1 publication = {formatXof(data.pricePerPublish)}
+                1 publication = {formatXof(data.pricePerPublish)}
               </p>
             </div>
+            <span className="rounded-full bg-emerald-50 px-3 py-1 text-[12px] font-medium text-emerald-700">
+              {formatXof(data.revenue30Xof)}
+            </span>
           </div>
-          <div className="flex h-32 items-end gap-[3px]">
+          <div className="flex h-36 items-end gap-[3px] px-5 py-4">
             {data.publishedSeries.map((d) => (
               <div
                 key={d.date}
-                className="group relative flex-1 rounded-t bg-primary/80 transition hover:bg-primary"
+                className="group relative flex-1 rounded-t-md bg-gradient-to-t from-primary/40 to-primary/90 transition hover:from-primary/60 hover:to-primary"
                 style={{ height: `${(d.count / maxDay) * 100}%`, minHeight: d.count ? 4 : 2 }}
               >
-                <span className="pointer-events-none absolute -top-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-neutral-900 px-1.5 py-0.5 text-[10px] text-white opacity-0 group-hover:opacity-100">
+                <span className="pointer-events-none absolute -top-7 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-md bg-neutral-900 px-2 py-1 text-[10px] text-white opacity-0 shadow-lg group-hover:opacity-100">
                   {d.date} · {d.count} · {formatXof(d.revenueXof)}
                 </span>
               </div>
@@ -153,18 +161,18 @@ function AdminOverview() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-border/60 bg-white p-5 shadow-sm">
-          <h2 className="mb-3 font-serif text-lg">Top thèmes</h2>
-          <ul className="space-y-2">
+        <div className="rounded-2xl border border-border/60 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)]">
+          <h2 className="border-b border-border/50 px-5 py-4 font-serif text-lg">Top thèmes</h2>
+          <ul className="space-y-3 px-5 py-4">
             {data.topThemes.map((t) => (
-              <li key={t.theme} className="space-y-1">
+              <li key={t.theme} className="space-y-1.5">
                 <div className="flex items-center justify-between text-[12px]">
                   <span className="capitalize">{t.theme.replace(/-/g, " ")}</span>
-                  <span className="text-muted-foreground">{t.count}</span>
+                  <span className="tabular-nums text-muted-foreground">{t.count}</span>
                 </div>
                 <div className="h-1.5 overflow-hidden rounded-full bg-neutral-100">
                   <div
-                    className="h-full rounded-full bg-primary/70"
+                    className="h-full rounded-full bg-gradient-to-r from-primary/60 to-primary"
                     style={{ width: `${(t.count / maxTheme) * 100}%` }}
                   />
                 </div>
@@ -177,24 +185,25 @@ function AdminOverview() {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-border/60 bg-white p-5 shadow-sm">
-        <div className="mb-4 flex items-center justify-between">
+      <section className="rounded-2xl border border-border/60 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)]">
+        <div className="flex items-center justify-between border-b border-border/50 px-5 py-4">
           <h2 className="font-serif text-lg">RSVP — 30 derniers jours</h2>
-          <span className="text-[12px] text-muted-foreground">
+          <span className="rounded-full bg-violet-50 px-3 py-1 text-[12px] font-medium text-violet-700">
             Total : {data.rsvps.toLocaleString("fr-FR")}
           </span>
         </div>
-        <div className="flex h-24 items-end gap-[3px]">
+        <div className="flex h-28 items-end gap-[3px] px-5 py-4">
           {data.rsvpSeries.map((d) => (
             <div
               key={d.date}
-              className="flex-1 rounded-t bg-violet-400/70"
+              className="flex-1 rounded-t-md bg-gradient-to-t from-violet-200 to-violet-400"
               style={{ height: `${(d.count / maxRsvp) * 100}%`, minHeight: d.count ? 4 : 2 }}
               title={`${d.date} — ${d.count}`}
             />
           ))}
         </div>
       </section>
+
 
       <div className="grid gap-4 lg:grid-cols-2">
         <section className="rounded-2xl border border-border/60 bg-white p-5 shadow-sm">
