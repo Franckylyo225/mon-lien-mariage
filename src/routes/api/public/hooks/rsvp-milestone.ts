@@ -7,9 +7,9 @@ import { TEMPLATES } from '@/lib/email-templates/registry'
 // Internal webhook called by the on_rsvp_confirmed Postgres trigger via pg_net.
 // Authenticated with the service-role key stored in Vault (email_queue_service_role_key).
 // Renders the milestone email and enqueues it in the transactional queue.
-const SITE_NAME = 'moninvit'
+const SITE_NAME = 'MonInvit.com'
 const SENDER_DOMAIN = 'notify.moninvit.com'
-const FROM_DOMAIN = 'moninvit.com'
+const FROM_DOMAIN = 'notify.moninvit.com'
 
 function generateToken(): string {
   const bytes = new Uint8Array(32)
