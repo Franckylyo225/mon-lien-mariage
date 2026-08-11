@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Ceremony } from "@/lib/wedding-store";
+import { programItemMapsHref } from "@/lib/wedding-store";
 
 export type ProgramTabsVariant =
   | "terracotta"
