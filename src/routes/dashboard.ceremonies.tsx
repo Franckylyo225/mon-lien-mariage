@@ -176,7 +176,7 @@ function CeremonySheet({
       >
         <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border sm:hidden" />
         <h3 className="font-serif text-xl italic">
-          {initial ? "Éditer la étape" : "Nouvelle étape"}
+          {initial ? "Éditer l'étape" : "Nouvelle étape"}
         </h3>
 
         <div className="mt-4 space-y-3">
@@ -239,7 +239,7 @@ function CeremonySheet({
             <div className="mb-3 flex items-center justify-between">
               <div>
                 <p className="font-mono text-[10px] uppercase tracking-widest opacity-60">
-                  Programme de la étape
+                  PROGRAMME DE L'ÉTAPE
                 </p>
                 <p className="mt-0.5 text-[11px] opacity-60">
                   Les étapes affichées aux invités.
