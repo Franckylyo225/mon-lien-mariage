@@ -68,6 +68,19 @@ export interface ProgramItem {
   time: string;
   title: string;
   description?: string;
+  /** Nom du lieu de cette étape (ex: Église Saint-Paul, Plateau) */
+  location?: string;
+  /** Lien Google Maps personnalisé (optionnel) */
+  mapsUrl?: string;
+}
+
+/** Lien cliquable vers la localisation d'une étape du programme. */
+export function programItemMapsHref(it: ProgramItem): string | null {
+  const url = it.mapsUrl?.trim();
+  if (url) return /^https?:\/\//i.test(url) ? url : `https://${url}`;
+  const loc = it.location?.trim();
+  if (loc) return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc)}`;
+  return null;
 }
 
 export interface Ceremony {

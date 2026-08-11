@@ -7,6 +7,7 @@ import {
   type Ceremony,
   type CeremonyType,
   type ProgramItem,
+  programItemMapsHref,
 } from "@/lib/wedding-store";
 
 export const Route = createFileRoute("/dashboard/ceremonies")({
@@ -287,6 +288,28 @@ function CeremonySheet({
                       placeholder="Description (optionnelle)"
                       className="mt-2 w-full rounded-lg border border-input bg-background px-3 py-2 text-xs"
                     />
+                    <input
+                      value={it.location ?? ""}
+                      onChange={(e) => updateProgramItem(it.id, { location: e.target.value })}
+                      placeholder="Lieu de l'étape (ex: Église Saint-Paul, Plateau)"
+                      className="mt-2 w-full rounded-lg border border-input bg-background px-3 py-2 text-xs"
+                    />
+                    <input
+                      value={it.mapsUrl ?? ""}
+                      onChange={(e) => updateProgramItem(it.id, { mapsUrl: e.target.value })}
+                      placeholder="Lien Google Maps (optionnel)"
+                      className="mt-2 w-full rounded-lg border border-input bg-background px-3 py-2 text-xs"
+                    />
+                    {programItemMapsHref(it) ? (
+                      <a
+                        href={programItemMapsHref(it)!}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-1 inline-block font-mono text-[9px] uppercase tracking-widest text-primary underline"
+                      >
+                        Tester le lien
+                      </a>
+                    ) : null}
                     <div className="mt-2 flex justify-end gap-1">
                       <button
                         type="button"
