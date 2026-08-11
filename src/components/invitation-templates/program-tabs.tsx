@@ -201,7 +201,9 @@ export function CeremonyProgramTabs({ ceremonies, variant }: Props) {
           ) : null}
           {active.program && active.program.length > 0 ? (
             <ul className={skin.divider}>
-              {active.program.map((it) => (
+              {active.program.map((it) => {
+                const href = programItemMapsHref(it);
+                return (
                 <li key={it.id} className="flex gap-3">
                   <span className={skin.progTime}>{it.time}</span>
                   <div className="min-w-0">
@@ -209,9 +211,24 @@ export function CeremonyProgramTabs({ ceremonies, variant }: Props) {
                     {it.description ? (
                       <p className={skin.progDesc}>{it.description}</p>
                     ) : null}
+                    {href ? (
+                      <a
+                        href={href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-1 inline-flex items-center gap-1 text-[11px] underline underline-offset-2 opacity-80 transition hover:opacity-100"
+                      >
+                        <svg viewBox="0 0 24 24" className="size-3" fill="none" stroke="currentColor" strokeWidth="1.8">
+                          <path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z" />
+                          <circle cx="12" cy="10" r="2.5" />
+                        </svg>
+                        {it.location?.trim() || "Voir le lieu"}
+                      </a>
+                    ) : null}
                   </div>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           ) : (
             <p className="mt-4 text-xs italic opacity-60">
