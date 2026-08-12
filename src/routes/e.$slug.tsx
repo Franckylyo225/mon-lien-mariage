@@ -292,7 +292,9 @@ function PublicInvitationPage() {
       ) : null}
       <AmbientMusicPlayer slug={coupleTheme.musicSlug} enabled={coupleTheme.musicEnabled} />
     </ThemeRoot>
+    </>
   );
+
 }
 
 
