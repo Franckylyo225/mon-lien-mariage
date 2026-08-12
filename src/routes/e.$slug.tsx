@@ -1,6 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { usePageView } from "@/hooks/use-page-view";
+import { InvitationSplash } from "@/components/public/InvitationSplash";
+
 
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { getPublicWedding } from "@/lib/public-wedding.functions";
@@ -74,7 +76,39 @@ function PublicInvitationPage() {
   const { slug } = Route.useParams();
   const { data } = useSuspenseQuery(publicWeddingQuery(slug));
   const [rsvpBurst, setRsvpBurst] = useState(false);
-  usePageView(data.wedding?.id);
+  const weddingId = data.wedding?.id ?? null;
+  const [showSplash, setShowSplash] = useState(false);
+  const [splashDone, setSplashDone] = useState(false);
+
+  useEffect(() => {
+    if (!weddingId || typeof window === "undefined") return;
+    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const key = `splash_seen_${weddingId}`;
+    let seen = false;
+    try {
+      seen = window.sessionStorage.getItem(key) !== null;
+    } catch {
+      /* storage unavailable */
+    }
+    if (reduced || seen) {
+      setSplashDone(true);
+      return;
+    }
+    try {
+      window.sessionStorage.setItem(key, "1");
+    } catch {
+      /* ignore */
+    }
+    setShowSplash(true);
+  }, [weddingId]);
+
+  const handleSplashDone = useCallback(() => {
+    setShowSplash(false);
+    setSplashDone(true);
+  }, []);
+
+  usePageView(weddingId);
+
 
   if (!data.wedding) throw notFound();
 
@@ -198,7 +232,19 @@ function PublicInvitationPage() {
   const Template = componentForTheme(coupleTheme.theme);
 
   return (
+    <>
+      {showSplash && !splashDone ? (
+        <InvitationSplash
+          brideName={coupleTheme.brideName}
+          groomName={coupleTheme.groomName}
+          weddingDate={coupleTheme.weddingDate}
+          city={coupleTheme.city}
+          theme={resolved}
+          onDone={handleSplashDone}
+        />
+      ) : null}
     <ThemeRoot couple={coupleTheme} className="relative">
+
       {coupleTheme.particleEffectSlug ? (
         <ParticleCanvas
           config={{
@@ -246,7 +292,9 @@ function PublicInvitationPage() {
       ) : null}
       <AmbientMusicPlayer slug={coupleTheme.musicSlug} enabled={coupleTheme.musicEnabled} />
     </ThemeRoot>
+    </>
   );
+
 }
 
 
