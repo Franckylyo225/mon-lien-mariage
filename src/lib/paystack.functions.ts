@@ -164,11 +164,41 @@ export const getPaymentStatus = createServerFn({ method: "POST" })
       }
     }
 
+    let wedding: {
+      brideName: string;
+      groomName: string;
+      slug: string | null;
+      hasGuestbook: boolean;
+      weddingDate: string | null;
+      theme: string | null;
+    } | null = null;
+
+    if (row.wedding_id) {
+      const { data: w } = await context.supabase
+        .from("weddings")
+        .select("bride_name, groom_name, slug, has_guestbook, wedding_date, theme")
+        .eq("id", row.wedding_id)
+        .maybeSingle();
+      if (w) {
+        wedding = {
+          brideName: w.bride_name ?? "",
+          groomName: w.groom_name ?? "",
+          slug: w.slug ?? null,
+          hasGuestbook: !!w.has_guestbook,
+          weddingDate: w.wedding_date ?? null,
+          theme: w.theme ?? null,
+        };
+      }
+    }
+
     return {
       found: true as const,
       status,
       paymentType: row.payment_type as PaystackPaymentType,
       weddingId: row.wedding_id as string | null,
+      amountFcfa: (row.amount_fcfa as number | null) ?? null,
+      wedding,
     };
+
   });
 
