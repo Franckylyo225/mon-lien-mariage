@@ -2,7 +2,10 @@ import { useEffect, useRef, type ReactNode } from "react";
 
 /**
  * Wraps children and progressively reveals descendant <section> elements
- * with an elegant scale + fade animation as they enter the viewport.
+ * (and their direct children, in cascade) with an elegant fade-up animation
+ * as they enter the viewport. Respects prefers-reduced-motion.
+ *
+ * Opt out of an element with `data-no-reveal`.
  */
 export function RevealOnScroll({ children }: { children: ReactNode }) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -15,18 +18,38 @@ export function RevealOnScroll({ children }: { children: ReactNode }) {
       typeof window !== "undefined" &&
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
-    const targets = Array.from(
+    const sections = Array.from(
       root.querySelectorAll<HTMLElement>("section, [data-reveal]"),
-    );
+    ).filter((el) => !el.closest("[data-no-reveal]"));
 
     if (prefersReduced) {
-      targets.forEach((el) => el.classList.add("reveal-in"));
+      sections.forEach((el) => el.classList.add("reveal-in"));
       return;
     }
 
-    targets.forEach((el, i) => {
-      el.classList.add("reveal-init");
-      el.style.setProperty("--reveal-delay", `${Math.min(i * 60, 240)}ms`);
+    const isMobile = window.innerWidth < 768;
+    const step = isMobile ? 90 : 120;
+
+    const targets: HTMLElement[] = [];
+
+    sections.forEach((section, i) => {
+      section.classList.add("reveal-init");
+      section.style.setProperty("--reveal-delay", `${Math.min(i * 60, 240)}ms`);
+      targets.push(section);
+
+      // Cascade on the section's direct children (max 8 animated at once).
+      const kids = Array.from(section.children).filter(
+        (c): c is HTMLElement =>
+          c instanceof HTMLElement &&
+          !c.hasAttribute("data-no-reveal") &&
+          !c.matches("script, style, canvas, audio, video"),
+      );
+      if (kids.length < 2 || kids.length > 8) return;
+      kids.forEach((kid, k) => {
+        kid.classList.add("reveal-child-init");
+        kid.style.setProperty("--reveal-delay", `${k * step}ms`);
+        targets.push(kid);
+      });
     });
 
     const io = new IntersectionObserver(
@@ -38,7 +61,7 @@ export function RevealOnScroll({ children }: { children: ReactNode }) {
           }
         });
       },
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" },
+      { threshold: isMobile ? 0.08 : 0.12, rootMargin: "0px 0px -8% 0px" },
     );
 
     targets.forEach((el) => io.observe(el));
