@@ -76,7 +76,39 @@ function PublicInvitationPage() {
   const { slug } = Route.useParams();
   const { data } = useSuspenseQuery(publicWeddingQuery(slug));
   const [rsvpBurst, setRsvpBurst] = useState(false);
-  usePageView(data.wedding?.id);
+  const weddingId = data.wedding?.id ?? null;
+  const [showSplash, setShowSplash] = useState(false);
+  const [splashDone, setSplashDone] = useState(false);
+
+  useEffect(() => {
+    if (!weddingId || typeof window === "undefined") return;
+    const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const key = `splash_seen_${weddingId}`;
+    let seen = false;
+    try {
+      seen = window.sessionStorage.getItem(key) !== null;
+    } catch {
+      /* storage unavailable */
+    }
+    if (reduced || seen) {
+      setSplashDone(true);
+      return;
+    }
+    try {
+      window.sessionStorage.setItem(key, "1");
+    } catch {
+      /* ignore */
+    }
+    setShowSplash(true);
+  }, [weddingId]);
+
+  const handleSplashDone = useCallback(() => {
+    setShowSplash(false);
+    setSplashDone(true);
+  }, []);
+
+  usePageView(weddingId);
+
 
   if (!data.wedding) throw notFound();
 
