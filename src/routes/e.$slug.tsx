@@ -78,7 +78,7 @@ function PublicInvitationPage() {
   const [rsvpBurst, setRsvpBurst] = useState(false);
   const weddingId = data.wedding?.id ?? null;
   const [showSplash, setShowSplash] = useState(false);
-  const [splashDone, setSplashDone] = useState(false);
+  const [contentRevealed, setContentRevealed] = useState(false);
 
   useEffect(() => {
     if (!weddingId || typeof window === "undefined") return;
@@ -91,7 +91,7 @@ function PublicInvitationPage() {
       /* storage unavailable */
     }
     if (reduced || seen) {
-      setSplashDone(true);
+      setContentRevealed(true);
       return;
     }
     try {
@@ -100,12 +100,16 @@ function PublicInvitationPage() {
       /* ignore */
     }
     setShowSplash(true);
+    // Révèle la page pendant le fondu de sortie du splash
+    const revealTimer = setTimeout(() => setContentRevealed(true), 3150);
+    return () => clearTimeout(revealTimer);
   }, [weddingId]);
 
   const handleSplashDone = useCallback(() => {
     setShowSplash(false);
-    setSplashDone(true);
+    setContentRevealed(true);
   }, []);
+
 
   usePageView(weddingId);
 
