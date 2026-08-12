@@ -1,6 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { usePageView } from "@/hooks/use-page-view";
+import { InvitationSplash } from "@/components/public/InvitationSplash";
+
 
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { getPublicWedding } from "@/lib/public-wedding.functions";
