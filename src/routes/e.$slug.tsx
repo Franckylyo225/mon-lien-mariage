@@ -237,7 +237,7 @@ function PublicInvitationPage() {
 
   return (
     <>
-      {showSplash && !splashDone ? (
+      {showSplash ? (
         <InvitationSplash
           brideName={coupleTheme.brideName}
           groomName={coupleTheme.groomName}
@@ -247,7 +247,11 @@ function PublicInvitationPage() {
           onDone={handleSplashDone}
         />
       ) : null}
-    <ThemeRoot couple={coupleTheme} className="relative">
+    <ThemeRoot
+      couple={coupleTheme}
+      className={`relative invitation-content${contentRevealed ? " revealed" : ""}`}
+    >
+
 
       {coupleTheme.particleEffectSlug ? (
         <ParticleCanvas
