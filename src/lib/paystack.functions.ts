@@ -121,9 +121,10 @@ export const getPaymentStatus = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { data: row } = await context.supabase
       .from("payments")
-      .select("status, payment_type, wedding_id")
+      .select("status, payment_type, wedding_id, amount_fcfa")
       .eq("paystack_reference", data.reference)
       .maybeSingle();
+
     if (!row) return { found: false as const };
 
     let status = row.status as string;
