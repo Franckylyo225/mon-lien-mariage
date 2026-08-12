@@ -232,7 +232,19 @@ function PublicInvitationPage() {
   const Template = componentForTheme(coupleTheme.theme);
 
   return (
+    <>
+      {showSplash && !splashDone ? (
+        <InvitationSplash
+          brideName={coupleTheme.brideName}
+          groomName={coupleTheme.groomName}
+          weddingDate={coupleTheme.weddingDate}
+          city={coupleTheme.city}
+          theme={resolved}
+          onDone={handleSplashDone}
+        />
+      ) : null}
     <ThemeRoot couple={coupleTheme} className="relative">
+
       {coupleTheme.particleEffectSlug ? (
         <ParticleCanvas
           config={{
