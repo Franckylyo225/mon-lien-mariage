@@ -70,7 +70,7 @@ export function ConsentManager() {
           className="fixed inset-x-0 bottom-0 z-[70] p-3 sm:p-5"
           style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
         >
-          <div className="mx-auto max-w-3xl rounded-3xl border border-[#e8c5b6]/70 bg-[#fdf7f3] p-5 shadow-2xl">
+          <div className="mx-auto max-h-[80dvh] w-full max-w-3xl overflow-y-auto overscroll-contain rounded-3xl border border-[#e8c5b6]/70 bg-[#fdf7f3] p-4 shadow-2xl sm:p-5">
             <h2 className="font-[family-name:var(--font-display)] text-lg italic text-[#2b1a14]">
               Votre vie privée compte
             </h2>
@@ -86,21 +86,21 @@ export function ConsentManager() {
               <button
                 type="button"
                 onClick={openPreferences}
-                className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#e8c5b6] px-5 text-sm text-[#2b1a14] transition hover:bg-[#fbeee4]/60"
+                className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-[#e8c5b6] px-5 text-sm text-[#2b1a14] transition hover:bg-[#fbeee4]/60 sm:w-auto"
               >
                 Personnaliser
               </button>
               <button
                 type="button"
                 onClick={rejectAll}
-                className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#e8c5b6] px-5 text-sm text-[#2b1a14] transition hover:bg-[#fbeee4]/60"
+                className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-[#e8c5b6] px-5 text-sm text-[#2b1a14] transition hover:bg-[#fbeee4]/60 sm:w-auto"
               >
                 Tout refuser
               </button>
               <button
                 type="button"
                 onClick={acceptAll}
-                className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#2b1a14] px-5 text-sm font-medium text-[#fdf7f3] transition hover:opacity-90"
+                className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[#2b1a14] px-5 text-sm font-medium text-[#fdf7f3] transition hover:opacity-90 sm:w-auto"
               >
                 Tout accepter
               </button>
@@ -120,7 +120,8 @@ export function ConsentManager() {
             role="dialog"
             aria-modal="true"
             aria-label="Préférences de cookies"
-            className="relative z-10 max-h-[85dvh] w-full max-w-lg overflow-y-auto rounded-t-3xl border border-[#e8c5b6]/70 bg-[#fdf7f3] p-6 shadow-2xl sm:rounded-3xl"
+            className="relative z-10 max-h-[88dvh] w-full max-w-lg overflow-y-auto overscroll-contain rounded-t-3xl border border-[#e8c5b6]/70 bg-[#fdf7f3] p-5 shadow-2xl sm:rounded-3xl sm:p-6"
+            style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))" }}
           >
             <h2 className="font-[family-name:var(--font-display)] text-xl italic text-[#2b1a14]">
               Préférences de cookies
@@ -131,8 +132,8 @@ export function ConsentManager() {
             </p>
 
             <div className="mt-5 flex flex-col gap-4">
-              <div className="flex items-start justify-between gap-4 rounded-2xl border border-[#e8c5b6]/60 p-4">
-                <div>
+              <div className="flex items-start justify-between gap-3 rounded-2xl border border-[#e8c5b6]/60 p-3 sm:gap-4 sm:p-4">
+                <div className="min-w-0">
                   <p className="text-sm font-medium text-[#2b1a14]">Nécessaires</p>
                   <p className="mt-1 text-xs leading-relaxed text-[#6b4a3e]">
                     Connexion, sécurité et enregistrement de vos préférences. Toujours actifs.
@@ -141,8 +142,8 @@ export function ConsentManager() {
                 <Toggle checked disabled label="Cookies nécessaires (toujours actifs)" />
               </div>
 
-              <div className="flex items-start justify-between gap-4 rounded-2xl border border-[#e8c5b6]/60 p-4">
-                <div>
+              <div className="flex items-start justify-between gap-3 rounded-2xl border border-[#e8c5b6]/60 p-3 sm:gap-4 sm:p-4">
+                <div className="min-w-0">
                   <p className="text-sm font-medium text-[#2b1a14]">Mesure d'audience</p>
                   <p className="mt-1 text-xs leading-relaxed text-[#6b4a3e]">
                     Google Analytics, pour comprendre l'usage du site et l'améliorer.
@@ -151,8 +152,8 @@ export function ConsentManager() {
                 <Toggle checked={analytics} onChange={setAnalytics} label="Cookies de mesure d'audience" />
               </div>
 
-              <div className="flex items-start justify-between gap-4 rounded-2xl border border-[#e8c5b6]/60 p-4">
-                <div>
+              <div className="flex items-start justify-between gap-3 rounded-2xl border border-[#e8c5b6]/60 p-3 sm:gap-4 sm:p-4">
+                <div className="min-w-0">
                   <p className="text-sm font-medium text-[#2b1a14]">Marketing</p>
                   <p className="mt-1 text-xs leading-relaxed text-[#6b4a3e]">
                     Personnalisation des publicités et mesure des campagnes.
@@ -166,14 +167,14 @@ export function ConsentManager() {
               <button
                 type="button"
                 onClick={rejectAll}
-                className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#e8c5b6] px-5 text-sm text-[#2b1a14] transition hover:bg-[#fbeee4]/60"
+                className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-[#e8c5b6] px-5 text-sm text-[#2b1a14] transition hover:bg-[#fbeee4]/60 sm:w-auto"
               >
                 Tout refuser
               </button>
               <button
                 type="button"
                 onClick={() => save({ analytics, marketing })}
-                className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#2b1a14] px-5 text-sm font-medium text-[#fdf7f3] transition hover:opacity-90"
+                className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[#2b1a14] px-5 text-sm font-medium text-[#fdf7f3] transition hover:opacity-90 sm:w-auto"
               >
                 Enregistrer mes choix
               </button>
