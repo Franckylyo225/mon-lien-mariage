@@ -261,7 +261,7 @@ function RsvpModal({
       <div
         onClick={(e) => e.stopPropagation()}
         className={
-          "relative flex max-h-[92vh] w-full max-w-full flex-col overflow-hidden sm:max-w-lg " +
+          "relative flex max-h-[92dvh] w-full max-w-full flex-col overflow-hidden sm:max-w-lg " +
           d.modalRadius
         }
         style={{
@@ -281,7 +281,8 @@ function RsvpModal({
           ×
         </button>
 
-        <div className="overflow-y-auto overscroll-contain px-5 pb-8 pt-6 sm:px-7">
+        <div className="overflow-y-auto overscroll-contain px-4 pb-8 pt-6 sm:px-7"
+          style={{ paddingBottom: "max(2rem, env(safe-area-inset-bottom))" }}>
           <RsvpOrnament
             kind={d.ornament}
             color={d.accent}
@@ -383,10 +384,6 @@ function RsvpModal({
               </div>
             </div>
           )}
-
-          {error ? (
-            <p className="mt-3 text-center text-xs text-red-500">{error}</p>
-          ) : null}
 
           {error ? (
             <p className="mt-3 text-center text-xs text-red-500">{error}</p>

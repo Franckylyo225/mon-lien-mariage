@@ -6,6 +6,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  height: 100dvh;
   z-index: 9999;
   will-change: transform, opacity;
   transition: opacity 0.4s ease;
@@ -30,7 +31,9 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 0 32px;
+  padding: 0 24px;
+  max-width: 100%;
+  width: 100%;
   position: relative;
   z-index: 2;
 }
@@ -67,8 +70,10 @@
 
 .splash-name {
   font-style: italic;
-  font-size: 42px;
-  line-height: 1;
+  font-size: clamp(28px, 9vw, 42px);
+  line-height: 1.05;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   letter-spacing: -0.01em;
   opacity: 0;
   transform: translateY(16px);
@@ -101,9 +106,11 @@
 }
 
 .splash-date {
-  font-size: 12px;
+  font-size: clamp(10px, 3.2vw, 12px);
   letter-spacing: 0.06em;
   margin-top: 12px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
   opacity: 0;
   transform: translateY(8px);
   transition:
@@ -157,7 +164,7 @@
 
 .splash-dots {
   position: absolute;
-  bottom: 18px;
+  bottom: max(18px, env(safe-area-inset-bottom));
   display: flex;
   gap: 6px;
   align-items: center;
@@ -195,3 +202,18 @@
   }
 }
 
+
+@media (max-width: 420px), (max-height: 640px) {
+  .floral-ornament {
+    display: none;
+  }
+}
+@media (max-width: 420px) {
+  .splash-ampersand {
+    font-size: 18px;
+  }
+  .splash-heart svg {
+    width: 40px;
+    height: 40px;
+  }
+}
