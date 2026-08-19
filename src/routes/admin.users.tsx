@@ -1,8 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { IconShieldCheck, IconShield } from "@tabler/icons-react";
-import { listAllUsers, setUserRole } from "@/lib/admin.functions";
+import { useState } from "react";
+import { IconShieldCheck, IconShield, IconMail, IconKey } from "@tabler/icons-react";
+import { toast } from "sonner";
+import {
+  listAllUsers,
+  setUserRole,
+  sendPasswordResetEmail,
+  adminSetUserPassword,
+} from "@/lib/admin.functions";
 import { DataTable, type Column } from "@/components/admin/DataTable";
 
 export const Route = createFileRoute("/admin/users")({
@@ -14,7 +21,13 @@ type Row = Awaited<ReturnType<typeof listAllUsers>>[number];
 function AdminUsers() {
   const fetchUsers = useServerFn(listAllUsers);
   const toggleRole = useServerFn(setUserRole);
+  const sendReset = useServerFn(sendPasswordResetEmail);
+  const setPassword = useServerFn(adminSetUserPassword);
   const qc = useQueryClient();
+
+  const [pwTarget, setPwTarget] = useState<Row | null>(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "users"],
@@ -26,6 +39,34 @@ function AdminUsers() {
     await toggleRole({ data: { userId, role: "admin", grant: !isAdmin } });
     qc.invalidateQueries({ queryKey: ["admin", "users"] });
   }
+
+  async function handleSendReset(u: Row) {
+    if (!u.email) return;
+    if (!confirm(`Envoyer un email de réinitialisation à ${u.email} ?`)) return;
+    try {
+      await sendReset({ data: { email: u.email } });
+      toast.success("Email de réinitialisation envoyé.");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Envoi impossible");
+    }
+  }
+
+  async function handleSetPassword(e: React.FormEvent) {
+    e.preventDefault();
+    if (!pwTarget) return;
+    setSaving(true);
+    try {
+      await setPassword({ data: { userId: pwTarget.id, password: newPassword } });
+      toast.success("Mot de passe mis à jour.");
+      setPwTarget(null);
+      setNewPassword("");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Échec de la mise à jour");
+    } finally {
+      setSaving(false);
+    }
+  }
+
 
   const columns: Column<Row>[] = [
     {
