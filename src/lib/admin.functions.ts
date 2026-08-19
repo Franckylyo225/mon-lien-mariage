@@ -716,3 +716,40 @@ export const deleteBlogPost = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+// ---------- Réinitialisation de mot de passe (admin) ----------
+
+export const sendPasswordResetEmail = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { email: string }) => data)
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const email = (data.email || "").trim().toLowerCase();
+    if (!email.includes("@")) throw new Error("Adresse email invalide");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.auth.resetPasswordForEmail(email, {
+      redirectTo: "https://moninvit.com/reset-password",
+    });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const adminSetUserPassword = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { userId: string; password: string }) => data)
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const pw = data.password ?? "";
+    if (pw.length < 8 || !/[A-Z]/.test(pw) || !/[a-z]/.test(pw) || !/\d/.test(pw)) {
+      throw new Error(
+        "Mot de passe trop faible : 8 caractères minimum, une majuscule, une minuscule et un chiffre.",
+      );
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, {
+      password: pw,
+    });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
