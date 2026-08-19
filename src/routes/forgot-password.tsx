@@ -37,7 +37,14 @@ function ForgotPasswordPage() {
     });
     setLoading(false);
     if (err) {
-      setError(err.message);
+      const status = (err as { status?: number }).status;
+      if (status === 429) {
+        setError(
+          "Trop de demandes en peu de temps. Patientez une minute avant de réessayer (vérifiez aussi vos spams, un email a peut-être déjà été envoyé).",
+        );
+      } else {
+        setError(err.message);
+      }
       return;
     }
     setSent(true);
