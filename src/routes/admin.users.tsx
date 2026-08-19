@@ -181,6 +181,56 @@ function AdminUsers() {
         rowKey={(u) => u.id}
         filename="utilisateurs.csv"
       />
+
+      {pwTarget ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          onClick={() => setPwTarget(null)}
+        >
+          <form
+            onSubmit={handleSetPassword}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-sm space-y-4 rounded-2xl bg-white p-5 shadow-xl"
+          >
+            <div>
+              <h2 className="font-serif text-lg">Nouveau mot de passe</h2>
+              <p className="text-xs text-muted-foreground">{pwTarget.email}</p>
+            </div>
+            <input
+              type="text"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+              minLength={8}
+              maxLength={128}
+              autoComplete="off"
+              placeholder="8 car. min, 1 majuscule, 1 minuscule, 1 chiffre"
+              className="w-full rounded-xl border border-border/60 px-3 py-2 text-sm"
+            />
+            <p className="text-[11px] text-muted-foreground">
+              Communiquez ce mot de passe à l'utilisateur et invitez-le à le changer
+              depuis son profil.
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setPwTarget(null)}
+                className="rounded-full border border-border/60 px-3 py-1.5 text-xs"
+              >
+                Annuler
+              </button>
+              <button
+                type="submit"
+                disabled={saving}
+                className="rounded-full bg-primary px-3 py-1.5 text-xs text-primary-foreground disabled:opacity-50"
+              >
+                {saving ? "Enregistrement…" : "Mettre à jour"}
+              </button>
+            </div>
+          </form>
+        </div>
+      ) : null}
     </div>
+
   );
 }
