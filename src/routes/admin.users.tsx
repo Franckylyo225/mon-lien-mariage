@@ -1,8 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { IconShieldCheck, IconShield } from "@tabler/icons-react";
-import { listAllUsers, setUserRole } from "@/lib/admin.functions";
+import { useState } from "react";
+import { IconShieldCheck, IconShield, IconMail, IconKey } from "@tabler/icons-react";
+import { toast } from "sonner";
+import {
+  listAllUsers,
+  setUserRole,
+  sendPasswordResetEmail,
+  adminSetUserPassword,
+} from "@/lib/admin.functions";
 import { DataTable, type Column } from "@/components/admin/DataTable";
 
 export const Route = createFileRoute("/admin/users")({
@@ -14,7 +21,13 @@ type Row = Awaited<ReturnType<typeof listAllUsers>>[number];
 function AdminUsers() {
   const fetchUsers = useServerFn(listAllUsers);
   const toggleRole = useServerFn(setUserRole);
+  const sendReset = useServerFn(sendPasswordResetEmail);
+  const setPassword = useServerFn(adminSetUserPassword);
   const qc = useQueryClient();
+
+  const [pwTarget, setPwTarget] = useState<Row | null>(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "users"],
@@ -26,6 +39,34 @@ function AdminUsers() {
     await toggleRole({ data: { userId, role: "admin", grant: !isAdmin } });
     qc.invalidateQueries({ queryKey: ["admin", "users"] });
   }
+
+  async function handleSendReset(u: Row) {
+    if (!u.email) return;
+    if (!confirm(`Envoyer un email de réinitialisation à ${u.email} ?`)) return;
+    try {
+      await sendReset({ data: { email: u.email } });
+      toast.success("Email de réinitialisation envoyé.");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Envoi impossible");
+    }
+  }
+
+  async function handleSetPassword(e: React.FormEvent) {
+    e.preventDefault();
+    if (!pwTarget) return;
+    setSaving(true);
+    try {
+      await setPassword({ data: { userId: pwTarget.id, password: newPassword } });
+      toast.success("Mot de passe mis à jour.");
+      setPwTarget(null);
+      setNewPassword("");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Échec de la mise à jour");
+    } finally {
+      setSaving(false);
+    }
+  }
+
 
   const columns: Column<Row>[] = [
     {
@@ -92,16 +133,36 @@ function AdminUsers() {
       render: (u) => {
         const isAdmin = u.roles.includes("admin");
         return (
-          <button
-            onClick={() => handleToggleAdmin(u.id, isAdmin)}
-            className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-white px-2.5 py-1 text-[11px] hover:bg-secondary"
-          >
-            <IconShield size={12} />
-            {isAdmin ? "Retirer admin" : "Promouvoir"}
-          </button>
+          <div className="flex flex-wrap items-center justify-end gap-1.5">
+            <button
+              onClick={() => handleSendReset(u)}
+              title="Envoyer un email de réinitialisation"
+              className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-white px-2.5 py-1 text-[11px] hover:bg-secondary"
+            >
+              <IconMail size={12} /> Lien reset
+            </button>
+            <button
+              onClick={() => {
+                setPwTarget(u);
+                setNewPassword("");
+              }}
+              title="Définir un nouveau mot de passe"
+              className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-white px-2.5 py-1 text-[11px] hover:bg-secondary"
+            >
+              <IconKey size={12} /> Mot de passe
+            </button>
+            <button
+              onClick={() => handleToggleAdmin(u.id, isAdmin)}
+              className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-white px-2.5 py-1 text-[11px] hover:bg-secondary"
+            >
+              <IconShield size={12} />
+              {isAdmin ? "Retirer admin" : "Promouvoir"}
+            </button>
+          </div>
         );
       },
     },
+
   ];
 
   return (
@@ -120,6 +181,56 @@ function AdminUsers() {
         rowKey={(u) => u.id}
         filename="utilisateurs.csv"
       />
+
+      {pwTarget ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          onClick={() => setPwTarget(null)}
+        >
+          <form
+            onSubmit={handleSetPassword}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-sm space-y-4 rounded-2xl bg-white p-5 shadow-xl"
+          >
+            <div>
+              <h2 className="font-serif text-lg">Nouveau mot de passe</h2>
+              <p className="text-xs text-muted-foreground">{pwTarget.email}</p>
+            </div>
+            <input
+              type="text"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              required
+              minLength={8}
+              maxLength={128}
+              autoComplete="off"
+              placeholder="8 car. min, 1 majuscule, 1 minuscule, 1 chiffre"
+              className="w-full rounded-xl border border-border/60 px-3 py-2 text-sm"
+            />
+            <p className="text-[11px] text-muted-foreground">
+              Communiquez ce mot de passe à l'utilisateur et invitez-le à le changer
+              depuis son profil.
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setPwTarget(null)}
+                className="rounded-full border border-border/60 px-3 py-1.5 text-xs"
+              >
+                Annuler
+              </button>
+              <button
+                type="submit"
+                disabled={saving}
+                className="rounded-full bg-primary px-3 py-1.5 text-xs text-primary-foreground disabled:opacity-50"
+              >
+                {saving ? "Enregistrement…" : "Mettre à jour"}
+              </button>
+            </div>
+          </form>
+        </div>
+      ) : null}
     </div>
+
   );
 }
