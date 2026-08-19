@@ -133,16 +133,36 @@ function AdminUsers() {
       render: (u) => {
         const isAdmin = u.roles.includes("admin");
         return (
-          <button
-            onClick={() => handleToggleAdmin(u.id, isAdmin)}
-            className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-white px-2.5 py-1 text-[11px] hover:bg-secondary"
-          >
-            <IconShield size={12} />
-            {isAdmin ? "Retirer admin" : "Promouvoir"}
-          </button>
+          <div className="flex flex-wrap items-center justify-end gap-1.5">
+            <button
+              onClick={() => handleSendReset(u)}
+              title="Envoyer un email de réinitialisation"
+              className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-white px-2.5 py-1 text-[11px] hover:bg-secondary"
+            >
+              <IconMail size={12} /> Lien reset
+            </button>
+            <button
+              onClick={() => {
+                setPwTarget(u);
+                setNewPassword("");
+              }}
+              title="Définir un nouveau mot de passe"
+              className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-white px-2.5 py-1 text-[11px] hover:bg-secondary"
+            >
+              <IconKey size={12} /> Mot de passe
+            </button>
+            <button
+              onClick={() => handleToggleAdmin(u.id, isAdmin)}
+              className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-white px-2.5 py-1 text-[11px] hover:bg-secondary"
+            >
+              <IconShield size={12} />
+              {isAdmin ? "Retirer admin" : "Promouvoir"}
+            </button>
+          </div>
         );
       },
     },
+
   ];
 
   return (
