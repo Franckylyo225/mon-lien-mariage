@@ -127,7 +127,16 @@ function formatWeddingDate(date?: string | null): string {
   }).format(d);
 }
 
-interface InvitationSplashProps {
+export interface SplashCustomization {
+  bgMode?: "theme" | "color" | "image";
+  bgColor?: string | null;
+  bgImageUrl?: string | null;
+  kicker?: string | null;
+  tapLabel?: string | null;
+  showDate?: boolean;
+}
+
+interface InvitationSplashProps extends SplashCustomization {
   brideName: string;
   groomName: string;
   weddingDate?: string | null;
@@ -145,9 +154,23 @@ export function InvitationSplash({
   theme,
   onDone,
   onOpenStart,
+  bgMode = "theme",
+  bgColor,
+  bgImageUrl,
+  kicker,
+  tapLabel,
+  showDate = true,
 }: InvitationSplashProps) {
   const [phase, setPhase] = useState<Phase>("enter");
-  const t = splashColors(theme);
+  const useImage = bgMode === "image" && !!bgImageUrl;
+  const baseBg =
+    bgMode === "color" && bgColor && /^#([0-9a-f]{6})$/i.test(bgColor.trim())
+      ? bgColor.trim()
+      : theme.bg;
+  const base = splashColors({ ...theme, bg: baseBg });
+  const t: SplashColors = useImage
+    ? { ...base, text: "#F7F3EE", textSoft: "rgba(247,243,238,0.72)" }
+    : base;
 
   useEffect(() => {
     const timers = [
@@ -182,14 +205,36 @@ export function InvitationSplash({
   const detailsIn = phase === "expand" || phase === "ready" || phase === "opening";
   const ornamentsIn = detailsIn;
   const opening = phase === "opening";
-  const dateLine = [formatWeddingDate(weddingDate), city].filter(Boolean).join(" · ");
+  const dateLine = showDate
+    ? [formatWeddingDate(weddingDate), city].filter(Boolean).join(" · ")
+    : "";
+  const kickerText = (kicker ?? "").trim() || "Vous êtes invité(e)";
+  const tapText = (tapLabel ?? "").trim() || "Tapez pour ouvrir";
 
   const visual = (
     <>
       <div
         className={`splash-bg${ornamentsIn ? " expanded" : ""}`}
-        style={{ background: t.bgGradient }}
+        style={
+          useImage
+            ? {
+                backgroundImage: `url(${bgImageUrl})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }
+            : { background: t.bgGradient }
+        }
       />
+      {useImage ? (
+        <div
+          className="splash-bg"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0.65) 100%)",
+          }}
+        />
+      ) : null}
+
 
       <FloralOrnament color={t.gold} position="top-left" visible={ornamentsIn} />
       <FloralOrnament color={t.gold} position="top-right" visible={ornamentsIn} />
@@ -202,7 +247,7 @@ export function InvitationSplash({
         </div>
 
         <p className={`splash-kicker${detailsIn ? " visible" : ""}`} style={{ color: t.accent }}>
-          Vous êtes invité(e)
+          {kickerText}
         </p>
 
         <h1
@@ -241,7 +286,7 @@ export function InvitationSplash({
         <span className="splash-tap-ring" style={{ borderColor: t.accent }}>
           <span className="splash-tap-dot" style={{ background: t.accent }} />
         </span>
-        <span className="splash-tap-label">Tapez pour ouvrir</span>
+        <span className="splash-tap-label">{tapText}</span>
       </div>
     </>
   );

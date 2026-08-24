@@ -9,6 +9,8 @@ import { ColorPicker } from "./ColorPicker";
 import { ThemeSheet } from "./ThemeSheet";
 import { ParticleSheet } from "./ParticleSheet";
 import { MusicSheet } from "./MusicSheet";
+import { SplashSheet } from "./SplashSheet";
+import { useResolvedTheme } from "@/components/theme/ThemeRoot";
 import { PARTICLE_STYLES } from "@/lib/particles/styles";
 import { findTrack } from "@/lib/music/tracks";
 import {
@@ -27,6 +29,7 @@ import {
   Shirt,
   Stars,
   Music2,
+  Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -45,7 +48,8 @@ type Sheet =
   | "gallery"
   | "theme"
   | "particles"
-  | "music";
+  | "music"
+  | "splash";
 
 const CAPTION_SUGGESTIONS = [
   "Ils se disent oui",
@@ -66,13 +70,14 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
   const { couple, updateCouple, weddingId } = useWedding();
   const [sheet, setSheet] = useState<Sheet>(null);
   const { status, schedule } = useAutosaveContext();
+  const resolvedTheme = useResolvedTheme(couple);
 
   // Open a deep-linked sheet once, when the editor mounts / prop changes.
   useEffect(() => {
     if (!initialSheet) return;
     const allowed: Sheet[] = [
       "hero","caption","names","date","countdown","practical",
-      "dress","registry","story","gallery","theme","particles","music",
+      "dress","registry","story","gallery","theme","particles","music","splash",
     ];
     if ((allowed as string[]).includes(initialSheet)) {
       setSheet(initialSheet as Sheet);
@@ -318,6 +323,20 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
                   : "Aucune"
               }
               onClick={() => setSheet("music")}
+            />
+            <EditChip
+              icon={<Sparkles className="size-4" />}
+              label="Page d'ouverture"
+              value={
+                couple.splashEnabled === false
+                  ? "Désactivée"
+                  : couple.splashBgMode === "image" && couple.splashBgImageUrl
+                    ? "Image de fond"
+                    : couple.splashBgMode === "color"
+                      ? "Couleur unie"
+                      : "Thème"
+              }
+              onClick={() => setSheet("splash")}
             />
 
 
@@ -1001,6 +1020,15 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
         onOpenChange={(o) => !o && setSheet(null)}
         currentSlug={couple.musicSlug ?? null}
         enabled={couple.musicEnabled ?? false}
+        onPatch={(patch) => persist(patch)}
+      />
+
+      <SplashSheet
+        open={sheet === "splash"}
+        onOpenChange={(o) => !o && setSheet(null)}
+        weddingId={weddingId}
+        couple={couple}
+        theme={resolvedTheme}
         onPatch={(patch) => persist(patch)}
       />
     </>
