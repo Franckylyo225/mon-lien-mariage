@@ -1022,6 +1022,15 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
         enabled={couple.musicEnabled ?? false}
         onPatch={(patch) => persist(patch)}
       />
+
+      <SplashSheet
+        open={sheet === "splash"}
+        onOpenChange={(o) => !o && setSheet(null)}
+        weddingId={weddingId}
+        couple={couple}
+        theme={resolvedTheme}
+        onPatch={(patch) => persist(patch)}
+      />
     </>
   );
 }
