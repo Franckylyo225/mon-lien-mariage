@@ -21,8 +21,7 @@ export const initializePaystackPayment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: InitInput) => data)
   .handler(async ({ data, context }) => {
-    const secretKey =
-      process.env["PAYSTACK_SECRET_KEY"] || process.env["STRIPE_TEST_API_KEY"];
+    const secretKey = process.env["PAYSTACK_SECRET_KEY"];
     if (!secretKey) {
       throw new Error(
         "Paiement indisponible : la clé Paystack n'est pas configurée sur ce déploiement. Essayez depuis l'adresse officielle de l'application.",
@@ -132,8 +131,7 @@ export const getPaymentStatus = createServerFn({ method: "POST" })
     // Repli : si le webhook n'a pas (encore) activé le paiement, on vérifie
     // directement auprès de Paystack. Idempotent grâce à activatePaystackPayment.
     if (status === "pending") {
-      const secretKey =
-        process.env["PAYSTACK_SECRET_KEY"] || process.env["STRIPE_TEST_API_KEY"];
+      const secretKey = process.env["PAYSTACK_SECRET_KEY"];
       if (secretKey) {
         try {
           const res = await fetch(
