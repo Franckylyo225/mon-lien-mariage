@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { ResolvedTheme } from "@/lib/wedding-theme";
 import "./invitation-splash.css";
 
-type Phase = "enter" | "names" | "expand" | "exit";
+type Phase = "enter" | "names" | "expand" | "ready" | "opening";
 
 interface SplashColors {
   bgGradient: string;
@@ -134,6 +134,7 @@ interface InvitationSplashProps {
   city?: string | null;
   theme: ResolvedTheme;
   onDone: () => void;
+  onOpenStart?: () => void;
 }
 
 export function InvitationSplash({
@@ -143,53 +144,48 @@ export function InvitationSplash({
   city,
   theme,
   onDone,
+  onOpenStart,
 }: InvitationSplashProps) {
   const [phase, setPhase] = useState<Phase>("enter");
-  const [progress, setProgress] = useState(0);
   const t = splashColors(theme);
 
   useEffect(() => {
-    const totalDuration = 3200;
-    let exitTimer: ReturnType<typeof setTimeout> | undefined;
     const timers = [
-      setTimeout(() => setPhase("names"), 800),
-      setTimeout(() => setPhase("expand"), 2200),
-      setTimeout(() => {
-        setPhase("exit");
-        exitTimer = setTimeout(onDone, 400);
-      }, totalDuration),
+      setTimeout(() => setPhase((p) => (p === "enter" ? "names" : p)), 700),
+      setTimeout(() => setPhase((p) => (p === "names" ? "expand" : p)), 1600),
+      setTimeout(() => setPhase((p) => (p === "expand" ? "ready" : p)), 2300),
     ];
+    return () => timers.forEach(clearTimeout);
+  }, []);
 
-    let start: number | null = null;
-    let rafId = 0;
-    const animateProgress = (ts: number) => {
-      if (start === null) start = ts;
-      const elapsed = ts - start;
-      setProgress(Math.min(elapsed / totalDuration, 1));
-      if (elapsed < totalDuration) rafId = requestAnimationFrame(animateProgress);
-    };
-    rafId = requestAnimationFrame(animateProgress);
+  const open = useCallback(() => {
+    setPhase((p) => {
+      if (p === "opening") return p;
+      onOpenStart?.();
+      setTimeout(onDone, 1150);
+      return "opening";
+    });
+  }, [onDone, onOpenStart]);
 
-    return () => {
-      timers.forEach(clearTimeout);
-      if (exitTimer) clearTimeout(exitTimer);
-      cancelAnimationFrame(rafId);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        open();
+      }
     };
-  }, [onDone]);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
   const namesIn = phase !== "enter";
-  const detailsIn = progress * 3200 >= 1200 || phase === "expand" || phase === "exit";
-  const ornamentsIn = phase === "expand" || phase === "exit";
+  const detailsIn = phase === "expand" || phase === "ready" || phase === "opening";
+  const ornamentsIn = detailsIn;
+  const opening = phase === "opening";
   const dateLine = [formatWeddingDate(weddingDate), city].filter(Boolean).join(" · ");
-  const activeDot = Math.min(2, Math.floor(progress * 3));
 
-  return (
-    <div
-      className={`invitation-splash${phase === "exit" ? " exiting" : ""}`}
-      style={{ fontFamily: t.fontBody, color: t.text }}
-      role="status"
-      aria-label="Ouverture de l'invitation"
-    >
+  const visual = (
+    <>
       <div
         className={`splash-bg${ornamentsIn ? " expanded" : ""}`}
         style={{ background: t.bgGradient }}
@@ -205,10 +201,7 @@ export function InvitationSplash({
           <HeartIcon color={t.accent} />
         </div>
 
-        <p
-          className={`splash-kicker${detailsIn ? " visible" : ""}`}
-          style={{ color: t.accent }}
-        >
+        <p className={`splash-kicker${detailsIn ? " visible" : ""}`} style={{ color: t.accent }}>
           Vous êtes invité(e)
         </p>
 
@@ -241,25 +234,34 @@ export function InvitationSplash({
         ) : null}
       </div>
 
-      <div className="splash-dots">
-        {[0, 1, 2].map((i) => (
-          <span
-            key={i}
-            className="splash-dot"
-            style={{
-              width: i === activeDot ? 18 : 6,
-              background: i === activeDot ? t.accent : t.accentSoft,
-            }}
-          />
-        ))}
+      <div
+        className={`splash-tap${phase === "ready" ? " visible" : ""}`}
+        style={{ color: t.textSoft }}
+      >
+        <span className="splash-tap-ring" style={{ borderColor: t.accent }}>
+          <span className="splash-tap-dot" style={{ background: t.accent }} />
+        </span>
+        <span className="splash-tap-label">Tapez pour ouvrir</span>
       </div>
+    </>
+  );
 
-      <div className="splash-progress-track">
-        <div
-          className="splash-progress-bar"
-          style={{ width: `${progress * 100}%`, background: t.accent }}
-        />
+  return (
+    <div
+      className={`invitation-splash${opening ? " opening" : ""}`}
+      style={{ fontFamily: t.fontBody, color: t.text }}
+      role="button"
+      tabIndex={0}
+      onClick={open}
+      aria-label="Tapez pour ouvrir l'invitation"
+    >
+      <div className="splash-half splash-half-left" aria-hidden={opening ? "true" : undefined}>
+        <div className="splash-half-inner">{visual}</div>
       </div>
+      <div className="splash-half splash-half-right" aria-hidden="true">
+        <div className="splash-half-inner">{visual}</div>
+      </div>
+      <div className="splash-seam" style={{ background: t.gold }} />
     </div>
   );
 }
