@@ -205,14 +205,36 @@ export function InvitationSplash({
   const detailsIn = phase === "expand" || phase === "ready" || phase === "opening";
   const ornamentsIn = detailsIn;
   const opening = phase === "opening";
-  const dateLine = [formatWeddingDate(weddingDate), city].filter(Boolean).join(" · ");
+  const dateLine = showDate
+    ? [formatWeddingDate(weddingDate), city].filter(Boolean).join(" · ")
+    : "";
+  const kickerText = (kicker ?? "").trim() || "Vous êtes invité(e)";
+  const tapText = (tapLabel ?? "").trim() || "Tapez pour ouvrir";
 
   const visual = (
     <>
       <div
         className={`splash-bg${ornamentsIn ? " expanded" : ""}`}
-        style={{ background: t.bgGradient }}
+        style={
+          useImage
+            ? {
+                backgroundImage: `url(${bgImageUrl})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }
+            : { background: t.bgGradient }
+        }
       />
+      {useImage ? (
+        <div
+          className="splash-bg"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.35) 45%, rgba(0,0,0,0.65) 100%)",
+          }}
+        />
+      ) : null}
+
 
       <FloralOrnament color={t.gold} position="top-left" visible={ornamentsIn} />
       <FloralOrnament color={t.gold} position="top-right" visible={ornamentsIn} />
