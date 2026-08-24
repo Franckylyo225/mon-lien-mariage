@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import imageCompression from "browser-image-compression";
 import { supabase } from "@/integrations/supabase/client";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
-import { Camera, Eye, ImageIcon, Loader2, Trash2 } from "lucide-react";
+import { Camera, Eye, ImageIcon, Loader2, Trash2, X } from "lucide-react";
 import { ensureAuthOrMessage, friendlyUploadError } from "@/lib/upload-errors";
 import { HexEditor } from "./HexEditor";
 import { InvitationSplash } from "@/components/public/InvitationSplash";
