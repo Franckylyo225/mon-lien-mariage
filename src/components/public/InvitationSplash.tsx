@@ -247,7 +247,7 @@ export function InvitationSplash({
         </div>
 
         <p className={`splash-kicker${detailsIn ? " visible" : ""}`} style={{ color: t.accent }}>
-          Vous êtes invité(e)
+          {kickerText}
         </p>
 
         <h1
@@ -286,7 +286,7 @@ export function InvitationSplash({
         <span className="splash-tap-ring" style={{ borderColor: t.accent }}>
           <span className="splash-tap-dot" style={{ background: t.accent }} />
         </span>
-        <span className="splash-tap-label">Tapez pour ouvrir</span>
+        <span className="splash-tap-label">{tapText}</span>
       </div>
     </>
   );
