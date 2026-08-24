@@ -247,6 +247,7 @@ function PublicInvitationPage() {
           city={coupleTheme.city}
           theme={resolved}
           onDone={handleSplashDone}
+          onOpenStart={handleSplashOpenStart}
         />
       ) : null}
     <ThemeRoot
