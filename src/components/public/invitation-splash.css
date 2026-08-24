@@ -1,18 +1,82 @@
 .invitation-splash {
   position: fixed;
   inset: 0;
+  overflow: hidden;
+  height: 100dvh;
+  z-index: 9999;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.splash-half {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  overflow: hidden;
+  will-change: transform;
+  transition: transform 1.05s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.splash-half-left {
+  left: 0;
+}
+.splash-half-right {
+  left: 50%;
+}
+.invitation-splash.opening .splash-half-left {
+  transform: translate3d(-100%, 0, 0);
+}
+.invitation-splash.opening .splash-half-right {
+  transform: translate3d(100%, 0, 0);
+}
+
+.splash-half-inner {
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  height: 100dvh;
-  z-index: 9999;
-  will-change: transform, opacity;
-  transition: opacity 0.4s ease;
 }
-.invitation-splash.exiting {
+.splash-half-left .splash-half-inner {
+  left: 0;
+}
+.splash-half-right .splash-half-inner {
+  left: -50vw;
+}
+
+.splash-seam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  margin-left: -0.5px;
   opacity: 0;
+  transform: scaleY(0.2);
+  transition:
+    opacity 0.25s ease,
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 5;
+  pointer-events: none;
+}
+.invitation-splash.opening .splash-seam {
+  opacity: 0.9;
+  transform: scaleY(1);
+  animation: splash-seam-fade 1s ease forwards;
+}
+@keyframes splash-seam-fade {
+  0% {
+    opacity: 0.9;
+  }
+  60% {
+    opacity: 0.35;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 .splash-bg {
@@ -148,34 +212,57 @@
   right: 6vw;
 }
 
-.splash-progress-track {
+.splash-tap {
   position: absolute;
-  bottom: 0;
+  bottom: max(28px, env(safe-area-inset-bottom));
   left: 0;
   right: 0;
-  height: 2px;
-  background: rgba(198, 161, 91, 0.15);
-  z-index: 3;
-}
-.splash-progress-bar {
-  height: 100%;
-  transition: width 0.1s linear;
-}
-
-.splash-dots {
-  position: absolute;
-  bottom: max(18px, env(safe-area-inset-bottom));
   display: flex;
-  gap: 6px;
+  flex-direction: column;
   align-items: center;
+  gap: 10px;
   z-index: 3;
-}
-.splash-dot {
-  height: 6px;
-  border-radius: 3px;
+  opacity: 0;
+  transform: translateY(10px);
   transition:
-    width 0.3s ease,
-    background 0.3s ease;
+    opacity 0.7s ease,
+    transform 0.7s ease;
+  pointer-events: none;
+}
+.splash-tap.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.splash-tap-ring {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: splash-tap-pulse 1.8s ease-in-out infinite;
+}
+.splash-tap-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+}
+.splash-tap-label {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+@keyframes splash-tap-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 0.45;
+  }
 }
 
 .invitation-content {
@@ -201,7 +288,6 @@
     transition: none;
   }
 }
-
 
 @media (max-width: 420px), (max-height: 640px) {
   .floral-ornament {
