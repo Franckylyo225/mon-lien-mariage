@@ -127,7 +127,16 @@ function formatWeddingDate(date?: string | null): string {
   }).format(d);
 }
 
-interface InvitationSplashProps {
+export interface SplashCustomization {
+  bgMode?: "theme" | "color" | "image";
+  bgColor?: string | null;
+  bgImageUrl?: string | null;
+  kicker?: string | null;
+  tapLabel?: string | null;
+  showDate?: boolean;
+}
+
+interface InvitationSplashProps extends SplashCustomization {
   brideName: string;
   groomName: string;
   weddingDate?: string | null;
@@ -145,9 +154,23 @@ export function InvitationSplash({
   theme,
   onDone,
   onOpenStart,
+  bgMode = "theme",
+  bgColor,
+  bgImageUrl,
+  kicker,
+  tapLabel,
+  showDate = true,
 }: InvitationSplashProps) {
   const [phase, setPhase] = useState<Phase>("enter");
-  const t = splashColors(theme);
+  const useImage = bgMode === "image" && !!bgImageUrl;
+  const baseBg =
+    bgMode === "color" && bgColor && /^#([0-9a-f]{6})$/i.test(bgColor.trim())
+      ? bgColor.trim()
+      : theme.bg;
+  const base = splashColors({ ...theme, bg: baseBg });
+  const t: SplashColors = useImage
+    ? { ...base, text: "#F7F3EE", textSoft: "rgba(247,243,238,0.72)" }
+    : base;
 
   useEffect(() => {
     const timers = [
