@@ -210,6 +210,14 @@ function PublicInvitationPage() {
     hasGuestbook: !!(w as { has_guestbook?: boolean | null }).has_guestbook,
     guestbookTitle: (w as { guestbook_title?: string | null }).guestbook_title ?? undefined,
     guestbookSubtitle: (w as { guestbook_subtitle?: string | null }).guestbook_subtitle ?? undefined,
+    splashEnabled: (w as { splash_enabled?: boolean | null }).splash_enabled ?? true,
+    splashBgMode:
+      (((w as { splash_bg_mode?: string | null }).splash_bg_mode as Couple["splashBgMode"]) ?? "theme"),
+    splashBgColor: (w as { splash_bg_color?: string | null }).splash_bg_color ?? null,
+    splashBgImageUrl: (w as { splash_bg_image_url?: string | null }).splash_bg_image_url ?? null,
+    splashKicker: (w as { splash_kicker?: string | null }).splash_kicker ?? null,
+    splashTapLabel: (w as { splash_tap_label?: string | null }).splash_tap_label ?? null,
+    splashShowDate: (w as { splash_show_date?: boolean | null }).splash_show_date ?? true,
   };
 
   const ceremonies: Ceremony[] = (data.ceremonies ?? []).map((c) => ({
@@ -239,13 +247,19 @@ function PublicInvitationPage() {
 
   return (
     <>
-      {showSplash ? (
+      {showSplash && coupleTheme.splashEnabled !== false ? (
         <InvitationSplash
           brideName={coupleTheme.brideName}
           groomName={coupleTheme.groomName}
           weddingDate={coupleTheme.weddingDate}
           city={coupleTheme.city}
           theme={resolved}
+          bgMode={coupleTheme.splashBgMode}
+          bgColor={coupleTheme.splashBgColor}
+          bgImageUrl={coupleTheme.splashBgImageUrl}
+          kicker={coupleTheme.splashKicker}
+          tapLabel={coupleTheme.splashTapLabel}
+          showDate={coupleTheme.splashShowDate !== false}
           onDone={handleSplashDone}
           onOpenStart={handleSplashOpenStart}
         />

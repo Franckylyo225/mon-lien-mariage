@@ -220,6 +220,13 @@ export interface Couple {
   shareImageUrl?: string;
   musicEnabled?: boolean;
   musicSlug?: string | null;
+  splashEnabled?: boolean;
+  splashBgMode?: "theme" | "color" | "image";
+  splashBgColor?: string | null;
+  splashBgImageUrl?: string | null;
+  splashKicker?: string | null;
+  splashTapLabel?: string | null;
+  splashShowDate?: boolean;
 }
 
 
@@ -542,6 +549,14 @@ function rowToCouple(w: WeddingRow): Couple {
     shareImageUrl: w.share_image_url ?? undefined,
     musicEnabled: (w as { music_enabled?: boolean | null }).music_enabled ?? false,
     musicSlug: ((w as { music_slug?: string | null }).music_slug as string | null) ?? null,
+    splashEnabled: (w as { splash_enabled?: boolean | null }).splash_enabled ?? true,
+    splashBgMode:
+      (((w as { splash_bg_mode?: string | null }).splash_bg_mode as Couple["splashBgMode"]) ?? "theme"),
+    splashBgColor: (w as { splash_bg_color?: string | null }).splash_bg_color ?? null,
+    splashBgImageUrl: (w as { splash_bg_image_url?: string | null }).splash_bg_image_url ?? null,
+    splashKicker: (w as { splash_kicker?: string | null }).splash_kicker ?? null,
+    splashTapLabel: (w as { splash_tap_label?: string | null }).splash_tap_label ?? null,
+    splashShowDate: (w as { splash_show_date?: boolean | null }).splash_show_date ?? true,
   };
 }
 
@@ -620,6 +635,13 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.shareImageUrl !== undefined) r.share_image_url = p.shareImageUrl || null;
   if (p.musicEnabled !== undefined) r.music_enabled = p.musicEnabled;
   if (p.musicSlug !== undefined) r.music_slug = p.musicSlug ?? null;
+  if (p.splashEnabled !== undefined) r.splash_enabled = p.splashEnabled;
+  if (p.splashBgMode !== undefined) r.splash_bg_mode = p.splashBgMode ?? "theme";
+  if (p.splashBgColor !== undefined) r.splash_bg_color = p.splashBgColor || null;
+  if (p.splashBgImageUrl !== undefined) r.splash_bg_image_url = p.splashBgImageUrl || null;
+  if (p.splashKicker !== undefined) r.splash_kicker = p.splashKicker || null;
+  if (p.splashTapLabel !== undefined) r.splash_tap_label = p.splashTapLabel || null;
+  if (p.splashShowDate !== undefined) r.splash_show_date = p.splashShowDate;
   return r;
 }
 
