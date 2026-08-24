@@ -80,8 +80,15 @@ function PublicInvitationPage() {
   const [showSplash, setShowSplash] = useState(false);
   const [contentRevealed, setContentRevealed] = useState(false);
 
+  const splashOff =
+    (data.wedding as { splash_enabled?: boolean | null } | null)?.splash_enabled === false;
+
   useEffect(() => {
     if (!weddingId || typeof window === "undefined") return;
+    if (splashOff) {
+      setContentRevealed(true);
+      return;
+    }
     const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     const key = `splash_seen_${weddingId}`;
     let seen = false;
@@ -100,7 +107,7 @@ function PublicInvitationPage() {
       /* ignore */
     }
     setShowSplash(true);
-  }, [weddingId]);
+  }, [weddingId, splashOff]);
 
   const handleSplashOpenStart = useCallback(() => {
     // Révèle la page derrière les deux moitiés qui s'écartent
