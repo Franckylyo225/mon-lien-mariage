@@ -100,10 +100,12 @@ function PublicInvitationPage() {
       /* ignore */
     }
     setShowSplash(true);
-    // Révèle la page pendant le fondu de sortie du splash
-    const revealTimer = setTimeout(() => setContentRevealed(true), 3150);
-    return () => clearTimeout(revealTimer);
   }, [weddingId]);
+
+  const handleSplashOpenStart = useCallback(() => {
+    // Révèle la page derrière les deux moitiés qui s'écartent
+    setContentRevealed(true);
+  }, []);
 
   const handleSplashDone = useCallback(() => {
     setShowSplash(false);
