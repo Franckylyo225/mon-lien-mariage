@@ -252,7 +252,7 @@ function PublishPage() {
       return;
     }
 
-    // Paiement Paystack (mode test)
+    // Paiement Paystack
     try {
       const res = await payFn({
         data: {
@@ -652,7 +652,7 @@ function PublishPage() {
             </p>
           ) : (
             <p className="mt-2 text-center text-[11px] leading-[1.5] text-muted-foreground">
-              Paiement sécurisé par Paystack (mode test).
+              Paiement sécurisé par Paystack.
               <br />
               Carte bancaire, Mobile Money ou USSD.
             </p>
