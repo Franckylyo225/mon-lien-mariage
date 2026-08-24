@@ -873,6 +873,13 @@ export type Database = {
           share_image_url: string | null
           share_title: string | null
           slug: string | null
+          splash_bg_color: string | null
+          splash_bg_image_url: string | null
+          splash_bg_mode: string
+          splash_enabled: boolean
+          splash_kicker: string | null
+          splash_show_date: boolean
+          splash_tap_label: string | null
           story_body: string | null
           story_enabled: boolean | null
           story_images: string[] | null
@@ -951,6 +958,13 @@ export type Database = {
           share_image_url?: string | null
           share_title?: string | null
           slug?: string | null
+          splash_bg_color?: string | null
+          splash_bg_image_url?: string | null
+          splash_bg_mode?: string
+          splash_enabled?: boolean
+          splash_kicker?: string | null
+          splash_show_date?: boolean
+          splash_tap_label?: string | null
           story_body?: string | null
           story_enabled?: boolean | null
           story_images?: string[] | null
@@ -1029,6 +1043,13 @@ export type Database = {
           share_image_url?: string | null
           share_title?: string | null
           slug?: string | null
+          splash_bg_color?: string | null
+          splash_bg_image_url?: string | null
+          splash_bg_mode?: string
+          splash_enabled?: boolean
+          splash_kicker?: string | null
+          splash_show_date?: boolean
+          splash_tap_label?: string | null
           story_body?: string | null
           story_enabled?: boolean | null
           story_images?: string[] | null
