@@ -659,6 +659,11 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.storyStyle !== undefined) r.story_style = p.storyStyle ?? {};
   if (p.storyLayout !== undefined) r.story_layout = p.storyLayout ?? "left";
   if (p.storyPhotoShape !== undefined) r.story_photo_shape = p.storyPhotoShape ?? "rounded";
+  if (p.themeBlockEnabled !== undefined) r.theme_block_enabled = p.themeBlockEnabled;
+  if (p.themeBlockTitle !== undefined) r.theme_block_title = p.themeBlockTitle || null;
+  if (p.themeBlockBody !== undefined) r.theme_block_body = p.themeBlockBody || null;
+  if (p.themeBlockImages !== undefined) r.theme_block_images = p.themeBlockImages ?? [];
+  if (p.themeBlockStyle !== undefined) r.theme_block_style = p.themeBlockStyle ?? {};
   if (p.galleryEnabled !== undefined) r.gallery_enabled = p.galleryEnabled;
   if (p.galleryTitle !== undefined) r.gallery_title = p.galleryTitle || null;
   if (p.galleryImages !== undefined) r.gallery_images = p.galleryImages ?? [];
