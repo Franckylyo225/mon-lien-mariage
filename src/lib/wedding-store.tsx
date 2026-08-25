@@ -211,6 +211,9 @@ export interface Couple {
     size?: "sm" | "md" | "lg";
     align?: "left" | "center";
   };
+  storyLayout?: StoryLayout;
+  storyPhotoShape?: StoryPhotoShape;
+  storySteps?: StoryStep[];
   galleryEnabled?: boolean;
   galleryTitle?: string;
   galleryImages?: string[];
