@@ -1,5 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import {
+  HeartHandshake,
+  CalendarRange,
+  Music,
+  BookHeart,
+  Hourglass,
+  Share2,
+  type LucideIcon,
+} from "lucide-react";
 import { templateMeta, templateOrder } from "@/lib/ceremony-meta";
 import {
   SiteHeader,
