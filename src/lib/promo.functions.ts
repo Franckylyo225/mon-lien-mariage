@@ -9,10 +9,10 @@ interface ValidateInput {
 export const validatePromoCode = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: ValidateInput) => data)
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const raw = normalizePromoCode(data.code);
     if (!raw) throw new Error("Veuillez saisir un code promo.");
-    const row = await loadUsablePromo(raw);
+    const row = await loadUsablePromo(raw, context.supabase);
     return { code: row.code, discount: row.discount_percent };
   });
 
@@ -30,7 +30,7 @@ export const publishWithPromo = createServerFn({ method: "POST" })
     const raw = normalizePromoCode(data.code ?? "");
     let row: PromoRow | null = null;
     if (raw) {
-      row = await loadUsablePromo(raw);
+      row = await loadUsablePromo(raw, context.supabase);
       if (row.discount_percent < 100) {
         throw new Error("Ce code ne couvre pas la totalité du paiement.");
       }
@@ -53,17 +53,23 @@ export const publishWithPromo = createServerFn({ method: "POST" })
 
     if (row) {
       try {
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        await supabaseAdmin.from("promo_code_redemptions").insert({
-          promo_code_id: row.id,
-          code: row.code,
-          wedding_id: data.weddingId,
-          user_id: context.userId,
-        } as never);
-        await supabaseAdmin
-          .from("promo_codes")
-          .update({ uses: row.uses + 1 } as never)
-          .eq("id", row.id);
+        // Record redemption using the authenticated client (RLS allows own inserts).
+        const { error: redeemError } = await context.supabase
+          .from("promo_code_redemptions")
+          .insert({
+            promo_code_id: row.id,
+            code: row.code,
+            wedding_id: data.weddingId,
+            user_id: context.userId,
+          } as never);
+        if (redeemError) throw redeemError;
+
+        // Atomically increment the usage counter via a SECURITY DEFINER RPC.
+        const { error: rpcError } = await context.supabase.rpc(
+          "increment_promo_uses" as never,
+          { p_code_id: row.id } as never,
+        );
+        if (rpcError) throw rpcError;
       } catch (e) {
         console.warn("[promo] redemption tracking failed", e);
       }
