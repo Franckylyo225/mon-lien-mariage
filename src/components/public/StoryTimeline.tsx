@@ -358,17 +358,9 @@ export function StoryTimeline({
   photoShape: StoryPhotoShape;
 }) {
   if (layout === "center") {
-    return (
-      <>
-        <div className="hidden sm:block">
-          <TimelineCenter steps={steps} theme={theme} photoShape={photoShape} />
-        </div>
-        <div className="sm:hidden">
-          <TimelineLeft steps={steps} theme={theme} photoShape={photoShape} />
-        </div>
-      </>
-    );
+    return <TimelineCenter steps={steps} theme={theme} photoShape={photoShape} />;
   }
+
   if (layout === "cards") {
     return <TimelineCards steps={steps} theme={theme} photoShape={photoShape} />;
   }
