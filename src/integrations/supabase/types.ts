@@ -938,6 +938,7 @@ export type Database = {
           theme_block_body: string | null
           theme_block_enabled: boolean
           theme_block_images: string[]
+          theme_block_reference: string | null
           theme_block_style: Json
           theme_block_title: string | null
           updated_at: string
@@ -1031,6 +1032,7 @@ export type Database = {
           theme_block_body?: string | null
           theme_block_enabled?: boolean
           theme_block_images?: string[]
+          theme_block_reference?: string | null
           theme_block_style?: Json
           theme_block_title?: string | null
           updated_at?: string
@@ -1124,6 +1126,7 @@ export type Database = {
           theme_block_body?: string | null
           theme_block_enabled?: boolean
           theme_block_images?: string[]
+          theme_block_reference?: string | null
           theme_block_style?: Json
           theme_block_title?: string | null
           updated_at?: string
