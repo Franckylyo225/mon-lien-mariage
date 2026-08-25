@@ -9,7 +9,7 @@ import {
 import ogImage from "@/assets/og-image.jpg.asset.json";
 import logoHeart from "@/assets/logo-heart.png.asset.json";
 import apercuInvitation from "@/assets/apercu-invitation.png.asset.json";
-import apercuSplash from "@/assets/apercu-splash.png.asset.json";
+import apercuSplash from "@/assets/apercu-splash.png";
 
 const OG_IMAGE_URL = `https://moninvit.com${ogImage.url}`;
 const DEMO_URL = "https://www.moninvit.com/e/basile-et-armelle1";
@@ -182,7 +182,7 @@ function HeroPreview() {
       />
       {/* écran avant — page d'ouverture */}
       <img
-        src={apercuSplash.url}
+        src={apercuSplash}
         alt="Aperçu de l'écran d'ouverture de l'invitation"
         className="animate-floaty relative left-[-14%] w-[58%] rounded-[26px] object-cover shadow-[0_30px_70px_-25px_rgba(32,26,28,0.5)] ring-1 ring-black/5"
       />
