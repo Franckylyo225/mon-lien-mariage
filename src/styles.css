@@ -11,6 +11,113 @@
 @import "@fontsource/inter/400.css";
 @import "@fontsource/inter/500.css";
 @import "@fontsource/inter/600.css";
+@import "@fontsource/cormorant-garamond/500.css";
+@import "@fontsource/quicksand/400.css";
+@import "@fontsource/quicksand/500.css";
+@import "@fontsource/quicksand/600.css";
+@import "@fontsource/quicksand/700.css";
+@import "@fontsource/nunito-sans/400.css";
+@import "@fontsource/nunito-sans/600.css";
+@import "@fontsource/nunito-sans/700.css";
+@import "@fontsource/nunito-sans/400-italic.css";
+
+/* ── Charte moninvit v1.0 ─────────────────────────────── */
+:root {
+  --framboise: #E82050;
+  --framboise-hover: #C81A45;
+  --framboise-light: #FBDDE5;
+  --champagne: #C6A15B;
+  --champagne-light: #F1E3C6;
+  --encre: #201A1C;
+  --encre-doux: #5A4F52;
+  --encre-leger: #7A6D70;
+  --greige: #FBF8F8;
+  --rose-poudre: #FDF0F3;
+  --brand-border: #F4EFF0;
+  --brand-border-champ: #F1E3C6;
+  --succes: #2E9E6B;
+  --erreur: #D33A3A;
+}
+
+@theme inline {
+  --color-framboise: var(--framboise);
+  --color-framboise-hover: var(--framboise-hover);
+  --color-framboise-light: var(--framboise-light);
+  --color-champagne: var(--champagne);
+  --color-champagne-light: var(--champagne-light);
+  --color-encre: var(--encre);
+  --color-encre-doux: var(--encre-doux);
+  --color-encre-leger: var(--encre-leger);
+  --color-greige: var(--greige);
+  --color-rose-poudre: var(--rose-poudre);
+  --color-brand-border: var(--brand-border);
+  --font-brand-serif: "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-brand-ui: "Quicksand", ui-sans-serif, system-ui, sans-serif;
+  --font-brand-body: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+@utility kicker {
+  font-family: "Quicksand", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: var(--framboise);
+}
+
+@utility btn-framboise {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  background: var(--framboise);
+  color: #fff;
+  font-family: "Quicksand", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+  transition: background 0.2s ease, transform 0.2s ease;
+  &:hover {
+    background: var(--framboise-hover);
+    transform: translateY(-1px);
+  }
+}
+
+@utility btn-outline-framboise {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  border: 1.5px solid #E7DFE1;
+  color: var(--framboise-hover);
+  background: transparent;
+  font-family: "Quicksand", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+  transition: border-color 0.2s ease;
+  &:hover {
+    border-color: var(--framboise);
+  }
+}
+
+@keyframes floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@utility animate-floaty {
+  animation: floaty 7s ease-in-out infinite;
+}
+
+@utility animate-fade-up {
+  animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+
 
 
 @custom-variant dark (&:is(.dark *));
