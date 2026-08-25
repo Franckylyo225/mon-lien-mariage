@@ -945,13 +945,11 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
 
 
 
-      <PhotoGridSheet
+      <ThemeBlockSheet
         open={sheet === "themeblock"}
         onOpenChange={(o) => !o && setSheet(null)}
         title="Thème du mariage"
-        intro="Un bloc libre pour présenter le thème, les couleurs ou toute autre information."
-        weddingId={weddingId}
-        folder="theme-block"
+        intro="Un bloc pour un verset biblique ou une phrase forte."
         enabled={couple.themeBlockEnabled ?? false}
         onEnabledChange={(v) => persist({ themeBlockEnabled: v })}
         titleField={{
@@ -963,12 +961,15 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
         bodyField={{
           label: "Texte",
           value: couple.themeBlockBody ?? "",
-          placeholder: "Décrivez le thème, les couleurs, l'ambiance…",
+          placeholder: "« L'amour est patient, l'amour est bon… »",
           onChange: (v) => persist({ themeBlockBody: v }),
         }}
-        images={couple.themeBlockImages ?? []}
-        onImagesChange={(next) => persist({ themeBlockImages: next })}
-        maxImages={9}
+        referenceField={{
+          label: "Référence",
+          value: couple.themeBlockReference ?? "",
+          placeholder: "1 Corinthiens 13:4",
+          onChange: (v) => persist({ themeBlockReference: v }),
+        }}
         extraControls={
           <StoryStyleControls
             style={couple.themeBlockStyle ?? {}}
@@ -978,6 +979,7 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
           />
         }
       />
+
 
       <PhotoGridSheet
         open={sheet === "gallery"}
