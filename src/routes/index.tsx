@@ -232,9 +232,9 @@ function Hero() {
         <div className="relative hidden justify-center lg:flex">
           <div className="relative animate-floaty">
             <div className="absolute -right-16 top-8 hidden xl:block">
-              <PhoneMock height={380} rotate={8} className="opacity-90" />
+              <PhoneMock height={380} className="opacity-90" />
             </div>
-            <PhoneMock height={460} rotate={-3} />
+            <PhoneMock height={460} />
           </div>
         </div>
 
