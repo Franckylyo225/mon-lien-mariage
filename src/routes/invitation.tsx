@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { Logo } from "@/components/site/SiteChrome";
 import { useState } from "react";
 import { useWedding, type TemplateId } from "@/lib/wedding-store";
 import { templateComponents, templateRsvpTone } from "@/components/invitation-templates";
@@ -32,9 +33,10 @@ function InvitationPage() {
           <div className="flex min-w-0 items-center gap-3">
             <Link
               to="/"
-              className="shrink-0 font-serif text-sm italic text-foreground"
+              className="flex shrink-0 items-center gap-2 text-foreground"
             >
-              ← MonInvit<span className="text-primary">.com</span>
+              <span aria-hidden>←</span>
+              <Logo className="h-[20px]" />
             </Link>
             <span className="hidden text-xs opacity-40 sm:inline">·</span>
             <p className="hidden truncate font-mono text-[10px] uppercase tracking-widest opacity-60 sm:block">

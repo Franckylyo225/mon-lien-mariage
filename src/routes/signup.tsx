@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Logo } from "@/components/site/SiteChrome";
 import {
   PasswordChecklist,
   validatePassword,
