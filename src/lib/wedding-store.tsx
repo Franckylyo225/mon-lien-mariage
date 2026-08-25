@@ -222,7 +222,7 @@ export interface Couple {
   themeBlockEnabled?: boolean;
   themeBlockTitle?: string;
   themeBlockBody?: string;
-  themeBlockImages?: string[];
+  themeBlockReference?: string;
   themeBlockStyle?: {
     font?: "serif" | "sans" | "script" | "mono" | "display";
     size?: "sm" | "md" | "lg";
@@ -568,7 +568,7 @@ function rowToCouple(w: WeddingRow): Couple {
     themeBlockEnabled: w.theme_block_enabled ?? false,
     themeBlockTitle: w.theme_block_title ?? undefined,
     themeBlockBody: w.theme_block_body ?? undefined,
-    themeBlockImages: w.theme_block_images ?? [],
+    themeBlockReference: w.theme_block_reference ?? undefined,
     themeBlockStyle: (w.theme_block_style as Couple["themeBlockStyle"]) ?? {},
     galleryEnabled: w.gallery_enabled ?? false,
     galleryTitle: w.gallery_title ?? undefined,
@@ -662,7 +662,7 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.themeBlockEnabled !== undefined) r.theme_block_enabled = p.themeBlockEnabled;
   if (p.themeBlockTitle !== undefined) r.theme_block_title = p.themeBlockTitle || null;
   if (p.themeBlockBody !== undefined) r.theme_block_body = p.themeBlockBody || null;
-  if (p.themeBlockImages !== undefined) r.theme_block_images = p.themeBlockImages ?? [];
+  if (p.themeBlockReference !== undefined) r.theme_block_reference = p.themeBlockReference || null;
   if (p.themeBlockStyle !== undefined) r.theme_block_style = p.themeBlockStyle ?? {};
   if (p.galleryEnabled !== undefined) r.gallery_enabled = p.galleryEnabled;
   if (p.galleryTitle !== undefined) r.gallery_title = p.galleryTitle || null;

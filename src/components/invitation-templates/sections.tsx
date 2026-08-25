@@ -740,13 +740,12 @@ export function ThemeBlockSection({
   couple: Couple;
   accent?: string;
 }) {
-  const [lightbox, setLightbox] = useState<number | null>(null);
   if (!couple.themeBlockEnabled) return null;
 
   const title = couple.themeBlockTitle?.trim() || "Thème du mariage";
   const body = couple.themeBlockBody?.trim();
-  const images = (couple.themeBlockImages ?? []).filter((u) => u && u.trim().length > 0);
-  if (!body && images.length === 0) return null;
+  const reference = couple.themeBlockReference?.trim();
+  if (!body) return null;
 
   const style = couple.themeBlockStyle ?? {};
   const font = style.font ?? "serif";
@@ -778,61 +777,28 @@ export function ThemeBlockSection({
         <h2 className="font-serif text-2xl italic">{title}</h2>
       </div>
 
-      {images.length > 0 && (
-        <div
-          className={
-            "mb-6 grid gap-3 " +
-            (images.length === 1
-              ? "grid-cols-1"
-              : images.length === 2
-                ? "grid-cols-2"
-                : "grid-cols-2 sm:grid-cols-3")
-          }
-        >
-          {images.map((src, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => setLightbox(i)}
-              aria-label={`Agrandir l'image ${i + 1}`}
-              className="group relative overflow-hidden rounded-2xl shadow-sm ring-1 ring-black/5 transition active:scale-[0.98]"
-            >
-              <img
-                src={src}
-                alt=""
-                loading="lazy"
-                className={
-                  "w-full object-cover transition group-hover:brightness-95 " +
-                  (images.length === 1 ? "aspect-[4/3]" : "aspect-square")
-                }
-              />
-            </button>
-          ))}
-        </div>
-      )}
+      <p
+        className={
+          "whitespace-pre-line text-pretty leading-relaxed opacity-80 " +
+          bodyFontClass +
+          " " +
+          bodySizeClass +
+          " " +
+          alignClass
+        }
+      >
+        {body}
+      </p>
 
-      {body && (
+      {reference && (
         <p
           className={
-            "whitespace-pre-line text-pretty leading-relaxed opacity-80 " +
-            bodyFontClass +
-            " " +
-            bodySizeClass +
-            " " +
-            alignClass
+            "mt-3 font-mono text-[11px] uppercase tracking-[0.2em] opacity-70 " + alignClass
           }
+          style={{ color: accent }}
         >
-          {body}
+          {reference}
         </p>
-      )}
-
-      {lightbox !== null && (
-        <ImageLightbox
-          images={images}
-          index={lightbox}
-          onClose={() => setLightbox(null)}
-          onChange={setLightbox}
-        />
       )}
     </section>
   );
