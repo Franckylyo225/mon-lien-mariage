@@ -228,20 +228,9 @@ function Hero() {
           </dl>
         </div>
 
-        {/* Phones */}
-        <div className="relative hidden justify-center lg:flex">
-          <div className="relative animate-floaty">
-            <div className="absolute -right-16 top-8 hidden xl:block">
-              <PhoneMock height={380} className="opacity-90" />
-            </div>
-            <PhoneMock height={460} />
-          </div>
-        </div>
+        {/* Aperçus superposés (sans cadre de téléphone) */}
+        <HeroPreview />
 
-        {/* Mobile phone preview */}
-        <div className="flex justify-center lg:hidden">
-          <PhoneMock height={400} />
-        </div>
       </div>
     </section>
   );
