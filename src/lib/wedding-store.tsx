@@ -473,6 +473,7 @@ type WeddingRow = {
   theme_block_title?: string | null;
   theme_block_body?: string | null;
   theme_block_images?: string[] | null;
+  theme_block_reference?: string | null;
   theme_block_style?: Record<string, unknown> | null;
   gallery_enabled: boolean | null;
   gallery_title: string | null;
