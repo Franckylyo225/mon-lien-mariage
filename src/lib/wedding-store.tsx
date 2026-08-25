@@ -219,6 +219,15 @@ export interface Couple {
   storyLayout?: StoryLayout;
   storyPhotoShape?: StoryPhotoShape;
   storySteps?: StoryStep[];
+  themeBlockEnabled?: boolean;
+  themeBlockTitle?: string;
+  themeBlockBody?: string;
+  themeBlockImages?: string[];
+  themeBlockStyle?: {
+    font?: "serif" | "sans" | "script" | "mono" | "display";
+    size?: "sm" | "md" | "lg";
+    align?: "left" | "center";
+  };
   galleryEnabled?: boolean;
   galleryTitle?: string;
   galleryImages?: string[];
