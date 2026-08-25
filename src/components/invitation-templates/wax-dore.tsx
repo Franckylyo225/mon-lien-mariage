@@ -6,6 +6,7 @@ import {
   Countdown,
   GallerySection,
   OurStorySection,
+  ThemeBlockSection,
   TemplateBottomSections,
 } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
@@ -98,6 +99,7 @@ export function WaxDoreTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps)
         )}
 
         <OurStorySection couple={couple} accent={accent} />
+        <ThemeBlockSection couple={couple} accent={accent} />
 
         {couple.introMessage ? (
           <p

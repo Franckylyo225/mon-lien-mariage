@@ -2,7 +2,7 @@ import { formatFrenchDate } from "@/lib/wedding-store";
 import { eventTypeMeta } from "@/lib/ceremony-meta";
 import type { TemplateProps } from "./types";
 import { CeremonyProgramTabs } from "./program-tabs";
-import { Countdown, GallerySection, OurStorySection, TemplateBottomSections } from "./sections";
+import { Countdown, GallerySection, OurStorySection, ThemeBlockSection, TemplateBottomSections } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
 
 export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
@@ -55,6 +55,7 @@ export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
         )}
 
         <OurStorySection couple={couple} accent="#f5f3ee" />
+        <ThemeBlockSection couple={couple} accent="#f5f3ee" />
 
         <p className="mt-12 text-center text-sm leading-relaxed text-[#f5f3ee]/70">
           {couple.introMessage}

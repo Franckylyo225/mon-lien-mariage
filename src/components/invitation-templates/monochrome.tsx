@@ -6,6 +6,7 @@ import {
   Countdown,
   GallerySection,
   OurStorySection,
+  ThemeBlockSection,
   TemplateBottomSections,
 } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
@@ -96,6 +97,7 @@ export function MonochromeTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
         )}
 
         <OurStorySection couple={couple} accent={accent} />
+        <ThemeBlockSection couple={couple} accent={accent} />
 
         {couple.introMessage ? (
           <p className="mt-14 max-w-xl text-base leading-relaxed">

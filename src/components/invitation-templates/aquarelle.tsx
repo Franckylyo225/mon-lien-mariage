@@ -6,6 +6,7 @@ import {
   Countdown,
   GallerySection,
   OurStorySection,
+  ThemeBlockSection,
   TemplateBottomSections,
 } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
@@ -158,6 +159,7 @@ export function AquarelleTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
         )}
 
         <OurStorySection couple={couple} accent={accent} />
+        <ThemeBlockSection couple={couple} accent={accent} />
 
         {couple.introMessage ? (
           <p className="mt-12 text-center text-lg italic leading-relaxed">

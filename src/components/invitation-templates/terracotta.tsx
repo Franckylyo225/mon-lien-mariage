@@ -2,7 +2,7 @@ import { formatFrenchDate } from "@/lib/wedding-store";
 import { eventTypeMeta } from "@/lib/ceremony-meta";
 import type { TemplateProps } from "./types";
 import { CeremonyProgramTabs } from "./program-tabs";
-import { Countdown, GallerySection, OurStorySection, TemplateBottomSections } from "./sections";
+import { Countdown, GallerySection, OurStorySection, ThemeBlockSection, TemplateBottomSections } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
 
 export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
@@ -64,6 +64,7 @@ export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
         )}
 
         <OurStorySection couple={couple} accent={accent} />
+        <ThemeBlockSection couple={couple} accent={accent} />
 
         <p className="mt-12 text-pretty text-center text-sm italic leading-relaxed opacity-80">
           {couple.introMessage}
