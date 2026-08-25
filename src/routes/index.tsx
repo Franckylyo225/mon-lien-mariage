@@ -8,6 +8,8 @@ import {
 } from "@/components/site/SiteChrome";
 import ogImage from "@/assets/og-image.jpg.asset.json";
 import logoHeart from "@/assets/logo-heart.png.asset.json";
+import apercuInvitation from "@/assets/apercu-invitation.png.asset.json";
+import apercuSplash from "@/assets/apercu-splash.png.asset.json";
 
 const OG_IMAGE_URL = `https://moninvit.com${ogImage.url}`;
 const DEMO_URL = "https://www.moninvit.com/e/basile-et-armelle1";
