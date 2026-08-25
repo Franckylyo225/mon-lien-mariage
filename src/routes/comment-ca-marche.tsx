@@ -82,7 +82,7 @@ function HowItWorks() {
       title={
         <>
           Votre invitation, prête en{" "}
-          <em className="italic text-[#c17c74]">4 étapes.</em>
+          <em className="italic text-[#E82050]">4 étapes.</em>
         </>
       }
       intro="Nous avons pensé chaque étape pour que vous puissiez tout faire depuis votre téléphone, sans compétence technique."
@@ -94,15 +94,15 @@ function HowItWorks() {
           {STEPS.map((s) => (
             <li
               key={s.n}
-              className="rounded-[24px] border border-[#e8c5b6]/50 bg-white/70 p-8 shadow-sm"
+              className="rounded-[24px] border border-[#F1E3C6]/50 bg-white/70 p-8 shadow-sm"
             >
-              <p className="font-[family-name:var(--font-display)] text-4xl italic text-[#c17c74]">
+              <p className="font-[family-name:var(--font-display)] text-4xl italic text-[#E82050]">
                 {s.n}
               </p>
               <h3 className="mt-3 font-[family-name:var(--font-display)] text-2xl">
                 {s.title}
               </h3>
-              <p className="mt-2 text-sm leading-relaxed text-[#6b4a3e]">
+              <p className="mt-2 text-sm leading-relaxed text-[#5A4F52]">
                 {s.desc}
               </p>
             </li>
@@ -110,24 +110,24 @@ function HowItWorks() {
         </ol>
       </section>
 
-      <section className="border-y border-[#e8c5b6]/40 bg-[#fbeee4]/60 py-16">
+      <section className="border-y border-[#F1E3C6]/40 bg-[#FDF0F3]/60 py-16">
         <div className="mx-auto max-w-3xl px-5">
-          <p className="text-center font-mono text-[11px] uppercase tracking-[0.3em] text-[#c17c74]">
+          <p className="text-center font-mono text-[11px] uppercase tracking-[0.3em] text-[#E82050]">
             Questions fréquentes
           </p>
           <h2 className="mt-4 text-center font-[family-name:var(--font-display)] text-3xl italic sm:text-4xl">
             Tout ce que vous vous demandez.
           </h2>
-          <div className="mt-10 divide-y divide-[#e8c5b6]/60">
+          <div className="mt-10 divide-y divide-[#F1E3C6]/60">
             {FAQ.map((f) => (
               <details key={f.q} className="group py-5">
-                <summary className="flex cursor-pointer items-center justify-between gap-4 text-left font-[family-name:var(--font-display)] text-lg italic text-[#2b1a14]">
+                <summary className="flex cursor-pointer items-center justify-between gap-4 text-left font-[family-name:var(--font-display)] text-lg italic text-[#201A1C]">
                   {f.q}
-                  <span className="text-[#c17c74] transition group-open:rotate-45">
+                  <span className="text-[#E82050] transition group-open:rotate-45">
                     +
                   </span>
                 </summary>
-                <p className="mt-3 text-sm leading-relaxed text-[#6b4a3e]">
+                <p className="mt-3 text-sm leading-relaxed text-[#5A4F52]">
                   {f.a}
                 </p>
               </details>
@@ -140,12 +140,12 @@ function HowItWorks() {
         <h2 className="font-[family-name:var(--font-display)] text-3xl italic sm:text-4xl">
           Prêts à commencer ?
         </h2>
-        <p className="mt-3 text-[#6b4a3e]">
+        <p className="mt-3 text-[#5A4F52]">
           Créez votre page gratuitement, publiez quand vous êtes prêts.
         </p>
         <Link
           to="/signup"
-          className="mt-8 inline-block rounded-full bg-[#2b1a14] px-8 py-4 text-sm font-medium text-[#fdf7f3] shadow-lg shadow-[#c17c74]/20 hover:-translate-y-0.5 hover:shadow-xl"
+          className="mt-8 inline-block rounded-full bg-[#201A1C] px-8 py-4 text-sm font-medium text-[#FBF8F8] shadow-lg shadow-[#E82050]/20 hover:-translate-y-0.5 hover:shadow-xl"
         >
           Créer notre invitation
         </Link>

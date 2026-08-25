@@ -71,7 +71,7 @@ function LoginPage() {
   return (
     <AuthLayout
       eyebrow="Se connecter"
-      title={<>Content de vous <em className="text-[#c17c74]">revoir.</em></>}
+      title={<>Content de vous <em className="text-[#E82050]">revoir.</em></>}
       subtitle="Reprenez la préparation de votre grand jour là où vous l'avez laissée."
     >
       <form onSubmit={submit} className="space-y-4">
@@ -99,7 +99,7 @@ function LoginPage() {
         <div className="-mt-1 text-right">
           <Link
             to="/forgot-password"
-            className="text-xs font-medium text-[#c17c74] hover:underline"
+            className="text-xs font-medium text-[#E82050] hover:underline"
           >
             Mot de passe oublié ?
           </Link>
@@ -108,14 +108,14 @@ function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-full bg-[#2b1a14] px-4 py-3.5 text-sm font-medium tracking-wide text-[#fdf7f3] shadow-lg shadow-[#c17c74]/20 transition hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
+          className="w-full rounded-full bg-[#201A1C] px-4 py-3.5 text-sm font-medium tracking-wide text-[#FBF8F8] shadow-lg shadow-[#E82050]/20 transition hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
         >
           {loading ? "Connexion…" : "Se connecter"}
         </button>
       </form>
-      <p className="mt-6 text-center text-xs text-[#6b4a3e]">
+      <p className="mt-6 text-center text-xs text-[#5A4F52]">
         Pas encore de compte —{" "}
-        <Link to="/signup" className="font-medium text-[#c17c74] hover:underline">
+        <Link to="/signup" className="font-medium text-[#E82050] hover:underline">
           S'inscrire
         </Link>
       </p>
