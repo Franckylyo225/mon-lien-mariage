@@ -2,7 +2,7 @@ import { formatFrenchDate } from "@/lib/wedding-store";
 import { eventTypeMeta } from "@/lib/ceremony-meta";
 import type { TemplateProps } from "./types";
 import { CeremonyProgramTabs } from "./program-tabs";
-import { Countdown, GallerySection, OurStorySection, TemplateBottomSections } from "./sections";
+import { Countdown, GallerySection, OurStorySection, ThemeBlockSection, TemplateBottomSections } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
 
 export function TropicalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
@@ -80,6 +80,7 @@ export function TropicalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
         )}
 
         <OurStorySection couple={couple} accent="#e88b62" />
+        <ThemeBlockSection couple={couple} accent="#e88b62" />
 
         <p className="mt-10 text-center font-serif italic leading-relaxed text-[#f4e4c1]/90">
           {couple.introMessage}

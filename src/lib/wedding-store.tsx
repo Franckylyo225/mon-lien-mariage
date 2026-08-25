@@ -219,6 +219,15 @@ export interface Couple {
   storyLayout?: StoryLayout;
   storyPhotoShape?: StoryPhotoShape;
   storySteps?: StoryStep[];
+  themeBlockEnabled?: boolean;
+  themeBlockTitle?: string;
+  themeBlockBody?: string;
+  themeBlockImages?: string[];
+  themeBlockStyle?: {
+    font?: "serif" | "sans" | "script" | "mono" | "display";
+    size?: "sm" | "md" | "lg";
+    align?: "left" | "center";
+  };
   galleryEnabled?: boolean;
   galleryTitle?: string;
   galleryImages?: string[];
@@ -460,6 +469,11 @@ type WeddingRow = {
   story_style: Record<string, unknown> | null;
   story_layout?: string | null;
   story_photo_shape?: string | null;
+  theme_block_enabled?: boolean | null;
+  theme_block_title?: string | null;
+  theme_block_body?: string | null;
+  theme_block_images?: string[] | null;
+  theme_block_style?: Record<string, unknown> | null;
   gallery_enabled: boolean | null;
   gallery_title: string | null;
   gallery_images: string[] | null;
@@ -551,6 +565,11 @@ function rowToCouple(w: WeddingRow): Couple {
     storyStyle: (w.story_style as Couple["storyStyle"]) ?? {},
     storyLayout: ((w.story_layout as StoryLayout | null) ?? "left"),
     storyPhotoShape: ((w.story_photo_shape as StoryPhotoShape | null) ?? "rounded"),
+    themeBlockEnabled: w.theme_block_enabled ?? false,
+    themeBlockTitle: w.theme_block_title ?? undefined,
+    themeBlockBody: w.theme_block_body ?? undefined,
+    themeBlockImages: w.theme_block_images ?? [],
+    themeBlockStyle: (w.theme_block_style as Couple["themeBlockStyle"]) ?? {},
     galleryEnabled: w.gallery_enabled ?? false,
     galleryTitle: w.gallery_title ?? undefined,
     galleryImages: w.gallery_images ?? [],
@@ -640,6 +659,11 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.storyStyle !== undefined) r.story_style = p.storyStyle ?? {};
   if (p.storyLayout !== undefined) r.story_layout = p.storyLayout ?? "left";
   if (p.storyPhotoShape !== undefined) r.story_photo_shape = p.storyPhotoShape ?? "rounded";
+  if (p.themeBlockEnabled !== undefined) r.theme_block_enabled = p.themeBlockEnabled;
+  if (p.themeBlockTitle !== undefined) r.theme_block_title = p.themeBlockTitle || null;
+  if (p.themeBlockBody !== undefined) r.theme_block_body = p.themeBlockBody || null;
+  if (p.themeBlockImages !== undefined) r.theme_block_images = p.themeBlockImages ?? [];
+  if (p.themeBlockStyle !== undefined) r.theme_block_style = p.themeBlockStyle ?? {};
   if (p.galleryEnabled !== undefined) r.gallery_enabled = p.galleryEnabled;
   if (p.galleryTitle !== undefined) r.gallery_title = p.galleryTitle || null;
   if (p.galleryImages !== undefined) r.gallery_images = p.galleryImages ?? [];

@@ -6,6 +6,7 @@ import {
   Countdown,
   GallerySection,
   OurStorySection,
+  ThemeBlockSection,
   TemplateBottomSections,
 } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
@@ -190,6 +191,7 @@ export function PapierKraftTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
         )}
 
         <OurStorySection couple={couple} accent={accent} />
+        <ThemeBlockSection couple={couple} accent={accent} />
 
         {couple.introMessage ? (
           <p

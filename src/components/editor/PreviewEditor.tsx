@@ -46,6 +46,7 @@ type Sheet =
   | "dress"
   | "registry"
   | "story"
+  | "themeblock"
   | "gallery"
   | "theme"
   | "particles"
@@ -251,11 +252,23 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
               value={
                 couple.storyEnabled === false
                   ? "Désactivé"
-                  : (couple.storyImages?.length ?? 0) === 0 && !couple.storyBody
+                  : (couple.storySteps?.length ?? 0) === 0
                     ? "À compléter"
-                    : `${couple.storyImages?.length ?? 0} photo${(couple.storyImages?.length ?? 0) > 1 ? "s" : ""}`
+                    : `${couple.storySteps?.length ?? 0} étape${(couple.storySteps?.length ?? 0) > 1 ? "s" : ""}`
               }
               onClick={() => setSheet("story")}
+            />
+            <EditChip
+              icon={<Palette className="size-4" />}
+              label="Thème du mariage"
+              value={
+                !(couple.themeBlockEnabled ?? false)
+                  ? "Désactivé"
+                  : !couple.themeBlockBody && (couple.themeBlockImages?.length ?? 0) === 0
+                    ? "À compléter"
+                    : `${couple.themeBlockImages?.length ?? 0} photo${(couple.themeBlockImages?.length ?? 0) > 1 ? "s" : ""}`
+              }
+              onClick={() => setSheet("themeblock")}
             />
             <EditChip
               icon={<Images className="size-4" />}
@@ -931,6 +944,40 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
       />
 
 
+
+      <PhotoGridSheet
+        open={sheet === "themeblock"}
+        onOpenChange={(o) => !o && setSheet(null)}
+        title="Thème du mariage"
+        intro="Un bloc libre pour présenter le thème, les couleurs ou toute autre information."
+        weddingId={weddingId}
+        folder="theme-block"
+        enabled={couple.themeBlockEnabled ?? false}
+        onEnabledChange={(v) => persist({ themeBlockEnabled: v })}
+        titleField={{
+          label: "Titre du bloc",
+          value: couple.themeBlockTitle ?? "",
+          placeholder: "Thème du mariage",
+          onChange: (v) => persist({ themeBlockTitle: v }),
+        }}
+        bodyField={{
+          label: "Texte",
+          value: couple.themeBlockBody ?? "",
+          placeholder: "Décrivez le thème, les couleurs, l'ambiance…",
+          onChange: (v) => persist({ themeBlockBody: v }),
+        }}
+        images={couple.themeBlockImages ?? []}
+        onImagesChange={(next) => persist({ themeBlockImages: next })}
+        maxImages={9}
+        extraControls={
+          <StoryStyleControls
+            style={couple.themeBlockStyle ?? {}}
+            onChange={(patch) =>
+              persist({ themeBlockStyle: { ...(couple.themeBlockStyle ?? {}), ...patch } })
+            }
+          />
+        }
+      />
 
       <PhotoGridSheet
         open={sheet === "gallery"}

@@ -702,40 +702,53 @@ export function OurStorySection({
   couple: Couple;
   accent?: string;
 }) {
-  const [lightbox, setLightbox] = useState<number | null>(null);
   if (couple.storyEnabled === false) return null;
   const title = couple.storyTitle?.trim() || "Notre Histoire";
-  const body = couple.storyBody?.trim();
-  const images = (couple.storyImages ?? []).filter((u) => u && u.trim().length > 0);
   const steps = (couple.storySteps ?? []).filter(
     (s) => (s.title ?? "").trim() || (s.text ?? "").trim() || s.photoUrl,
   );
 
-  if (steps.length > 0) {
-    const theme = {
-      accent: accent ?? "#C6A15B",
-      text: "inherit",
-      textSoft: "inherit",
-      gold: accent ?? "#C6A15B",
-    };
-    return (
-      <section className="mt-14 opacity-95">
-        <StoryHeader title={title} theme={{ ...theme, text: "currentColor" }} />
-        <div style={{ opacity: 0.95 }}>
-          <StoryTimeline
-            steps={steps}
-            theme={{ ...theme, text: "currentColor", textSoft: "currentColor" }}
-            layout={couple.storyLayout ?? "left"}
-            photoShape={couple.storyPhotoShape ?? "rounded"}
-          />
-        </div>
-      </section>
-    );
-  }
+  if (steps.length === 0) return null;
 
+  const theme = {
+    accent: accent ?? "#C6A15B",
+    text: "inherit",
+    textSoft: "inherit",
+    gold: accent ?? "#C6A15B",
+  };
+  return (
+    <section className="mt-14 opacity-95">
+      <StoryHeader title={title} theme={{ ...theme, text: "currentColor" }} />
+      <div style={{ opacity: 0.95 }}>
+        <StoryTimeline
+          steps={steps}
+          theme={{ ...theme, text: "currentColor", textSoft: "currentColor" }}
+          layout={couple.storyLayout ?? "left"}
+          photoShape={couple.storyPhotoShape ?? "rounded"}
+        />
+      </div>
+    </section>
+  );
+}
+
+// ---------- Thème du mariage (bloc de contenu libre) ----------
+
+export function ThemeBlockSection({
+  couple,
+  accent,
+}: {
+  couple: Couple;
+  accent?: string;
+}) {
+  const [lightbox, setLightbox] = useState<number | null>(null);
+  if (!couple.themeBlockEnabled) return null;
+
+  const title = couple.themeBlockTitle?.trim() || "Thème du mariage";
+  const body = couple.themeBlockBody?.trim();
+  const images = (couple.themeBlockImages ?? []).filter((u) => u && u.trim().length > 0);
   if (!body && images.length === 0) return null;
 
-  const style = couple.storyStyle ?? {};
+  const style = couple.themeBlockStyle ?? {};
   const font = style.font ?? "serif";
   const size = style.size ?? "md";
   const align = style.align ?? "center";

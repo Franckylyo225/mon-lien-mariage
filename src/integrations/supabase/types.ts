@@ -935,6 +935,11 @@ export type Database = {
           template_id: string
           text_color: string | null
           theme: string
+          theme_block_body: string | null
+          theme_block_enabled: boolean
+          theme_block_images: string[]
+          theme_block_style: Json
+          theme_block_title: string | null
           updated_at: string
           wedding_date: string | null
         }
@@ -1023,6 +1028,11 @@ export type Database = {
           template_id?: string
           text_color?: string | null
           theme?: string
+          theme_block_body?: string | null
+          theme_block_enabled?: boolean
+          theme_block_images?: string[]
+          theme_block_style?: Json
+          theme_block_title?: string | null
           updated_at?: string
           wedding_date?: string | null
         }
@@ -1111,6 +1121,11 @@ export type Database = {
           template_id?: string
           text_color?: string | null
           theme?: string
+          theme_block_body?: string | null
+          theme_block_enabled?: boolean
+          theme_block_images?: string[]
+          theme_block_style?: Json
+          theme_block_title?: string | null
           updated_at?: string
           wedding_date?: string | null
         }

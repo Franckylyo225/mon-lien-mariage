@@ -6,6 +6,7 @@ import {
   Countdown,
   GallerySection,
   OurStorySection,
+  ThemeBlockSection,
   TemplateBottomSections,
 } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
@@ -99,6 +100,7 @@ export function ManuscritTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
         )}
 
         <OurStorySection couple={couple} accent={accent} />
+        <ThemeBlockSection couple={couple} accent={accent} />
 
         <Folio
           n="03"
