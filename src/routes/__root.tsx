@@ -114,8 +114,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:site", content: "@moninvit" },
       { name: "twitter:title", content: "MonInvit — Invitations de mariage digitales" },
       { name: "twitter:description", content: "Créez votre invitation de mariage digitale en 10 minutes. RSVP, programme et partage WhatsApp — pensée pour l'Afrique de l'Ouest." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ab558280-c910-4de6-ac6b-e1b2529247ec/id-preview-c49507f4--e93d96ce-2e56-46da-9063-996fb84fe947.lovable.app-1783800940078.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/ab558280-c910-4de6-ac6b-e1b2529247ec/id-preview-c49507f4--e93d96ce-2e56-46da-9063-996fb84fe947.lovable.app-1783800940078.png" },
+      { property: "og:image", content: "https://moninvit.com/media/og-image-v2.jpg" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: "MonInvit.com — invitations de mariage digitales" },
+      { name: "twitter:image", content: "https://moninvit.com/media/og-image-v2.jpg" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
