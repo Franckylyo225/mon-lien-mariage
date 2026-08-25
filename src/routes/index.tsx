@@ -340,38 +340,52 @@ function ProblemSection() {
 
 /* -------------------------------- features -------------------------------- */
 
-const FEATURES = [
-  ["💌", "Confirmations en un tap", "Tes invités répondent directement depuis leur téléphone. Tu vois tout en temps réel."],
-  ["📅", "Dot, civil, réception — tout en un", "Chaque invité voit uniquement les cérémonies auxquelles tu le convies."],
-  ["🎵", "Une ambiance dès l'ouverture", "26 musiques ou ta propre chanson. La mélodie commence dès l'ouverture."],
-  ["📖", "Livre d'or numérique", "Tes invités te laissent un message. Tu télécharges un souvenir imprimable."],
-  ["⏱", "Compte à rebours", "L'impatience de tes invités grandit à chaque seconde qui passe."],
-  ["🔗", "Lien WhatsApp en un tap", "Un lien. Un message. Ta famille l'ouvre instantanément."],
+const FEATURES: { icon: string; title: string; desc: string; accent: string }[] = [
+  { icon: "💌", title: "Confirmations en un tap", desc: "Tes invités répondent directement depuis leur téléphone. Tu vois tout en temps réel.", accent: "#E82050" },
+  { icon: "📅", title: "Dot, civil, réception — tout en un", desc: "Chaque invité voit uniquement les cérémonies auxquelles tu le convies.", accent: "#C6A15B" },
+  { icon: "🎵", title: "Une ambiance dès l'ouverture", desc: "26 musiques ou ta propre chanson. La mélodie commence dès l'ouverture.", accent: "#E82050" },
+  { icon: "📖", title: "Livre d'or numérique", desc: "Tes invités te laissent un message. Tu télécharges un souvenir imprimable.", accent: "#C6A15B" },
+  { icon: "⏱", title: "Compte à rebours", desc: "L'impatience de tes invités grandit à chaque seconde qui passe.", accent: "#E82050" },
+  { icon: "🔗", title: "Lien WhatsApp en un tap", desc: "Un lien. Un message. Ta famille l'ouvre instantanément.", accent: "#C6A15B" },
 ];
 
 function Features() {
   return (
-    <section className="bg-white py-20">
+    <section className="bg-gradient-to-b from-white via-[#FBF8F8] to-white py-24">
       <div className="mx-auto max-w-6xl px-5">
-        <div className="grid gap-6 md:grid-cols-2">
-          <div>
-            <Kicker>Tout ce qu'il te faut</Kicker>
-            <H2 className="mt-4">Pour rendre ton invitation inoubliable.</H2>
-          </div>
-          <Body className="self-end md:max-w-md">
+        {/* Header */}
+        <div className="mx-auto max-w-2xl text-center">
+          <Kicker>Tout ce qu'il te faut</Kicker>
+          <H2 className="mt-4">Pour rendre ton invitation inoubliable.</H2>
+          <Body className="mt-4">
             Chaque détail a été pensé pour les mariages ivoiriens : plusieurs
             cérémonies, familles nombreuses, partage sur WhatsApp.
           </Body>
         </div>
 
-        <div className="mt-12 grid border-t border-l border-[#E7DFE1] sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map(([icon, title, desc]) => (
-            <div key={title} className="border-b border-r border-[#E7DFE1] p-8">
-              <span className="text-2xl" aria-hidden>{icon}</span>
-              <h3 className="mt-4 font-[family-name:var(--font-brand-serif)] text-[22px] font-medium text-[#201A1C]">
-                {title}
+        {/* Cards */}
+        <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {FEATURES.map((f) => (
+            <div
+              key={f.title}
+              className="group relative overflow-hidden rounded-2xl border border-[#E7DFE1] bg-white p-7 shadow-[0_2px_12px_-6px_rgba(32,26,28,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-18px_rgba(32,26,28,0.22)]"
+            >
+              {/* Accent top bar */}
+              <div
+                className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"
+                style={{ background: f.accent }}
+              />
+              {/* Icon badge */}
+              <div
+                className="flex size-14 items-center justify-center rounded-xl text-2xl transition-transform duration-300 group-hover:scale-110"
+                style={{ background: `${f.accent}14` }}
+              >
+                <span aria-hidden>{f.icon}</span>
+              </div>
+              <h3 className="mt-5 font-[family-name:var(--font-brand-serif)] text-[22px] font-medium leading-tight text-[#201A1C]">
+                {f.title}
               </h3>
-              <Body className="mt-2 text-sm!">{desc}</Body>
+              <Body className="mt-2 text-sm!">{f.desc}</Body>
             </div>
           ))}
         </div>
