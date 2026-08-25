@@ -289,9 +289,25 @@ const QUICK_PROOF = [
 ];
 
 function SocialProof() {
+  const [index, setIndex] = useState(0);
+  const count = QUICK_PROOF.length;
+  const go = (dir: number) => setIndex((i) => (i + dir + count) % count);
+
+  const touchStartX = useRef<number | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0]?.clientX ?? null;
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current == null) return;
+    const dx = e.changedTouches[0]?.clientX - touchStartX.current;
+    if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
+    touchStartX.current = null;
+  };
+
   return (
     <section className="border-y border-[#F4EFF0] bg-white py-10">
-      <div className="mx-auto grid max-w-5xl gap-8 px-5 md:grid-cols-2 md:divide-x md:divide-[#F4EFF0]">
+      {/* Desktop: two columns */}
+      <div className="mx-auto hidden max-w-5xl gap-8 px-5 md:grid md:grid-cols-2 md:divide-x md:divide-[#F4EFF0]">
         {QUICK_PROOF.map((t, i) => (
           <div key={t.initial} className={i === 1 ? "md:pl-8" : ""}>
             <Stars />
@@ -308,6 +324,70 @@ function SocialProof() {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Mobile: one-at-a-time slider */}
+      <div
+        className="mx-auto max-w-5xl px-5 md:hidden"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        <div className="overflow-hidden">
+          <div
+            className="flex transition-transform duration-300 ease-out"
+            style={{ transform: `translateX(-${index * 100}%)` }}
+          >
+            {QUICK_PROOF.map((t) => (
+              <div key={t.initial} className="w-full shrink-0 px-1">
+                <Stars />
+                <blockquote className="mt-2 font-[family-name:var(--font-brand-serif)] text-[15px] italic leading-relaxed text-[#201A1C]">
+                  « {t.quote} »
+                </blockquote>
+                <div className="mt-3 flex items-center gap-3">
+                  <span className="grid size-[38px] shrink-0 place-items-center rounded-full bg-[#FBDDE5] font-[family-name:var(--font-brand-ui)] text-sm font-bold text-[#E82050]">
+                    {t.initial}
+                  </span>
+                  <p className="font-[family-name:var(--font-brand-ui)] text-[11px] font-medium text-[#7A6D70]">
+                    — {t.author}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-5 flex items-center justify-center gap-4">
+          <button
+            type="button"
+            onClick={() => go(-1)}
+            aria-label="Témoignage précédent"
+            className="grid size-8 place-items-center rounded-full border border-[#F4EFF0] text-[#5A4F52] active:bg-[#FBF8F8]"
+          >
+            ←
+          </button>
+          <div className="flex items-center gap-1.5">
+            {QUICK_PROOF.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setIndex(i)}
+                aria-label={`Aller au témoignage ${i + 1}`}
+                className={
+                  "h-1.5 rounded-full transition-all " +
+                  (i === index ? "w-5 bg-[#E82050]" : "w-1.5 bg-[#F4EFF0]")
+                }
+              />
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => go(1)}
+            aria-label="Témoignage suivant"
+            className="grid size-8 place-items-center rounded-full border border-[#F4EFF0] text-[#5A4F52] active:bg-[#FBF8F8]"
+          >
+            →
+          </button>
+        </div>
       </div>
     </section>
   );
