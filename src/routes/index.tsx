@@ -349,13 +349,13 @@ function ProblemSection() {
 
 /* -------------------------------- features -------------------------------- */
 
-const FEATURES: { icon: LucideIcon; title: string; desc: string; accent: string }[] = [
-  { icon: HeartHandshake, title: "Confirmations en un tap", desc: "Tes invités répondent directement depuis leur téléphone. Tu vois tout en temps réel.", accent: "#E82050" },
-  { icon: CalendarRange, title: "Dot, civil, réception — tout en un", desc: "Chaque invité voit uniquement les cérémonies auxquelles tu le convies.", accent: "#C6A15B" },
-  { icon: Music, title: "Une ambiance dès l'ouverture", desc: "26 musiques ou ta propre chanson. La mélodie commence dès l'ouverture.", accent: "#E82050" },
-  { icon: BookHeart, title: "Livre d'or numérique", desc: "Tes invités te laissent un message. Tu télécharges un souvenir imprimable.", accent: "#C6A15B" },
-  { icon: Hourglass, title: "Compte à rebours", desc: "L'impatience de tes invités grandit à chaque seconde qui passe.", accent: "#E82050" },
-  { icon: Share2, title: "Lien WhatsApp en un tap", desc: "Un lien. Un message. Ta famille l'ouvre instantanément.", accent: "#C6A15B" },
+const FEATURES: { icon: LucideIcon; title: string; desc: string; accent: string; tinted: boolean }[] = [
+  { icon: HeartHandshake, title: "Confirmations en un tap", desc: "Tes invités répondent directement depuis leur téléphone. Tu vois tout en temps réel.", accent: "#E82050", tinted: true },
+  { icon: CalendarRange, title: "Dot, civil, réception — tout en un", desc: "Chaque invité voit uniquement les cérémonies auxquelles tu le convies.", accent: "#C6A15B", tinted: false },
+  { icon: Music, title: "Une ambiance dès l'ouverture", desc: "26 musiques ou ta propre chanson. La mélodie commence dès l'ouverture.", accent: "#E82050", tinted: true },
+  { icon: BookHeart, title: "Livre d'or numérique", desc: "Tes invités te laissent un message. Tu télécharges un souvenir imprimable.", accent: "#C6A15B", tinted: false },
+  { icon: Hourglass, title: "Compte à rebours", desc: "L'impatience de tes invités grandit à chaque seconde qui passe.", accent: "#E82050", tinted: true },
+  { icon: Share2, title: "Lien WhatsApp en un tap", desc: "Un lien. Un message. Ta famille l'ouvre instantanément.", accent: "#C6A15B", tinted: false },
 ];
 
 function Features() {
@@ -372,31 +372,35 @@ function Features() {
           </Body>
         </div>
 
-        {/* Cards */}
+        {/* Cards — damier */}
         <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((f) => (
-            <div
-              key={f.title}
-              className="group relative overflow-hidden rounded-2xl border border-[#E7DFE1] bg-white p-7 shadow-[0_2px_12px_-6px_rgba(32,26,28,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-18px_rgba(32,26,28,0.22)]"
-            >
-              {/* Accent top bar */}
+          {FEATURES.map((f) => {
+            const tint = f.accent === "#E82050" ? "#E8205008" : "#C6A15B0D";
+            return (
               <div
-                className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"
-                style={{ background: f.accent }}
-              />
-              {/* Icon badge */}
-              <div
-                className="flex size-14 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110"
-                style={{ background: `${f.accent}14` }}
+                key={f.title}
+                className="group relative overflow-hidden rounded-2xl border border-[#E7DFE1] p-7 shadow-[0_2px_12px_-6px_rgba(32,26,28,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-18px_rgba(32,26,28,0.22)]"
+                style={{ background: f.tinted ? tint : "#fff" }}
               >
-                <f.icon size={26} strokeWidth={1.75} style={{ color: f.accent }} aria-hidden />
+                {/* Accent top bar */}
+                <div
+                  className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"
+                  style={{ background: f.accent }}
+                />
+                {/* Icon badge */}
+                <div
+                  className="flex size-14 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110"
+                  style={{ background: `${f.accent}18` }}
+                >
+                  <f.icon size={26} strokeWidth={1.75} style={{ color: f.accent }} aria-hidden />
+                </div>
+                <h3 className="mt-5 font-[family-name:var(--font-brand-serif)] text-[22px] font-medium leading-tight text-[#201A1C]">
+                  {f.title}
+                </h3>
+                <Body className="mt-2 text-sm!">{f.desc}</Body>
               </div>
-              <h3 className="mt-5 font-[family-name:var(--font-brand-serif)] text-[22px] font-medium leading-tight text-[#201A1C]">
-                {f.title}
-              </h3>
-              <Body className="mt-2 text-sm!">{f.desc}</Body>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>
