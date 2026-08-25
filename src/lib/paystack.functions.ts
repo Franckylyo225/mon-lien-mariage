@@ -3,12 +3,16 @@ import { requireAuth as requireSupabaseAuth } from "@/lib/auth-middleware";
 
 export type PaystackPaymentType = "publication" | "addon_guestbook";
 
+export const BASE_PRICE_XOF = 24900;
+export const GUESTBOOK_ADDON_XOF = 1990;
+
 interface InitInput {
   weddingId: string;
   paymentType: PaystackPaymentType;
-  amountFcfa: number;
+  amountFcfa?: number;
   slug?: string;
   includeGuestbook?: boolean;
+  promoCode?: string;
   callbackUrl: string;
 }
 
@@ -31,10 +35,29 @@ export const initializePaystackPayment = createServerFn({ method: "POST" })
     if (data.paymentType !== "publication" && data.paymentType !== "addon_guestbook") {
       throw new Error("Type de paiement invalide.");
     }
-    const amount = Math.round(Number(data.amountFcfa));
-    if (!Number.isFinite(amount) || amount < 100 || amount > 10_000_000) {
-      throw new Error("Montant invalide.");
+
+    // Montant calculé côté serveur (le client ne peut pas l'imposer)
+    const gross =
+      data.paymentType === "addon_guestbook"
+        ? GUESTBOOK_ADDON_XOF
+        : BASE_PRICE_XOF + (data.includeGuestbook === true ? GUESTBOOK_ADDON_XOF : 0);
+
+    let discount = 0;
+    let promoCodeApplied: string | null = null;
+    const { normalizePromoCode, loadUsablePromo } = await import("./promo.server");
+    const rawCode = normalizePromoCode(data.promoCode ?? "");
+    if (rawCode) {
+      const promo = await loadUsablePromo(rawCode, context.supabase);
+      discount = promo.discount_percent;
+      promoCodeApplied = promo.code;
+      if (discount >= 100) {
+        throw new Error(
+          "Ce code couvre la totalité : publiez directement, aucun paiement n'est nécessaire.",
+        );
+      }
     }
+
+    const amount = Math.max(100, Math.round(gross * (1 - discount / 100)));
 
     // L'événement doit appartenir à l'utilisateur (RLS)
     const { data: wedding, error: wErr } = await context.supabase
@@ -57,6 +80,9 @@ export const initializePaystackPayment = createServerFn({ method: "POST" })
       payment_type: data.paymentType,
       slug: data.slug ?? null,
       include_guestbook: data.includeGuestbook === true,
+      promo_code: promoCodeApplied,
+      discount_percent: discount,
+      gross_amount_fcfa: gross,
       custom_fields: [
         {
           display_name: "Couple",
