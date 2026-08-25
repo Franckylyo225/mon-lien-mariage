@@ -198,85 +198,92 @@ export function TimelineCenter({
       />
       {steps.map((step, i) => {
         const isLeft = i % 2 === 0;
+        const content = (
+          <div
+            style={{
+              textAlign: isLeft ? "right" : "left",
+              paddingRight: isLeft ? 16 : 0,
+              paddingLeft: isLeft ? 0 : 16,
+              minWidth: 0,
+            }}
+          >
+            {step.year && (
+              <p
+                className="font-sans"
+                style={{
+                  fontSize: 9,
+                  fontWeight: 700,
+                  color: theme.accent,
+                  letterSpacing: ".08em",
+                  marginBottom: 3,
+                }}
+              >
+                {step.year}
+              </p>
+            )}
+            {step.title && (
+              <p
+                className="font-serif italic"
+                style={{ fontSize: 16, color: theme.text, marginBottom: 4 }}
+              >
+                {step.title}
+              </p>
+            )}
+            {step.text && (
+              <p
+                className="whitespace-pre-line font-sans"
+                style={{ fontSize: 11, color: theme.textSoft, lineHeight: 1.55 }}
+              >
+                {step.text}
+              </p>
+            )}
+          </div>
+        );
+
+        const marker = (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 6,
+              zIndex: 2,
+            }}
+          >
+            <StepPhoto step={step} shape={photoShape} />
+            <div
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: theme.accent,
+                boxShadow: `0 0 0 3px ${theme.accent}25`,
+              }}
+            />
+          </div>
+        );
+
         return (
           <div
             key={step.id}
             style={{
-              display: "flex",
-              flexDirection: isLeft ? "row" : "row-reverse",
+              display: "grid",
+              gridTemplateColumns: "1fr auto 1fr",
               alignItems: "center",
-              marginBottom: 32,
+              columnGap: 4,
+              marginBottom: 28,
             }}
           >
-            <div
-              style={{
-                flex: 1,
-                textAlign: isLeft ? "right" : "left",
-                paddingRight: isLeft ? 20 : 0,
-                paddingLeft: isLeft ? 0 : 20,
-              }}
-            >
-              {step.year && (
-                <p
-                  className="font-sans"
-                  style={{
-                    fontSize: 9,
-                    fontWeight: 700,
-                    color: theme.accent,
-                    letterSpacing: ".08em",
-                    marginBottom: 3,
-                  }}
-                >
-                  {step.year}
-                </p>
-              )}
-              {step.title && (
-                <p
-                  className="font-serif italic"
-                  style={{ fontSize: 16, color: theme.text, marginBottom: 4 }}
-                >
-                  {step.title}
-                </p>
-              )}
-              {step.text && (
-                <p
-                  className="whitespace-pre-line font-sans"
-                  style={{ fontSize: 11, color: theme.textSoft, lineHeight: 1.55 }}
-                >
-                  {step.text}
-                </p>
-              )}
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: 6,
-                flexShrink: 0,
-                zIndex: 2,
-              }}
-            >
-              <StepPhoto step={step} shape={photoShape} />
-              <div
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  background: theme.accent,
-                  boxShadow: `0 0 0 3px ${theme.accent}25`,
-                }}
-              />
-            </div>
-
-            <div style={{ flex: 1 }} />
+            <div style={{ gridColumn: 1, minWidth: 0 }}>{isLeft ? content : null}</div>
+            <div style={{ gridColumn: 2 }}>{marker}</div>
+            <div style={{ gridColumn: 3, minWidth: 0 }}>{isLeft ? null : content}</div>
           </div>
         );
       })}
     </div>
   );
 }
+
 
 export function TimelineCards({
   steps,
