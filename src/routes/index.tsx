@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   HeartHandshake,
   CalendarRange,
@@ -738,6 +738,24 @@ export function ReviewCard({
 }
 
 function Testimonials() {
+  const [index, setIndex] = useState(0);
+  const count = REVIEWS.length;
+
+  const go = (dir: number) =>
+    setIndex((i) => (i + dir + count) % count);
+
+  // Swipe handlers (mobile only — desktop shows grid)
+  const touchStartX = useRef<number | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0]?.clientX ?? null;
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current == null) return;
+    const dx = e.changedTouches[0]?.clientX - touchStartX.current;
+    if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
+    touchStartX.current = null;
+  };
+
   return (
     <section className="bg-white py-24">
       <div className="mx-auto max-w-6xl px-5">
@@ -745,11 +763,70 @@ function Testimonials() {
           <Kicker>Ils ont dit oui à moninvit</Kicker>
           <H2 className="mt-4">Des couples ivoiriens racontent.</H2>
         </div>
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
+
+        {/* Desktop: grid */}
+        <div className="mt-12 hidden gap-6 md:grid md:grid-cols-3">
           {REVIEWS.map((r) => (
             <ReviewCard key={r.author} {...r} />
           ))}
         </div>
+
+        {/* Mobile: one-at-a-time slider */}
+        <div
+          className="mt-12 md:hidden"
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+        >
+          <div className="overflow-hidden">
+            <div
+              className="flex transition-transform duration-300 ease-out"
+              style={{ transform: `translateX(-${index * 100}%)` }}
+            >
+              {REVIEWS.map((r) => (
+                <div key={r.author} className="w-full shrink-0 px-1">
+                  <ReviewCard {...r} />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Controls */}
+          <div className="mt-6 flex items-center justify-center gap-4">
+            <button
+              type="button"
+              onClick={() => go(-1)}
+              aria-label="Témoignage précédent"
+              className="grid size-9 place-items-center rounded-full border border-[#F4EFF0] text-[#5A4F52] active:bg-[#FBF8F8]"
+            >
+              ←
+            </button>
+            <div className="flex items-center gap-1.5">
+              {REVIEWS.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setIndex(i)}
+                  aria-label={`Aller au témoignage ${i + 1}`}
+                  className={
+                    "h-1.5 rounded-full transition-all " +
+                    (i === index
+                      ? "w-5 bg-[#E82050]"
+                      : "w-1.5 bg-[#F4EFF0]")
+                  }
+                />
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => go(1)}
+              aria-label="Témoignage suivant"
+              className="grid size-9 place-items-center rounded-full border border-[#F4EFF0] text-[#5A4F52] active:bg-[#FBF8F8]"
+            >
+              →
+            </button>
+          </div>
+        </div>
+
         <div className="mt-10 text-center">
           <Link
             to="/temoignages"
