@@ -468,10 +468,10 @@ function HowItWorks() {
 
 const GALLERY_NAMES = [
   "Basile & Armelle",
-  "Adjoua & Koffi",
+  "Aïcha & Loïc",
   "Mariama & Seydou",
   "Chloé & Ange",
-  "Nadia & Yao",
+  "Nadia & Stéphane",
 ];
 
 function TemplateGallery() {
