@@ -168,6 +168,27 @@ function PhoneMock({ height = 420, rotate = 0, className = "" }: { height?: numb
   );
 }
 
+function HeroPreview() {
+  return (
+    <div className="relative mx-auto flex w-full max-w-[430px] justify-center pb-6 pr-4 lg:max-w-[460px]">
+      {/* écran arrière — page invitation */}
+      <img
+        src={apercuInvitation.url}
+        alt="Aperçu de la page d'invitation de Basile & Armelle"
+        loading="lazy"
+        className="absolute right-0 top-8 w-[52%] rounded-[26px] object-cover shadow-[0_24px_60px_-24px_rgba(32,26,28,0.4)] ring-1 ring-black/5 sm:top-12"
+      />
+      {/* écran avant — page d'ouverture */}
+      <img
+        src={apercuSplash.url}
+        alt="Aperçu de l'écran d'ouverture de l'invitation"
+        className="animate-floaty relative left-[-14%] w-[58%] rounded-[26px] object-cover shadow-[0_30px_70px_-25px_rgba(32,26,28,0.5)] ring-1 ring-black/5"
+      />
+    </div>
+  );
+}
+
+
 /* ---------------------------------- hero ---------------------------------- */
 
 function Hero() {
