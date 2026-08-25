@@ -31,7 +31,6 @@ import {
   Stars,
   Music2,
   Sparkles,
-  Palette,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
