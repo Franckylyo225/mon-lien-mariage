@@ -3,12 +3,16 @@ import { requireAuth as requireSupabaseAuth } from "@/lib/auth-middleware";
 
 export type PaystackPaymentType = "publication" | "addon_guestbook";
 
+export const BASE_PRICE_XOF = 24900;
+export const GUESTBOOK_ADDON_XOF = 1990;
+
 interface InitInput {
   weddingId: string;
   paymentType: PaystackPaymentType;
-  amountFcfa: number;
+  amountFcfa?: number;
   slug?: string;
   includeGuestbook?: boolean;
+  promoCode?: string;
   callbackUrl: string;
 }
 
