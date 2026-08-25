@@ -187,9 +187,10 @@ export function AuthLayout({
       <div className="relative mx-auto grid min-h-screen w-full max-w-6xl grid-cols-1 lg:grid-cols-2">
         {/* Form column */}
         <div className="flex flex-col px-5 py-8 sm:px-10 sm:py-12">
-          <Link to="/" className="inline-block font-serif text-lg italic">
-            MonInvit<span className="text-[#E82050]">.com</span>
+          <Link to="/" className="inline-block">
+            <Logo className="h-[26px]" />
           </Link>
+
 
           <div className="mx-auto mt-10 flex w-full max-w-md flex-1 flex-col justify-center sm:mt-16">
             {eyebrow ? (
