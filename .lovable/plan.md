@@ -1,38 +1,32 @@
-## Objectif
+# Nouveau bloc « Thème du mariage »
 
-Dans l'éditeur inline (`/dashboard/preview` → feuille « Thème & couleurs » → onglet **Couleurs**), permettre à l'utilisateur de choisir librement la couleur d'arrière-plan (hex arbitraire), en plus des 4 fonds préréglés déjà proposés, symétriquement au choix de couleur d'accent (textes).
+Aujourd'hui, l'ancien bloc « Notre Histoire » (un titre, un texte libre, quelques photos) n'apparaît plus que comme secours : dès qu'une page a des étapes dans le nouveau modèle timeline, l'ancien contenu est ignoré. 6 pages ont encore du contenu dans l'ancien format.
 
-## État actuel
+L'idée : transformer cet ancien format en un bloc autonome et réutilisable appelé **Thème du mariage** — un bloc de contenu libre (titre + texte + photos) que tout le monde peut activer, totalement séparé de « Notre Histoire ».
 
-- `ThemeSheet.tsx` propose : 12 accents preset + 4 fonds preset (`ivoire`, `creme`, `blanc`, `gris`).
-- `couple.backgroundBase` est typé `BackgroundSlug` (union de 4 slugs) → impossible de stocker un hex libre aujourd'hui.
-- `resolveTheme` mappe le slug vers un hex via `BG_HEX`.
+## Ce qui sera fait
 
-## Changements
+### 1. Base de données
+Nouveaux champs sur la page d'invitation :
+- activation du bloc, titre (par défaut « Thème du mariage »), texte, photos, style d'affichage (police, taille, alignement).
+- Reprise automatique du contenu existant : pour les pages qui ont déjà un texte ou des photos dans l'ancien bloc histoire, ce contenu est copié dans le nouveau bloc et le bloc est activé, pour que rien ne soit perdu ni ne disparaisse de la page publique.
+- Les anciens champs restent en place (aucune suppression), mais ne servent plus au rendu.
 
-### 1. `src/lib/wedding-theme.ts`
-- Élargir le type accepté pour `backgroundBase` : garder les 4 slugs prédéfinis + accepter n'importe quel `#RRGGBB`.
-- `resolveTheme` : si `backgroundBase` est un hex valide → l'utiliser directement ; sinon si c'est un slug connu → `BG_HEX[slug]` ; sinon fallback sur `theme.defaultBg`.
-- Ajouter un helper `isValidHex(hex)`.
+### 2. Page publique
+- Un nouveau bloc « Thème du mariage » avec le même rendu que l'ancien (titre, grille de photos cliquables avec lightbox, texte stylable).
+- Il s'affiche uniquement s'il est activé et non vide.
+- « Notre Histoire » ne rend plus que la timeline (nouveau modèle) : plus de repli sur l'ancien contenu, donc aucun risque de doublon.
+- Placement : juste après « Notre Histoire », avant la galerie.
 
-### 2. `src/lib/wedding-store.tsx`
-- Élargir le type `Couple.backgroundBase` en `string | undefined` (ou `BackgroundSlug | string`), pour autoriser un hex.
+### 3. Éditeur inline
+- Nouvelle carte « Thème du mariage » dans l'éditeur : interrupteur d'activation, titre, texte, ajout/suppression de photos (upload compressé comme ailleurs), et réglages de style.
+- La carte « Notre Histoire » reste dédiée aux étapes de la timeline.
 
-### 3. `src/components/editor/ThemeSheet.tsx` — onglet **Couleurs**
-Sous la section actuelle « Fond » (les 4 preset) :
-- Ajouter une petite pastille « + Personnalisée » (comme le bouton `+` du `ColorPicker`).
-- Au clic, ouvrir un mini éditeur inline (réutiliser la logique de `ColorEditor` de `ColorPicker.tsx` : input hex + sliders HSL + presets suggérés) qui appelle `onPatch({ backgroundBase: hex })`.
-- Si `backgroundBase` est déjà un hex libre (pas un slug), afficher cette pastille en état actif avec le hex courant + un bouton « Retirer » qui remet `undefined` (retour au défaut du thème).
-- Les 4 preset restent cliquables ; sélectionner un preset écrase le hex libre.
+## Détails techniques
 
-### 4. Aucun impact backend
-Le champ existe déjà en base (colonne texte). Aucune migration nécessaire — on stocke juste `#RRGGBB` au lieu d'un slug.
-
-## Notes techniques (interne)
-- Extraire `ColorEditor` de `ColorPicker.tsx` dans un fichier partagé `src/components/editor/HexEditor.tsx` pour le réutiliser dans `ThemeSheet` sans dupliquer les sliders HSL.
-- `applyThemeVars` fonctionne déjà via `--wedding-bg` — pas de changement.
-- Le bouton « Restaurer les valeurs du thème » couvre déjà le reset (met `backgroundBase: undefined`).
-
-## Hors périmètre
-- Aucun changement sur la couleur d'accent (déjà éditable via `ColorPicker` ailleurs, et via 12 preset ici).
-- Pas de changement sur les templates publics.
+- Migration : ajout de `theme_block_enabled`, `theme_block_title`, `theme_block_body`, `theme_block_images`, `theme_block_style` sur `public.weddings`, plus un `UPDATE` de reprise depuis `story_body` / `story_images` / `story_title` / `story_style` quand ce contenu existe.
+- `src/lib/wedding-store.tsx` : mapping DB ↔ `Couple` (`themeBlock*`) en lecture et en écriture.
+- `src/lib/public-wedding.functions.ts` : ajout des colonnes au `select`, et `src/routes/e.$slug.tsx` : mapping côté page publique.
+- `src/components/invitation-templates/sections.tsx` : extraction du rendu legacy dans un nouveau `ThemeBlockSection` (réutilise `ImageLightbox`), et simplification de `OurStorySection` (timeline seule).
+- Les 16 templates rendent `ThemeBlockSection` après `OurStorySection` (ajout dans le rendu partagé pour éviter 16 éditions divergentes lorsque c'est possible).
+- Nouveau `src/components/editor/ThemeBlockSheet.tsx` branché dans `PreviewEditor.tsx`.
