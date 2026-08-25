@@ -80,6 +80,9 @@ export const initializePaystackPayment = createServerFn({ method: "POST" })
       payment_type: data.paymentType,
       slug: data.slug ?? null,
       include_guestbook: data.includeGuestbook === true,
+      promo_code: promoCodeApplied,
+      discount_percent: discount,
+      gross_amount_fcfa: gross,
       custom_fields: [
         {
           display_name: "Couple",
