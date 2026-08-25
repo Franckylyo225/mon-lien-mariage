@@ -153,34 +153,34 @@ function ResetPasswordPage() {
       eyebrow="Nouveau mot de passe"
       title={
         <>
-          Choisissez un <em className="text-[#c17c74]">nouveau mot de passe.</em>
+          Choisissez un <em className="text-[#E82050]">nouveau mot de passe.</em>
         </>
       }
       subtitle="Il vous servira à vous reconnecter à votre espace MonInvit.com."
     >
       {invalid ? (
-        <div className="rounded-2xl border border-[#e8c5b6]/70 bg-white/70 p-5 text-sm text-[#2b1a14]">
+        <div className="rounded-2xl border border-[#F1E3C6]/70 bg-white/70 p-5 text-sm text-[#201A1C]">
           <p className="font-serif text-lg italic">Lien expiré ou invalide</p>
-          <p className="mt-2 text-[#6b4a3e]">
+          <p className="mt-2 text-[#5A4F52]">
             Ce lien de réinitialisation n'est plus valable. Demandez-en un
             nouveau depuis la page « mot de passe oublié ».
           </p>
           <Link
             to="/forgot-password"
-            className="mt-4 inline-block rounded-full bg-[#2b1a14] px-4 py-2.5 text-xs font-medium tracking-wide text-[#fdf7f3] transition hover:-translate-y-0.5"
+            className="mt-4 inline-block rounded-full bg-[#201A1C] px-4 py-2.5 text-xs font-medium tracking-wide text-[#FBF8F8] transition hover:-translate-y-0.5"
           >
             Demander un nouveau lien
           </Link>
         </div>
       ) : done ? (
-        <div className="rounded-2xl border border-[#e8c5b6]/70 bg-white/70 p-5 text-sm text-[#2b1a14]">
+        <div className="rounded-2xl border border-[#F1E3C6]/70 bg-white/70 p-5 text-sm text-[#201A1C]">
           <p className="font-serif text-lg italic">Mot de passe mis à jour ✿</p>
-          <p className="mt-2 text-[#6b4a3e]">
+          <p className="mt-2 text-[#5A4F52]">
             Redirection vers votre espace…
           </p>
         </div>
       ) : !ready ? (
-        <p className="text-sm text-[#6b4a3e]">Vérification du lien…</p>
+        <p className="text-sm text-[#5A4F52]">Vérification du lien…</p>
       ) : (
         <form onSubmit={submit} className="space-y-4">
           <Field label="Nouveau mot de passe">
@@ -212,7 +212,7 @@ function ResetPasswordPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-full bg-[#2b1a14] px-4 py-3.5 text-sm font-medium tracking-wide text-[#fdf7f3] shadow-lg shadow-[#c17c74]/20 transition hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
+            className="w-full rounded-full bg-[#201A1C] px-4 py-3.5 text-sm font-medium tracking-wide text-[#FBF8F8] shadow-lg shadow-[#E82050]/20 transition hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
           >
             {loading ? "Mise à jour…" : "Mettre à jour"}
           </button>

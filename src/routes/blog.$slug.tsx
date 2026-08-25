@@ -82,7 +82,7 @@ function renderMarkdown(content: string) {
       .replace(/javascript:/gi, "");
     return (
       <div
-        className="blog-html text-[16px] leading-[1.75] text-[#4B4B4B]"
+        className="blog-html text-[16px] leading-[1.75] text-[#5A4F52]"
         dangerouslySetInnerHTML={{ __html: safe }}
       />
     );
@@ -96,7 +96,7 @@ function renderMarkdown(content: string) {
       return (
         <h2
           key={i}
-          className="mt-10 mb-3 font-[family-name:var(--font-serif)] text-[24px] leading-tight text-[#1A1A1A]"
+          className="mt-10 mb-3 font-[family-name:var(--font-serif)] text-[24px] leading-tight text-[#201A1C]"
         >
           {trimmed.slice(3)}
         </h2>
@@ -106,7 +106,7 @@ function renderMarkdown(content: string) {
       return (
         <h3
           key={i}
-          className="mt-8 mb-2 font-[family-name:var(--font-serif)] text-[19px] text-[#1A1A1A]"
+          className="mt-8 mb-2 font-[family-name:var(--font-serif)] text-[19px] text-[#201A1C]"
         >
           {trimmed.slice(4)}
         </h3>
@@ -115,7 +115,7 @@ function renderMarkdown(content: string) {
     const lines = trimmed.split("\n");
     if (lines.every((l) => /^\s*[-*]\s+/.test(l))) {
       return (
-        <ul key={i} className="my-4 list-disc space-y-1.5 pl-5 text-[#4B4B4B]">
+        <ul key={i} className="my-4 list-disc space-y-1.5 pl-5 text-[#5A4F52]">
           {lines.map((l, j) => (
             <li key={j}>{l.replace(/^\s*[-*]\s+/, "")}</li>
           ))}
@@ -124,7 +124,7 @@ function renderMarkdown(content: string) {
     }
     if (lines.every((l) => /^\s*\d+\.\s+/.test(l))) {
       return (
-        <ol key={i} className="my-4 list-decimal space-y-1.5 pl-5 text-[#4B4B4B]">
+        <ol key={i} className="my-4 list-decimal space-y-1.5 pl-5 text-[#5A4F52]">
           {lines.map((l, j) => (
             <li key={j}>{l.replace(/^\s*\d+\.\s+/, "")}</li>
           ))}
@@ -132,7 +132,7 @@ function renderMarkdown(content: string) {
       );
     }
     return (
-      <p key={i} className="my-4 text-[16px] leading-[1.75] text-[#4B4B4B]">
+      <p key={i} className="my-4 text-[16px] leading-[1.75] text-[#5A4F52]">
         {trimmed}
       </p>
     );
@@ -171,14 +171,14 @@ function BlogArticle() {
         href={`https://wa.me/?text=${encodeURIComponent(post.title + " " + url)}`}
         target="_blank"
         rel="noreferrer"
-        className="flex items-center gap-2 text-[13px] text-[#6B6B6B] transition hover:text-[#993556]"
+        className="flex items-center gap-2 text-[13px] text-[#7A6D70] transition hover:text-[#C81A45]"
       >
         <span aria-hidden>💬</span> Partager
       </a>
       <button
         type="button"
         onClick={copyLink}
-        className="flex items-center gap-2 text-[13px] text-[#6B6B6B] transition hover:text-[#993556]"
+        className="flex items-center gap-2 text-[13px] text-[#7A6D70] transition hover:text-[#C81A45]"
       >
         <span aria-hidden>🔗</span> {copied ? "Lien copié" : "Copier le lien"}
       </button>
@@ -186,7 +186,7 @@ function BlogArticle() {
         href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`}
         target="_blank"
         rel="noreferrer"
-        className="flex items-center gap-2 text-[13px] text-[#6B6B6B] transition hover:text-[#993556]"
+        className="flex items-center gap-2 text-[13px] text-[#7A6D70] transition hover:text-[#C81A45]"
       >
         <span aria-hidden>ƒ</span> Facebook
       </a>
@@ -194,7 +194,7 @@ function BlogArticle() {
   );
 
   return (
-    <div className="min-h-dvh overflow-x-hidden bg-[#fdf7f3] text-[#2b1a14]">
+    <div className="min-h-dvh overflow-x-hidden bg-[#FBF8F8] text-[#201A1C]">
       <SiteHeader />
       <main id="main" className="mx-auto max-w-6xl px-5 py-12">
         <div className="grid gap-10 lg:grid-cols-[180px_minmax(0,1fr)]">
@@ -203,29 +203,29 @@ function BlogArticle() {
             <div className="sticky top-8 flex flex-col gap-3">
               <Link
                 to="/blog"
-                className="text-[13px] text-[#6B6B6B] transition hover:text-[#993556]"
+                className="text-[13px] text-[#7A6D70] transition hover:text-[#C81A45]"
               >
                 ↑ Retour au blog
               </Link>
-              <div className="mt-3 flex flex-col gap-3 border-t border-[#EDE8E0] pt-4">
+              <div className="mt-3 flex flex-col gap-3 border-t border-[#F4EFF0] pt-4">
                 {shareLinks}
               </div>
             </div>
           </aside>
 
           <article className="min-w-0">
-            <div className="flex flex-wrap items-center gap-3 text-[11px] text-[#9CA3AF]">
+            <div className="flex flex-wrap items-center gap-3 text-[11px] text-[#7A6D70]">
               <CategoryBadge category={post.category} />
               <span>{formatDate(post.published_at)}</span>
               <span>{post.reading_time_minutes} min de lecture</span>
             </div>
 
-            <h1 className="mt-4 font-[family-name:var(--font-serif)] text-[28px] italic leading-[1.15] text-[#1A1A1A] sm:text-[42px]">
+            <h1 className="mt-4 font-[family-name:var(--font-serif)] text-[28px] italic leading-[1.15] text-[#201A1C] sm:text-[42px]">
               {post.title}
             </h1>
 
             {post.excerpt ? (
-              <p className="mt-4 font-[family-name:var(--font-display)] text-[18px] italic leading-relaxed text-[#4B4B4B]">
+              <p className="mt-4 font-[family-name:var(--font-display)] text-[18px] italic leading-relaxed text-[#5A4F52]">
                 {post.excerpt}
               </p>
             ) : null}
@@ -240,14 +240,14 @@ function BlogArticle() {
               ) : (
                 <span
                   aria-hidden
-                  className="grid size-9 place-items-center rounded-full border border-[#ED93B1] bg-[#FBEAF0] text-[12px] font-medium text-[#993556]"
+                  className="grid size-9 place-items-center rounded-full border border-[#FBDDE5] bg-[#FDF0F3] text-[12px] font-medium text-[#C81A45]"
                 >
                   {initials(post.author_name)}
                 </span>
               )}
-              <div className="text-[12px] leading-tight text-[#6B6B6B]">
+              <div className="text-[12px] leading-tight text-[#7A6D70]">
                 <p>Rédigé par {post.author_name}</p>
-                <p className="text-[#9CA3AF]">
+                <p className="text-[#7A6D70]">
                   Mis à jour le{" "}
                   {new Date(post.updated_at).toLocaleDateString("fr-FR")}
                 </p>
@@ -261,28 +261,28 @@ function BlogArticle() {
             <div className="mt-8">{renderMarkdown(post.content ?? "")}</div>
 
             {/* Mobile share bar */}
-            <div className="mt-10 flex flex-wrap items-center gap-5 border-t border-[#EDE8E0] pt-5 lg:hidden">
+            <div className="mt-10 flex flex-wrap items-center gap-5 border-t border-[#F4EFF0] pt-5 lg:hidden">
               {shareLinks}
             </div>
 
             {/* Article CTA */}
             <div
-              className="my-10 flex items-start gap-4 rounded-r-[14px] border border-l-[3px] border-[#EDE8E0] border-l-[#993556] bg-[#FAF6F2] px-7 py-6"
+              className="my-10 flex items-start gap-4 rounded-r-[14px] border border-l-[3px] border-[#F4EFF0] border-l-[#C81A45] bg-[#FBF8F8] px-7 py-6"
             >
               <span aria-hidden className="text-xl">
                 📱
               </span>
               <div>
-                <h2 className="font-[family-name:var(--font-serif)] text-[19px] text-[#1A1A1A]">
+                <h2 className="font-[family-name:var(--font-serif)] text-[19px] text-[#201A1C]">
                   Envoyez votre invitation par WhatsApp
                 </h2>
-                <p className="mt-2 text-[14px] leading-relaxed text-[#6B6B6B]">
+                <p className="mt-2 text-[14px] leading-relaxed text-[#7A6D70]">
                   Créez une page d'invitation en 30 minutes. Partagez le lien à tous
                   vos invités. Recevez les confirmations automatiquement.
                 </p>
                 <Link
                   to="/signup"
-                  className="mt-4 inline-flex rounded-[10px] bg-[#993556] px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
+                  className="mt-4 inline-flex rounded-[10px] bg-[#C81A45] px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
                 >
                   Essayer gratuitement →
                 </Link>
@@ -291,7 +291,7 @@ function BlogArticle() {
 
             {suggested.length > 0 ? (
               <section className="mt-14">
-                <h2 className="mb-6 font-[family-name:var(--font-serif)] text-[22px] italic text-[#1A1A1A]">
+                <h2 className="mb-6 font-[family-name:var(--font-serif)] text-[22px] italic text-[#201A1C]">
                   Lire aussi →
                 </h2>
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

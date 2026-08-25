@@ -55,25 +55,25 @@ function ForgotPasswordPage() {
       eyebrow="Mot de passe oublié"
       title={
         <>
-          On vous <em className="text-[#c17c74]">renvoie la clé.</em>
+          On vous <em className="text-[#E82050]">renvoie la clé.</em>
         </>
       }
       subtitle="Indiquez l'adresse email de votre compte, nous vous enverrons un lien pour choisir un nouveau mot de passe."
     >
       {sent ? (
-        <div className="rounded-2xl border border-[#e8c5b6]/70 bg-white/70 p-5 text-sm text-[#2b1a14]">
+        <div className="rounded-2xl border border-[#F1E3C6]/70 bg-white/70 p-5 text-sm text-[#201A1C]">
           <p className="font-serif text-lg italic">Email envoyé ✿</p>
-          <p className="mt-2 text-[#6b4a3e]">
+          <p className="mt-2 text-[#5A4F52]">
             Si un compte existe pour <strong>{email}</strong>, vous recevrez
             dans quelques instants un email avec un lien de réinitialisation
             valable 1 heure.
           </p>
-          <p className="mt-3 text-xs text-[#8a6a5e]">
+          <p className="mt-3 text-xs text-[#7A6D70]">
             Pensez à vérifier vos spams. Vous ne recevez rien ?{" "}
             <button
               type="button"
               onClick={() => setSent(false)}
-              className="font-medium text-[#c17c74] hover:underline"
+              className="font-medium text-[#E82050] hover:underline"
             >
               Réessayer
             </button>
@@ -98,15 +98,15 @@ function ForgotPasswordPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-full bg-[#2b1a14] px-4 py-3.5 text-sm font-medium tracking-wide text-[#fdf7f3] shadow-lg shadow-[#c17c74]/20 transition hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
+            className="w-full rounded-full bg-[#201A1C] px-4 py-3.5 text-sm font-medium tracking-wide text-[#FBF8F8] shadow-lg shadow-[#E82050]/20 transition hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
           >
             {loading ? "Envoi…" : "Recevoir le lien"}
           </button>
         </form>
       )}
-      <p className="mt-6 text-center text-xs text-[#6b4a3e]">
+      <p className="mt-6 text-center text-xs text-[#5A4F52]">
         Retour à la{" "}
-        <Link to="/login" className="font-medium text-[#c17c74] hover:underline">
+        <Link to="/login" className="font-medium text-[#E82050] hover:underline">
           connexion
         </Link>
       </p>

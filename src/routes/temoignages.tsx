@@ -92,28 +92,28 @@ const REVIEWS = [
 
 const TONES: Record<string, { bg: string; ink: string; sub: string; badge: string }> = {
   cream: {
-    bg: "bg-[#fbeee4] border border-[#e8c5b6]/50",
-    ink: "text-[#2b1a14]",
-    sub: "text-[#6b4a3e]",
-    badge: "bg-[#c17c74] text-[#fdf7f3]",
+    bg: "bg-[#FDF0F3] border border-[#F1E3C6]/50",
+    ink: "text-[#201A1C]",
+    sub: "text-[#5A4F52]",
+    badge: "bg-[#E82050] text-[#FBF8F8]",
   },
   clay: {
-    bg: "bg-[#c17c74]",
-    ink: "text-[#fdf7f3]",
-    sub: "text-[#fdf7f3]/80",
-    badge: "bg-[#fdf7f3] text-[#c17c74]",
+    bg: "bg-[#E82050]",
+    ink: "text-[#FBF8F8]",
+    sub: "text-[#FBF8F8]/80",
+    badge: "bg-[#FBF8F8] text-[#E82050]",
   },
   sage: {
-    bg: "bg-[#e5ded1] border border-[#d5c9b3]/60",
-    ink: "text-[#2b1a14]",
-    sub: "text-[#6b4a3e]",
-    badge: "bg-[#2b1a14] text-[#fdf7f3]",
+    bg: "bg-[#F1E3C6] border border-[#C6A15B]/60",
+    ink: "text-[#201A1C]",
+    sub: "text-[#5A4F52]",
+    badge: "bg-[#201A1C] text-[#FBF8F8]",
   },
 };
 
 function Stars() {
   return (
-    <span className="flex items-center gap-0.5 text-[#c9a84c]">
+    <span className="flex items-center gap-0.5 text-[#C6A15B]">
       {Array.from({ length: 5 }).map((_, i) => (
         <svg key={i} viewBox="0 0 20 20" fill="currentColor" className="size-3.5">
           <path d="M10 1.5l2.6 5.3 5.9.9-4.2 4.1 1 5.9L10 14.9l-5.3 2.8 1-5.9L1.5 7.7l5.9-.9L10 1.5z" />
@@ -130,33 +130,33 @@ function Testimonials() {
       title={
         <>
           Plus de 500 couples,{" "}
-          <em className="italic text-[#c17c74]">une seule histoire.</em>
+          <em className="italic text-[#E82050]">une seule histoire.</em>
         </>
       }
       intro="Découvrez ce que nos mariés disent de MonInvit.com — leurs impressions, leur expérience, et leurs conseils."
     >
       <section className="mx-auto max-w-5xl px-5 pb-10">
-        <div className="flex flex-wrap items-center justify-center gap-6 rounded-[24px] border border-[#e8c5b6]/50 bg-white/70 p-6 text-center sm:gap-10">
+        <div className="flex flex-wrap items-center justify-center gap-6 rounded-[24px] border border-[#F1E3C6]/50 bg-white/70 p-6 text-center sm:gap-10">
           <div>
-            <p className="font-[family-name:var(--font-display)] text-4xl italic text-[#c17c74]">
+            <p className="font-[family-name:var(--font-display)] text-4xl italic text-[#E82050]">
               4.9/5
             </p>
             <div className="mt-1 flex justify-center"><Stars /></div>
-            <p className="mt-1 text-xs text-[#8a6a5e]">Note moyenne des couples</p>
+            <p className="mt-1 text-xs text-[#7A6D70]">Note moyenne des couples</p>
           </div>
-          <div className="h-10 w-px bg-[#e8c5b6]/70" />
+          <div className="h-10 w-px bg-[#F1E3C6]/70" />
           <div>
-            <p className="font-[family-name:var(--font-display)] text-4xl italic text-[#c17c74]">
+            <p className="font-[family-name:var(--font-display)] text-4xl italic text-[#E82050]">
               500+
             </p>
-            <p className="mt-1 text-xs text-[#8a6a5e]">Mariages célébrés</p>
+            <p className="mt-1 text-xs text-[#7A6D70]">Mariages célébrés</p>
           </div>
-          <div className="h-10 w-px bg-[#e8c5b6]/70" />
+          <div className="h-10 w-px bg-[#F1E3C6]/70" />
           <div>
-            <p className="font-[family-name:var(--font-display)] text-4xl italic text-[#c17c74]">
+            <p className="font-[family-name:var(--font-display)] text-4xl italic text-[#E82050]">
               98%
             </p>
-            <p className="mt-1 text-xs text-[#8a6a5e]">Recommandent le service</p>
+            <p className="mt-1 text-xs text-[#7A6D70]">Recommandent le service</p>
           </div>
         </div>
       </section>
@@ -199,12 +199,12 @@ function Testimonials() {
         <h2 className="font-[family-name:var(--font-display)] text-3xl italic sm:text-4xl">
           Et si le prochain témoignage était le vôtre ?
         </h2>
-        <p className="mt-3 text-[#6b4a3e]">
+        <p className="mt-3 text-[#5A4F52]">
           Créez votre invitation aujourd'hui, publiez quand vous êtes prêts.
         </p>
         <Link
           to="/signup"
-          className="mt-8 inline-block rounded-full bg-[#2b1a14] px-8 py-4 text-sm font-medium text-[#fdf7f3] shadow-lg shadow-[#c17c74]/20 hover:-translate-y-0.5 hover:shadow-xl"
+          className="mt-8 inline-block rounded-full bg-[#201A1C] px-8 py-4 text-sm font-medium text-[#FBF8F8] shadow-lg shadow-[#E82050]/20 hover:-translate-y-0.5 hover:shadow-xl"
         >
           Créer notre invitation
         </Link>

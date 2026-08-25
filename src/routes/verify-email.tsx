@@ -80,7 +80,7 @@ function VerifyEmailPage() {
   return (
     <AuthLayout
       eyebrow="Confirmez votre email"
-      title={<>Un code vous <em className="text-[#c17c74]">attend.</em></>}
+      title={<>Un code vous <em className="text-[#E82050]">attend.</em></>}
       subtitle="Saisissez le code de confirmation reçu par email pour activer votre compte."
     >
       <form onSubmit={submit} className="space-y-4">
@@ -110,31 +110,31 @@ function VerifyEmailPage() {
 
         {error ? <p className="text-xs text-destructive">{error}</p> : null}
         {info ? (
-          <p className="rounded-md border border-[#c17c74]/30 bg-[#c17c74]/10 px-3 py-2 text-xs text-[#7a2f3a]">
+          <p className="rounded-md border border-[#E82050]/30 bg-[#E82050]/10 px-3 py-2 text-xs text-[#C81A45]">
             {info}
           </p>
         ) : null}
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-full bg-[#2b1a14] px-4 py-3.5 text-sm font-medium tracking-wide text-[#fdf7f3] shadow-lg shadow-[#c17c74]/20 transition hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
+          className="w-full rounded-full bg-[#201A1C] px-4 py-3.5 text-sm font-medium tracking-wide text-[#FBF8F8] shadow-lg shadow-[#E82050]/20 transition hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
         >
           {loading ? "Vérification…" : "Confirmer mon email"}
         </button>
       </form>
-      <p className="mt-4 text-center text-xs text-[#6b4a3e]">
+      <p className="mt-4 text-center text-xs text-[#5A4F52]">
         Code non reçu ?{" "}
         <button
           type="button"
           onClick={resend}
           disabled={resending}
-          className="font-medium text-[#c17c74] hover:underline disabled:opacity-50"
+          className="font-medium text-[#E82050] hover:underline disabled:opacity-50"
         >
           {resending ? "Envoi…" : "Renvoyer un code"}
         </button>
       </p>
-      <p className="mt-6 text-center text-xs text-[#6b4a3e]">
-        <Link to="/login" className="font-medium text-[#c17c74] hover:underline">
+      <p className="mt-6 text-center text-xs text-[#5A4F52]">
+        <Link to="/login" className="font-medium text-[#E82050] hover:underline">
           Retour à la connexion
         </Link>
       </p>

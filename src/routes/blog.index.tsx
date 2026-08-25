@@ -62,7 +62,7 @@ function BlogIndex() {
   const others = later.filter((p) => p.category !== "histoires");
 
   return (
-    <div className="min-h-dvh overflow-x-hidden bg-[#fdf7f3] text-[#2b1a14]">
+    <div className="min-h-dvh overflow-x-hidden bg-[#FBF8F8] text-[#201A1C]">
       <SiteHeader />
       <main id="main">
         {/* Hero */}
@@ -72,18 +72,18 @@ function BlogIndex() {
             className="pointer-events-none absolute inset-0 -z-10"
             style={{
               background:
-                "radial-gradient(1000px 500px at 50% -10%, #f6d9cb 0%, #fdf7f3 60%, #fdf7f3 100%)",
+                "radial-gradient(1000px 500px at 50% -10%, #FDF0F3 0%, #FBF8F8 60%, #FBF8F8 100%)",
             }}
           />
           <div className="mx-auto max-w-4xl px-5 pt-14 pb-10 text-center sm:pt-20">
-            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#c17c74]">
+            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#E82050]">
               Le journal
             </p>
             <h1 className="mt-4 font-[family-name:var(--font-display)] text-4xl leading-[1.05] sm:text-6xl">
               Inspirations & conseils pour{" "}
-              <em className="italic text-[#c17c74]">votre grand jour.</em>
+              <em className="italic text-[#E82050]">votre grand jour.</em>
             </h1>
-            <p className="mx-auto mt-5 max-w-[520px] text-[16px] leading-relaxed text-[#6B6B6B]">
+            <p className="mx-auto mt-5 max-w-[520px] text-[16px] leading-relaxed text-[#7A6D70]">
               Des histoires vraies, des guides pratiques et des idées pour préparer
               un mariage ivoirien à votre image. Chaque semaine, une nouvelle lecture.
             </p>
@@ -101,7 +101,7 @@ function BlogIndex() {
           style={{
             background: "rgba(250,248,245,0.95)",
             borderBottomWidth: "0.5px",
-            borderBottomColor: "#EDE8E0",
+            borderBottomColor: "#F4EFF0",
           }}
         >
           <div className="mx-auto max-w-6xl px-5">
@@ -117,8 +117,8 @@ function BlogIndex() {
                     className={
                       "whitespace-nowrap rounded-full border px-4 py-1.5 text-[12px] transition-all duration-150 " +
                       (isActive
-                        ? "border-[#1A1A1A] bg-[#1A1A1A] text-white"
-                        : "border-[#E5E5E5] bg-white text-[#6B6B6B] hover:border-[#993556] hover:text-[#993556]")
+                        ? "border-[#201A1C] bg-[#201A1C] text-white"
+                        : "border-[#F4EFF0] bg-white text-[#7A6D70] hover:border-[#C81A45] hover:text-[#C81A45]")
                     }
                     style={{ borderWidth: "0.5px" }}
                   >
@@ -136,12 +136,12 @@ function BlogIndex() {
               {Array.from({ length: 6 }).map((_, i) => (
                 <div
                   key={i}
-                  className="h-72 animate-pulse rounded-[14px] bg-[#f1e6dd]"
+                  className="h-72 animate-pulse rounded-[14px] bg-[#F4EFF0]"
                 />
               ))}
             </div>
           ) : filtered.length === 0 ? (
-            <p className="py-16 text-center text-sm text-[#6B6B6B]">
+            <p className="py-16 text-center text-sm text-[#7A6D70]">
               Aucun article dans cette catégorie pour le moment.
             </p>
           ) : (
@@ -163,16 +163,16 @@ function BlogIndex() {
                       <CategoryBadge category={featured.category} />
                       <FeaturedBadge />
                     </div>
-                    <h2 className="mt-4 font-[family-name:var(--font-serif)] text-[28px] leading-tight text-[#1A1A1A] transition group-hover:text-[#993556] sm:text-[32px]">
+                    <h2 className="mt-4 font-[family-name:var(--font-serif)] text-[28px] leading-tight text-[#201A1C] transition group-hover:text-[#C81A45] sm:text-[32px]">
                       {featured.title}
                     </h2>
-                    <p className="mt-3 text-[15px] leading-relaxed text-[#6B6B6B]">
+                    <p className="mt-3 text-[15px] leading-relaxed text-[#7A6D70]">
                       {featured.excerpt}
                     </p>
                     <div className="mt-5">
                       <AuthorMeta post={featured} size="md" />
                     </div>
-                    <span className="mt-6 inline-flex items-center rounded-[10px] bg-[#993556] px-6 py-3 text-sm font-semibold text-white transition group-hover:opacity-90">
+                    <span className="mt-6 inline-flex items-center rounded-[10px] bg-[#C81A45] px-6 py-3 text-sm font-semibold text-white transition group-hover:opacity-90">
                       Lire l'article →
                     </span>
                   </div>
@@ -198,19 +198,19 @@ function BlogIndex() {
                 className="my-10 rounded-[20px] px-6 py-10 text-center sm:px-12"
                 style={{
                   background:
-                    "linear-gradient(135deg, #4B1528 0%, #993556 100%)",
+                    "linear-gradient(135deg, #C81A45 0%, #C81A45 100%)",
                 }}
               >
-                <h3 className="font-[family-name:var(--font-serif)] text-[24px] italic leading-[1.3] text-[#FBEAF0] sm:text-[28px]">
+                <h3 className="font-[family-name:var(--font-serif)] text-[24px] italic leading-[1.3] text-[#FDF0F3] sm:text-[28px]">
                   Votre invitation est déjà en train de s'écrire.
                 </h3>
-                <p className="mx-auto mt-3 max-w-lg text-[15px] leading-[1.6] text-[#FBEAF0]/70">
+                <p className="mx-auto mt-3 max-w-lg text-[15px] leading-[1.6] text-[#FDF0F3]/70">
                   Rejoignez +500 couples qui ont choisi MonInvit.com pour partager
                   leur mariage avec leurs proches.
                 </p>
                 <Link
                   to="/signup"
-                  className="mt-6 inline-flex rounded-[10px] bg-[#FBEAF0] px-7 py-[13px] text-sm font-semibold text-[#4B1528] transition hover:opacity-90"
+                  className="mt-6 inline-flex rounded-[10px] bg-[#FDF0F3] px-7 py-[13px] text-sm font-semibold text-[#C81A45] transition hover:opacity-90"
                 >
                   Créer mon invitation gratuitement →
                 </Link>
@@ -229,13 +229,13 @@ function BlogIndex() {
               {stories.length > 0 ? (
                 <>
                   <div className="mx-auto mt-12 mb-8 max-w-xl text-center">
-                    <p className="mb-2 text-[10px] uppercase tracking-[0.12em] text-[#993556]">
+                    <p className="mb-2 text-[10px] uppercase tracking-[0.12em] text-[#C81A45]">
                       ✦ Témoignages
                     </p>
-                    <h2 className="mb-1.5 font-[family-name:var(--font-serif)] text-[26px] italic text-[#1A1A1A]">
+                    <h2 className="mb-1.5 font-[family-name:var(--font-serif)] text-[26px] italic text-[#201A1C]">
                       Ils ont dit oui avec MonInvit
                     </h2>
-                    <p className="text-[14px] text-[#6B6B6B]">
+                    <p className="text-[14px] text-[#7A6D70]">
                       Des couples ivoiriens partagent leur expérience.
                     </p>
                   </div>
@@ -250,8 +250,8 @@ function BlogIndex() {
           )}
 
           {/* Newsletter */}
-          <div className="mt-16 rounded-[28px] bg-[#2b1a14] px-6 py-10 text-center text-[#fdf7f3] sm:px-10">
-            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#e8c5b6]">
+          <div className="mt-16 rounded-[28px] bg-[#201A1C] px-6 py-10 text-center text-[#FBF8F8] sm:px-10">
+            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#F1E3C6]">
               Newsletter
             </p>
             <h3 className="mt-3 font-[family-name:var(--font-display)] text-2xl italic sm:text-3xl">
@@ -267,11 +267,11 @@ function BlogIndex() {
                 type="email"
                 required
                 placeholder="votre@email.com"
-                className="flex-1 rounded-full border border-[#e8c5b6]/40 bg-[#fdf7f3]/10 px-5 py-3 text-sm text-[#fdf7f3] placeholder:text-[#e8c5b6]/60 focus:outline-none"
+                className="flex-1 rounded-full border border-[#F1E3C6]/40 bg-[#FBF8F8]/10 px-5 py-3 text-sm text-[#FBF8F8] placeholder:text-[#F1E3C6]/60 focus:outline-none"
               />
               <button
                 type="submit"
-                className="rounded-full bg-[#c17c74] px-6 py-3 text-sm font-medium text-[#fdf7f3] hover:opacity-90"
+                className="rounded-full bg-[#E82050] px-6 py-3 text-sm font-medium text-[#FBF8F8] hover:opacity-90"
               >
                 S'inscrire
               </button>
@@ -290,7 +290,7 @@ function BlogIndex() {
 
 function Pill({ children }: { children: React.ReactNode }) {
   return (
-    <span className="rounded-full bg-[#F5EFE7] px-3 py-1 text-[11px] text-[#993556]">
+    <span className="rounded-full bg-[#FBF8F8] px-3 py-1 text-[11px] text-[#C81A45]">
       {children}
     </span>
   );

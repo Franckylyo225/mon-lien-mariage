@@ -28,7 +28,7 @@ function TermsPage() {
       eyebrow="Légal"
       title={
         <>
-          Termes <span className="italic text-[#c17c74]">& conditions</span>
+          Termes <span className="italic text-[#E82050]">& conditions</span>
         </>
       }
       intro="Les règles qui encadrent l'utilisation de MonInvit.com — écrites simplement, pour que tout soit clair avant votre grand jour."
@@ -121,7 +121,7 @@ function TermsPage() {
             Une question ? Écrivez-nous à{" "}
             <a
               href="mailto:contact@moninvit.com"
-              className="font-medium text-[#c17c74] underline underline-offset-2"
+              className="font-medium text-[#E82050] underline underline-offset-2"
             >
               contact@moninvit.com
             </a>
@@ -136,8 +136,8 @@ function TermsPage() {
 function LegalBody({ children }: { children: React.ReactNode }) {
   return (
     <section className="mx-auto max-w-3xl px-5 pb-24">
-      <div className="rounded-3xl border border-[#e8c5b6]/50 bg-white/60 p-6 shadow-sm backdrop-blur sm:p-10">
-        <div className="space-y-8 text-[15px] leading-relaxed text-[#3a2620]">
+      <div className="rounded-3xl border border-[#F1E3C6]/50 bg-white/60 p-6 shadow-sm backdrop-blur sm:p-10">
+        <div className="space-y-8 text-[15px] leading-relaxed text-[#201A1C]">
           {children}
         </div>
       </div>
@@ -148,18 +148,18 @@ function LegalBody({ children }: { children: React.ReactNode }) {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h2 className="font-[family-name:var(--font-display)] text-2xl text-[#2b1a14]">
+      <h2 className="font-[family-name:var(--font-display)] text-2xl text-[#201A1C]">
         {title}
       </h2>
-      <div className="mt-3 space-y-3 text-[#4b342c]">{children}</div>
+      <div className="mt-3 space-y-3 text-[#5A4F52]">{children}</div>
     </div>
   );
 }
 
 function Meta({ children }: { children: React.ReactNode }) {
   return (
-    <p className="inline-flex items-center gap-2 rounded-full bg-[#fbeee4] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.2em] text-[#8a5a4d]">
-      <span className="inline-block size-1.5 rounded-full bg-[#c17c74]" />
+    <p className="inline-flex items-center gap-2 rounded-full bg-[#FDF0F3] px-3 py-1 font-mono text-[11px] uppercase tracking-[0.2em] text-[#7A6D70]">
+      <span className="inline-block size-1.5 rounded-full bg-[#E82050]" />
       {children}
     </p>
   );

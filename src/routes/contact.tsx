@@ -91,36 +91,36 @@ function ContactPage() {
       eyebrow="Contact"
       title={
         <>
-          Parlons de <span className="italic text-[#c17c74]">votre mariage</span>
+          Parlons de <span className="italic text-[#E82050]">votre mariage</span>
         </>
       }
       intro="Une question, une hésitation, une idée ? Notre équipe basée à Abidjan vous répond sous 24 heures ouvrées."
     >
       <section className="mx-auto max-w-4xl px-5 pb-24">
         <div className="grid gap-6 md:grid-cols-[1fr_1.3fr]">
-          <div className="rounded-3xl border border-[#e8c5b6]/50 bg-white/60 p-6 shadow-sm backdrop-blur">
-            <h2 className="font-[family-name:var(--font-display)] text-2xl text-[#2b1a14]">
+          <div className="rounded-3xl border border-[#F1E3C6]/50 bg-white/60 p-6 shadow-sm backdrop-blur">
+            <h2 className="font-[family-name:var(--font-display)] text-2xl text-[#201A1C]">
               Nous écrire
             </h2>
-            <p className="mt-3 text-sm leading-relaxed text-[#6b4a3e]">
+            <p className="mt-3 text-sm leading-relaxed text-[#5A4F52]">
               Le plus simple, c'est un e-mail. Nous lisons tout, et nous répondons
               à tout.
             </p>
             <a
               href={`mailto:${CONTACT_EMAIL}`}
-              className="mt-4 inline-flex min-h-11 items-center rounded-full bg-[#2b1a14] px-5 text-sm font-medium text-[#fdf7f3] transition hover:opacity-90"
+              className="mt-4 inline-flex min-h-11 items-center rounded-full bg-[#201A1C] px-5 text-sm font-medium text-[#FBF8F8] transition hover:opacity-90"
             >
               {CONTACT_EMAIL}
             </a>
-            <dl className="mt-6 space-y-3 text-sm text-[#4b342c]">
+            <dl className="mt-6 space-y-3 text-sm text-[#5A4F52]">
               <div>
-                <dt className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#8a5a4d]">
+                <dt className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#7A6D70]">
                   Délai de réponse
                 </dt>
                 <dd className="mt-1">Sous 24 h ouvrées</dd>
               </div>
               <div>
-                <dt className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#8a5a4d]">
+                <dt className="font-mono text-[11px] uppercase tracking-[0.2em] text-[#7A6D70]">
                   Localisation
                 </dt>
                 <dd className="mt-1">Abidjan, Côte d'Ivoire</dd>
@@ -131,7 +131,7 @@ function ContactPage() {
           <form
             onSubmit={onSubmit}
             noValidate
-            className="rounded-3xl border border-[#e8c5b6]/50 bg-white/60 p-6 shadow-sm backdrop-blur sm:p-8"
+            className="rounded-3xl border border-[#F1E3C6]/50 bg-white/60 p-6 shadow-sm backdrop-blur sm:p-8"
           >
             <div className="grid gap-4 sm:grid-cols-2">
               <Field
@@ -165,7 +165,7 @@ function ContactPage() {
             <div className="mt-4">
               <label
                 htmlFor="message"
-                className="block text-sm font-medium text-[#2b1a14]"
+                className="block text-sm font-medium text-[#201A1C]"
               >
                 Message
               </label>
@@ -175,27 +175,27 @@ function ContactPage() {
                 maxLength={2000}
                 value={values.message}
                 onChange={(e) => update("message", e.target.value)}
-                className="mt-1.5 w-full rounded-2xl border border-[#e8c5b6] bg-white/80 px-4 py-3 text-base text-[#2b1a14] outline-none transition focus:border-[#c17c74] focus:ring-2 focus:ring-[#c17c74]/30"
+                className="mt-1.5 w-full rounded-2xl border border-[#F1E3C6] bg-white/80 px-4 py-3 text-base text-[#201A1C] outline-none transition focus:border-[#E82050] focus:ring-2 focus:ring-[#E82050]/30"
               />
               {errors.message ? (
-                <p className="mt-1.5 text-xs text-[#b4443c]">{errors.message}</p>
+                <p className="mt-1.5 text-xs text-[#D33A3A]">{errors.message}</p>
               ) : null}
             </div>
 
             <button
               type="submit"
-              className="mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#2b1a14] px-6 text-sm font-medium text-[#fdf7f3] transition hover:opacity-90 sm:w-auto"
+              className="mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#201A1C] px-6 text-sm font-medium text-[#FBF8F8] transition hover:opacity-90 sm:w-auto"
             >
               Envoyer le message
             </button>
 
             {sent ? (
-              <p className="mt-4 rounded-2xl bg-[#fbeee4] px-4 py-3 text-sm text-[#6b4a3e]">
+              <p className="mt-4 rounded-2xl bg-[#FDF0F3] px-4 py-3 text-sm text-[#5A4F52]">
                 Votre logiciel de messagerie s'ouvre avec le message pré-rempli.
                 Si rien ne se passe, écrivez-nous directement à{" "}
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
-                  className="font-medium text-[#c17c74] underline underline-offset-2"
+                  className="font-medium text-[#E82050] underline underline-offset-2"
                 >
                   {CONTACT_EMAIL}
                 </a>
@@ -228,7 +228,7 @@ function Field({
 }) {
   return (
     <div>
-      <label htmlFor={id} className="block text-sm font-medium text-[#2b1a14]">
+      <label htmlFor={id} className="block text-sm font-medium text-[#201A1C]">
         {label}
       </label>
       <input
@@ -237,9 +237,9 @@ function Field({
         value={value}
         maxLength={maxLength}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-1.5 w-full rounded-full border border-[#e8c5b6] bg-white/80 px-4 py-3 text-base text-[#2b1a14] outline-none transition focus:border-[#c17c74] focus:ring-2 focus:ring-[#c17c74]/30"
+        className="mt-1.5 w-full rounded-full border border-[#F1E3C6] bg-white/80 px-4 py-3 text-base text-[#201A1C] outline-none transition focus:border-[#E82050] focus:ring-2 focus:ring-[#E82050]/30"
       />
-      {error ? <p className="mt-1.5 text-xs text-[#b4443c]">{error}</p> : null}
+      {error ? <p className="mt-1.5 text-xs text-[#D33A3A]">{error}</p> : null}
     </div>
   );
 }
