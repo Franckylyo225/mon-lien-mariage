@@ -458,6 +458,8 @@ type WeddingRow = {
   story_body: string | null;
   story_images: string[] | null;
   story_style: Record<string, unknown> | null;
+  story_layout?: string | null;
+  story_photo_shape?: string | null;
   gallery_enabled: boolean | null;
   gallery_title: string | null;
   gallery_images: string[] | null;
@@ -547,6 +549,8 @@ function rowToCouple(w: WeddingRow): Couple {
     storyBody: w.story_body ?? undefined,
     storyImages: w.story_images ?? [],
     storyStyle: (w.story_style as Couple["storyStyle"]) ?? {},
+    storyLayout: ((w.story_layout as StoryLayout | null) ?? "left"),
+    storyPhotoShape: ((w.story_photo_shape as StoryPhotoShape | null) ?? "rounded"),
     galleryEnabled: w.gallery_enabled ?? false,
     galleryTitle: w.gallery_title ?? undefined,
     galleryImages: w.gallery_images ?? [],
@@ -634,6 +638,8 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.storyBody !== undefined) r.story_body = p.storyBody || null;
   if (p.storyImages !== undefined) r.story_images = p.storyImages ?? [];
   if (p.storyStyle !== undefined) r.story_style = p.storyStyle ?? {};
+  if (p.storyLayout !== undefined) r.story_layout = p.storyLayout ?? "left";
+  if (p.storyPhotoShape !== undefined) r.story_photo_shape = p.storyPhotoShape ?? "rounded";
   if (p.galleryEnabled !== undefined) r.gallery_enabled = p.galleryEnabled;
   if (p.galleryTitle !== undefined) r.gallery_title = p.galleryTitle || null;
   if (p.galleryImages !== undefined) r.gallery_images = p.galleryImages ?? [];
@@ -899,10 +905,25 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
         onboardingStep: (wRow.onboarding_step as Account["onboardingStep"]) ?? 0,
       });
 
-      const [{ data: cs }, { data: gs }] = await Promise.all([
+      const [{ data: cs }, { data: gs }, { data: st }] = await Promise.all([
         supabase.from("ceremonies").select("*").eq("wedding_id", wRow.id).order("sort_order"),
         supabase.from("guests").select("*").eq("wedding_id", wRow.id).order("created_at"),
+        supabase
+          .from("wedding_story_steps")
+          .select("id, year, title, text, photo_url, sort_order")
+          .eq("wedding_id", wRow.id)
+          .order("sort_order"),
       ]);
+      setCouple((c) => ({
+        ...c,
+        storySteps: (st ?? []).map((row) => ({
+          id: row.id as string,
+          year: row.year as string | null,
+          title: row.title as string | null,
+          text: row.text as string | null,
+          photoUrl: row.photo_url as string | null,
+        })),
+      }));
       setCeremonies((cs ?? []).map((c) => rowToCeremony(c as CeremonyRow)));
       setGuests((gs ?? []).map((g) => rowToGuest(g as GuestRow)));
       setLoading(false);
