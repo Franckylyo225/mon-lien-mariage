@@ -183,7 +183,9 @@ function PublishPage() {
 
   const dateLabel = formatFrenchDate(couple.weddingDate);
   const subLine = [dateLabel, couple.city].filter(Boolean).join(" · ");
-  const total = BASE_PRICE_XOF + (includeGuestbook ? GUESTBOOK_ADDON_XOF : 0);
+  const gross = BASE_PRICE_XOF + (includeGuestbook ? GUESTBOOK_ADDON_XOF : 0);
+  const discount = appliedPromo?.discount ?? 0;
+  const total = Math.max(0, Math.round(gross * (1 - discount / 100)));
   const alreadyPublished = couple.isPublished === true;
   const slugOk = slugStatus === "available";
   const canPublish = slugOk;
@@ -258,9 +260,9 @@ function PublishPage() {
         data: {
           weddingId,
           paymentType: "publication",
-          amountFcfa: total,
           slug,
           includeGuestbook,
+          promoCode: appliedPromo?.code,
           callbackUrl: `${window.location.origin}/payment/callback`,
         },
       });
@@ -599,9 +601,25 @@ function PublishPage() {
           </div>
 
 
+          {discount > 0 ? (
+            <div className="mt-3 flex items-baseline justify-between border-t border-border/60 pt-3">
+              <span className="text-[12px] text-muted-foreground">
+                Code <span className="font-mono">{appliedPromo?.code}</span> (−{discount}%)
+              </span>
+              <span className="text-[12px] font-medium" style={{ color: "#993556" }}>
+                −{Math.round(gross - total).toLocaleString("fr-FR")} XOF
+              </span>
+            </div>
+          ) : null}
+
           <div className="mt-1 flex items-baseline justify-between border-t border-border/60 pt-3">
             <span className="text-[13px] font-medium">Total</span>
             <span className="font-serif text-[22px] italic leading-none">
+              {discount > 0 ? (
+                <span className="mr-2 font-sans text-[13px] not-italic text-muted-foreground line-through">
+                  {gross.toLocaleString("fr-FR")}
+                </span>
+              ) : null}
               {total.toLocaleString("fr-FR")}
               <span className="ml-1 font-sans text-[11px] font-normal not-italic text-muted-foreground">
                 XOF
@@ -609,56 +627,6 @@ function PublishPage() {
             </span>
           </div>
         </section>
-
-        {/* 5. Bouton — Publier (activé après code promo) */}
-        <div className="mb-2.5">
-          <button
-            type="button"
-            onClick={handlePublish}
-            disabled={!canPublish || publishing || !weddingId}
-            aria-disabled={!canPublish || publishing || !weddingId}
-            title="Publier votre invitation"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-[14px] px-4 py-4 text-[15px] font-medium transition disabled:opacity-60"
-            style={{ background: "#4B1528", color: "#FBEAF0" }}
-          >
-            {publishing ? (
-              <Loader2 className="size-4 animate-spin" strokeWidth={2} />
-            ) : (
-              <Check className="size-4" strokeWidth={2} />
-            )}
-            {publishing
-              ? appliedPromo && appliedPromo.discount >= 100
-                ? "Publication en cours…"
-                : "Redirection vers le paiement…"
-              : appliedPromo && appliedPromo.discount >= 100
-                ? "Publier mon invitation"
-                : `Payer ${total.toLocaleString("fr-FR")} XOF et publier`}
-          </button>
-
-          {payError ? (
-            <p
-              role="alert"
-              className="mt-2 rounded-[10px] border border-destructive/30 bg-destructive/10 px-3 py-2 text-center text-[11px] leading-[1.5] text-destructive"
-            >
-              {payError}
-            </p>
-          ) : null}
-
-
-          {appliedPromo && appliedPromo.discount >= 100 ? (
-            <p className="mt-2 text-center text-[11px] leading-[1.5] text-muted-foreground">
-              Code <span className="font-mono">{appliedPromo.code}</span> appliqué —
-              publication gratuite.
-            </p>
-          ) : (
-            <p className="mt-2 text-center text-[11px] leading-[1.5] text-muted-foreground">
-              Paiement sécurisé par Paystack.
-              <br />
-              Carte bancaire, Mobile Money ou USSD.
-            </p>
-          )}
-        </div>
-
 
         {/* 5b. Code promo */}
         <div className="mb-2">
@@ -720,6 +688,56 @@ function PublishPage() {
             </div>
           )}
         </div>
+
+        {/* 5. Bouton — Publier (activé après code promo) */}
+        <div className="mb-2.5">
+          <button
+            type="button"
+            onClick={handlePublish}
+            disabled={!canPublish || publishing || !weddingId}
+            aria-disabled={!canPublish || publishing || !weddingId}
+            title="Publier votre invitation"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-[14px] px-4 py-4 text-[15px] font-medium transition disabled:opacity-60"
+            style={{ background: "#4B1528", color: "#FBEAF0" }}
+          >
+            {publishing ? (
+              <Loader2 className="size-4 animate-spin" strokeWidth={2} />
+            ) : (
+              <Check className="size-4" strokeWidth={2} />
+            )}
+            {publishing
+              ? appliedPromo && appliedPromo.discount >= 100
+                ? "Publication en cours…"
+                : "Redirection vers le paiement…"
+              : appliedPromo && appliedPromo.discount >= 100
+                ? "Publier mon invitation"
+                : `Payer ${total.toLocaleString("fr-FR")} XOF et publier`}
+          </button>
+
+          {payError ? (
+            <p
+              role="alert"
+              className="mt-2 rounded-[10px] border border-destructive/30 bg-destructive/10 px-3 py-2 text-center text-[11px] leading-[1.5] text-destructive"
+            >
+              {payError}
+            </p>
+          ) : null}
+
+
+          {appliedPromo && appliedPromo.discount >= 100 ? (
+            <p className="mt-2 text-center text-[11px] leading-[1.5] text-muted-foreground">
+              Code <span className="font-mono">{appliedPromo.code}</span> appliqué —
+              publication gratuite.
+            </p>
+          ) : (
+            <p className="mt-2 text-center text-[11px] leading-[1.5] text-muted-foreground">
+              Paiement sécurisé par Paystack.
+              <br />
+              Carte bancaire, Mobile Money ou USSD.
+            </p>
+          )}
+        </div>
+
 
         <p className="mt-3.5 text-center text-[10px] leading-[1.5] text-muted-foreground/70">
           Après publication, vous pouvez toujours modifier
