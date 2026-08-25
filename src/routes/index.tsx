@@ -401,7 +401,18 @@ function LiveDemo() {
     <section className="bg-white py-24">
       <div className="mx-auto grid max-w-5xl items-center gap-14 px-5 md:grid-cols-2">
         <div className="flex flex-col items-center">
-          <PhoneMock height={480} />
+          <div
+            className="overflow-hidden rounded-[28px] shadow-[0_24px_60px_-24px_rgba(32,26,28,0.4)] ring-1 ring-black/5"
+            style={{ width: 235, height: 480 }}
+          >
+            <iframe
+              src={DEMO_URL}
+              title="Aperçu d'une invitation moninvit"
+              loading="lazy"
+              tabIndex={-1}
+              className="pointer-events-none h-full w-full bg-white"
+            />
+          </div>
           <span className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#201A1C] px-4 py-2 font-[family-name:var(--font-brand-ui)] text-xs font-semibold text-white">
             <span className="size-1.5 rounded-full bg-[#2E9E6B]" /> En ligne ·
             Basile & Armelle
