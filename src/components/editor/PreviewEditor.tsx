@@ -5,6 +5,7 @@ import { useAutosaveContext } from "@/lib/autosave-context";
 import { SaveIndicator } from "./SaveIndicator";
 import { HeroPhotoSheet } from "./HeroPhotoSheet";
 import { PhotoGridSheet } from "./PhotoGridSheet";
+import { ThemeBlockSheet } from "./ThemeBlockSheet";
 import { StorySheet } from "@/components/editor/StorySheet";
 import { ColorPicker } from "./ColorPicker";
 import { ThemeSheet } from "./ThemeSheet";
@@ -264,9 +265,9 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
               value={
                 !(couple.themeBlockEnabled ?? false)
                   ? "Désactivé"
-                  : !couple.themeBlockBody && (couple.themeBlockImages?.length ?? 0) === 0
+                  : !couple.themeBlockBody
                     ? "À compléter"
-                    : `${couple.themeBlockImages?.length ?? 0} photo${(couple.themeBlockImages?.length ?? 0) > 1 ? "s" : ""}`
+                    : "Personnalisé"
               }
               onClick={() => setSheet("themeblock")}
             />
