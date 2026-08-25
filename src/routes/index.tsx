@@ -1,67 +1,67 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { templateMeta, templateOrder } from "@/lib/ceremony-meta";
-import { SiteHeader as SharedSiteHeader, SiteFooter as SharedSiteFooter } from "@/components/site/SiteChrome";
-import { PricingSection } from "@/components/site/PricingSection";
-import heroCouple from "@/assets/home-couple.jpg";
-import tableImg from "@/assets/home-table.jpg";
+import {
+  SiteHeader,
+  SiteFooter,
+  MobileStickyCta,
+} from "@/components/site/SiteChrome";
 import ogImage from "@/assets/og-image.jpg.asset.json";
-import whyMoninvitImg from "@/assets/side-view-married-couple-holding-hands.jpeg.asset.json";
-import abidjanCouple from "@/assets/abidjan-couple.jpg.asset.json";
-
-
+import logoHeart from "@/assets/logo-heart.png.asset.json";
 
 const OG_IMAGE_URL = `https://moninvit.com${ogImage.url}`;
+const DEMO_URL = "https://www.moninvit.com/e/basile-et-armelle1";
 
 const HOME_FAQS: { q: string; a: string }[] = [
   {
-    q: "Combien de temps pour créer notre invitation ?",
-    a: "En moyenne 10 minutes pour la version essentielle. Vous pouvez ensuite l'affiner sur plusieurs soirées — vos changements sont sauvegardés automatiquement.",
+    q: "Combien de temps pour créer mon invitation ?",
+    a: "Entre 10 et 30 minutes pour une première version complète. Tout est sauvegardé automatiquement, tu peux revenir l'affiner quand tu veux.",
   },
   {
     q: "Nos invités doivent-ils créer un compte ?",
-    a: "Non, jamais. Ils ouvrent le lien, lisent votre invitation, confirment leur présence en un clic. Ni téléchargement, ni inscription.",
+    a: "Non, jamais. Ils ouvrent le lien, lisent l'invitation, confirment en un tap. Ni téléchargement, ni inscription.",
   },
   {
-    q: "Quand devons-nous payer ?",
-    a: "Uniquement au moment de la publication, quand vous êtes prêts à partager. Vous pouvez tout construire, tout tester, tout modifier — gratuitement.",
-  },
-  {
-    q: "Peut-on gérer les 4 cérémonies (dot, civil, religieux, réception) ?",
-    a: "Oui, chaque cérémonie a sa propre page avec horaire, lieu, carte et tenue conseillée. Vos invités confirment étape par étape.",
+    q: "Quand dois-je payer ?",
+    a: "Uniquement à la publication, quand tu es prêt à partager. Tu crées, testes et modifies gratuitement.",
   },
   {
     q: "Est-ce que ça fonctionne sur les vieux téléphones ?",
-    a: "Oui. Notre page est légère, elle s'ouvre en quelques secondes même sur une connexion 3G — pensé pour l'Afrique.",
+    a: "Oui. La page est légère et s'ouvre en quelques secondes, même en 3G — pensée pour la réalité africaine.",
+  },
+  {
+    q: "Le livre d'or est-il inclus ?",
+    a: "Le livre d'or est une option à 1 990 XOF, activable avant ou après la publication depuis ton tableau de bord.",
   },
 ];
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MonInvit — Invitations de mariage digitales" },
+      { title: "moninvit.com — Ton invitation de mariage en 10 minutes" },
       {
         name: "description",
         content:
-          "Créez votre invitation de mariage digitale en 10 minutes. RSVP, programme et partage WhatsApp — pensée pour l'Afrique de l'Ouest.",
+          "Crée une invitation de mariage élégante avec RSVP, programme et musique. Partage-la sur WhatsApp — tes invités confirment en un tap.",
       },
-      { property: "og:title", content: "MonInvit — Invitations de mariage digitales" },
+      { property: "og:title", content: "moninvit.com — Ton invitation de mariage en 10 minutes" },
       {
         property: "og:description",
         content:
-          "Créez votre invitation de mariage digitale en 10 minutes. RSVP, programme et partage WhatsApp — pensée pour l'Afrique de l'Ouest.",
+          "Crée une invitation de mariage élégante avec RSVP, programme et musique. Partage-la sur WhatsApp.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://moninvit.com/" },
       { property: "og:image", content: OG_IMAGE_URL },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
-      { property: "og:image:alt", content: "MonInvit.com — Invitations de mariage digitales pour l'Afrique de l'Ouest" },
+      { property: "og:image:alt", content: "moninvit.com — Invitations de mariage digitales" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "MonInvit — Invitations de mariage digitales" },
+      { name: "twitter:title", content: "moninvit.com — Ton invitation de mariage en 10 minutes" },
       {
         name: "twitter:description",
         content:
-          "Créez votre invitation de mariage digitale en 10 minutes. RSVP, programme et partage WhatsApp — pensée pour l'Afrique de l'Ouest.",
+          "Crée une invitation de mariage élégante avec RSVP, programme et musique. Partage-la sur WhatsApp.",
       },
       { name: "twitter:image", content: OG_IMAGE_URL },
     ],
@@ -72,25 +72,11 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebSite",
-          name: "MonInvit.com",
+          name: "moninvit.com",
           url: "https://moninvit.com",
           inLanguage: "fr",
           description:
             "Invitations de mariage digitales pour l'Afrique de l'Ouest — RSVP en direct, partage WhatsApp, tableau de bord privé.",
-        }),
-      },
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Service",
-          serviceType: "Invitations de mariage digitales",
-          provider: { "@type": "Organization", name: "MonInvit.com", url: "https://moninvit.com" },
-          areaServed: [
-            "Côte d'Ivoire", "Sénégal", "Bénin", "Togo", "Mali",
-            "Burkina Faso", "Guinée", "Niger",
-          ],
-          offers: { "@type": "Offer", priceCurrency: "XOF", availability: "https://schema.org/InStock" },
         }),
       },
       {
@@ -110,562 +96,270 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
-
-/* -------------------------------------------------------------------------- */
-/*                                    PAGE                                    */
-/* -------------------------------------------------------------------------- */
-
 function Landing() {
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#fdf7f3] text-[#2b1a14] font-[var(--font-sans)]">
-      <SharedSiteHeader />
-
-      <Hero />
-      <ProofStrip />
-      <FeatureCards />
-      <IncludedChecklist />
-      <TimeArgument />
-      <StepsSection />
-      <PricingSection />
-      <EditorialCouple />
-      <PromiseBlock />
-      <FaqBlock />
-      <FinalCta />
-      <SharedSiteFooter />
-    </main>
+    <div className="min-h-dvh overflow-x-clip bg-white text-[#201A1C]">
+      <SiteHeader />
+      <main id="main">
+        <Hero />
+        <SocialProof />
+        <ProblemSection />
+        <Features />
+        <LiveDemo />
+        <HowItWorks />
+        <TemplateGallery />
+        <Pricing />
+        <Testimonials />
+        <Faq />
+        <FinalCta />
+      </main>
+      <SiteFooter />
+      <MobileStickyCta />
+    </div>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                   HEADER                                   */
-/* -------------------------------------------------------------------------- */
+/* ------------------------------- primitives ------------------------------- */
 
+function Kicker({ children }: { children: React.ReactNode }) {
+  return <p className="kicker">{children}</p>;
+}
 
-
-
-/* -------------------------------------------------------------------------- */
-/*                                    HERO                                    */
-/* -------------------------------------------------------------------------- */
-
-function Hero() {
+function H2({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <section className="relative isolate">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{
-          background:
-            "radial-gradient(1200px 600px at 50% -10%, #f6d9cb 0%, #fdf7f3 55%, #fdf7f3 100%)",
-        }}
-      />
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 opacity-60">
-        <span className="absolute left-[8%] top-[18%] size-2 rounded-full bg-[#c17c74]/40" />
-        <span className="absolute right-[12%] top-[10%] size-3 rounded-full bg-[#e8c5b6]/60" />
-        <span className="absolute left-[20%] top-[38%] size-1.5 rounded-full bg-[#d97757]/50" />
-        <span className="absolute right-[18%] top-[55%] size-2 rounded-full bg-[#c9a84c]/40" />
-      </div>
-
-      <div className="mx-auto max-w-5xl px-5 pt-10 text-center sm:pt-16">
-        <h1 className="mt-4 font-[family-name:var(--font-display)] text-[46px] leading-[1.02] sm:text-6xl md:text-[76px]">
-          Votre invitation de mariage,{" "}
-          <em className="italic text-[#c17c74]">rêvée puis dessinée.</em>
-        </h1>
-        <p className="mx-auto mt-4 font-[family-name:var(--font-display)] text-lg italic text-[#8a5a4a] sm:text-xl">
-          Pensée pour les mariés d'Abidjan et d'ailleurs.
-        </p>
-
-        {/* Rating pill */}
-        <div className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#e8c5b6]/70 bg-white/70 px-4 py-2 shadow-sm backdrop-blur-sm">
-          <StarRow />
-          <span className="text-[13px] text-[#6b4a3e]">
-            <strong className="text-[#2b1a14]">4.9</strong> · Choisie par +500
-            couples ivoiriens
-          </span>
-        </div>
-
-        <p className="mx-auto mt-6 max-w-xl text-[15px] leading-relaxed text-[#6b4a3e] sm:text-base">
-          Choisissez le style, on le fait vibrer autour de votre histoire.
-          <br className="hidden sm:block" />
-          Un seul lien élégant, prêt à envoyer sur WhatsApp.
-        </p>
-
-        <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-          <Link
-            to="/signup"
-            className="inline-block w-full rounded-full bg-[#2b1a14] px-8 py-4 text-sm font-medium tracking-wide text-[#fdf7f3] shadow-lg shadow-[#c17c74]/20 transition hover:-translate-y-0.5 hover:shadow-xl sm:w-auto"
-          >
-            Créer notre invitation
-          </Link>
-          <p className="text-xs text-[#8a6a5e]">
-            Aucune carte bancaire · Sans engagement jusqu'à la publication
-          </p>
-        </div>
-      </div>
-
-      <TemplateFan />
-    </section>
+    <h2
+      className={`font-[family-name:var(--font-brand-serif)] text-[34px] font-medium leading-[1.08] text-[#201A1C] sm:text-[46px] ${className}`}
+    >
+      {children}
+    </h2>
   );
 }
 
-function StarRow() {
+function Body({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <span className="flex items-center gap-0.5 text-[#c9a84c]">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <svg key={i} viewBox="0 0 20 20" fill="currentColor" className="size-3.5">
-          <path d="M10 1.5l2.6 5.3 5.9.9-4.2 4.1 1 5.9L10 14.9l-5.3 2.8 1-5.9L1.5 7.7l5.9-.9L10 1.5z" />
-        </svg>
-      ))}
+    <p className={`font-[family-name:var(--font-brand-body)] text-[15px] leading-[1.7] text-[#5A4F52] ${className}`}>
+      {children}
+    </p>
+  );
+}
+
+function Stars({ size = "text-[13px]" }: { size?: string }) {
+  return (
+    <span aria-hidden className={`tracking-[0.12em] text-[#C6A15B] ${size}`}>
+      ★★★★★
     </span>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*                               PROOF STRIP                                  */
-/* -------------------------------------------------------------------------- */
-
-function ProofStrip() {
-  const items = [
-    ["10 min", "Pour créer votre page"],
-    ["20+", "Modèles romantiques"],
-    ["4 étapes", "Dot, civil, religieux, réception"],
-    ["0 stress", "RSVP automatiques"],
-  ];
-  return (
-    <section className="border-y border-[#e8c5b6]/40 bg-[#fbeee4]/60">
-      <div className="mx-auto grid max-w-5xl grid-cols-2 gap-4 px-5 py-8 text-center sm:grid-cols-4">
-        {items.map(([n, l]) => (
-          <div key={l}>
-            <p className="font-[family-name:var(--font-display)] text-3xl italic text-[#c17c74] sm:text-4xl">
-              {n}
-            </p>
-            <p className="mt-1 text-xs text-[#6b4a3e] sm:text-sm">{l}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*                              FEATURE CARDS                                 */
-/* -------------------------------------------------------------------------- */
-
-function FeatureCards() {
-  return (
-    <section className="mx-auto max-w-6xl px-5 py-24">
-      <div className="text-center">
-        <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#c17c74]">
-          Tout ce qu'il vous faut
-        </p>
-        <h2 className="mx-auto mt-4 max-w-2xl font-[family-name:var(--font-display)] text-4xl leading-[1.05] sm:text-5xl">
-          Pour rendre votre invitation{" "}
-          <em className="italic text-[#c17c74]">inoubliable.</em>
-        </h2>
-      </div>
-
-      <div className="mt-14 grid gap-6 md:grid-cols-6">
-        {/* Card 1 — Musique d'ambiance */}
-        <FeatureCard
-          className="md:col-span-3"
-          tone="cream"
-          eyebrow="Musique d'ambiance"
-          title="Une bande-son romantique qui démarre à l'ouverture."
-          desc="Choisissez un morceau, activez le lecteur, et offrez à vos invités une immersion complète dès le premier clic."
-        >
-          <MusicMock />
-        </FeatureCard>
-
-        {/* Card 2 — RSVP dashboard */}
-        <FeatureCard
-          className="md:col-span-3"
-          tone="dark"
-          eyebrow="RSVP & tableau de bord"
-          title="Suivez chaque réponse, en direct sur votre téléphone."
-          desc="Confirmations, régimes alimentaires, +1, chansons demandées — tout est là."
-        >
-          <RsvpMock />
-        </FeatureCard>
-
-        {/* Card 3 — Partage */}
-        <FeatureCard
-          className="md:col-span-2"
-          tone="clay"
-          eyebrow="Partage instantané"
-          title="Un lien, WhatsApp, c'est parti."
-          desc="Copiez, partagez, épinglez dans vos groupes. Aucune application à installer."
-        >
-          <ShareMock />
-        </FeatureCard>
-
-        {/* Card 4 — Programme */}
-        <FeatureCard
-          className="md:col-span-2"
-          tone="sage"
-          eyebrow="Programme des 4 jours"
-          title="Dot, civil, religieux, réception."
-          desc="Chaque étape a sa page, son horaire, sa carte et sa tenue conseillée."
-        >
-          <ProgramMock />
-        </FeatureCard>
-
-        {/* Card 5 — Multi-langue */}
-        <FeatureCard
-          className="md:col-span-2"
-          tone="cream"
-          eyebrow="Français · English"
-          title="Une invitation qui parle à toute la famille."
-          desc="Vos oncles à Paris, vos cousines à Atlanta — chacun lit dans sa langue."
-        >
-          <LangMock />
-        </FeatureCard>
-      </div>
-    </section>
-  );
-}
-
-/* ---------------------------- Mock components ----------------------------- */
-
-function FeatureCard({
-  children,
-  eyebrow,
-  title,
-  desc,
-  tone,
-  className = "",
-}: {
-  children: React.ReactNode;
-  eyebrow: string;
-  title: string;
-  desc: string;
-  tone: "cream" | "dark" | "clay" | "sage";
-  className?: string;
-}) {
-  const tones: Record<string, string> = {
-    cream: "bg-[#fbeee4] text-[#2b1a14] border border-[#e8c5b6]/50",
-    dark: "bg-[#2b1a14] text-[#fdf7f3]",
-    clay: "bg-[#c17c74] text-[#fdf7f3]",
-    sage: "bg-[#e5ded1] text-[#2b1a14] border border-[#d5c9b3]/60",
-  };
-  const eyebrowColor =
-    tone === "dark" || tone === "clay" ? "text-[#e8c5b6]" : "text-[#c17c74]";
-  const descColor =
-    tone === "dark" || tone === "clay" ? "text-[#fdf7f3]/80" : "text-[#6b4a3e]";
+function PhoneMock({ height = 420, rotate = 0, className = "" }: { height?: number; rotate?: number; className?: string }) {
   return (
     <div
-      className={`group relative flex flex-col overflow-hidden rounded-[28px] p-6 transition hover:-translate-y-1 hover:shadow-xl sm:p-8 ${tones[tone]} ${className}`}
+      className={`overflow-hidden rounded-[44px] border-[8px] border-[#201A1C] bg-[#201A1C] shadow-[0_30px_70px_-25px_rgba(32,26,28,0.45)] ${className}`}
+      style={{ width: height * 0.49, height, transform: rotate ? `rotate(${rotate}deg)` : undefined }}
     >
-      <div className="flex min-h-[220px] flex-1 items-center justify-center py-6">
-        {children}
-      </div>
-      <p className={`font-mono text-[10px] uppercase tracking-[0.28em] ${eyebrowColor}`}>
-        {eyebrow}
-      </p>
-      <h3 className="mt-3 font-[family-name:var(--font-display)] text-2xl leading-tight sm:text-[26px]">
-        {title}
-      </h3>
-      <p className={`mt-2 text-sm leading-relaxed ${descColor}`}>{desc}</p>
+      <iframe
+        src={DEMO_URL}
+        title="Aperçu d'une invitation moninvit"
+        loading="lazy"
+        tabIndex={-1}
+        className="pointer-events-none h-full w-full rounded-[36px] bg-white"
+      />
     </div>
   );
 }
 
-function MusicMock() {
-  return (
-    <div className="relative w-64 rounded-2xl bg-[#fdf7f3] p-4 shadow-[0_20px_40px_-15px_rgba(75,32,20,0.35)] ring-1 ring-[#c17c74]/20">
-      <div className="flex items-center gap-3">
-        <div className="grid size-11 place-items-center rounded-full bg-[#c17c74] text-[#fdf7f3] shadow-md">
-          <svg viewBox="0 0 24 24" fill="currentColor" className="size-5 pl-0.5">
-            <path d="M8 5v14l11-7L8 5z" />
-          </svg>
-        </div>
-        <div className="text-left">
-          <p className="font-[family-name:var(--font-display)] text-sm italic text-[#2b1a14]">
-            Vows on Silk
-          </p>
-          <p className="text-[10px] text-[#8a6a5e]">Piano intime · lecture en boucle</p>
-        </div>
-      </div>
-      <div className="mt-4 h-1.5 w-full rounded-full bg-[#e8c5b6]/60">
-        <div className="h-full w-2/3 rounded-full bg-[#c17c74]" />
-      </div>
-      <div className="mt-3 flex items-center justify-between text-[10px] text-[#8a6a5e]">
-        <span>1:24</span>
-        <span>2:08</span>
-      </div>
-      <div className="mt-4 flex items-center justify-center gap-1">
-        {Array.from({ length: 20 }).map((_, i) => (
-          <span
-            key={i}
-            className="w-1 rounded-full bg-[#c17c74]/60"
-            style={{
-              height: `${8 + Math.sin(i * 0.9) * 6}px`,
-              opacity: 0.5 + Math.cos(i * 0.7) * 0.4,
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
+/* ---------------------------------- hero ---------------------------------- */
 
-function RsvpMock() {
+function Hero() {
   return (
-    <div className="w-56 rounded-2xl bg-[#fdf7f3] p-4 text-[#2b1a14] shadow-2xl">
-      <p className="font-mono text-[9px] uppercase tracking-widest text-[#c17c74]">
-        Tableau de bord
-      </p>
-      <p className="mt-1 font-[family-name:var(--font-display)] text-xl italic">
-        142 <span className="text-sm not-italic text-[#8a6a5e]">présents</span>
-      </p>
-      <div className="mt-3 h-1.5 w-full rounded-full bg-[#e8c5b6]/60">
-        <div className="h-full w-[78%] rounded-full bg-[#c17c74]" />
-      </div>
-      <ul className="mt-4 space-y-2 text-[11px]">
-        <li className="flex items-center justify-between">
-          <span>Fatou Koné</span>
-          <span className="rounded-full bg-[#d4eadf] px-2 py-0.5 text-[9px] font-medium text-[#2f6b4a]">
-            ✓ Oui
+    <section
+      className="border-b border-[#F4EFF0]"
+      style={{ background: "linear-gradient(170deg, #FDF0F3 0%, #FFFFFF 55%)" }}
+    >
+      <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-14 lg:grid-cols-[55fr_45fr] lg:pb-24 lg:pt-20">
+        <div className="animate-fade-up">
+          <span className="inline-flex items-center gap-2 rounded-full border border-[#F1E3C6] bg-white px-4 py-2 font-[family-name:var(--font-brand-ui)] text-[13px] font-semibold text-[#5A4F52]">
+            <span className="text-[#C6A15B]">★</span> 4.9 · Choisie par +500
+            couples ivoiriens
           </span>
-        </li>
-        <li className="flex items-center justify-between">
-          <span>Kouassi B.</span>
-          <span className="rounded-full bg-[#d4eadf] px-2 py-0.5 text-[9px] font-medium text-[#2f6b4a]">
-            ✓ Oui +1
-          </span>
-        </li>
-        <li className="flex items-center justify-between">
-          <span>Marie D.</span>
-          <span className="rounded-full bg-[#f6e0dc] px-2 py-0.5 text-[9px] font-medium text-[#a24545]">
-            ✗ Empêchée
-          </span>
-        </li>
-      </ul>
-    </div>
-  );
-}
 
-function ShareMock() {
-  return (
-    <div className="relative w-52 rounded-2xl bg-[#25D366]/10 p-3 ring-1 ring-[#25D366]/30">
-      <div className="mb-2 flex items-center gap-2">
-        <span className="size-6 rounded-full bg-[#25D366]" />
-        <span className="text-[11px] font-medium text-[#2b1a14]">WhatsApp</span>
-      </div>
-      <div className="rounded-xl bg-white p-3 shadow-sm">
-        <p className="text-[10px] text-[#6b4a3e]">
-          Vous êtes conviés à notre mariage ✨
-        </p>
-        <div className="mt-2 rounded-md border border-[#e8c5b6] p-2">
-          <p className="font-[family-name:var(--font-display)] text-xs italic text-[#c17c74]">
-            moninvit.com/aicha-loic
+          <h1 className="mt-6 font-[family-name:var(--font-brand-serif)] text-[42px] font-medium leading-[1.02] text-[#201A1C] sm:text-[56px] lg:text-[66px]">
+            Votre invitation de mariage, prête en moins de 10 minutes.
+          </h1>
+
+          <p className="mt-5 max-w-[460px] font-[family-name:var(--font-brand-body)] text-[18px] leading-[1.65] text-[#5A4F52]">
+            Crée une page élégante avec RSVP, programme et musique. Partage-la
+            sur WhatsApp. Tes invités confirment en un tap.
           </p>
-          <p className="mt-0.5 text-[9px] text-[#8a6a5e]">
-            Aïcha & Loïc · 14 août
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
 
-function ProgramMock() {
-  const days = [
-    ["12.08", "Dot"],
-    ["13.08", "Civil"],
-    ["14.08", "Religieux"],
-    ["15.08", "Réception"],
-  ];
-  return (
-    <div className="w-56 rounded-2xl bg-white/80 p-4 shadow-lg">
-      <ul className="space-y-2">
-        {days.map(([d, t]) => (
-          <li key={t} className="flex items-center gap-3 rounded-lg bg-[#fdf7f3] px-3 py-2">
-            <span className="font-mono text-[10px] uppercase tracking-widest text-[#c17c74]">
-              {d}
-            </span>
-            <span className="font-[family-name:var(--font-display)] text-sm italic text-[#2b1a14]">
-              {t}
-            </span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function LangMock() {
-  return (
-    <div className="flex items-center gap-3">
-      <div className="rounded-2xl bg-white/80 px-4 py-3 shadow-md">
-        <p className="font-mono text-[9px] uppercase tracking-widest text-[#c17c74]">FR</p>
-        <p className="font-[family-name:var(--font-display)] text-base italic">
-          Nous vous invitons…
-        </p>
-      </div>
-      <span className="font-[family-name:var(--font-display)] text-2xl italic text-[#8a6a5e]">
-        ⇄
-      </span>
-      <div className="rounded-2xl bg-white/80 px-4 py-3 shadow-md">
-        <p className="font-mono text-[9px] uppercase tracking-widest text-[#c17c74]">EN</p>
-        <p className="font-[family-name:var(--font-display)] text-base italic">
-          You are invited…
-        </p>
-      </div>
-    </div>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*                            INCLUDED CHECKLIST                              */
-/* -------------------------------------------------------------------------- */
-
-function IncludedChecklist() {
-  const items = [
-    "Enveloppe animée à vos initiales",
-    "Galerie photos illimitée",
-    "RSVP personnalisé",
-    "Tableau de bord privé",
-    "Messages des invités",
-    "Régimes alimentaires",
-    "Programme sur 4 jours",
-    "Carte & itinéraire",
-    "Bilingue FR / EN",
-    "Export Excel",
-    "Partage WhatsApp",
-    "Lien à vie",
-  ];
-  return (
-    <section className="border-y border-[#e8c5b6]/40 bg-[#2b1a14] py-16 text-[#fdf7f3]">
-      <div className="mx-auto max-w-5xl px-5">
-        <p className="text-center font-mono text-[11px] uppercase tracking-[0.3em] text-[#e8c5b6]">
-          Inclus dans chaque invitation
-        </p>
-        <h3 className="mx-auto mt-4 max-w-2xl text-center font-[family-name:var(--font-display)] text-3xl italic sm:text-4xl">
-          Tout est déjà là. Vous n'ajoutez que votre histoire.
-        </h3>
-        <div className="mt-10 flex flex-wrap justify-center gap-x-3 gap-y-3">
-          {items.map((i) => (
-            <span
-              key={i}
-              className="inline-flex items-center gap-2 rounded-full border border-[#e8c5b6]/25 px-4 py-2 text-sm text-[#fdf7f3]/90"
+          <div className="mt-8 flex flex-wrap items-center gap-5">
+            <Link to="/signup" className="btn-framboise px-[30px] py-4 text-[16px]">
+              Créer gratuitement →
+            </Link>
+            <a
+              href={DEMO_URL}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="font-[family-name:var(--font-brand-ui)] text-[15px] font-semibold text-[#C81A45] hover:underline"
             >
-              <span className="size-1 rounded-full bg-[#e8c5b6]" />
-              {i}
-            </span>
-          ))}
+              Voir la démo
+            </a>
+          </div>
+
+          <p className="mt-4 font-[family-name:var(--font-brand-ui)] text-[13px] font-medium text-[#7A6D70]">
+            Aucune carte bancaire · Tu paies uniquement à la publication
+          </p>
+
+          <dl className="mt-10 grid max-w-lg grid-cols-3 gap-4 border-t border-[#F1E3C6] pt-6">
+            {[
+              ["20+", "Modèles romantiques"],
+              ["10 min", "Pour publier"],
+              ["500+", "Couples conquis"],
+            ].map(([n, l]) => (
+              <div key={l}>
+                <dt className="font-[family-name:var(--font-brand-serif)] text-[30px] font-medium text-[#E82050]">
+                  {n}
+                </dt>
+                <dd className="mt-1 font-[family-name:var(--font-brand-ui)] text-[12.5px] font-semibold text-[#5A4F52]">
+                  {l}
+                </dd>
+              </div>
+            ))}
+          </dl>
         </div>
-      </div>
-    </section>
-  );
-}
 
-/* -------------------------------------------------------------------------- */
-/*                              TIME ARGUMENT                                 */
-/* -------------------------------------------------------------------------- */
-
-function TimeArgument() {
-  return (
-    <section className="mx-auto max-w-5xl px-5 py-24">
-      <div className="grid items-center gap-12 md:grid-cols-2">
-        <div className="relative">
-          <img
-            src={whyMoninvitImg.url}
-            alt="Couple marié se tenant par la main"
-            width={1024}
-            height={1024}
-            loading="lazy"
-            className="aspect-[4/5] w-full rounded-[2rem] object-cover shadow-xl shadow-[#c17c74]/15"
-          />
-
-          <div className="absolute -bottom-6 -right-4 hidden rounded-2xl bg-[#fdf7f3] p-4 shadow-lg sm:block">
-            <p className="font-[family-name:var(--font-display)] text-sm italic text-[#6b4a3e]">
-              « Prête en une soirée. »
-            </p>
-            <p className="mt-1 font-mono text-[10px] uppercase tracking-widest text-[#c17c74]">
-              Aïcha & Loïc
-            </p>
+        {/* Phones */}
+        <div className="relative hidden justify-center lg:flex">
+          <div className="relative animate-floaty">
+            <div className="absolute -right-16 top-8 hidden xl:block">
+              <PhoneMock height={380} className="opacity-90" />
+            </div>
+            <PhoneMock height={460} />
           </div>
         </div>
-        <div>
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#c17c74]">
-            Pourquoi MonInvit.com
-          </p>
-          <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl leading-[1.05] sm:text-5xl">
-            Le temps de dire{" "}
-            <em className="italic text-[#c17c74]">« oui »</em>, et c'est prêt.
-          </h2>
-          <ul className="mt-8 space-y-6">
-            {[
-              {
-                t: "10 minutes chrono, depuis votre téléphone",
-                d: "Prénoms, date, lieu, quelques photos — votre page est en ligne. Pas de logiciel, pas d'imprimeur, pas de graphiste à briefer.",
-              },
-              {
-                t: "Des modèles pensés pour l'Afrique",
-                d: "Terracotta, wax doré, kente royal, sahel, botanique… des ambiances qui vous ressemblent, loin des clichés génériques.",
-              },
-              {
-                t: "Vos invités RSVP en un seul clic",
-                d: "Un lien à partager sur WhatsApp. Ils confirment, précisent leur régime, laissent un mot — vous suivez tout, en temps réel.",
-              },
-              {
-                t: "Vos données restent vos données",
-                d: "Aucune publicité, pas de revente, pas de compte à créer pour vos invités. Discret et respectueux.",
-              },
-            ].map((b) => (
-              <li key={b.t} className="flex gap-4">
-                <span className="mt-2 h-px w-8 shrink-0 bg-[#c17c74]" />
-                <div>
-                  <p className="font-[family-name:var(--font-display)] text-xl italic">
-                    {b.t}
-                  </p>
-                  <p className="mt-1 text-sm leading-relaxed text-[#6b4a3e]">
-                    {b.d}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
+
+        {/* Mobile phone preview */}
+        <div className="flex justify-center lg:hidden">
+          <PhoneMock height={400} />
         </div>
       </div>
     </section>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                   STEPS                                    */
-/* -------------------------------------------------------------------------- */
+/* ------------------------------ social proof ------------------------------ */
 
-function StepsSection() {
-  const steps: Array<[string, string, string]> = [
-    ["01", "Vos prénoms", "Vous et votre moitié, c'est tout ce qu'il faut pour démarrer."],
-    ["02", "Vos dates", "Une seule étape ou toutes : dot, civil, religieux, réception."],
-    ["03", "Votre ambiance", "Un modèle qui vous ressemble, personnalisable en quelques clics."],
-    ["04", "Partagez", "Un lien élégant à envoyer sur WhatsApp. Les RSVP arrivent tout seuls."],
-  ];
+const QUICK_PROOF = [
+  {
+    initial: "A",
+    quote: "Nos invités ont cru qu'on avait payé un designer.",
+    author: "Adjoua & Koffi · Mariage à Abidjan · Mars 2026",
+  },
+  {
+    initial: "M",
+    quote:
+      "En 20 minutes, le lien était prêt. La réaction de ma belle-mère… inoubliable.",
+    author: "Mariama & Seydou · Bouaké · Janvier 2026",
+  },
+];
+
+function SocialProof() {
   return (
-    <section className="border-t border-[#e8c5b6]/40 bg-[#fbeee4]/40 py-24">
+    <section className="border-y border-[#F4EFF0] bg-white py-10">
+      <div className="mx-auto grid max-w-5xl gap-8 px-5 md:grid-cols-2 md:divide-x md:divide-[#F4EFF0]">
+        {QUICK_PROOF.map((t, i) => (
+          <div key={t.initial} className={i === 1 ? "md:pl-8" : ""}>
+            <Stars />
+            <blockquote className="mt-2 font-[family-name:var(--font-brand-serif)] text-[15px] italic leading-relaxed text-[#201A1C]">
+              « {t.quote} »
+            </blockquote>
+            <div className="mt-3 flex items-center gap-3">
+              <span className="grid size-[38px] shrink-0 place-items-center rounded-full bg-[#FBDDE5] font-[family-name:var(--font-brand-ui)] text-sm font-bold text-[#E82050]">
+                {t.initial}
+              </span>
+              <p className="font-[family-name:var(--font-brand-ui)] text-[11px] font-medium text-[#7A6D70]">
+                — {t.author}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------- problem --------------------------------- */
+
+const PROBLEMS = [
+  "Tu gères les confirmations à la main, dans un tableau ou dans ta tête.",
+  "Tes cartons papier ont coûté une fortune et la moitié des invités les ont déjà perdus.",
+  "Trois groupes WhatsApp selon les cérémonies, et tu as perdu le fil.",
+  "Tes invités demandent encore : « C'est à quelle heure, la dot ? »",
+];
+
+function ProblemSection() {
+  return (
+    <section className="bg-[#FBF8F8] py-20">
       <div className="mx-auto max-w-5xl px-5">
-        <div className="text-center">
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#c17c74]">
-            4 étapes, c'est tout
-          </p>
-          <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl italic sm:text-5xl">
-            De l'idée à l'invitation
-          </h2>
-        </div>
-        <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {steps.map(([n, t, d]) => (
+        <Kicker>Tu connais cette situation ?</Kicker>
+        <H2 className="mt-4 max-w-xl">C'est souvent comme ça que ça se passe.</H2>
+
+        <div className="mt-10 grid gap-5 sm:grid-cols-2">
+          {PROBLEMS.map((p) => (
             <div
-              key={n}
-              className="rounded-3xl border border-[#e8c5b6]/60 bg-[#fdf7f3] p-6 transition hover:-translate-y-1 hover:shadow-lg"
+              key={p}
+              className="flex gap-4 rounded-2xl border border-[#F4EFF0] bg-white p-6"
             >
-              <p className="font-mono text-[10px] uppercase tracking-widest text-[#c17c74]">
-                Étape {n}
-              </p>
-              <p className="mt-3 font-[family-name:var(--font-display)] text-2xl italic">
-                {t}
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-[#6b4a3e]">{d}</p>
+              <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#FFF0F0] text-sm text-[#D33A3A]">
+                ✕
+              </span>
+              <Body className="text-sm!">{p}</Body>
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-10 text-center font-[family-name:var(--font-brand-serif)] text-[22px] italic text-[#E82050]">
+          moninvit règle tout ça. En une page.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------- features -------------------------------- */
+
+const FEATURES = [
+  ["💌", "Confirmations en un tap", "Tes invités répondent directement depuis leur téléphone. Tu vois tout en temps réel."],
+  ["📅", "Dot, civil, réception — tout en un", "Chaque invité voit uniquement les cérémonies auxquelles tu le convies."],
+  ["🎵", "Une ambiance dès l'ouverture", "26 musiques ou ta propre chanson. La mélodie commence dès l'ouverture."],
+  ["📖", "Livre d'or numérique", "Tes invités te laissent un message. Tu télécharges un souvenir imprimable."],
+  ["⏱", "Compte à rebours", "L'impatience de tes invités grandit à chaque seconde qui passe."],
+  ["🔗", "Lien WhatsApp en un tap", "Un lien. Un message. Ta famille l'ouvre instantanément."],
+];
+
+function Features() {
+  return (
+    <section className="bg-white py-20">
+      <div className="mx-auto max-w-6xl px-5">
+        <div className="grid gap-6 md:grid-cols-2">
+          <div>
+            <Kicker>Tout ce qu'il te faut</Kicker>
+            <H2 className="mt-4">Pour rendre ton invitation inoubliable.</H2>
+          </div>
+          <Body className="self-end md:max-w-md">
+            Chaque détail a été pensé pour les mariages ivoiriens : plusieurs
+            cérémonies, familles nombreuses, partage sur WhatsApp.
+          </Body>
+        </div>
+
+        <div className="mt-12 grid border-t border-l border-[#E7DFE1] sm:grid-cols-2 lg:grid-cols-3">
+          {FEATURES.map(([icon, title, desc]) => (
+            <div key={title} className="border-b border-r border-[#E7DFE1] p-8">
+              <span className="text-2xl" aria-hidden>{icon}</span>
+              <h3 className="mt-4 font-[family-name:var(--font-brand-serif)] text-[22px] font-medium text-[#201A1C]">
+                {title}
+              </h3>
+              <Body className="mt-2 text-sm!">{desc}</Body>
             </div>
           ))}
         </div>
@@ -674,41 +368,329 @@ function StepsSection() {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*                            EDITORIAL COUPLE                                */
-/* -------------------------------------------------------------------------- */
+/* -------------------------------- live demo ------------------------------- */
 
-function EditorialCouple() {
+function LiveDemo() {
   return (
-    <section className="mx-auto max-w-6xl px-5 py-24">
-      <div className="grid items-center gap-12 md:grid-cols-5">
-        <div className="md:col-span-3">
-          <img
-            src={abidjanCouple.url}
-            alt="Couple mariés à Abidjan"
-            width={1024}
-            height={1024}
-            loading="lazy"
-            className="aspect-[5/4] w-full rounded-[2rem] object-cover shadow-xl shadow-[#c17c74]/15"
-          />
+    <section className="bg-white py-24">
+      <div className="mx-auto grid max-w-5xl items-center gap-14 px-5 md:grid-cols-2">
+        <div className="flex flex-col items-center">
+          <PhoneMock height={480} />
+          <span className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#201A1C] px-4 py-2 font-[family-name:var(--font-brand-ui)] text-xs font-semibold text-white">
+            <span className="size-1.5 rounded-full bg-[#2E9E6B]" /> En ligne ·
+            Basile & Armelle
+          </span>
         </div>
-        <div className="md:col-span-2">
-          <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#c17c74]">
-            Pensé à Abidjan
-          </p>
-          <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl italic leading-[1.05] sm:text-5xl">
-            Chaque mariage <br />a sa propre histoire.
+
+        <div>
+          <Kicker>Démonstration en direct</Kicker>
+          <h2 className="mt-4 font-[family-name:var(--font-brand-serif)] text-[32px] font-medium leading-[1.1] text-[#201A1C] sm:text-[40px]">
+            Voici ce que reçoivent tes invités.
           </h2>
-          <p className="mt-6 text-[15px] leading-relaxed text-[#6b4a3e]">
-            MonInvit.com comprend nos traditions. Que vous célébriez une dot
-            intime, un mariage à l'église, ou trois jours de fête — chaque
-            étape a sa page, son programme et son lieu.
-          </p>
-          <Link
-            to="/signup"
-            className="mt-8 inline-block rounded-full border border-[#2b1a14] px-6 py-3 text-sm font-medium text-[#2b1a14] transition hover:bg-[#2b1a14] hover:text-[#fdf7f3]"
+          <Body className="mt-4">
+            Une page élégante qui s'ouvre directement sur WhatsApp. Avec leur
+            photo, leur musique, leur programme.
+          </Body>
+          <a
+            href={DEMO_URL}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="mt-6 inline-block font-[family-name:var(--font-brand-ui)] text-[15px] font-semibold text-[#C81A45] hover:underline"
           >
-            Créer notre page →
+            Voir la page de Basile & Armelle →
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------ how it works ------------------------------ */
+
+const STEPS = [
+  ["Tes prénoms", "Les bases de ton invitation", "2 min"],
+  ["Tes cérémonies", "Dot, civil, réception…", "5 min"],
+  ["Ton modèle", "Parmi 20+ designs", "3 min"],
+  ["Partage", "Lien WhatsApp en un tap", "Maintenant"],
+];
+
+function HowItWorks() {
+  return (
+    <section className="bg-[#FBF8F8] py-24">
+      <div className="mx-auto max-w-5xl px-5 text-center">
+        <Kicker>En 4 étapes</Kicker>
+        <H2 className="mx-auto mt-4 max-w-2xl">
+          Prêt à partager en moins de 10 minutes.
+        </H2>
+
+        <div className="relative mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+          <div
+            aria-hidden
+            className="absolute left-[12%] right-[12%] top-[18px] hidden h-px bg-[#F1E3C6] lg:block"
+          />
+          {STEPS.map(([title, desc, dur], i) => (
+            <div key={title} className="relative flex flex-col items-center">
+              <span className="grid size-9 place-items-center rounded-full bg-[#E82050] font-[family-name:var(--font-brand-ui)] text-sm font-bold text-white">
+                {i + 1}
+              </span>
+              <h3 className="mt-4 font-[family-name:var(--font-brand-ui)] text-[15px] font-bold text-[#201A1C]">
+                {title}
+              </h3>
+              <Body className="mt-1 text-sm!">{desc}</Body>
+              <span className="mt-3 rounded-full bg-[#F1E3C6] px-3 py-1 font-[family-name:var(--font-brand-ui)] text-[11px] font-semibold text-[#8a6a2c]">
+                {dur}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <Link to="/signup" className="btn-framboise mt-14 px-8 py-4 text-[15px]">
+          Créer mon invitation gratuitement →
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+/* ----------------------------- template gallery --------------------------- */
+
+const GALLERY_NAMES = [
+  "Basile & Armelle",
+  "Adjoua & Koffi",
+  "Mariama & Seydou",
+  "Chloé & Ange",
+  "Nadia & Yao",
+];
+
+function TemplateGallery() {
+  return (
+    <section className="bg-white py-20">
+      <div className="mx-auto max-w-6xl px-5 text-center">
+        <Kicker>Nos modèles</Kicker>
+        <H2 className="mt-4">20 modèles. Un seul qui te ressemble.</H2>
+        <Body className="mx-auto mt-4 max-w-xl">
+          Du classique élégant aux motifs ivoiriens — personnalise les couleurs
+          et la typographie.
+        </Body>
+
+        <div className="mt-12 flex snap-x gap-5 overflow-x-auto pb-4">
+          {templateOrder.map((id, i) => {
+            const t = templateMeta[id];
+            return (
+              <figure key={id} className="w-[200px] shrink-0 snap-start text-left">
+                <div
+                  className="grid h-[280px] place-items-center overflow-hidden rounded-2xl px-4 text-center"
+                  style={{ background: t.swatch[0], border: `1px solid ${t.swatch[1]}` }}
+                >
+                  <div>
+                    <p
+                      className="font-[family-name:var(--font-brand-serif)] text-[22px] italic"
+                      style={{ color: t.swatch[3] }}
+                    >
+                      {GALLERY_NAMES[i % GALLERY_NAMES.length]}
+                    </p>
+                    <span
+                      aria-hidden
+                      className="mx-auto mt-3 block h-px w-10"
+                      style={{ background: t.swatch[2] }}
+                    />
+                    <p
+                      className="mt-3 font-[family-name:var(--font-brand-ui)] text-[10px] font-semibold uppercase tracking-[0.2em]"
+                      style={{ color: t.swatch[2] }}
+                    >
+                      Save the date
+                    </p>
+                  </div>
+                </div>
+                <figcaption className="mt-3 font-[family-name:var(--font-brand-ui)] text-[13px] font-semibold text-[#201A1C]">
+                  {t.label}
+                  <span className="block font-medium text-[#7A6D70]">{t.tagline}</span>
+                </figcaption>
+              </figure>
+            );
+          })}
+        </div>
+
+        <Link
+          to="/signup"
+          className="inline-block font-[family-name:var(--font-brand-ui)] text-[15px] font-semibold text-[#C81A45] hover:underline"
+        >
+          Voir tous les modèles →
+        </Link>
+      </div>
+    </section>
+  );
+}
+
+/* --------------------------------- pricing -------------------------------- */
+
+const INCLUDED = [
+  "Page publique et partageable sur WhatsApp",
+  "Lien personnalisé moninvit.com/e/vos-prénoms",
+  "QR code à imprimer",
+  "RSVP illimités · tableau de bord",
+  "Toutes vos cérémonies (dot, civil…)",
+  "Musique d'ambiance (26 titres)",
+  "Compte à rebours automatique",
+  "Accès à vie",
+];
+
+function Pricing() {
+  return (
+    <section id="tarifs" className="scroll-mt-24 bg-[#FBF8F8] py-24">
+      <div className="mx-auto max-w-6xl px-5">
+        <div className="text-center">
+          <Kicker>Tarification</Kicker>
+          <H2 className="mt-4">Simple. Transparent. Sans surprise.</H2>
+          <Body className="mx-auto mt-4 max-w-xl">
+            Tu crées gratuitement. Tu paies uniquement quand tu publies.
+          </Body>
+        </div>
+
+        <div className="mt-14 grid items-start gap-14 lg:grid-cols-2">
+          <div className="hidden flex-col items-center lg:flex lg:sticky lg:top-[100px]">
+            <PhoneMock height={480} />
+            <a
+              href={DEMO_URL}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="mt-6 font-[family-name:var(--font-brand-ui)] text-[14px] font-semibold text-[#C81A45] hover:underline"
+            >
+              Voir la page complète →
+            </a>
+          </div>
+
+          <div>
+            <div className="rounded-[20px] border border-[#F4EFF0] bg-white p-8 shadow-[0_20px_50px_-30px_rgba(32,26,28,0.35)]">
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <p className="kicker">Formule unique</p>
+                  <p className="mt-1 font-[family-name:var(--font-brand-body)] text-sm text-[#5A4F52]">
+                    Publication complète
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="font-[family-name:var(--font-brand-serif)] text-[34px] font-medium text-[#201A1C]">
+                    24 900 <span className="text-[18px]">XOF</span>
+                  </p>
+                  <p className="font-[family-name:var(--font-brand-ui)] text-[12px] font-medium text-[#7A6D70]">
+                    Paiement unique
+                  </p>
+                </div>
+              </div>
+
+              <div aria-hidden className="my-6 h-px bg-[#F1E3C6]" />
+
+              <ul className="flex flex-col gap-3">
+                {INCLUDED.map((f) => (
+                  <li key={f} className="flex gap-3">
+                    <span className="text-[#2E9E6B]" aria-hidden>✓</span>
+                    <span className="font-[family-name:var(--font-brand-body)] text-[14px] text-[#5A4F52]">
+                      {f}
+                    </span>
+                  </li>
+                ))}
+                <li className="flex gap-3">
+                  <span className="text-[#C6A15B]" aria-hidden>┄</span>
+                  <span className="font-[family-name:var(--font-brand-body)] text-[14px] text-[#7A6D70]">
+                    Livre d'or · + 1 990 XOF (option)
+                  </span>
+                </li>
+              </ul>
+
+              <Link to="/signup" className="btn-framboise mt-8 w-full px-6 py-4 text-[15px]">
+                Créer mon invitation gratuitement →
+              </Link>
+
+              <p className="mt-4 text-center font-[family-name:var(--font-brand-ui)] text-[12px] font-medium text-[#7A6D70]">
+                Wave · Orange Money · MTN · Moov · Carte
+              </p>
+            </div>
+
+            <div className="mt-5 rounded-xl bg-[#FBF8F8] p-5 ring-1 ring-[#F4EFF0]">
+              <p className="font-[family-name:var(--font-brand-ui)] text-[14px] font-semibold text-[#201A1C]">
+                🔒 Tu ne paies que quand tu es prêt.
+              </p>
+              <Body className="mt-1 text-sm!">
+                Crée, personnalise, prévisualise autant que tu veux.
+              </Body>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------- testimonials ----------------------------- */
+
+const REVIEWS = [
+  {
+    initial: "A",
+    quote:
+      "On hésitait. Puis on a calculé les cartons papier : 200 invités × 1 500 XOF = 300 000 XOF. moninvit nous a fait économiser une fortune.",
+    author: "A.K. · Mariage à Abidjan · Mars 2026",
+  },
+  {
+    initial: "M",
+    quote:
+      "La dot, le civil, la réception. Tout sur une page. Nos familles avaient toujours la bonne info.",
+    author: "M.S. · Bouaké · Janvier 2026",
+  },
+  {
+    initial: "C",
+    quote: "Ma belle-mère a pleuré en recevant le lien.",
+    author: "C.A. · Abidjan · Avril 2026",
+  },
+];
+
+export function ReviewCard({
+  initial,
+  quote,
+  author,
+}: {
+  initial: string;
+  quote: string;
+  author: string;
+}) {
+  return (
+    <figure className="flex flex-col rounded-2xl border border-[#F4EFF0] bg-white p-7 shadow-[0_16px_40px_-32px_rgba(32,26,28,0.5)]">
+      <Stars />
+      <blockquote className="mt-4 flex-1 font-[family-name:var(--font-brand-serif)] text-[16px] italic leading-[1.7] text-[#201A1C]">
+        « {quote} »
+      </blockquote>
+      <div aria-hidden className="my-5 h-px bg-[#F4EFF0]" />
+      <figcaption className="flex items-center gap-3">
+        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#FBDDE5] font-[family-name:var(--font-brand-ui)] text-xs font-bold text-[#E82050]">
+          {initial}
+        </span>
+        <span className="font-[family-name:var(--font-brand-ui)] text-[11px] font-medium text-[#7A6D70]">
+          {author}
+        </span>
+      </figcaption>
+    </figure>
+  );
+}
+
+function Testimonials() {
+  return (
+    <section className="bg-white py-24">
+      <div className="mx-auto max-w-6xl px-5">
+        <div className="text-center">
+          <Kicker>Ils ont dit oui à moninvit</Kicker>
+          <H2 className="mt-4">Des couples ivoiriens racontent.</H2>
+        </div>
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
+          {REVIEWS.map((r) => (
+            <ReviewCard key={r.author} {...r} />
+          ))}
+        </div>
+        <div className="mt-10 text-center">
+          <Link
+            to="/temoignages"
+            className="font-[family-name:var(--font-brand-ui)] text-[15px] font-semibold text-[#C81A45] hover:underline"
+          >
+            Lire tous les témoignages →
           </Link>
         </div>
       </div>
@@ -716,219 +698,75 @@ function EditorialCouple() {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*                              PROMISE BLOCK                                 */
-/* -------------------------------------------------------------------------- */
+/* ----------------------------------- faq ---------------------------------- */
 
-function PromiseBlock() {
+function Faq() {
+  const [open, setOpen] = useState<number | null>(0);
   return (
-    <section className="mx-auto max-w-4xl px-5 pb-8">
-      <div className="relative overflow-hidden rounded-[2rem] border border-[#e8c5b6]/60 bg-[#fdf7f3] p-8 text-center shadow-lg sm:p-14">
-        <div
-          aria-hidden
-          className="absolute -top-8 left-1/2 -translate-x-1/2 font-[family-name:var(--font-display)] text-[140px] italic text-[#c17c74]/10"
-        >
-          ♡
+    <section className="bg-[#FBF8F8] py-24">
+      <div className="mx-auto max-w-3xl px-5">
+        <div className="text-center">
+          <Kicker>Questions fréquentes</Kicker>
+          <H2 className="mt-4">Tout ce que tu te demandes.</H2>
         </div>
-        <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#c17c74]">
-          Notre promesse
-        </p>
-        <h2 className="mt-4 font-[family-name:var(--font-display)] text-3xl italic leading-[1.15] sm:text-4xl">
-          Vous ne partagerez votre invitation que <br />
-          <em className="text-[#c17c74]">le jour où elle vous fera vibrer.</em>
-        </h2>
-        <p className="mx-auto mt-6 max-w-xl text-[15px] leading-relaxed text-[#6b4a3e]">
-          Vous avancez à votre rythme, révision après révision.
-          Tant que chaque détail n'est pas exactement comme vous l'imaginiez,
-          rien n'est publié — et rien n'est facturé.
-        </p>
+
+        <div className="mt-10 divide-y divide-[#F4EFF0] rounded-2xl border border-[#F4EFF0] bg-white px-6">
+          {HOME_FAQS.map((f, i) => {
+            const isOpen = open === i;
+            return (
+              <div key={f.q} className="py-5">
+                <button
+                  type="button"
+                  onClick={() => setOpen(isOpen ? null : i)}
+                  aria-expanded={isOpen}
+                  className="flex w-full items-center justify-between gap-4 text-left font-[family-name:var(--font-brand-ui)] text-[15px] font-semibold text-[#201A1C]"
+                >
+                  {f.q}
+                  <span
+                    className={`shrink-0 text-[#E82050] transition-transform ${isOpen ? "rotate-45" : ""}`}
+                    aria-hidden
+                  >
+                    +
+                  </span>
+                </button>
+                {isOpen ? <Body className="mt-3">{f.a}</Body> : null}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                 FAQ BLOCK                                  */
-/* -------------------------------------------------------------------------- */
-
-function FaqBlock() {
-  const faqs = HOME_FAQS;
-  return (
-    <section className="mx-auto max-w-3xl px-5 py-24">
-      <div className="text-center">
-        <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#c17c74]">
-          Vos questions
-        </p>
-        <h2 className="mt-4 font-[family-name:var(--font-display)] text-4xl italic sm:text-5xl">
-          Tout ce qu'on nous demande.
-        </h2>
-      </div>
-      <div className="mt-12 divide-y divide-[#e8c5b6]/60 border-y border-[#e8c5b6]/60">
-        {faqs.map((f) => (
-          <details key={f.q} className="group py-5">
-            <summary className="flex cursor-pointer list-none items-start justify-between gap-6">
-              <span className="font-[family-name:var(--font-display)] text-lg italic text-[#2b1a14] sm:text-xl">
-                {f.q}
-              </span>
-              <span className="mt-1 shrink-0 font-mono text-lg text-[#c17c74] transition group-open:rotate-45">
-                +
-              </span>
-            </summary>
-            <p className="mt-3 pr-8 text-[15px] leading-relaxed text-[#6b4a3e]">
-              {f.a}
-            </p>
-          </details>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*                                FINAL CTA                                   */
-/* -------------------------------------------------------------------------- */
+/* -------------------------------- final CTA ------------------------------- */
 
 function FinalCta() {
   return (
-    <section className="relative isolate overflow-hidden bg-[#2b1a14] text-[#fdf7f3]">
+    <section className="relative overflow-hidden bg-[#E82050] py-24 text-center text-white">
       <img
-        src={tableImg}
+        src={logoHeart.url}
         alt=""
-        width={1024}
-        height={1024}
-        loading="lazy"
         aria-hidden
-        className="absolute inset-0 -z-10 h-full w-full object-cover opacity-20"
+        className="pointer-events-none absolute -bottom-10 -left-10 w-64 opacity-10 brightness-0 invert"
       />
-      <div className="mx-auto max-w-3xl px-5 pt-24 pb-8 text-center">
-        <p className="font-mono text-[11px] uppercase tracking-[0.35em] text-[#e8c5b6]">
-          Il ne manque plus que vous
+      <div className="relative mx-auto max-w-3xl px-5">
+        <p className="font-[family-name:var(--font-brand-ui)] text-xs font-semibold uppercase tracking-[0.24em] text-[#FBDDE5]">
+          Il ne manque plus que toi
         </p>
-        <h2 className="mt-6 font-[family-name:var(--font-display)] text-4xl italic leading-[1.05] sm:text-6xl">
-          Faisons de votre{" "}
-          <em className="text-[#e8c5b6]">« oui »</em> <br />
-          un souvenir partagé.
+        <h2 className="mx-auto mt-5 max-w-[760px] font-[family-name:var(--font-brand-serif)] text-[40px] font-medium leading-[1.06] sm:text-[60px]">
+          Faisons de ton « oui » un souvenir partagé.
         </h2>
         <Link
           to="/signup"
-          className="mt-10 inline-block rounded-full bg-[#fdf7f3] px-10 py-4 text-sm font-medium tracking-wide text-[#2b1a14] shadow-xl transition hover:-translate-y-0.5"
+          className="mt-9 inline-flex items-center gap-2 rounded-full bg-white px-[34px] py-4 font-[family-name:var(--font-brand-ui)] text-[15px] font-semibold text-[#C81A45] transition hover:-translate-y-0.5"
         >
-          Créer notre invitation
+          Commencer gratuitement →
         </Link>
-        <p className="mt-4 text-xs text-[#e8c5b6]/70">
-          Créez votre page en 10 min · Payez uniquement à la publication
+        <p className="mt-5 font-[family-name:var(--font-brand-ui)] text-[13px] font-medium text-[#FBDDE5]">
+          Crée ta page en 10 min · Paie uniquement à la publication
         </p>
       </div>
     </section>
-  );
-}
-
-
-
-
-/* -------------------------------------------------------------------------- */
-/*                              TEMPLATE FAN                                  */
-/* -------------------------------------------------------------------------- */
-
-function TemplateFan() {
-  const cards = templateOrder.map((id) => ({ id, ...templateMeta[id] }));
-  const arranged = [cards[1], cards[3], cards[0], cards[2], cards[4]];
-  const layout = [
-    { rot: -14, x: -220, y: 40, z: 1, scale: 0.82 },
-    { rot: -7, x: -115, y: 18, z: 2, scale: 0.9 },
-    { rot: 0, x: 0, y: 0, z: 3, scale: 1 },
-    { rot: 7, x: 115, y: 18, z: 2, scale: 0.9 },
-    { rot: 14, x: 220, y: 40, z: 1, scale: 0.82 },
-  ];
-
-  return (
-    <div className="relative mx-auto mt-14 h-[380px] w-full max-w-5xl overflow-hidden sm:mt-20 sm:h-[520px]">
-      <div className="absolute left-1/2 top-0 h-full w-full origin-top -translate-x-1/2 scale-[0.62] sm:scale-100">
-        {arranged.map((c, i) => {
-          const l = layout[i];
-          return (
-            <div
-              key={c.id}
-              className="absolute left-1/2 top-1/2 origin-bottom transition-transform duration-500 hover:-translate-y-2"
-              style={{
-                zIndex: l.z,
-                transform: `translate(-50%, -50%) translate(${l.x}px, ${l.y}px) rotate(${l.rot}deg) scale(${l.scale})`,
-              }}
-            >
-              <TemplateCard meta={c} />
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function TemplateCard({
-  meta,
-}: {
-  meta: { label: string; tagline: string; swatch: string[] };
-}) {
-  const [bg, accent1, accent2, ink] = meta.swatch;
-  return (
-    <div
-      className="relative flex h-[340px] w-[210px] flex-col overflow-hidden rounded-[18px] shadow-[0_20px_60px_-20px_rgba(75,32,20,0.35)] ring-1 ring-black/5 sm:h-[420px] sm:w-[260px]"
-      style={{ backgroundColor: bg, color: ink }}
-    >
-      <div className="flex items-center justify-between px-4 pt-4">
-        <span
-          className="font-mono text-[8px] uppercase tracking-[0.25em]"
-          style={{ color: ink, opacity: 0.6 }}
-        >
-          Save the date
-        </span>
-        <span
-          className="size-1.5 rounded-full"
-          style={{ backgroundColor: accent2 }}
-        />
-      </div>
-      <div
-        className="mx-4 mt-3 flex-1 rounded-md"
-        style={{
-          background: `linear-gradient(140deg, ${accent1} 0%, ${accent2} 55%, ${ink} 100%)`,
-        }}
-      />
-      <div className="px-4 py-4 text-center">
-        <p
-          className="font-[family-name:var(--font-display)] text-[24px] italic leading-none sm:text-[28px]"
-          style={{ color: ink }}
-        >
-          Aïcha
-        </p>
-        <p
-          className="my-0.5 font-[family-name:var(--font-display)] text-xs italic"
-          style={{ color: accent2 }}
-        >
-          &
-        </p>
-        <p
-          className="font-[family-name:var(--font-display)] text-[24px] italic leading-none sm:text-[28px]"
-          style={{ color: ink }}
-        >
-          Loïc
-        </p>
-        <div
-          className="mx-auto my-3 h-px w-8"
-          style={{ backgroundColor: accent2 }}
-        />
-        <p
-          className="font-mono text-[8px] uppercase tracking-[0.3em]"
-          style={{ color: ink, opacity: 0.7 }}
-        >
-          14 · 08 · 2027 · Abidjan
-        </p>
-      </div>
-      <div
-        className="border-t px-4 py-2 text-center font-mono text-[8px] uppercase tracking-[0.25em]"
-        style={{ borderColor: `${ink}22`, color: ink, opacity: 0.6 }}
-      >
-        {meta.label}
-      </div>
-    </div>
   );
 }

@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { openConsentPreferences } from "@/lib/consent";
-
+import logoFull from "@/assets/logo-moninvit.png.asset.json";
 
 const NAV = [
-  { to: "/", label: "Accueil" },
-  { to: "/comment-ca-marche", label: "Comment ça marche ?" },
+  { to: "/comment-ca-marche", label: "Comment ça marche" },
   { to: "/", hash: "tarifs", label: "Tarifs" },
   { to: "/temoignages", label: "Témoignages" },
   { to: "/blog", label: "Blog" },
@@ -22,16 +21,26 @@ function scrollToHash(hash?: string) {
   if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
+export function Logo({ className = "h-[26px]" }: { className?: string }) {
+  return (
+    <img
+      src={logoFull.url}
+      alt="moninvit.com"
+      className={`w-auto ${className}`}
+      width={640}
+      height={140}
+    />
+  );
+}
+
 export function SiteHeader() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
 
-  // Close menu on route change
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
 
-  // Lock scroll + ESC to close
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
@@ -45,18 +54,19 @@ export function SiteHeader() {
   }, [open]);
 
   return (
-    <header className="relative z-40 border-b border-[#e8c5b6]/40 bg-[#fdf7f3]/85 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-4">
-        <Link
-          to="/"
-          aria-label="MonInvit.com — accueil"
-          className="font-[family-name:var(--font-display)] text-xl italic text-[#2b1a14] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c17c74] focus-visible:ring-offset-2 focus-visible:ring-offset-[#fdf7f3] rounded-sm"
-        >
-          MonInvit<span className="text-[#c17c74]">.com</span>
+    <header
+      className="sticky top-0 z-50 border-b border-[#F4EFF0] backdrop-blur-[10px]"
+      style={{ background: "rgba(255,255,255,0.92)" }}
+    >
+      <div className="mx-auto flex h-[74px] max-w-6xl items-center justify-between gap-3 px-5">
+        <Link to="/" aria-label="moninvit.com — accueil" className="shrink-0">
+          <Logo />
         </Link>
 
-        {/* Desktop nav */}
-        <nav aria-label="Navigation principale" className="hidden items-center gap-1 md:flex">
+        <nav
+          aria-label="Navigation principale"
+          className="hidden items-center gap-1 md:flex"
+        >
           {NAV.map((n) => {
             const hash = "hash" in n ? n.hash : undefined;
             const active = isActive(pathname, n.to, hash);
@@ -70,10 +80,10 @@ export function SiteHeader() {
                 }}
                 aria-current={active ? "page" : undefined}
                 className={
-                  "relative rounded-full px-3 py-2 text-sm transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c17c74] focus-visible:ring-offset-2 focus-visible:ring-offset-[#fdf7f3] " +
+                  "rounded-full px-3 py-2 font-[family-name:var(--font-brand-ui)] text-sm font-semibold transition " +
                   (active
-                    ? "text-[#2b1a14] font-medium after:absolute after:left-3 after:right-3 after:-bottom-0.5 after:h-[2px] after:rounded-full after:bg-[#c17c74]"
-                    : "text-[#6b4a3e] hover:text-[#2b1a14]")
+                    ? "text-[#E82050]"
+                    : "text-[#3D3437] hover:text-[#E82050]")
                 }
               >
                 {n.label}
@@ -85,27 +95,25 @@ export function SiteHeader() {
         <div className="flex items-center gap-2">
           <Link
             to="/login"
-            className="hidden text-sm text-[#6b4a3e] hover:text-[#2b1a14] focus-visible:outline-none focus-visible:underline sm:inline-block"
+            className="hidden font-[family-name:var(--font-brand-ui)] text-sm font-semibold text-[#3D3437] transition hover:text-[#E82050] sm:inline-block"
           >
             Se connecter
           </Link>
           <Link
             to="/signup"
-            className="hidden min-h-11 items-center rounded-full bg-[#2b1a14] px-4 text-xs font-medium text-[#fdf7f3] transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c17c74] focus-visible:ring-offset-2 focus-visible:ring-offset-[#fdf7f3] sm:inline-flex"
+            className="btn-framboise hidden px-[22px] py-[11px] text-sm sm:inline-flex"
           >
-            Commencer
+            Commencer →
           </Link>
 
-          {/* Mobile hamburger */}
           <button
             type="button"
             aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
             aria-expanded={open}
             aria-controls="mobile-menu"
             onClick={() => setOpen((v) => !v)}
-            className="grid size-11 place-items-center rounded-full text-[#2b1a14] transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c17c74] focus-visible:ring-offset-2 focus-visible:ring-offset-[#fdf7f3] md:hidden"
+            className="grid size-11 place-items-center rounded-full text-[#201A1C] transition active:scale-95 md:hidden"
           >
-            <span className="sr-only">{open ? "Fermer le menu" : "Ouvrir le menu"}</span>
             <svg
               aria-hidden="true"
               viewBox="0 0 24 24"
@@ -148,20 +156,18 @@ export function SiteHeader() {
         aria-label="Menu"
         aria-hidden={!open}
         className={
-          "fixed inset-x-0 top-0 z-40 origin-top rounded-b-[24px] border-b border-[#e8c5b6]/50 bg-[#fdf7f3] shadow-2xl transition-transform duration-200 ease-out md:hidden " +
+          "fixed inset-x-0 top-0 z-40 origin-top rounded-b-[24px] border-b border-[#F4EFF0] bg-white shadow-2xl transition-transform duration-200 ease-out md:hidden " +
           (open ? "translate-y-0" : "-translate-y-full")
         }
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
         <div className="flex items-center justify-between px-5 py-4">
-          <span className="font-[family-name:var(--font-display)] text-lg italic text-[#2b1a14]">
-            Menu
-          </span>
+          <Logo className="h-[22px]" />
           <button
             type="button"
             aria-label="Fermer le menu"
             onClick={() => setOpen(false)}
-            className="grid size-11 place-items-center rounded-full text-[#2b1a14] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c17c74]"
+            className="grid size-11 place-items-center rounded-full text-[#201A1C]"
           >
             <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" className="size-5">
               <path d="M6 6l12 12" />
@@ -169,52 +175,42 @@ export function SiteHeader() {
             </svg>
           </button>
         </div>
-        <nav aria-label="Navigation mobile" className="px-3 pb-4">
+        <nav aria-label="Navigation mobile" className="px-3 pb-5">
           <ul className="flex flex-col">
             {NAV.map((n) => {
               const hash = "hash" in n ? n.hash : undefined;
-              const active = isActive(pathname, n.to, hash);
               return (
                 <li key={n.label}>
                   <Link
                     to={n.to}
                     hash={hash}
-                    aria-current={active ? "page" : undefined}
                     onClick={() => {
                       setOpen(false);
                       if (hash && pathname === n.to) {
                         setTimeout(() => scrollToHash(hash), 60);
                       }
                     }}
-                    className={
-                      "flex min-h-12 items-center justify-between rounded-2xl px-4 text-[15px] transition " +
-                      (active
-                        ? "bg-[#fbeee4] font-medium text-[#2b1a14]"
-                        : "text-[#2b1a14]/85 hover:bg-[#fbeee4]/60")
-                    }
+                    className="flex min-h-12 items-center rounded-2xl px-4 font-[family-name:var(--font-brand-ui)] text-[15px] font-semibold text-[#201A1C] transition hover:bg-[#FDF0F3]"
                   >
-                    <span>{n.label}</span>
-                    {active ? (
-                      <span aria-hidden="true" className="size-1.5 rounded-full bg-[#c17c74]" />
-                    ) : null}
+                    {n.label}
                   </Link>
                 </li>
               );
             })}
           </ul>
 
-          <div className="mt-4 flex flex-col gap-2 border-t border-[#e8c5b6]/60 px-1 pt-4">
+          <div className="mt-4 flex flex-col gap-2 border-t border-[#F4EFF0] px-1 pt-4">
             <Link
               to="/signup"
               onClick={() => setOpen(false)}
-              className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#2b1a14] px-5 text-sm font-medium text-[#fdf7f3] transition hover:opacity-90"
+              className="btn-framboise min-h-12 px-5 text-sm"
             >
-              Créer notre invitation
+              Créer mon invitation →
             </Link>
             <Link
               to="/login"
               onClick={() => setOpen(false)}
-              className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#e8c5b6] px-5 text-sm text-[#2b1a14] transition hover:bg-[#fbeee4]/60"
+              className="btn-outline-framboise min-h-12 px-5 text-sm"
             >
               Se connecter
             </Link>
@@ -225,44 +221,49 @@ export function SiteHeader() {
   );
 }
 
+export function MobileStickyCta() {
+  return (
+    <div
+      className="fixed inset-x-0 bottom-0 z-[100] flex items-center justify-between gap-3 bg-[#201A1C] px-5 py-3 md:hidden"
+      style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
+    >
+      <div className="min-w-0">
+        <p className="font-[family-name:var(--font-brand-ui)] text-xs font-bold text-white">
+          Invitation de mariage
+        </p>
+        <p className="truncate font-[family-name:var(--font-brand-body)] text-[11px] text-white/50">
+          Gratuit jusqu'à la publication
+        </p>
+      </div>
+      <Link to="/signup" className="btn-framboise shrink-0 px-[18px] py-2.5 text-xs">
+        Commencer →
+      </Link>
+    </div>
+  );
+}
+
 export function SiteFooter() {
   const year = new Date().getFullYear();
   return (
-    <footer className="relative isolate overflow-hidden bg-[#2b1a14] text-[#fdf7f3]">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 opacity-70"
-        style={{
-          background:
-            "radial-gradient(600px 300px at 15% 0%, rgba(193,124,116,0.35) 0%, transparent 60%), radial-gradient(700px 350px at 90% 100%, rgba(246,217,203,0.15) 0%, transparent 65%)",
-        }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-px"
-        style={{
-          background:
-            "linear-gradient(90deg, transparent, rgba(232,197,182,0.6), transparent)",
-        }}
-      />
-
-      <div className="mx-auto max-w-6xl px-5 pt-16 pb-8">
+    <footer className="border-t border-[#F4EFF0] bg-[#FBF8F8] pb-24 pt-16 md:pb-10">
+      <div className="mx-auto max-w-6xl px-5">
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
-            <Link
-              to="/"
-              aria-label="MonInvit.com — accueil"
-              className="inline-flex items-baseline font-[family-name:var(--font-display)] text-2xl italic"
-            >
-              MonInvit<span className="text-[#e8a89e]">.com</span>
+            <Link to="/" aria-label="moninvit.com — accueil" className="inline-block">
+              <Logo className="h-6" />
             </Link>
-            <p className="mt-3 max-w-xs text-sm leading-relaxed text-[#fdf7f3]/70">
-              Des invitations digitales élégantes, pensées avec amour pour les mariés
-              de Côte d'Ivoire.
+            <p className="mt-4 max-w-[280px] font-[family-name:var(--font-brand-body)] text-sm leading-relaxed text-[#5A4F52]">
+              Des invitations digitales élégantes, pensées avec amour pour les
+              mariés de Côte d'Ivoire.
             </p>
-            <p className="mt-4 font-[family-name:var(--font-display)] text-lg italic text-[#e8a89e]">
-              Célébrons votre union ♡
+            <p className="mt-4 font-[family-name:var(--font-brand-ui)] text-[13px] font-semibold text-[#C6A15B]">
+              Célébrons ton union ♡
             </p>
+            <div className="mt-4 flex flex-wrap gap-4 font-[family-name:var(--font-brand-ui)] text-xs font-medium text-[#7A6D70]">
+              <a href="https://instagram.com" target="_blank" rel="noreferrer noopener" className="hover:text-[#E82050]">Instagram</a>
+              <a href="https://tiktok.com" target="_blank" rel="noreferrer noopener" className="hover:text-[#E82050]">TikTok</a>
+              <a href="https://wa.me/2250000000" target="_blank" rel="noreferrer noopener" className="hover:text-[#E82050]">WhatsApp</a>
+            </div>
           </div>
 
           <FooterColumn title="Explorer">
@@ -273,26 +274,20 @@ export function SiteFooter() {
           </FooterColumn>
 
           <FooterColumn title="Commencer">
-            <FooterLink to="/signup">Créer notre invitation</FooterLink>
+            <FooterLink to="/signup">Créer mon invitation</FooterLink>
             <FooterLink to="/login">Se connecter</FooterLink>
             <FooterLink to="/invitation">Voir un exemple</FooterLink>
           </FooterColumn>
 
           <FooterColumn title="Légal">
-            <FooterLink to="/contact">Contact</FooterLink>
-            <FooterLink to="/conditions-generales-de-vente">
-              Conditions générales de vente
-            </FooterLink>
             <FooterLink to="/termes-et-conditions">Termes & conditions</FooterLink>
-            <FooterLink to="/politique-de-confidentialite">
-              Politique de confidentialité
-            </FooterLink>
-
+            <FooterLink to="/politique-de-confidentialite">Confidentialité</FooterLink>
+            <FooterLink to="/conditions-generales-de-vente">Conditions de vente</FooterLink>
             <li>
               <button
                 type="button"
                 onClick={() => openConsentPreferences()}
-                className="text-sm text-[#fdf7f3]/70 transition hover:text-[#e8a89e]"
+                className="font-[family-name:var(--font-brand-body)] text-sm text-[#5A4F52] transition hover:text-[#E82050]"
               >
                 Gérer mes cookies
               </button>
@@ -300,29 +295,17 @@ export function SiteFooter() {
             <li>
               <a
                 href="mailto:contact@moninvit.com"
-                className="text-sm text-[#fdf7f3]/70 transition hover:text-[#e8a89e]"
+                className="font-[family-name:var(--font-brand-body)] text-sm text-[#5A4F52] transition hover:text-[#E82050]"
               >
                 contact@moninvit.com
               </a>
             </li>
-
           </FooterColumn>
         </div>
 
-        <div
-          aria-hidden
-          className="mt-12 h-px w-full"
-          style={{
-            background:
-              "linear-gradient(90deg, transparent, rgba(232,197,182,0.35), transparent)",
-          }}
-        />
-
-        <div className="mt-6 flex flex-col items-center justify-between gap-3 text-xs text-[#fdf7f3]/60 sm:flex-row">
-          <p>© {year} MonInvit.com — Fait avec ♡ à Abidjan</p>
-          <p className="flex items-center gap-2">
-            <span className="inline-block size-1.5 rounded-full bg-[#e8a89e]" />
-            Basé en Côte d'Ivoire
+        <div className="mt-12 border-t border-[#E7DFE1] pt-6">
+          <p className="text-center font-[family-name:var(--font-brand-ui)] text-xs text-[#7A6D70] sm:text-left">
+            © {year} moninvit.com — Fait avec ♡ à Abidjan
           </p>
         </div>
       </div>
@@ -333,9 +316,7 @@ export function SiteFooter() {
 function FooterColumn({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h3 className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#e8a89e]">
-        {title}
-      </h3>
+      <h3 className="kicker text-[11px]! text-[#201A1C]!">{title}</h3>
       <ul className="mt-4 flex flex-col gap-2.5">{children}</ul>
     </div>
   );
@@ -346,11 +327,9 @@ function FooterLink({ to, children }: { to: string; children: React.ReactNode })
     <li>
       <Link
         to={to}
-        className="group inline-flex items-center gap-1.5 text-sm text-[#fdf7f3]/75 transition hover:text-[#e8a89e]"
+        className="font-[family-name:var(--font-brand-body)] text-sm text-[#5A4F52] transition hover:text-[#E82050]"
       >
-        <span className="transition-transform group-hover:translate-x-0.5">
-          {children}
-        </span>
+        {children}
       </Link>
     </li>
   );
@@ -368,27 +347,20 @@ export function PageShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-dvh overflow-x-hidden bg-[#fdf7f3] text-[#2b1a14]">
+    <div className="min-h-dvh overflow-x-clip bg-white text-[#201A1C]">
       <SiteHeader />
       <main id="main">
-        <section className="relative isolate">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 -z-10"
-            style={{
-              background:
-                "radial-gradient(1000px 500px at 50% -10%, #f6d9cb 0%, #fdf7f3 60%, #fdf7f3 100%)",
-            }}
-          />
-          <div className="mx-auto max-w-4xl px-5 pt-14 pb-10 text-center sm:pt-20">
-            <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#c17c74]">
-              {eyebrow}
-            </p>
-            <h1 className="mt-4 font-[family-name:var(--font-display)] text-4xl leading-[1.05] sm:text-6xl">
+        <section
+          className="border-b border-[#F4EFF0]"
+          style={{ background: "linear-gradient(170deg, #FDF0F3 0%, #FFFFFF 60%)" }}
+        >
+          <div className="mx-auto max-w-4xl px-5 pb-14 pt-14 text-center sm:pt-20">
+            <p className="kicker">{eyebrow}</p>
+            <h1 className="mt-4 font-[family-name:var(--font-brand-serif)] text-[42px] font-medium leading-[1.04] text-[#201A1C] sm:text-[58px]">
               {title}
             </h1>
             {intro ? (
-              <p className="mx-auto mt-5 max-w-2xl text-[15px] leading-relaxed text-[#6b4a3e] sm:text-base">
+              <p className="mx-auto mt-5 max-w-2xl font-[family-name:var(--font-brand-body)] text-[16px] leading-relaxed text-[#5A4F52]">
                 {intro}
               </p>
             ) : null}
@@ -397,6 +369,7 @@ export function PageShell({
         {children}
       </main>
       <SiteFooter />
+      <MobileStickyCta />
     </div>
   );
 }
