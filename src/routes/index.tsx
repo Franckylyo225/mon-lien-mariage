@@ -208,57 +208,61 @@ function Hero() {
       className="border-b border-[#F4EFF0]"
       style={{ background: "linear-gradient(170deg, #FDF0F3 0%, #FFFFFF 55%)" }}
     >
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-14 lg:grid-cols-[55fr_45fr] lg:pb-24 lg:pt-20">
-        <div className="animate-fade-up">
-          <span className="inline-flex items-center gap-2 rounded-full border border-[#F1E3C6] bg-white px-4 py-2 font-[family-name:var(--font-brand-ui)] text-[13px] font-semibold text-[#5A4F52]">
+      <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 pb-14 pt-10 sm:gap-12 sm:pb-16 sm:pt-14 lg:grid-cols-[55fr_45fr] lg:pb-24 lg:pt-20">
+        <div className="animate-fade-up text-center lg:text-left">
+          <span className="inline-flex items-center gap-2 rounded-full border border-[#F1E3C6] bg-white px-3.5 py-1.5 font-[family-name:var(--font-brand-ui)] text-[11.5px] font-semibold text-[#5A4F52] sm:px-4 sm:py-2 sm:text-[13px]">
             <span className="text-[#C6A15B]">★</span> 4.9 · Choisie par +500
             couples ivoiriens
           </span>
 
-          <h1 className="mt-6 font-[family-name:var(--font-brand-serif)] text-[42px] font-medium leading-[1.02] text-[#201A1C] sm:text-[56px] lg:text-[66px]">
+          <h1 className="mx-auto mt-5 max-w-[16ch] text-balance font-[family-name:var(--font-brand-serif)] text-[clamp(30px,8.2vw,42px)] font-medium leading-[1.06] tracking-[-0.015em] text-[#201A1C] sm:mt-6 sm:max-w-[18ch] sm:text-[clamp(42px,5.4vw,56px)] sm:leading-[1.04] lg:mx-0 lg:text-[66px] lg:leading-[1.02]">
             Votre invitation de mariage, prête en moins de 10 minutes.
           </h1>
 
-          <p className="mt-5 max-w-[460px] font-[family-name:var(--font-brand-body)] text-[18px] leading-[1.65] text-[#5A4F52]">
+          <p className="mx-auto mt-4 max-w-[38ch] text-pretty font-[family-name:var(--font-brand-body)] text-[15px] leading-[1.6] text-[#5A4F52] sm:mt-5 sm:max-w-[460px] sm:text-[18px] sm:leading-[1.65] lg:mx-0">
             Crée une page élégante avec RSVP, programme et musique. Partage-la
             sur WhatsApp. Tes invités confirment en un tap.
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-5">
-            <Link to="/signup" className="btn-framboise px-[30px] py-4 text-[16px]">
+          <div className="mt-7 flex flex-col items-center gap-4 sm:mt-8 sm:flex-row sm:flex-wrap sm:gap-5 lg:justify-start">
+            <Link
+              to="/signup"
+              className="btn-framboise w-full max-w-[320px] px-[30px] py-3.5 text-[15px] sm:w-auto sm:py-4 sm:text-[16px]"
+            >
               Créer gratuitement →
             </Link>
             <a
               href={DEMO_URL}
               target="_blank"
               rel="noreferrer noopener"
-              className="font-[family-name:var(--font-brand-ui)] text-[15px] font-semibold text-[#C81A45] hover:underline"
+              className="font-[family-name:var(--font-brand-ui)] text-[14px] font-semibold text-[#C81A45] hover:underline sm:text-[15px]"
             >
               Voir la démo
             </a>
           </div>
 
-          <p className="mt-4 font-[family-name:var(--font-brand-ui)] text-[13px] font-medium text-[#7A6D70]">
+          <p className="mt-4 font-[family-name:var(--font-brand-ui)] text-[12px] font-medium text-[#7A6D70] sm:text-[13px]">
             Aucune carte bancaire · Tu paies uniquement à la publication
           </p>
 
-          <dl className="mt-10 grid max-w-lg grid-cols-3 gap-4 border-t border-[#F1E3C6] pt-6">
+          <dl className="mx-auto mt-8 grid max-w-lg grid-cols-3 gap-3 border-t border-[#F1E3C6] pt-5 sm:mt-10 sm:gap-4 sm:pt-6 lg:mx-0">
             {[
               ["20+", "Modèles romantiques"],
               ["10 min", "Pour publier"],
               ["500+", "Couples conquis"],
             ].map(([n, l]) => (
               <div key={l}>
-                <dt className="font-[family-name:var(--font-brand-serif)] text-[30px] font-medium text-[#E82050]">
+                <dt className="font-[family-name:var(--font-brand-serif)] text-[clamp(22px,6vw,30px)] font-medium text-[#E82050]">
                   {n}
                 </dt>
-                <dd className="mt-1 font-[family-name:var(--font-brand-ui)] text-[12.5px] font-semibold text-[#5A4F52]">
+                <dd className="mt-1 font-[family-name:var(--font-brand-ui)] text-[11px] font-semibold leading-tight text-[#5A4F52] sm:text-[12.5px]">
                   {l}
                 </dd>
               </div>
             ))}
           </dl>
         </div>
+
 
         {/* Aperçus superposés (sans cadre de téléphone) */}
         <HeroPreview />
