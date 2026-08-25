@@ -224,18 +224,26 @@ export function SiteHeader() {
 export function MobileStickyCta() {
   return (
     <div
-      className="fixed inset-x-0 bottom-0 z-[100] flex items-center justify-between gap-3 bg-[#201A1C] px-5 py-3 md:hidden"
-      style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
+      className="fixed inset-x-0 bottom-0 z-[100] flex items-center justify-between gap-3 bg-white px-5 md:hidden"
+      style={{
+        paddingTop: "10px",
+        paddingBottom: "calc(10px + env(safe-area-inset-bottom, 0px))",
+        borderTop: "1px solid #F4EFF0",
+        boxShadow: "0 -4px 20px rgba(32,26,28,0.08)",
+      }}
     >
       <div className="min-w-0">
-        <p className="font-[family-name:var(--font-brand-ui)] text-xs font-bold text-white">
+        <p className="font-[family-name:var(--font-brand-ui)] text-[13px] font-bold leading-tight text-[#201A1C]">
           Invitation de mariage
         </p>
-        <p className="truncate font-[family-name:var(--font-brand-body)] text-[11px] text-white/50">
+        <p className="truncate font-[family-name:var(--font-brand-body)] text-[11px] leading-tight text-[#7A6D70]">
           Gratuit jusqu'à la publication
         </p>
       </div>
-      <Link to="/signup" className="btn-framboise shrink-0 px-[18px] py-2.5 text-xs">
+      <Link
+        to="/signup"
+        className="btn-framboise shrink-0 px-[18px] py-[10px] text-[13px]"
+      >
         Commencer →
       </Link>
     </div>
