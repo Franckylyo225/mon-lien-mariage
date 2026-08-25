@@ -1094,6 +1094,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_promo_uses: { Args: { p_code_id: string }; Returns: undefined }
       mark_payment_failed_secure: {
         Args: { _reference: string; _status: string; _token: string }
         Returns: string
