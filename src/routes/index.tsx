@@ -349,13 +349,13 @@ function ProblemSection() {
 
 /* -------------------------------- features -------------------------------- */
 
-const FEATURES: { icon: string; title: string; desc: string; accent: string }[] = [
-  { icon: "💌", title: "Confirmations en un tap", desc: "Tes invités répondent directement depuis leur téléphone. Tu vois tout en temps réel.", accent: "#E82050" },
-  { icon: "📅", title: "Dot, civil, réception — tout en un", desc: "Chaque invité voit uniquement les cérémonies auxquelles tu le convies.", accent: "#C6A15B" },
-  { icon: "🎵", title: "Une ambiance dès l'ouverture", desc: "26 musiques ou ta propre chanson. La mélodie commence dès l'ouverture.", accent: "#E82050" },
-  { icon: "📖", title: "Livre d'or numérique", desc: "Tes invités te laissent un message. Tu télécharges un souvenir imprimable.", accent: "#C6A15B" },
-  { icon: "⏱", title: "Compte à rebours", desc: "L'impatience de tes invités grandit à chaque seconde qui passe.", accent: "#E82050" },
-  { icon: "🔗", title: "Lien WhatsApp en un tap", desc: "Un lien. Un message. Ta famille l'ouvre instantanément.", accent: "#C6A15B" },
+const FEATURES: { icon: LucideIcon; title: string; desc: string; accent: string }[] = [
+  { icon: HeartHandshake, title: "Confirmations en un tap", desc: "Tes invités répondent directement depuis leur téléphone. Tu vois tout en temps réel.", accent: "#E82050" },
+  { icon: CalendarRange, title: "Dot, civil, réception — tout en un", desc: "Chaque invité voit uniquement les cérémonies auxquelles tu le convies.", accent: "#C6A15B" },
+  { icon: Music, title: "Une ambiance dès l'ouverture", desc: "26 musiques ou ta propre chanson. La mélodie commence dès l'ouverture.", accent: "#E82050" },
+  { icon: BookHeart, title: "Livre d'or numérique", desc: "Tes invités te laissent un message. Tu télécharges un souvenir imprimable.", accent: "#C6A15B" },
+  { icon: Hourglass, title: "Compte à rebours", desc: "L'impatience de tes invités grandit à chaque seconde qui passe.", accent: "#E82050" },
+  { icon: Share2, title: "Lien WhatsApp en un tap", desc: "Un lien. Un message. Ta famille l'ouvre instantanément.", accent: "#C6A15B" },
 ];
 
 function Features() {
@@ -386,10 +386,10 @@ function Features() {
               />
               {/* Icon badge */}
               <div
-                className="flex size-14 items-center justify-center rounded-xl text-2xl transition-transform duration-300 group-hover:scale-110"
+                className="flex size-14 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110"
                 style={{ background: `${f.accent}14` }}
               >
-                <span aria-hidden>{f.icon}</span>
+                <f.icon size={26} strokeWidth={1.75} style={{ color: f.accent }} aria-hidden />
               </div>
               <h3 className="mt-5 font-[family-name:var(--font-brand-serif)] text-[22px] font-medium leading-tight text-[#201A1C]">
                 {f.title}
