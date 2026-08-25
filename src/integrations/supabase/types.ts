@@ -805,6 +805,50 @@ export type Database = {
         }
         Relationships: []
       }
+      wedding_story_steps: {
+        Row: {
+          created_at: string
+          id: string
+          photo_url: string | null
+          sort_order: number
+          text: string | null
+          title: string
+          updated_at: string
+          wedding_id: string
+          year: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          photo_url?: string | null
+          sort_order?: number
+          text?: string | null
+          title?: string
+          updated_at?: string
+          wedding_id: string
+          year?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          photo_url?: string | null
+          sort_order?: number
+          text?: string | null
+          title?: string
+          updated_at?: string
+          wedding_id?: string
+          year?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wedding_story_steps_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       weddings: {
         Row: {
           accent: string | null

@@ -5,6 +5,7 @@ import { useAutosaveContext } from "@/lib/autosave-context";
 import { SaveIndicator } from "./SaveIndicator";
 import { HeroPhotoSheet } from "./HeroPhotoSheet";
 import { PhotoGridSheet } from "./PhotoGridSheet";
+import { StorySheet } from "@/components/editor/StorySheet";
 import { ColorPicker } from "./ColorPicker";
 import { ThemeSheet } from "./ThemeSheet";
 import { ParticleSheet } from "./ParticleSheet";
@@ -921,39 +922,14 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
         }
       />
 
-      <PhotoGridSheet
+      <StorySheet
         open={sheet === "story"}
         onOpenChange={(o) => !o && setSheet(null)}
-        title="Notre histoire"
-        intro="Racontez votre rencontre en quelques mots et ajoutez vos plus belles photos."
         weddingId={weddingId}
-        folder="story"
-        enabled={couple.storyEnabled ?? true}
-        onEnabledChange={(v) => persist({ storyEnabled: v })}
-        titleField={{
-          label: "Titre du bloc",
-          value: couple.storyTitle ?? "",
-          placeholder: "Notre Histoire",
-          onChange: (v) => persist({ storyTitle: v }),
-        }}
-        bodyField={{
-          label: "Texte",
-          value: couple.storyBody ?? "",
-          placeholder: "Notre première rencontre, notre demande…",
-          onChange: (v) => persist({ storyBody: v }),
-        }}
-        images={couple.storyImages ?? []}
-        onImagesChange={(next) => persist({ storyImages: next })}
-        maxImages={8}
-        extraControls={
-          <StoryStyleControls
-            style={couple.storyStyle ?? {}}
-            onChange={(patch) =>
-              persist({ storyStyle: { ...(couple.storyStyle ?? {}), ...patch } })
-            }
-          />
-        }
+        couple={couple}
+        persist={persist}
       />
+
 
 
       <PhotoGridSheet
