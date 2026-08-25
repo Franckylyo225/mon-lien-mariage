@@ -469,6 +469,11 @@ type WeddingRow = {
   story_style: Record<string, unknown> | null;
   story_layout?: string | null;
   story_photo_shape?: string | null;
+  theme_block_enabled?: boolean | null;
+  theme_block_title?: string | null;
+  theme_block_body?: string | null;
+  theme_block_images?: string[] | null;
+  theme_block_style?: Record<string, unknown> | null;
   gallery_enabled: boolean | null;
   gallery_title: string | null;
   gallery_images: string[] | null;
