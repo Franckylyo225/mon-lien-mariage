@@ -586,7 +586,18 @@ function Pricing() {
 
         <div className="mt-14 grid items-start gap-14 lg:grid-cols-2">
           <div className="hidden flex-col items-center lg:flex lg:sticky lg:top-[100px]">
-            <PhoneMock height={480} />
+            <div
+              className="overflow-hidden rounded-[28px] shadow-[0_24px_60px_-24px_rgba(32,26,28,0.4)] ring-1 ring-black/5"
+              style={{ width: 235, height: 480 }}
+            >
+              <iframe
+                src={DEMO_URL}
+                title="Aperçu d'une invitation moninvit"
+                loading="lazy"
+                tabIndex={-1}
+                className="pointer-events-none h-full w-full bg-white"
+              />
+            </div>
             <a
               href={DEMO_URL}
               target="_blank"
