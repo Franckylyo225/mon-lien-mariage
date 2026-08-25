@@ -141,6 +141,11 @@ function PublicInvitationPage() {
     storyStyle: ((w as { story_style?: Record<string, unknown> | null }).story_style as Couple["storyStyle"]) ?? {},
     storyLayout: (((w as { story_layout?: string | null }).story_layout as Couple["storyLayout"]) ?? "left"),
     storyPhotoShape: (((w as { story_photo_shape?: string | null }).story_photo_shape as Couple["storyPhotoShape"]) ?? "rounded"),
+    themeBlockEnabled: (w as { theme_block_enabled?: boolean | null }).theme_block_enabled ?? false,
+    themeBlockTitle: (w as { theme_block_title?: string | null }).theme_block_title ?? undefined,
+    themeBlockBody: (w as { theme_block_body?: string | null }).theme_block_body ?? undefined,
+    themeBlockImages: ((w as { theme_block_images?: string[] | null }).theme_block_images as string[] | null) ?? [],
+    themeBlockStyle: ((w as { theme_block_style?: Record<string, unknown> | null }).theme_block_style as Couple["themeBlockStyle"]) ?? {},
     storySteps: ((data as { storySteps?: Array<Record<string, unknown>> }).storySteps ?? []).map((row) => ({
       id: String(row.id),
       year: (row.year as string | null) ?? null,
