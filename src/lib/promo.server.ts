@@ -1,3 +1,5 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
+
 export interface PromoRow {
   id: string;
   code: string;
@@ -13,9 +15,15 @@ export function normalizePromoCode(code: string): string {
   return (code || "").trim().toUpperCase();
 }
 
-export async function loadUsablePromo(code: string): Promise<PromoRow> {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data, error } = await supabaseAdmin
+/**
+ * Load a usable promo code using the caller's authenticated Supabase client.
+ * No service-role key required — relies on the "users read promo_codes" RLS policy.
+ */
+export async function loadUsablePromo(
+  code: string,
+  supabase: SupabaseClient,
+): Promise<PromoRow> {
+  const { data, error } = await supabase
     .from("promo_codes")
     .select("id, code, discount_percent, max_uses, uses, valid_from, valid_until, is_active")
     .eq("code", code)
