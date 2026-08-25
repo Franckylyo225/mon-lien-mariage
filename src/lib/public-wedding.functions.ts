@@ -31,14 +31,14 @@ export const getPublicWedding = createServerFn({ method: "GET" })
     const { data: wedding, error } = await supabase
       .from("weddings")
       .select(
-        "id, bride_name, groom_name, wedding_date, city, intro_message, couple_story, story_enabled, story_title, story_body, story_images, story_style, gallery_enabled, gallery_title, gallery_images, gallery_display, hero_image_url, template_id, theme, event_type, accent, accent_color, background_base, text_color, hashtag, slug, is_published, has_envelope_animation, has_opening_effect, opening_effect_slug, contact_name, contact_phone, contact_email, dress_code_enabled, dress_code_title, dress_code_note, dress_code_colors, dress_code_images, custom_info_title, custom_info_body, caption, countdown_enabled, countdown_units, countdown_style, practical_info_enabled, practical_parking, practical_accommodation, practical_contact_name, practical_contact_phone, registry_enabled, registry_title, registry_note, registry_stores, share_title, share_description, share_image_url, particle_effect_slug, particle_intensity, particle_speed, particle_size, particle_color_mode, particle_trigger_open, particle_trigger_loop, particle_trigger_rsvp, music_enabled, music_slug, has_guestbook, guestbook_title, guestbook_subtitle, splash_enabled, splash_bg_mode, splash_bg_color, splash_bg_image_url, splash_kicker, splash_tap_label, splash_show_date",
+        "id, bride_name, groom_name, wedding_date, city, intro_message, couple_story, story_enabled, story_title, story_body, story_images, story_style, story_layout, story_photo_shape, gallery_enabled, gallery_title, gallery_images, gallery_display, hero_image_url, template_id, theme, event_type, accent, accent_color, background_base, text_color, hashtag, slug, is_published, has_envelope_animation, has_opening_effect, opening_effect_slug, contact_name, contact_phone, contact_email, dress_code_enabled, dress_code_title, dress_code_note, dress_code_colors, dress_code_images, custom_info_title, custom_info_body, caption, countdown_enabled, countdown_units, countdown_style, practical_info_enabled, practical_parking, practical_accommodation, practical_contact_name, practical_contact_phone, registry_enabled, registry_title, registry_note, registry_stores, share_title, share_description, share_image_url, particle_effect_slug, particle_intensity, particle_speed, particle_size, particle_color_mode, particle_trigger_open, particle_trigger_loop, particle_trigger_rsvp, music_enabled, music_slug, has_guestbook, guestbook_title, guestbook_subtitle, splash_enabled, splash_bg_mode, splash_bg_color, splash_bg_image_url, splash_kicker, splash_tap_label, splash_show_date",
       )
       .eq("slug", data.slug)
       .eq("is_published", true)
       .maybeSingle();
 
     if (error) throw new Error(error.message);
-    if (!wedding) return { wedding: null, ceremonies: [] };
+    if (!wedding) return { wedding: null, ceremonies: [], storySteps: [] };
 
     const { data: ceremonies } = await supabase
       .from("ceremonies")
@@ -48,7 +48,13 @@ export const getPublicWedding = createServerFn({ method: "GET" })
       .eq("wedding_id", wedding.id)
       .order("sort_order");
 
-    return { wedding, ceremonies: ceremonies ?? [] };
+    const { data: storySteps } = await supabase
+      .from("wedding_story_steps")
+      .select("id, year, title, text, photo_url, sort_order")
+      .eq("wedding_id", wedding.id)
+      .order("sort_order");
+
+    return { wedding, ceremonies: ceremonies ?? [], storySteps: storySteps ?? [] };
   });
 
 const slugCheckSchema = z.object({
