@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { MapPin, Phone, Mail, User, Shirt, Sparkles, Car, BedDouble, LifeBuoy, Gift, X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Ceremony, Couple } from "@/lib/wedding-store";
+import { StoryHeader, StoryTimeline } from "@/components/public/StoryTimeline";
 
 function ImageLightbox({
   images,
