@@ -12,6 +12,11 @@ import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import type { GuestType } from "./guest-meta";
 import { normalizeEventType } from "./ceremony-meta";
+import type {
+  StoryLayout,
+  StoryPhotoShape,
+  StoryStep,
+} from "@/components/public/StoryTimeline";
 
 export type CeremonyType =
   | "dot"
