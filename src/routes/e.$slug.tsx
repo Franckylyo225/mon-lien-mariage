@@ -144,7 +144,7 @@ function PublicInvitationPage() {
     themeBlockEnabled: (w as { theme_block_enabled?: boolean | null }).theme_block_enabled ?? false,
     themeBlockTitle: (w as { theme_block_title?: string | null }).theme_block_title ?? undefined,
     themeBlockBody: (w as { theme_block_body?: string | null }).theme_block_body ?? undefined,
-    themeBlockImages: ((w as { theme_block_images?: string[] | null }).theme_block_images as string[] | null) ?? [],
+    themeBlockReference: (w as { theme_block_reference?: string | null }).theme_block_reference ?? undefined,
     themeBlockStyle: ((w as { theme_block_style?: Record<string, unknown> | null }).theme_block_style as Couple["themeBlockStyle"]) ?? {},
     storySteps: ((data as { storySteps?: Array<Record<string, unknown>> }).storySteps ?? []).map((row) => ({
       id: String(row.id),
