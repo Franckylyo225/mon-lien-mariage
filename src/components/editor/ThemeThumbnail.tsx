@@ -48,8 +48,9 @@ export function ThemeThumbnail({ theme, className }: ThemeThumbnailProps) {
 
 function FallbackThumb({ theme, className }: ThemeThumbnailProps) {
   const t = THEMES[theme];
-  const bg = bgHex(t.defaultBg);
+  const bg = t.defaultBgHex ?? bgHex(t.defaultBg);
   const accent = t.defaultAccent;
+  const motif = motifForTheme(theme, accent);
   return (
     <div
       className={
@@ -58,15 +59,35 @@ function FallbackThumb({ theme, className }: ThemeThumbnailProps) {
       }
       style={{ background: bg }}
     >
-      <Ornament theme={theme} accent={accent} />
+      {motif ? (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundImage: motifBackgroundImage(motif),
+            backgroundRepeat: "repeat",
+            backgroundSize: `${motif.size}px ${motif.size}px`,
+            opacity: motif.opacity,
+          }}
+        />
+      ) : (
+        <Ornament theme={theme} accent={accent} />
+      )}
       <div className="relative z-10 flex flex-col items-center">
         <p
           className="text-[13px] leading-[1.05] italic"
-          style={{ fontFamily: t.fontHeading, color: "#1A1A1A" }}
+          style={{ fontFamily: t.fontHeading, color: t.defaultText ?? "#1A1A1A" }}
         >
           Aïcha <span style={{ color: accent }}>&amp;</span> Kouamé
         </p>
       </div>
+      {t.bandCss ? (
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-1.5"
+          style={{ background: t.bandCss }}
+        />
+      ) : null}
     </div>
   );
 }
