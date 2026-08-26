@@ -3,6 +3,7 @@ import { Drawer } from "vaul";
 import { IconLock } from "@tabler/icons-react";
 import { useWedding, type EventType } from "@/lib/wedding-store";
 import { cn } from "@/lib/utils";
+import { useVisualViewport } from "@/hooks/use-visual-viewport";
 
 const EVENT_OPTIONS: { value: EventType; label: string; icon: string }[] = [
   { value: "mariage", label: "Mariage", icon: "◈" },
@@ -19,6 +20,7 @@ interface Props {
 export function BasicInfoSheet({ open, onOpenChange }: Props) {
   const { couple, updateCouple } = useWedding();
   const isLocked = couple.isLocked;
+  const vv = useVisualViewport();
 
   const initial = useMemo(
     () => ({
@@ -101,7 +103,14 @@ export function BasicInfoSheet({ open, onOpenChange }: Props) {
     <Drawer.Root open={open} onOpenChange={handleClose}>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-50 bg-black/40" />
-        <Drawer.Content className="fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[85vh] w-full max-w-xl flex-col rounded-t-3xl border border-b-0 border-border bg-background outline-none">
+        <Drawer.Content
+          style={
+            vv
+              ? { bottom: vv.keyboardHeight, maxHeight: Math.max(vv.visibleHeight - 12, 240) }
+              : undefined
+          }
+          className="fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[85vh] w-full max-w-xl flex-col rounded-t-3xl border border-b-0 border-border bg-background outline-none"
+        >
           <Drawer.Title className="sr-only">Informations de base</Drawer.Title>
 
           <div className="flex items-center justify-center pt-3">

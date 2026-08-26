@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { submitGuestbookMessage } from "@/lib/guestbook.functions";
+import { useVisualViewport } from "@/hooks/use-visual-viewport";
 
 interface Props {
   weddingId: string;
@@ -47,6 +48,7 @@ export function GuestbookFab({ weddingId, brideName, groomName }: Props) {
   const [message, setMessage] = useState("");
   const [showRipple, setShowRipple] = useState(true);
   const [showTooltip, setShowTooltip] = useState(false);
+  const vv = useVisualViewport();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -132,7 +134,17 @@ export function GuestbookFab({ weddingId, brideName, groomName }: Props) {
             if (e.target === e.currentTarget) handleClose();
           }}
         >
-          <div className="guestbook-sheet">
+          <div
+            className="guestbook-sheet"
+            style={
+              vv
+                ? {
+                    marginBottom: vv.keyboardHeight,
+                    maxHeight: Math.max(vv.visibleHeight - 12, 240),
+                  }
+                : undefined
+            }
+          >
             {PETALS.map((p, i) => (
               <span
                 key={i}

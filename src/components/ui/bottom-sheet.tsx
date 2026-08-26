@@ -1,6 +1,7 @@
 import { Drawer } from "vaul";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { useVisualViewport } from "@/hooks/use-visual-viewport";
 
 interface BottomSheetProps {
   open: boolean;
@@ -21,11 +22,20 @@ export function BottomSheet({
   actionLabel = "Terminer",
   onAction,
 }: BottomSheetProps) {
+  const vv = useVisualViewport();
+
+  // While the software keyboard is open, anchor the sheet just above it and
+  // cap its height to the actually visible area (vh units ignore the keyboard).
+  const keyboardStyle: CSSProperties | undefined = vv
+    ? { bottom: vv.keyboardHeight, maxHeight: Math.max(vv.visibleHeight - 12, 240) }
+    : undefined;
+
   return (
     <Drawer.Root open={open} onOpenChange={onOpenChange}>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-50 bg-black/40" />
         <Drawer.Content
+          style={keyboardStyle}
           className={cn(
             "fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[85vh] w-full max-w-xl flex-col rounded-t-3xl border border-b-0 border-border bg-background outline-none",
           )}
