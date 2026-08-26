@@ -6,6 +6,7 @@ import {
   Head,
   Heading,
   Html,
+  Img,
   Preview,
   Section,
   Text,
@@ -24,6 +25,8 @@ import {
   footerBrand,
   h1,
   header,
+  logo,
+  logoUrl,
   main,
   smallText,
   text,
@@ -66,6 +69,7 @@ const Email = ({ milestone = 10, coupleLabel = '', slug = '' }: Props) => {
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
+            <Img src={logoUrl} alt="MonInvit.com" style={logo} />
             <Heading as="h1" style={brandName}>
               {brand.name}
             </Heading>

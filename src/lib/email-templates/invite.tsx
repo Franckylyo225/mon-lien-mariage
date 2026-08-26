@@ -8,6 +8,7 @@ import {
   Heading,
   Hr,
   Html,
+  Img,
   Link,
   Preview,
   Section,
@@ -27,6 +28,8 @@ import {
   h1,
   header,
   link,
+  logo,
+  logoUrl,
   main,
   smallText,
   text,
@@ -45,6 +48,7 @@ export const InviteEmail = ({ siteUrl, confirmationUrl }: InviteEmailProps) => (
     <Body style={main}>
       <Container style={container}>
         <Section style={header}>
+          <Img src={logoUrl} alt="MonInvit.com" style={logo} />
           <Heading as="h1" style={brandName}>MonInvit.com</Heading>
           <Text style={brandTag}>Vous avez une invitation</Text>
         </Section>

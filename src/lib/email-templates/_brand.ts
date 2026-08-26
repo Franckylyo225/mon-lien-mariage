@@ -5,14 +5,27 @@
 export const brand = {
   name: 'MonInvit.com',
   tagline: 'Invitations & gestion de mariage',
-  primary: '#993556',
-  primaryDark: '#7A2440',
-  accentBg: '#FBEAF0',
+  /** Framboise — charte officielle v1.0 */
+  primary: '#E82050',
+  primaryDark: '#C2143E',
+  /** Champagne */
+  gold: '#C6A15B',
+  accentBg: '#FDEBF0',
   ink: '#1A1A1A',
   muted: '#6B6B6B',
-  softBorder: '#EADCE1',
-  pageBg: '#FAFAF9',
+  softBorder: '#F0DCE2',
+  pageBg: '#FFFBF8',
 } as const;
+
+/** Logo hosted on the public site (absolute URL required by inboxes). */
+export const logoUrl = 'https://moninvit.com/media/a53d13c7-logo-moninvit.png';
+
+export const logo = {
+  display: 'block' as const,
+  margin: '0 auto 12px',
+  height: '38px',
+  width: 'auto' as const,
+};
 
 // Wrapper (page)
 export const main = {
@@ -34,7 +47,8 @@ export const container = {
 
 // Header band (brand)
 export const header = {
-  backgroundColor: brand.primary,
+  backgroundColor: '#FFFFFF',
+  borderBottom: `2px solid ${brand.primary}`,
   padding: '28px 32px 22px',
   textAlign: 'center' as const,
 };
@@ -44,14 +58,14 @@ export const brandName = {
   fontSize: '26px',
   fontStyle: 'italic' as const,
   fontWeight: 500 as const,
-  color: '#ffffff',
+  color: brand.primary,
   margin: 0,
   letterSpacing: '0.02em',
 };
 
 export const brandTag = {
   fontSize: '11px',
-  color: 'rgba(255,255,255,0.85)',
+  color: brand.gold,
   letterSpacing: '0.28em',
   textTransform: 'uppercase' as const,
   margin: '8px 0 0',
