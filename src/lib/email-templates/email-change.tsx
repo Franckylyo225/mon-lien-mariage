@@ -17,7 +17,6 @@ import {
 
 import {
   body,
-  brandName,
   brandTag,
   button,
   buttonWrap,
@@ -59,7 +58,7 @@ export const EmailChangeEmail = ({
       <Container style={container}>
         <Section style={header}>
           <Img src={logoUrl} alt="MonInvit.com" style={logo} />
-          <Heading as="h1" style={brandName}>MonInvit.com</Heading>
+          
           <Text style={brandTag}>Changement d'adresse</Text>
         </Section>
 

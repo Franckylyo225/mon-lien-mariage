@@ -15,7 +15,6 @@ import type { TemplateEntry } from './registry'
 import {
   brand,
   body as bodyStyle,
-  brandName,
   brandTag,
   button,
   buttonWrap,
@@ -70,9 +69,6 @@ const Email = ({ milestone = 10, coupleLabel = '', slug = '' }: Props) => {
         <Container style={container}>
           <Section style={header}>
             <Img src={logoUrl} alt="MonInvit.com" style={logo} />
-            <Heading as="h1" style={brandName}>
-              {brand.name}
-            </Heading>
             <Text style={brandTag}>Palier RSVP atteint</Text>
           </Section>
 
