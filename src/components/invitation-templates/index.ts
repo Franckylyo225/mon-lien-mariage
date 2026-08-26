@@ -22,6 +22,7 @@ import { MonochromeTemplate } from "./monochrome";
 import { AquarelleTemplate } from "./aquarelle";
 import { ConfettiTemplate } from "./confetti";
 import { PapierKraftTemplate } from "./papier-kraft";
+import { OrnateTemplate } from "./ornate";
 
 export const templateComponents: Record<TemplateId, ComponentType<TemplateProps>> = {
   terracotta: TerracottaTemplate,
@@ -64,6 +65,17 @@ const themeComponents: Partial<Record<ThemeId, ComponentType<TemplateProps>>> = 
   aquarelle: AquarelleTemplate,
   confetti: ConfettiTemplate,
   "papier-kraft": PapierKraftTemplate,
+  // Familles africaine & orientale : gabarit ornemental piloté par theme-decor.ts
+  "indigo-adinkra": OrnateTemplate,
+  "kente-souverain": OrnateTemplate,
+  "bogolan-bordeaux": OrnateTemplate,
+  "wax-ivoire": OrnateTemplate,
+  "nuit-ebene": OrnateTemplate,
+  "zellige-emeraude": OrnateTemplate,
+  "mashrabiya-sable": OrnateTemplate,
+  "arabesque-bordeaux": OrnateTemplate,
+  "nacre-girih": OrnateTemplate,
+  "calligraphie-nuit": OrnateTemplate,
 };
 
 const themeRsvpTone: Partial<
@@ -84,6 +96,16 @@ const themeRsvpTone: Partial<
   aquarelle: "warm",
   confetti: "tropical",
   "papier-kraft": "warm",
+  "indigo-adinkra": "gold",
+  "kente-souverain": "deco",
+  "bogolan-bordeaux": "warm",
+  "wax-ivoire": "gold",
+  "nuit-ebene": "dark",
+  "zellige-emeraude": "gold",
+  "mashrabiya-sable": "warm",
+  "arabesque-bordeaux": "deco",
+  "nacre-girih": "gold",
+  "calligraphie-nuit": "dark",
 };
 
 export function componentForTheme(theme: ThemeId): ComponentType<TemplateProps> {
