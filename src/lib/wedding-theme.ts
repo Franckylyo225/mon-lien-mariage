@@ -552,6 +552,8 @@ export interface ResolvedTheme {
   surface: string;
   fontHeading: string;
   fontBody: string;
+  deep: string;
+  onDeep: string;
 }
 
 export function resolveTheme(
@@ -566,7 +568,7 @@ export function resolveTheme(
   } else if (isValidBgSlug(rawBg)) {
     bg = BG_HEX[rawBg];
   } else {
-    bg = BG_HEX[theme.defaultBg];
+    bg = theme.defaultBgHex ?? BG_HEX[theme.defaultBg];
   }
   const accent =
     couple.accentColor && /^#[0-9A-Fa-f]{6}$/.test(couple.accentColor)
@@ -583,12 +585,14 @@ export function resolveTheme(
     themeSlug,
     bg,
     accent,
-    textPrimary: customText ?? "#1A1A1A",
-    textSecondary: customText ?? "#6B6B6B",
+    textPrimary: customText ?? theme.defaultText ?? "#1A1A1A",
+    textSecondary: customText ?? theme.muted ?? "#6B6B6B",
     border: "rgba(0,0,0,0.08)",
     surface: "#FFFFFF",
     fontHeading: theme.fontHeading,
     fontBody: theme.fontBody,
+    deep: theme.deep ?? customText ?? theme.defaultText ?? "#1A1A1A",
+    onDeep: theme.onDeep ?? "#FFFFFF",
   };
 }
 
@@ -606,6 +610,8 @@ export function themeCssVars(r: ResolvedTheme): Record<string, string> {
     "--wedding-surface": r.surface,
     "--wedding-font-heading": r.fontHeading,
     "--wedding-font-body": r.fontBody,
+    "--wedding-deep": r.deep,
+    "--wedding-on-deep": r.onDeep,
   };
 }
 
