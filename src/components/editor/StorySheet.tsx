@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { Loader2, Plus, Trash2, ImageIcon, ChevronUp, ChevronDown } from "lucide-react";
 import { ensureAuthOrMessage, friendlyUploadError } from "@/lib/upload-errors";
-import type { Couple } from "@/lib/wedding-store";
+import { useWedding, type Couple } from "@/lib/wedding-store";
 import {
   STORY_LAYOUTS,
   STORY_PHOTO_SHAPES,
