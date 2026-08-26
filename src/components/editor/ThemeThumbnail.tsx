@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { THEMES, BACKGROUNDS, type BackgroundSlug } from "@/lib/wedding-theme";
 import { THEME_THUMBNAIL_URL } from "@/lib/theme-thumbnails";
+import { motifForTheme, motifBackgroundImage } from "@/lib/theme-motifs";
 import type { ThemeId } from "@/lib/wedding-store";
 
 interface ThemeThumbnailProps {
