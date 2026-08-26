@@ -22,7 +22,7 @@ import waxDore from "@/assets/theme-thumbs/wax-dore.png.asset.json";
  * Playwright capture script + `lovable-assets create` when a template
  * design changes.
  */
-export const THEME_THUMBNAIL_URL: Record<ThemeId, string> = {
+export const THEME_THUMBNAIL_URL: Partial<Record<ThemeId, string>> = {
   "rose-elegance": roseElegance.url,
   "ivoire-epure": ivoireEpure.url,
   "or-antique": orAntique.url,
