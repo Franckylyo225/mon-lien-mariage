@@ -15,12 +15,11 @@ import {
   SiteFooter,
   MobileStickyCta,
 } from "@/components/site/SiteChrome";
-import ogImage from "@/assets/og-image.jpg.asset.json";
 import logoHeart from "@/assets/logo-heart.png.asset.json";
 import apercuInvitation from "@/assets/apercu-invitation.png.asset.json";
 import apercuSplash from "@/assets/apercu-splash.png";
 
-const OG_IMAGE_URL = `https://moninvit.com${ogImage.url}`;
+const OG_IMAGE_URL = "https://moninvit.com/media/og-image-v3.jpg";
 const DEMO_URL = "https://www.moninvit.com/e/basile-et-armelle1";
 
 const HOME_FAQS: { q: string; a: string }[] = [
