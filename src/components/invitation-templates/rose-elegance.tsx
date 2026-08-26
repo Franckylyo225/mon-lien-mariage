@@ -149,8 +149,14 @@ export function RoseEleganceTemplate({ couple, ceremonies, rsvpSlot }: TemplateP
         <footer className="pt-16 text-center">
           <FloralDivider accent={accent} small />
           <p className="mt-4 text-[10px] uppercase tracking-[0.4em] opacity-50">
-            {couple.hashtag ??
-              `${couple.brideName[0]} & ${couple.groomName[0]} — $<span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>`}
+            {couple.hashtag ?? (
+              <>
+                {couple.brideName[0]} & {couple.groomName[0]} —{" "}
+                <span style={{ color: "var(--wedding-accent)" }}>
+                  {formatFrenchDate(couple.weddingDate)}
+                </span>
+              </>
+            )}
           </p>
         </footer>
       </article>
