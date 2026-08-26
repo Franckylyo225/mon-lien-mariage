@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import type { Couple } from "@/lib/wedding-store";
 import { resolveTheme, themeCssVars, type ResolvedTheme } from "@/lib/wedding-theme";
+import { ThemeBackground } from "@/components/public/ThemeBackground";
 
 type ThemeCouple = Pick<
   Couple,
@@ -42,14 +43,15 @@ export function ThemeRoot({
   );
   return (
     <div
-      className={className}
+      className={"relative " + (className ?? "")}
       data-theme={resolved.themeSlug}
       data-bg-override={couple.backgroundBase ? "" : undefined}
       data-text-override={couple.textColor ? "" : undefined}
       {...dataAttrs}
       style={{ backgroundColor: resolved.bg, ...vars, ...style }}
     >
-      {children}
+      <ThemeBackground theme={resolved.themeSlug} accent={resolved.accent} />
+      <div className="relative z-10">{children}</div>
     </div>
   );
 }

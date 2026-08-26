@@ -7,7 +7,9 @@ export type ThemeFamilyId =
   | "botaniques"
   | "heritage"
   | "modernes"
-  | "illustres";
+  | "illustres"
+  | "africain"
+  | "oriental";
 
 export interface ThemeDef {
   slug: ThemeId;
@@ -18,6 +20,22 @@ export interface ThemeDef {
   fontBody: string;
   defaultAccent: string;
   defaultBg: BackgroundSlug;
+  /** Exact background hex (overrides defaultBg when present). */
+  defaultBgHex?: string;
+  /** Main text colour when the couple has not overridden it. */
+  defaultText?: string;
+  /** Deep/contrast colour used for bands, overlays and ornaments. */
+  deep?: string;
+  /** Foreground colour on top of `deep`. */
+  onDeep?: string;
+  /** Secondary/muted text colour. */
+  muted?: string;
+  /** Short marketing description. */
+  description?: string;
+  /** Dress code suggestion shown in the theme picker. */
+  dressLabel?: string;
+  /** Decorative hero band (CSS background shorthand). */
+  bandCss?: string;
 }
 
 // Google Font families available (loaded in src/routes/__root.tsx)
@@ -25,6 +43,8 @@ const FONT_PLAYFAIR = '"Playfair Display", serif';
 const FONT_CORMORANT = '"Cormorant Garamond", serif';
 const FONT_INTER = '"Inter", sans-serif';
 const FONT_TYPEWRITER = '"Special Elite", "Courier New", monospace';
+const FONT_MARCELLUS = '"Marcellus", serif';
+const FONT_AMIRI = '"Amiri", serif';
 
 export const THEMES: Record<ThemeId, ThemeDef> = {
   // ---------- Classiques élégants ----------
@@ -186,6 +206,184 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
     defaultAccent: "#993556",
     defaultBg: "creme",
   },
+
+  // ---------- Africains ----------
+  "indigo-adinkra": {
+    slug: "indigo-adinkra",
+    name: "Indigo Adinkra",
+    family: "africain",
+    mood: "Ancestral · Solennel",
+    description:
+      "Fond ivoire chaud, accents or, motif adinkra en profond indigo.",
+    dressLabel: "Indigo, or et blanc cassé",
+    fontHeading: FONT_CORMORANT,
+    fontBody: FONT_INTER,
+    defaultAccent: "#c9a227",
+    defaultBg: "ivoire",
+    defaultBgHex: "#f4efe6",
+    defaultText: "#241f1a",
+    deep: "#1b2a4a",
+    onDeep: "#f4efe6",
+    muted: "rgba(36,31,26,0.62)",
+  },
+  "kente-souverain": {
+    slug: "kente-souverain",
+    name: "Kente Souverain",
+    family: "africain",
+    mood: "Festif · Majestueux",
+    description: "Bande kente colorée, fond blanc naturel, accent or.",
+    dressLabel: "Pagne, or et émeraude",
+    fontHeading: FONT_MARCELLUS,
+    fontBody: FONT_INTER,
+    defaultAccent: "#d4a017",
+    defaultBg: "creme",
+    defaultBgHex: "#f7f3e8",
+    defaultText: "#14100e",
+    deep: "#0a3d25",
+    onDeep: "#faf6ee",
+    muted: "rgba(20,16,14,0.6)",
+    bandCss:
+      "repeating-linear-gradient(90deg, #d4a017 0 8px, #0f5132 8px 16px, #14100e 16px 20px)",
+  },
+  "bogolan-bordeaux": {
+    slug: "bogolan-bordeaux",
+    name: "Bogolan Bordeaux",
+    family: "africain",
+    mood: "Terreux · Chaleureux",
+    description: "Fond lin crème, accent ocre doré, profondeur bordeaux.",
+    dressLabel: "Terre cuite, ocre et crème",
+    fontHeading: FONT_CORMORANT,
+    fontBody: FONT_INTER,
+    defaultAccent: "#d08c34",
+    defaultBg: "ivoire",
+    defaultBgHex: "#f7efe3",
+    defaultText: "#3b2317",
+    deep: "#551523",
+    onDeep: "#f9f0e4",
+    muted: "rgba(59,35,23,0.62)",
+    bandCss: "repeating-linear-gradient(90deg, #6b1e2e 0 14px, #d08c34 14px 20px)",
+  },
+  "wax-ivoire": {
+    slug: "wax-ivoire",
+    name: "Wax Ivoire",
+    family: "africain",
+    mood: "Wax épuré · Élégant",
+    description: "Fond ivoire, accent bronze, motif médaillon concentrique.",
+    dressLabel: "Ivoire, camel et brun",
+    fontHeading: FONT_CORMORANT,
+    fontBody: FONT_INTER,
+    defaultAccent: "#b08d57",
+    defaultBg: "ivoire",
+    defaultBgHex: "#f2ece1",
+    defaultText: "#33291e",
+    deep: "#3a2718",
+    onDeep: "#f7f2ea",
+    muted: "rgba(51,41,30,0.6)",
+  },
+  "nuit-ebene": {
+    slug: "nuit-ebene",
+    name: "Nuit d'Ébène",
+    family: "africain",
+    mood: "Luxe · Nocturne",
+    description: "Fond ivoire, profondeur charbon intense, accent or lumineux.",
+    dressLabel: "Noir, or et blanc cassé",
+    fontHeading: FONT_MARCELLUS,
+    fontBody: FONT_INTER,
+    defaultAccent: "#c9a227",
+    defaultBg: "ivoire",
+    defaultBgHex: "#f3efe6",
+    defaultText: "#1a1714",
+    deep: "#14100e",
+    onDeep: "#f3efe6",
+    muted: "rgba(26,23,20,0.6)",
+  },
+
+  // ---------- Orientaux ----------
+  "zellige-emeraude": {
+    slug: "zellige-emeraude",
+    name: "Zellige Émeraude",
+    family: "oriental",
+    mood: "Zellige · Andalou",
+    description: "Fond ivoire doux, émeraude forêt, accent champagne doré.",
+    dressLabel: "Vert émeraude, ivoire et or",
+    fontHeading: FONT_AMIRI,
+    fontBody: FONT_INTER,
+    defaultAccent: "#d9b16b",
+    defaultBg: "ivoire",
+    defaultBgHex: "#f2ece0",
+    defaultText: "#1d2a26",
+    deep: "#0b4a3f",
+    onDeep: "#f5f0e6",
+    muted: "rgba(29,42,38,0.6)",
+  },
+  "mashrabiya-sable": {
+    slug: "mashrabiya-sable",
+    name: "Mashrabiya Sable",
+    family: "oriental",
+    mood: "Oriental · Épuré",
+    description: "Fond sable chaud, accent terracotta doré, treillis ajouré.",
+    dressLabel: "Sable, caramel et bronze",
+    fontHeading: FONT_AMIRI,
+    fontBody: FONT_INTER,
+    defaultAccent: "#b98b6e",
+    defaultBg: "ivoire",
+    defaultBgHex: "#ece0cc",
+    defaultText: "#4a3c2f",
+    deep: "#34261b",
+    onDeep: "#f7f0e4",
+    muted: "rgba(74,60,47,0.6)",
+  },
+  "arabesque-bordeaux": {
+    slug: "arabesque-bordeaux",
+    name: "Arabesque Bordeaux",
+    family: "oriental",
+    mood: "Arabesque · Classique",
+    description: "Fond lin, profondeur prune intense, accent or antique.",
+    dressLabel: "Bordeaux, ivoire et or",
+    fontHeading: FONT_AMIRI,
+    fontBody: FONT_INTER,
+    defaultAccent: "#b98a3e",
+    defaultBg: "ivoire",
+    defaultBgHex: "#f3e9dc",
+    defaultText: "#33212a",
+    deep: "#4a1220",
+    onDeep: "#f3e9dc",
+    muted: "rgba(51,33,42,0.6)",
+  },
+  "nacre-girih": {
+    slug: "nacre-girih",
+    name: "Nacre & Girih",
+    family: "oriental",
+    mood: "Géométrie · Élégance",
+    description: "Fond écru, profondeur brun nuit, accent or doux.",
+    dressLabel: "Nacre, or et brun profond",
+    fontHeading: FONT_AMIRI,
+    fontBody: FONT_INTER,
+    defaultAccent: "#b3934f",
+    defaultBg: "creme",
+    defaultBgHex: "#f4f0e7",
+    defaultText: "#2b2620",
+    deep: "#2e281f",
+    onDeep: "#f7f2e6",
+    muted: "rgba(43,38,32,0.6)",
+  },
+  "calligraphie-nuit": {
+    slug: "calligraphie-nuit",
+    name: "Calligraphie Nuit",
+    family: "oriental",
+    mood: "Calligraphique · Pur",
+    description: "Fond ivoire, profondeur noir absolu, accent champagne.",
+    dressLabel: "Noir, champagne et ivoire",
+    fontHeading: FONT_AMIRI,
+    fontBody: FONT_INTER,
+    defaultAccent: "#c9a05a",
+    defaultBg: "creme",
+    defaultBgHex: "#f7f4ee",
+    defaultText: "#1a1a1a",
+    deep: "#121212",
+    onDeep: "#f7f4ee",
+    muted: "rgba(26,26,26,0.6)",
+  },
 };
 
 export const THEME_ORDER: ThemeId[] = [
@@ -194,6 +392,8 @@ export const THEME_ORDER: ThemeId[] = [
   "wax-dore", "kente-royal", "sahel-dore",
   "bleu-nuit", "manuscrit", "monochrome",
   "aquarelle", "confetti", "papier-kraft",
+  "indigo-adinkra", "kente-souverain", "bogolan-bordeaux", "wax-ivoire", "nuit-ebene",
+  "zellige-emeraude", "mashrabiya-sable", "arabesque-bordeaux", "nacre-girih", "calligraphie-nuit",
 ];
 
 export interface ThemeFamilyDef {
@@ -206,6 +406,22 @@ export const THEME_FAMILIES: ThemeFamilyDef[] = [
   { id: "classiques", label: "Classiques", themes: ["rose-elegance", "ivoire-epure", "or-antique"] },
   { id: "botaniques", label: "Botaniques", themes: ["vert-sauge", "jardin-sauvage", "terracotta-boheme"] },
   { id: "heritage", label: "Héritage", themes: ["wax-dore", "kente-royal", "sahel-dore"] },
+  {
+    id: "africain",
+    label: "🌍 Africain",
+    themes: ["indigo-adinkra", "kente-souverain", "bogolan-bordeaux", "wax-ivoire", "nuit-ebene"],
+  },
+  {
+    id: "oriental",
+    label: "✦ Oriental",
+    themes: [
+      "zellige-emeraude",
+      "mashrabiya-sable",
+      "arabesque-bordeaux",
+      "nacre-girih",
+      "calligraphie-nuit",
+    ],
+  },
   { id: "modernes", label: "Modernes", themes: ["bleu-nuit", "manuscrit", "monochrome"] },
   { id: "illustres", label: "Illustrés", themes: ["aquarelle", "confetti", "papier-kraft"] },
 ];
@@ -259,6 +475,20 @@ export const THEME_TO_TEMPLATE: Record<ThemeId, TemplateId> = {
   aquarelle: "tropical",             // painted (peint, romantique)
   confetti: "tropical",              // painted (festif, illustré)
   "papier-kraft": "terracotta",      // warm-classic (vintage postal chaleureux)
+
+  // Africains (Phase 4)
+  "indigo-adinkra": "art-deco",      // ornamental
+  "kente-souverain": "art-deco",     // ornamental
+  "bogolan-bordeaux": "terracotta",  // warm-classic
+  "wax-ivoire": "art-deco",          // ornamental
+  "nuit-ebene": "noir-minimal",      // editorial-dark
+
+  // Orientaux (Phase 4)
+  "zellige-emeraude": "art-deco",
+  "mashrabiya-sable": "terracotta",
+  "arabesque-bordeaux": "art-deco",
+  "nacre-girih": "art-deco",
+  "calligraphie-nuit": "noir-minimal",
 };
 
 // Répartition résultante (15 thèmes / 5 templates) :
@@ -322,6 +552,8 @@ export interface ResolvedTheme {
   surface: string;
   fontHeading: string;
   fontBody: string;
+  deep: string;
+  onDeep: string;
 }
 
 export function resolveTheme(
@@ -336,7 +568,7 @@ export function resolveTheme(
   } else if (isValidBgSlug(rawBg)) {
     bg = BG_HEX[rawBg];
   } else {
-    bg = BG_HEX[theme.defaultBg];
+    bg = theme.defaultBgHex ?? BG_HEX[theme.defaultBg];
   }
   const accent =
     couple.accentColor && /^#[0-9A-Fa-f]{6}$/.test(couple.accentColor)
@@ -353,12 +585,14 @@ export function resolveTheme(
     themeSlug,
     bg,
     accent,
-    textPrimary: customText ?? "#1A1A1A",
-    textSecondary: customText ?? "#6B6B6B",
+    textPrimary: customText ?? theme.defaultText ?? "#1A1A1A",
+    textSecondary: customText ?? theme.muted ?? "#6B6B6B",
     border: "rgba(0,0,0,0.08)",
     surface: "#FFFFFF",
     fontHeading: theme.fontHeading,
     fontBody: theme.fontBody,
+    deep: theme.deep ?? customText ?? theme.defaultText ?? "#1A1A1A",
+    onDeep: theme.onDeep ?? "#FFFFFF",
   };
 }
 
@@ -376,6 +610,8 @@ export function themeCssVars(r: ResolvedTheme): Record<string, string> {
     "--wedding-surface": r.surface,
     "--wedding-font-heading": r.fontHeading,
     "--wedding-font-body": r.fontBody,
+    "--wedding-deep": r.deep,
+    "--wedding-on-deep": r.onDeep,
   };
 }
 
