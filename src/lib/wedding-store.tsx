@@ -992,10 +992,11 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
   const updateCouple = useCallback<WeddingState["updateCouple"]>(
     async (patch) => {
       setCouple((c) => ({ ...c, ...patch }));
-      if (weddingId) {
+      const row = coupleToRow(patch);
+      if (weddingId && Object.keys(row).length > 0) {
         const { error } = await supabase
           .from("weddings")
-          .update(coupleToRow(patch) as never)
+          .update(row as never)
           .eq("id", weddingId);
         if (error) console.error("updateCouple", error);
       }

@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { Loader2, Plus, Trash2, ImageIcon, ChevronUp, ChevronDown } from "lucide-react";
 import { ensureAuthOrMessage, friendlyUploadError } from "@/lib/upload-errors";
-import type { Couple } from "@/lib/wedding-store";
+import { useWedding, type Couple } from "@/lib/wedding-store";
 import {
   STORY_LAYOUTS,
   STORY_PHOTO_SHAPES,
@@ -37,6 +37,7 @@ export function StorySheet({
   couple,
   persist,
 }: StorySheetProps) {
+  const { updateCouple } = useWedding();
   const enabled = couple.storyEnabled ?? true;
   const steps = couple.storySteps ?? [];
   const layout: StoryLayout = couple.storyLayout ?? "left";
@@ -47,13 +48,20 @@ export function StorySheet({
   const [busyId, setBusyId] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const targetStep = useRef<string | null>(null);
+  // Always mirror the freshest steps so rapid keystrokes never write stale arrays.
+  const stepsRef = useRef<StoryStep[]>(steps);
+  stepsRef.current = steps;
 
   useEffect(() => {
     if (open) setTitleDraft(couple.storyTitle ?? "");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
-  const setSteps = (next: StoryStep[]) => persist({ storySteps: next });
+  // Steps live in their own table: update local state immediately (not debounced).
+  const setSteps = (next: StoryStep[]) => {
+    stepsRef.current = next;
+    void updateCouple({ storySteps: next });
+  };
 
   const addStep = async () => {
     if (!weddingId) {
@@ -75,29 +83,36 @@ export function StorySheet({
       return;
     }
     setSteps([
-      ...steps,
+      ...stepsRef.current,
       { id: (data as { id: string }).id, year: "", title: "", text: "", photoUrl: null },
     ]);
   };
 
   const updateStep = (id: string, patch: Partial<StoryStep>) => {
-    setSteps(steps.map((s) => (s.id === id ? { ...s, ...patch } : s)));
+    setSteps(stepsRef.current.map((s) => (s.id === id ? { ...s, ...patch } : s)));
     const row: Record<string, unknown> = {};
     if (patch.year !== undefined) row.year = patch.year || null;
     if (patch.title !== undefined) row.title = patch.title ?? "";
     if (patch.text !== undefined) row.text = patch.text || null;
     if (patch.photoUrl !== undefined) row.photo_url = patch.photoUrl || null;
     if (Object.keys(row).length === 0) return;
-    void supabase.from("wedding_story_steps").update(row as never).eq("id", id);
+    void (async () => {
+      const { error: err } = await supabase
+        .from("wedding_story_steps")
+        .update(row as never)
+        .eq("id", id);
+      if (err) setError("Enregistrement de l'étape impossible. Vérifiez votre connexion.");
+      else setError(null);
+    })();
   };
 
   const deleteStep = async (id: string) => {
-    setSteps(steps.filter((s) => s.id !== id));
+    setSteps(stepsRef.current.filter((s) => s.id !== id));
     await supabase.from("wedding_story_steps").delete().eq("id", id);
   };
 
   const moveStep = async (index: number, dir: -1 | 1) => {
-    const next = [...steps];
+    const next = [...stepsRef.current];
     const target = index + dir;
     if (target < 0 || target >= next.length) return;
     [next[index], next[target]] = [next[target], next[index]];
