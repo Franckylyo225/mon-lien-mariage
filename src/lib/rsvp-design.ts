@@ -1,4 +1,5 @@
 import type { ThemeId } from "./wedding-store";
+import { THEMES } from "./wedding-theme";
 
 /**
  * Design tokens for the public RSVP form, keyed by theme.
