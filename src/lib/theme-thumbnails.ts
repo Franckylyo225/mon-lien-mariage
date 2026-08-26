@@ -15,6 +15,16 @@ import sahelDore from "@/assets/theme-thumbs/sahel-dore.png.asset.json";
 import terracottaBoheme from "@/assets/theme-thumbs/terracotta-boheme.png.asset.json";
 import vertSauge from "@/assets/theme-thumbs/vert-sauge.png.asset.json";
 import waxDore from "@/assets/theme-thumbs/wax-dore.png.asset.json";
+import indigoAdinkra from "@/assets/theme-thumbs/indigo-adinkra.png.asset.json";
+import kenteSouverain from "@/assets/theme-thumbs/kente-souverain.png.asset.json";
+import bogolanBordeaux from "@/assets/theme-thumbs/bogolan-bordeaux.png.asset.json";
+import waxIvoire from "@/assets/theme-thumbs/wax-ivoire.png.asset.json";
+import nuitEbene from "@/assets/theme-thumbs/nuit-ebene.png.asset.json";
+import zelligeEmeraude from "@/assets/theme-thumbs/zellige-emeraude.png.asset.json";
+import mashrabiyaSable from "@/assets/theme-thumbs/mashrabiya-sable.png.asset.json";
+import arabesqueBordeaux from "@/assets/theme-thumbs/arabesque-bordeaux.png.asset.json";
+import nacreGirih from "@/assets/theme-thumbs/nacre-girih.png.asset.json";
+import calligraphieNuit from "@/assets/theme-thumbs/calligraphie-nuit.png.asset.json";
 
 /**
  * Real screenshot previews of every theme, captured from the actual
@@ -38,4 +48,14 @@ export const THEME_THUMBNAIL_URL: Partial<Record<ThemeId, string>> = {
   aquarelle: aquarelle.url,
   confetti: confetti.url,
   "papier-kraft": papierKraft.url,
+  "indigo-adinkra": indigoAdinkra.url,
+  "kente-souverain": kenteSouverain.url,
+  "bogolan-bordeaux": bogolanBordeaux.url,
+  "wax-ivoire": waxIvoire.url,
+  "nuit-ebene": nuitEbene.url,
+  "zellige-emeraude": zelligeEmeraude.url,
+  "mashrabiya-sable": mashrabiyaSable.url,
+  "arabesque-bordeaux": arabesqueBordeaux.url,
+  "nacre-girih": nacreGirih.url,
+  "calligraphie-nuit": calligraphieNuit.url,
 };

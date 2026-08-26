@@ -9,7 +9,8 @@ import {
   Share2,
   type LucideIcon,
 } from "lucide-react";
-import { templateMeta, templateOrder } from "@/lib/ceremony-meta";
+import { THEMES, THEME_FAMILIES } from "@/lib/wedding-theme";
+import { THEME_THUMBNAIL_URL } from "@/lib/theme-thumbnails";
 import {
   SiteHeader,
   SiteFooter,
@@ -587,59 +588,55 @@ function HowItWorks() {
 
 /* ----------------------------- template gallery --------------------------- */
 
-const GALLERY_NAMES = [
-  "Basile & Armelle",
-  "Aïcha & Loïc",
-  "Mariama & Seydou",
-  "Chloé & Ange",
-  "Nadia & Stéphane",
-];
+const GALLERY_THEMES = THEME_FAMILIES.flatMap((f) =>
+  f.themes
+    .filter((slug) => THEME_THUMBNAIL_URL[slug])
+    .map((slug) => ({ slug, family: f.label.replace(/^[^\p{L}]+/u, "") })),
+);
 
 function TemplateGallery() {
   return (
     <section className="bg-white py-20">
       <div className="mx-auto max-w-6xl px-5 text-center">
         <Kicker>Nos modèles</Kicker>
-        <H2 className="mt-4">20 modèles. Un seul qui te ressemble.</H2>
+        <H2 className="mt-4">
+          {GALLERY_THEMES.length} modèles. Un seul qui te ressemble.
+        </H2>
         <Body className="mx-auto mt-4 max-w-xl">
-          Du classique élégant aux motifs ivoiriens — personnalise les couleurs
-          et la typographie.
+          Du classique élégant aux motifs ivoiriens et orientaux — personnalise
+          les couleurs, la typographie et tes photos.
         </Body>
 
-        <div className="mt-12 flex snap-x gap-5 overflow-x-auto pb-4">
-          {templateOrder.map((id, i) => {
-            const t = templateMeta[id];
+        <div className="mt-12 flex snap-x gap-4 overflow-x-auto pb-4">
+          {GALLERY_THEMES.map(({ slug, family }) => {
+            const t = THEMES[slug];
             return (
-              <figure key={id} className="w-[200px] shrink-0 snap-start text-left">
+              <article
+                key={slug}
+                className="group relative aspect-[3/5] w-[188px] shrink-0 snap-start overflow-hidden rounded-[22px] border border-black/5 bg-[#FBF8F8] text-left shadow-[0_10px_28px_rgba(32,26,28,0.12)]"
+              >
+                <img
+                  src={THEME_THUMBNAIL_URL[slug]}
+                  alt={`Modèle d'invitation ${t.name}`}
+                  loading="lazy"
+                  className="absolute inset-0 size-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.04]"
+                />
                 <div
-                  className="grid h-[280px] place-items-center overflow-hidden rounded-2xl px-4 text-center"
-                  style={{ background: t.swatch[0], border: `1px solid ${t.swatch[1]}` }}
-                >
-                  <div>
-                    <p
-                      className="font-[family-name:var(--font-brand-serif)] text-[22px] italic"
-                      style={{ color: t.swatch[3] }}
-                    >
-                      {GALLERY_NAMES[i % GALLERY_NAMES.length]}
-                    </p>
-                    <span
-                      aria-hidden
-                      className="mx-auto mt-3 block h-px w-10"
-                      style={{ background: t.swatch[2] }}
-                    />
-                    <p
-                      className="mt-3 font-[family-name:var(--font-brand-ui)] text-[10px] font-semibold uppercase tracking-[0.2em]"
-                      style={{ color: t.swatch[2] }}
-                    >
-                      Save the date
-                    </p>
-                  </div>
+                  aria-hidden
+                  className="absolute inset-x-0 bottom-0 h-[52%] bg-gradient-to-t from-black/80 via-black/45 to-transparent"
+                />
+                <div className="absolute inset-x-0 bottom-0 p-3.5">
+                  <span className="inline-block rounded-full bg-[#C6A15B] px-2.5 py-[3px] font-[family-name:var(--font-brand-ui)] text-[10px] font-bold uppercase tracking-[0.08em] text-white">
+                    {family}
+                  </span>
+                  <h3 className="mt-2 font-[family-name:var(--font-brand-serif)] text-[19px] leading-tight text-white">
+                    {t.name}
+                  </h3>
+                  <p className="mt-0.5 font-[family-name:var(--font-brand-ui)] text-[11px] font-medium text-white/75">
+                    {t.mood}
+                  </p>
                 </div>
-                <figcaption className="mt-3 font-[family-name:var(--font-brand-ui)] text-[13px] font-semibold text-[#201A1C]">
-                  {t.label}
-                  <span className="block font-medium text-[#7A6D70]">{t.tagline}</span>
-                </figcaption>
-              </figure>
+              </article>
             );
           })}
         </div>
