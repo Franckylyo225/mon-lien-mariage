@@ -1,4 +1,5 @@
 import type { ThemeId } from "./wedding-store";
+import { THEMES } from "./wedding-theme";
 
 /**
  * Design tokens for the public RSVP form, keyed by theme.
@@ -70,7 +71,7 @@ function alpha(hex: string, a: number): string {
   return `#${clean}${aa}`;
 }
 
-const DESIGNS: Record<ThemeId, RsvpDesign> = {
+const DESIGNS: Partial<Record<ThemeId, RsvpDesign>> = {
   // ---------- Classiques ----------
   "rose-elegance": {
     bg: "#f7e6ec",
@@ -442,7 +443,44 @@ const DESIGNS: Record<ThemeId, RsvpDesign> = {
   },
 };
 
+/**
+ * Themes added in the africain/oriental families derive their RSVP design
+ * directly from their palette in the theme registry, so a new theme never
+ * needs a hand-written entry above.
+ */
+function derivedDesign(theme: ThemeId): RsvpDesign | null {
+  const t = THEMES[theme];
+  if (!t || (t.family !== "africain" && t.family !== "oriental")) return null;
+  const ink = t.defaultText ?? "#1A1A1A";
+  const bg = t.defaultBgHex ?? "#F5EFE7";
+  return {
+    bg,
+    surface: "#ffffff",
+    ink,
+    mutedInk: t.muted ?? alpha(ink, 0.7),
+    accent: t.defaultAccent,
+    accentInk: t.onDeep ?? "#ffffff",
+    border: alpha(t.defaultAccent, 0.22),
+    inputBg: "#ffffff",
+    inputBorder: alpha(t.defaultAccent, 0.28),
+    inputInk: ink,
+    placeholderInk: alpha(ink, 0.4),
+    headingFont: t.fontHeading,
+    bodyFont: t.fontBody,
+    eyebrowFont: t.fontBody,
+    headingItalic: false,
+    wrapperRadius: "rounded-3xl",
+    modalRadius: "rounded-3xl",
+    fieldRadius: "rounded-xl",
+    chipRadius: "rounded-full",
+    border1: "border",
+    ornament: "flourish",
+    eyebrow: "R S V P",
+  };
+}
+
 export function resolveRsvpDesign(theme: ThemeId | undefined | null): RsvpDesign {
-  if (theme && DESIGNS[theme]) return DESIGNS[theme];
-  return DESIGNS["rose-elegance"];
+  if (theme && DESIGNS[theme]) return DESIGNS[theme]!;
+  const derived = theme ? derivedDesign(theme) : null;
+  return derived ?? DESIGNS["rose-elegance"]!;
 }
