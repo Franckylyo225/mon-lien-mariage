@@ -11,6 +11,34 @@ const SITE_NAME = 'MonInvit.com'
 const SENDER_DOMAIN = 'notify.moninvit.com'
 const FROM_DOMAIN = 'notify.moninvit.com'
 
+function generateToken(): string {
+  const bytes = new Uint8Array(32)
+  crypto.getRandomValues(bytes)
+  return Array.from(bytes)
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('')
+}
+
+async function unsubscribeTokenFor(supabase: any, email: string): Promise<string> {
+  const normalized = email.toLowerCase()
+  const { data: existing } = await supabase
+    .from('email_unsubscribe_tokens')
+    .select('token, used_at')
+    .eq('email', normalized)
+    .maybeSingle()
+  if (existing?.token && !existing.used_at) return existing.token
+  const token = generateToken()
+  await supabase
+    .from('email_unsubscribe_tokens')
+    .upsert({ token, email: normalized }, { onConflict: 'email', ignoreDuplicates: true })
+  const { data: stored } = await supabase
+    .from('email_unsubscribe_tokens')
+    .select('token')
+    .eq('email', normalized)
+    .maybeSingle()
+  return stored?.token ?? token
+}
+
 export const Route = createFileRoute('/api/public/hooks/new-user')({
   server: {
     handlers: {
@@ -86,6 +114,7 @@ export const Route = createFileRoute('/api/public/hooks/new-user')({
 
         for (const recipient of recipients) {
           const messageId = crypto.randomUUID()
+          const unsubscribeToken = await unsubscribeTokenFor(supabase, recipient)
 
           await supabase.from('email_send_log').insert({
             message_id: messageId,
@@ -107,6 +136,7 @@ export const Route = createFileRoute('/api/public/hooks/new-user')({
               purpose: 'transactional',
               label: 'admin-new-user',
               idempotency_key: `new-user-${userId}-${recipient}`,
+              unsubscribe_token: unsubscribeToken,
               queued_at: new Date().toISOString(),
             },
           })
