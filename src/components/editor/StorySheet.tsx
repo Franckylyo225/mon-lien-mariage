@@ -83,29 +83,36 @@ export function StorySheet({
       return;
     }
     setSteps([
-      ...steps,
+      ...stepsRef.current,
       { id: (data as { id: string }).id, year: "", title: "", text: "", photoUrl: null },
     ]);
   };
 
   const updateStep = (id: string, patch: Partial<StoryStep>) => {
-    setSteps(steps.map((s) => (s.id === id ? { ...s, ...patch } : s)));
+    setSteps(stepsRef.current.map((s) => (s.id === id ? { ...s, ...patch } : s)));
     const row: Record<string, unknown> = {};
     if (patch.year !== undefined) row.year = patch.year || null;
     if (patch.title !== undefined) row.title = patch.title ?? "";
     if (patch.text !== undefined) row.text = patch.text || null;
     if (patch.photoUrl !== undefined) row.photo_url = patch.photoUrl || null;
     if (Object.keys(row).length === 0) return;
-    void supabase.from("wedding_story_steps").update(row as never).eq("id", id);
+    void (async () => {
+      const { error: err } = await supabase
+        .from("wedding_story_steps")
+        .update(row as never)
+        .eq("id", id);
+      if (err) setError("Enregistrement de l'étape impossible. Vérifiez votre connexion.");
+      else setError(null);
+    })();
   };
 
   const deleteStep = async (id: string) => {
-    setSteps(steps.filter((s) => s.id !== id));
+    setSteps(stepsRef.current.filter((s) => s.id !== id));
     await supabase.from("wedding_story_steps").delete().eq("id", id);
   };
 
   const moveStep = async (index: number, dir: -1 | 1) => {
-    const next = [...steps];
+    const next = [...stepsRef.current];
     const target = index + dir;
     if (target < 0 || target >= next.length) return;
     [next[index], next[target]] = [next[target], next[index]];
