@@ -48,7 +48,6 @@ export const InviteEmail = ({ siteUrl, confirmationUrl }: InviteEmailProps) => (
       <Container style={container}>
         <Section style={header}>
           <Img src={logoUrl} alt="MonInvit.com" style={logo} />
-          
           <Text style={brandTag}>Vous avez une invitation</Text>
         </Section>
 

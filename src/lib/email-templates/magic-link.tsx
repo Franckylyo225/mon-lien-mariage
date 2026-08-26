@@ -47,7 +47,6 @@ export const MagicLinkEmail = ({ confirmationUrl }: MagicLinkEmailProps) => (
       <Container style={container}>
         <Section style={header}>
           <Img src={logoUrl} alt="MonInvit.com" style={logo} />
-          
           <Text style={brandTag}>Connexion sécurisée</Text>
         </Section>
 

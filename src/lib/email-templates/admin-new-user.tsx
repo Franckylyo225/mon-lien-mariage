@@ -50,7 +50,6 @@ const AdminNewUserEmail = ({
       <Container style={container}>
         <Section style={header}>
           <Img src={logoUrl} alt="MonInvit.com" style={logo} />
-          
           <Text style={brandTag}>Notification administrateur</Text>
         </Section>
 

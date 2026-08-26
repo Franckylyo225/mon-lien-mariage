@@ -58,7 +58,6 @@ export const EmailChangeEmail = ({
       <Container style={container}>
         <Section style={header}>
           <Img src={logoUrl} alt="MonInvit.com" style={logo} />
-          
           <Text style={brandTag}>Changement d'adresse</Text>
         </Section>
 

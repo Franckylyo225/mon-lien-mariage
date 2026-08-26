@@ -47,7 +47,6 @@ export const RecoveryEmail = ({ confirmationUrl }: RecoveryEmailProps) => (
       <Container style={container}>
         <Section style={header}>
           <Img src={logoUrl} alt="MonInvit.com" style={logo} />
-          
           <Text style={brandTag}>Sécurité du compte</Text>
         </Section>
 

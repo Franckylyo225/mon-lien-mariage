@@ -54,7 +54,6 @@ export const SignupEmail = ({
         <Container style={container}>
           <Section style={header}>
             <Img src={logoUrl} alt="MonInvit.com" style={logo} />
-            
             <Text style={brandTag}>Invitations de mariage</Text>
           </Section>
 
