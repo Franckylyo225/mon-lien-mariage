@@ -297,10 +297,10 @@ export function CornerOrnaments({
   const base = "pointer-events-none absolute h-14 w-14 opacity-70";
   return (
     <>
-      <div className={base + " left-0 top-0"}>{glyph}</div>
-      <div className={base + " right-0 top-0 rotate-90"}>{glyph}</div>
-      <div className={base + " bottom-0 right-0 rotate-180"}>{glyph}</div>
-      <div className={base + " -rotate-90 bottom-0 left-0"}>{glyph}</div>
+      <div className={base + " left-1 top-1"}>{glyph}</div>
+      <div className={base + " right-1 top-1 rotate-90"}>{glyph}</div>
+      <div className={base + " bottom-1 right-1 rotate-180"}>{glyph}</div>
+      <div className={base + " -rotate-90 bottom-1 left-1"}>{glyph}</div>
     </>
   );
 }
