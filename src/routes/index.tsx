@@ -9,7 +9,8 @@ import {
   Share2,
   type LucideIcon,
 } from "lucide-react";
-import { templateMeta, templateOrder } from "@/lib/ceremony-meta";
+import { THEMES, THEME_FAMILIES } from "@/lib/wedding-theme";
+import { THEME_THUMBNAIL_URL } from "@/lib/theme-thumbnails";
 import {
   SiteHeader,
   SiteFooter,
