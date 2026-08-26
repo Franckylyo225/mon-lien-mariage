@@ -7,7 +7,9 @@ export type ThemeFamilyId =
   | "botaniques"
   | "heritage"
   | "modernes"
-  | "illustres";
+  | "illustres"
+  | "africain"
+  | "oriental";
 
 export interface ThemeDef {
   slug: ThemeId;
@@ -18,6 +20,22 @@ export interface ThemeDef {
   fontBody: string;
   defaultAccent: string;
   defaultBg: BackgroundSlug;
+  /** Exact background hex (overrides defaultBg when present). */
+  defaultBgHex?: string;
+  /** Main text colour when the couple has not overridden it. */
+  defaultText?: string;
+  /** Deep/contrast colour used for bands, overlays and ornaments. */
+  deep?: string;
+  /** Foreground colour on top of `deep`. */
+  onDeep?: string;
+  /** Secondary/muted text colour. */
+  muted?: string;
+  /** Short marketing description. */
+  description?: string;
+  /** Dress code suggestion shown in the theme picker. */
+  dressLabel?: string;
+  /** Decorative hero band (CSS background shorthand). */
+  bandCss?: string;
 }
 
 // Google Font families available (loaded in src/routes/__root.tsx)
@@ -25,6 +43,8 @@ const FONT_PLAYFAIR = '"Playfair Display", serif';
 const FONT_CORMORANT = '"Cormorant Garamond", serif';
 const FONT_INTER = '"Inter", sans-serif';
 const FONT_TYPEWRITER = '"Special Elite", "Courier New", monospace';
+const FONT_MARCELLUS = '"Marcellus", serif';
+const FONT_AMIRI = '"Amiri", serif';
 
 export const THEMES: Record<ThemeId, ThemeDef> = {
   // ---------- Classiques élégants ----------
