@@ -70,7 +70,7 @@ function alpha(hex: string, a: number): string {
   return `#${clean}${aa}`;
 }
 
-const DESIGNS: Record<ThemeId, RsvpDesign> = {
+const DESIGNS: Partial<Record<ThemeId, RsvpDesign>> = {
   // ---------- Classiques ----------
   "rose-elegance": {
     bg: "#f7e6ec",
