@@ -55,7 +55,20 @@ export type ThemeId =
   // Illustrés
   | "aquarelle"
   | "confetti"
-  | "papier-kraft";
+  | "papier-kraft"
+  // Africains
+  | "indigo-adinkra"
+  | "kente-souverain"
+  | "bogolan-bordeaux"
+  | "wax-ivoire"
+  | "nuit-ebene"
+  // Orientaux
+  | "zellige-emeraude"
+  | "mashrabiya-sable"
+  | "arabesque-bordeaux"
+  | "nacre-girih"
+  | "calligraphie-nuit";
+
 
 export type BackgroundBaseSlug = "ivoire" | "creme" | "blanc" | "gris";
 // Either one of the 4 preset slugs, or a free hex color like "#RRGGBB".
