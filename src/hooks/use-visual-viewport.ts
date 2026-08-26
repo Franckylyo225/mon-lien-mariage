@@ -24,7 +24,7 @@ export function useVisualViewport(): ViewportOffset | null {
     const update = () => {
       const keyboardHeight = window.innerHeight - vv.height - vv.offsetTop;
       // Ignore tiny fluctuations (scroll bounce, URL bar) — only real keyboards.
-      if (keyboardHeight > 120) {
+      if (keyboardHeight > 80) {
         setOffset({ keyboardHeight, visibleHeight: vv.height });
       } else {
         setOffset(null);

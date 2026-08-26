@@ -31,7 +31,7 @@ export function BottomSheet({
     : undefined;
 
   return (
-    <Drawer.Root open={open} onOpenChange={onOpenChange}>
+    <Drawer.Root open={open} onOpenChange={onOpenChange} repositionInputs={false}>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-50 bg-black/40" />
         <Drawer.Content
@@ -68,7 +68,16 @@ export function BottomSheet({
             </button>
           </header>
 
-          <div className="flex-1 overflow-y-auto px-5 pb-8 pt-2">{children}</div>
+          <div
+            className="flex-1 overflow-y-auto px-5 pb-8 pt-2"
+            onFocusCapture={(e) => {
+              const el = e.target as HTMLElement;
+              if (!el.matches("input, textarea, select")) return;
+              setTimeout(() => el.scrollIntoView({ block: "center", behavior: "smooth" }), 250);
+            }}
+          >
+            {children}
+          </div>
         </Drawer.Content>
       </Drawer.Portal>
     </Drawer.Root>

@@ -100,7 +100,7 @@ export function BasicInfoSheet({ open, onOpenChange }: Props) {
   };
 
   return (
-    <Drawer.Root open={open} onOpenChange={handleClose}>
+    <Drawer.Root open={open} onOpenChange={handleClose} repositionInputs={false}>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-50 bg-black/40" />
         <Drawer.Content
