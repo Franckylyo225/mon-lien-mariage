@@ -37,6 +37,7 @@ export function StorySheet({
   couple,
   persist,
 }: StorySheetProps) {
+  const { updateCouple } = useWedding();
   const enabled = couple.storyEnabled ?? true;
   const steps = couple.storySteps ?? [];
   const layout: StoryLayout = couple.storyLayout ?? "left";
@@ -47,13 +48,20 @@ export function StorySheet({
   const [busyId, setBusyId] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const targetStep = useRef<string | null>(null);
+  // Always mirror the freshest steps so rapid keystrokes never write stale arrays.
+  const stepsRef = useRef<StoryStep[]>(steps);
+  stepsRef.current = steps;
 
   useEffect(() => {
     if (open) setTitleDraft(couple.storyTitle ?? "");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
-  const setSteps = (next: StoryStep[]) => persist({ storySteps: next });
+  // Steps live in their own table: update local state immediately (not debounced).
+  const setSteps = (next: StoryStep[]) => {
+    stepsRef.current = next;
+    void updateCouple({ storySteps: next });
+  };
 
   const addStep = async () => {
     if (!weddingId) {
