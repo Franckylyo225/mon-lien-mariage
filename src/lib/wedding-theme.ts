@@ -475,6 +475,20 @@ export const THEME_TO_TEMPLATE: Record<ThemeId, TemplateId> = {
   aquarelle: "tropical",             // painted (peint, romantique)
   confetti: "tropical",              // painted (festif, illustré)
   "papier-kraft": "terracotta",      // warm-classic (vintage postal chaleureux)
+
+  // Africains (Phase 4)
+  "indigo-adinkra": "art-deco",      // ornamental
+  "kente-souverain": "art-deco",     // ornamental
+  "bogolan-bordeaux": "terracotta",  // warm-classic
+  "wax-ivoire": "art-deco",          // ornamental
+  "nuit-ebene": "noir-minimal",      // editorial-dark
+
+  // Orientaux (Phase 4)
+  "zellige-emeraude": "art-deco",
+  "mashrabiya-sable": "terracotta",
+  "arabesque-bordeaux": "art-deco",
+  "nacre-girih": "art-deco",
+  "calligraphie-nuit": "noir-minimal",
 };
 
 // Répartition résultante (15 thèmes / 5 templates) :
