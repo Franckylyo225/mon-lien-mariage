@@ -8,6 +8,7 @@ import {
   Heading,
   Hr,
   Html,
+  Img,
   Link,
   Preview,
   Section,
@@ -27,6 +28,8 @@ import {
   h1,
   header,
   link,
+  logo,
+  logoUrl,
   main,
   smallText,
   text,
@@ -44,6 +47,7 @@ export const RecoveryEmail = ({ confirmationUrl }: RecoveryEmailProps) => (
     <Body style={main}>
       <Container style={container}>
         <Section style={header}>
+          <Img src={logoUrl} alt="MonInvit.com" style={logo} />
           <Heading as="h1" style={brandName}>MonInvit.com</Heading>
           <Text style={brandTag}>Sécurité du compte</Text>
         </Section>
