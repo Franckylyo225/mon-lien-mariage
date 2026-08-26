@@ -247,9 +247,9 @@ function Hero() {
 
           <dl className="mx-auto mt-8 grid max-w-lg grid-cols-3 gap-3 border-t border-[#F1E3C6] pt-5 sm:mt-10 sm:gap-4 sm:pt-6 lg:mx-0">
             {[
-              ["20+", "Modèles romantiques"],
+              ["+30", "Modèles romantiques"],
               ["10 min", "Pour publier"],
-              ["500+", "Couples conquis"],
+              ["+500", "Couples conquis"],
             ].map(([n, l]) => (
               <div key={l}>
                 <dt className="font-[family-name:var(--font-brand-serif)] text-[clamp(22px,6vw,30px)] font-medium text-[#E82050]">
