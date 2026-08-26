@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import type { Couple } from "@/lib/wedding-store";
 import { resolveTheme, themeCssVars, type ResolvedTheme } from "@/lib/wedding-theme";
+import { ThemeBackground } from "@/components/public/ThemeBackground";
 
 type ThemeCouple = Pick<
   Couple,
