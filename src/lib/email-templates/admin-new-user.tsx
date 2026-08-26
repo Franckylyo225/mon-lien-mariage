@@ -15,7 +15,6 @@ import type { TemplateEntry } from './registry'
 import {
   brand,
   body as bodyStyle,
-  brandName,
   brandTag,
   button,
   buttonWrap,
@@ -51,7 +50,6 @@ const AdminNewUserEmail = ({
       <Container style={container}>
         <Section style={header}>
           <Img src={logoUrl} alt="MonInvit.com" style={logo} />
-          <Heading as="h1" style={brandName}>{brand.name}</Heading>
           <Text style={brandTag}>Notification administrateur</Text>
         </Section>
 

@@ -15,7 +15,6 @@ import {
 
 import {
   body,
-  brandName,
   brandTag,
   codeBox,
   container,
@@ -43,7 +42,6 @@ export const ReauthenticationEmail = ({ token }: ReauthenticationEmailProps) => 
       <Container style={container}>
         <Section style={header}>
           <Img src={logoUrl} alt="MonInvit.com" style={logo} />
-          <Heading as="h1" style={brandName}>MonInvit.com</Heading>
           <Text style={brandTag}>Vérification d'identité</Text>
         </Section>
 
