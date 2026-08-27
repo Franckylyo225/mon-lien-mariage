@@ -36,7 +36,6 @@ import { Route as OnboardingThemeRouteImport } from './routes/onboarding.theme'
 import { Route as OnboardingPrenomsRouteImport } from './routes/onboarding.prenoms'
 import { Route as OnboardingEvenementRouteImport } from './routes/onboarding.evenement'
 import { Route as OnboardingDatesRouteImport } from './routes/onboarding.dates'
-import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as ESlugRouteImport } from './routes/e.$slug'
 import { Route as DashboardVueRouteImport } from './routes/dashboard.vue'
 import { Route as DashboardStatsRouteImport } from './routes/dashboard.stats'
@@ -63,15 +62,12 @@ import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog'
 import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as DashboardGuestsIndexRouteImport } from './routes/dashboard.guests.index'
-import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as LovableEmailEventsRouteImport } from './routes/lovable/email/events'
 import { Route as GuestbookPrintIdRouteImport } from './routes/guestbook.print.$id'
 import { Route as DashboardGuestsNewRouteImport } from './routes/dashboard.guests.new'
 import { Route as DashboardCeremoniesIdRouteImport } from './routes/dashboard.ceremonies.$id'
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
-import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
-import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as ApiPublicWebhooksPaystackRouteImport } from './routes/api/public/webhooks/paystack'
@@ -216,11 +212,6 @@ const OnboardingDatesRoute = OnboardingDatesRouteImport.update({
   path: '/dates',
   getParentRoute: () => OnboardingRoute,
 } as any)
-const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
-  id: '/email/unsubscribe',
-  path: '/email/unsubscribe',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ESlugRoute = ESlugRouteImport.update({
   id: '/e/$slug',
   path: '/e/$slug',
@@ -351,11 +342,6 @@ const DashboardGuestsIndexRoute = DashboardGuestsIndexRouteImport.update({
   path: '/guests/',
   getParentRoute: () => DashboardRoute,
 } as any)
-const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
-  id: '/lovable/email/suppression',
-  path: '/lovable/email/suppression',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LovableEmailEventsRoute = LovableEmailEventsRouteImport.update({
   id: '/lovable/email/events',
   path: '/lovable/email/events',
@@ -381,22 +367,10 @@ const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
   path: '/api/public/health',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LovableEmailTransactionalSendRoute =
-  LovableEmailTransactionalSendRouteImport.update({
-    id: '/lovable/email/transactional/send',
-    path: '/lovable/email/transactional/send',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const LovableEmailTransactionalPreviewRoute =
   LovableEmailTransactionalPreviewRouteImport.update({
     id: '/lovable/email/transactional/preview',
     path: '/lovable/email/transactional/preview',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LovableEmailQueueProcessRoute =
-  LovableEmailQueueProcessRouteImport.update({
-    id: '/lovable/email/queue/process',
-    path: '/lovable/email/queue/process',
     getParentRoute: () => rootRouteImport,
   } as any)
 const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
@@ -476,7 +450,6 @@ export interface FileRoutesByFullPath {
   '/dashboard/stats': typeof DashboardStatsRoute
   '/dashboard/vue': typeof DashboardVueRoute
   '/e/$slug': typeof ESlugRoute
-  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/onboarding/dates': typeof OnboardingDatesRoute
   '/onboarding/evenement': typeof OnboardingEvenementRoute
   '/onboarding/prenoms': typeof OnboardingPrenomsRoute
@@ -491,7 +464,6 @@ export interface FileRoutesByFullPath {
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
   '/guestbook/print/$id': typeof GuestbookPrintIdRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
-  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests/': typeof DashboardGuestsIndexRoute
   '/api/public/blog-image/$': typeof ApiPublicBlogImageSplatRoute
   '/api/public/hooks/new-user': typeof ApiPublicHooksNewUserRoute
@@ -499,9 +471,7 @@ export interface FileRoutesByFullPath {
   '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
-  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
-  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -545,7 +515,6 @@ export interface FileRoutesByTo {
   '/dashboard/stats': typeof DashboardStatsRoute
   '/dashboard/vue': typeof DashboardVueRoute
   '/e/$slug': typeof ESlugRoute
-  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/onboarding/dates': typeof OnboardingDatesRoute
   '/onboarding/evenement': typeof OnboardingEvenementRoute
   '/onboarding/prenoms': typeof OnboardingPrenomsRoute
@@ -560,7 +529,6 @@ export interface FileRoutesByTo {
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
   '/guestbook/print/$id': typeof GuestbookPrintIdRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
-  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests': typeof DashboardGuestsIndexRoute
   '/api/public/blog-image/$': typeof ApiPublicBlogImageSplatRoute
   '/api/public/hooks/new-user': typeof ApiPublicHooksNewUserRoute
@@ -568,9 +536,7 @@ export interface FileRoutesByTo {
   '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
-  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
-  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -617,7 +583,6 @@ export interface FileRoutesById {
   '/dashboard/stats': typeof DashboardStatsRoute
   '/dashboard/vue': typeof DashboardVueRoute
   '/e/$slug': typeof ESlugRoute
-  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/onboarding/dates': typeof OnboardingDatesRoute
   '/onboarding/evenement': typeof OnboardingEvenementRoute
   '/onboarding/prenoms': typeof OnboardingPrenomsRoute
@@ -632,7 +597,6 @@ export interface FileRoutesById {
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
   '/guestbook/print/$id': typeof GuestbookPrintIdRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
-  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests/': typeof DashboardGuestsIndexRoute
   '/api/public/blog-image/$': typeof ApiPublicBlogImageSplatRoute
   '/api/public/hooks/new-user': typeof ApiPublicHooksNewUserRoute
@@ -640,9 +604,7 @@ export interface FileRoutesById {
   '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
-  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
-  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -690,7 +652,6 @@ export interface FileRouteTypes {
     | '/dashboard/stats'
     | '/dashboard/vue'
     | '/e/$slug'
-    | '/email/unsubscribe'
     | '/onboarding/dates'
     | '/onboarding/evenement'
     | '/onboarding/prenoms'
@@ -705,7 +666,6 @@ export interface FileRouteTypes {
     | '/dashboard/guests/new'
     | '/guestbook/print/$id'
     | '/lovable/email/events'
-    | '/lovable/email/suppression'
     | '/dashboard/guests/'
     | '/api/public/blog-image/$'
     | '/api/public/hooks/new-user'
@@ -713,9 +673,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/paystack'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
-    | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
-    | '/lovable/email/transactional/send'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -759,7 +717,6 @@ export interface FileRouteTypes {
     | '/dashboard/stats'
     | '/dashboard/vue'
     | '/e/$slug'
-    | '/email/unsubscribe'
     | '/onboarding/dates'
     | '/onboarding/evenement'
     | '/onboarding/prenoms'
@@ -774,7 +731,6 @@ export interface FileRouteTypes {
     | '/dashboard/guests/new'
     | '/guestbook/print/$id'
     | '/lovable/email/events'
-    | '/lovable/email/suppression'
     | '/dashboard/guests'
     | '/api/public/blog-image/$'
     | '/api/public/hooks/new-user'
@@ -782,9 +738,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/paystack'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
-    | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
-    | '/lovable/email/transactional/send'
   id:
     | '__root__'
     | '/'
@@ -830,7 +784,6 @@ export interface FileRouteTypes {
     | '/dashboard/stats'
     | '/dashboard/vue'
     | '/e/$slug'
-    | '/email/unsubscribe'
     | '/onboarding/dates'
     | '/onboarding/evenement'
     | '/onboarding/prenoms'
@@ -845,7 +798,6 @@ export interface FileRouteTypes {
     | '/dashboard/guests/new'
     | '/guestbook/print/$id'
     | '/lovable/email/events'
-    | '/lovable/email/suppression'
     | '/dashboard/guests/'
     | '/api/public/blog-image/$'
     | '/api/public/hooks/new-user'
@@ -853,9 +805,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/paystack'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
-    | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
-    | '/lovable/email/transactional/send'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -884,23 +834,19 @@ export interface RootRouteChildren {
   AppSupportRoute: typeof AppSupportRoute
   BlogSlugRoute: typeof BlogSlugRoute
   ESlugRoute: typeof ESlugRoute
-  EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   PaymentCallbackRoute: typeof PaymentCallbackRoute
   ThemeThumbSlugRoute: typeof ThemeThumbSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
   ApiPublicHealthRoute: typeof ApiPublicHealthRoute
   GuestbookPrintIdRoute: typeof GuestbookPrintIdRoute
   LovableEmailEventsRoute: typeof LovableEmailEventsRoute
-  LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicBlogImageSplatRoute: typeof ApiPublicBlogImageSplatRoute
   ApiPublicHooksNewUserRoute: typeof ApiPublicHooksNewUserRoute
   ApiPublicHooksRsvpMilestoneRoute: typeof ApiPublicHooksRsvpMilestoneRoute
   ApiPublicWebhooksPaystackRoute: typeof ApiPublicWebhooksPaystackRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
-  LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
-  LovableEmailTransactionalSendRoute: typeof LovableEmailTransactionalSendRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1094,13 +1040,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingDatesRouteImport
       parentRoute: typeof OnboardingRoute
     }
-    '/email/unsubscribe': {
-      id: '/email/unsubscribe'
-      path: '/email/unsubscribe'
-      fullPath: '/email/unsubscribe'
-      preLoaderRoute: typeof EmailUnsubscribeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/e/$slug': {
       id: '/e/$slug'
       path: '/e/$slug'
@@ -1283,13 +1222,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardGuestsIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/lovable/email/suppression': {
-      id: '/lovable/email/suppression'
-      path: '/lovable/email/suppression'
-      fullPath: '/lovable/email/suppression'
-      preLoaderRoute: typeof LovableEmailSuppressionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/lovable/email/events': {
       id: '/lovable/email/events'
       path: '/lovable/email/events'
@@ -1325,25 +1257,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/lovable/email/transactional/send': {
-      id: '/lovable/email/transactional/send'
-      path: '/lovable/email/transactional/send'
-      fullPath: '/lovable/email/transactional/send'
-      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/lovable/email/transactional/preview': {
       id: '/lovable/email/transactional/preview'
       path: '/lovable/email/transactional/preview'
       fullPath: '/lovable/email/transactional/preview'
       preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/queue/process': {
-      id: '/lovable/email/queue/process'
-      path: '/lovable/email/queue/process'
-      fullPath: '/lovable/email/queue/process'
-      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lovable/email/auth/webhook': {
@@ -1508,23 +1426,19 @@ const rootRouteChildren: RootRouteChildren = {
   AppSupportRoute: AppSupportRoute,
   BlogSlugRoute: BlogSlugRoute,
   ESlugRoute: ESlugRoute,
-  EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   PaymentCallbackRoute: PaymentCallbackRoute,
   ThemeThumbSlugRoute: ThemeThumbSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
   ApiPublicHealthRoute: ApiPublicHealthRoute,
   GuestbookPrintIdRoute: GuestbookPrintIdRoute,
   LovableEmailEventsRoute: LovableEmailEventsRoute,
-  LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicBlogImageSplatRoute: ApiPublicBlogImageSplatRoute,
   ApiPublicHooksNewUserRoute: ApiPublicHooksNewUserRoute,
   ApiPublicHooksRsvpMilestoneRoute: ApiPublicHooksRsvpMilestoneRoute,
   ApiPublicWebhooksPaystackRoute: ApiPublicWebhooksPaystackRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
-  LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
-  LovableEmailTransactionalSendRoute: LovableEmailTransactionalSendRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
