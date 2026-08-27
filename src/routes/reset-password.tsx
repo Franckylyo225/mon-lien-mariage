@@ -148,6 +148,29 @@ function ResetPasswordPage() {
     setTimeout(() => navigate({ to: "/dashboard" }), 1500);
   };
 
+  const submitCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setOtpError(null);
+    if (otpCode.length !== 6) {
+      setOtpError("Le code doit contenir 6 chiffres.");
+      return;
+    }
+    setOtpLoading(true);
+    const { error: err } = await supabase.auth.verifyOtp({
+      type: "recovery",
+      email: otpEmail.trim(),
+      token: otpCode,
+    });
+    setOtpLoading(false);
+    if (err) {
+      setOtpError("Code invalide ou expiré. Demandez un nouveau lien.");
+      return;
+    }
+    setInvalid(false);
+    setReady(true);
+  };
+
+
   return (
     <AuthLayout
       eyebrow="Nouveau mot de passe"
