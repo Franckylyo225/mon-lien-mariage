@@ -9,7 +9,6 @@ import {
   Hr,
   Html,
   Img,
-  Link,
   Preview,
   Section,
   Text,
@@ -26,7 +25,6 @@ import {
   footerBrand,
   h1,
   header,
-  link,
   logo,
   logoUrl,
   main,
@@ -51,29 +49,23 @@ export const RecoveryEmail = ({ confirmationUrl }: RecoveryEmailProps) => (
         </Section>
 
         <Section style={body}>
-          <Heading as="h2" style={h1}>Nouveau mot de passe</Heading>
+          <Heading as="h2" style={h1}>Réinitialiser votre mot de passe</Heading>
           <Text style={text}>
             Nous avons reçu une demande de réinitialisation de votre mot de
             passe. Cliquez sur le bouton ci-dessous pour en choisir un nouveau.
-            Ce lien est valable pendant une heure.
           </Text>
 
           <Section style={buttonWrap}>
-            <Button style={button} href={confirmationUrl}>
-              Réinitialiser mon mot de passe
+            <Button href={confirmationUrl} style={button}>
+              Choisir un nouveau mot de passe
             </Button>
           </Section>
-
-          <Text style={smallText}>
-            Ou copiez ce lien dans votre navigateur :<br />
-            <Link href={confirmationUrl} style={link}>{confirmationUrl}</Link>
-          </Text>
 
           <Hr style={divider} />
 
           <Text style={smallText}>
-            Vous n'avez pas demandé ce changement ? Ignorez cet email, votre mot
-            de passe restera inchangé.
+            Si vous n'êtes pas à l'origine de cette demande, ignorez cet email :
+            votre mot de passe restera inchangé.
           </Text>
         </Section>
 

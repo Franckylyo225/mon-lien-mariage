@@ -9,7 +9,6 @@ import {
   Hr,
   Html,
   Img,
-  Link,
   Preview,
   Section,
   Text,
@@ -26,7 +25,6 @@ import {
   footerBrand,
   h1,
   header,
-  link,
   logo,
   logoUrl,
   main,
@@ -38,8 +36,7 @@ interface EmailChangeEmailProps {
   siteName: string
   // oldEmail is the user's current address (HookData.OldEmail). For the
   // NEW-recipient half of a secure email_change fanout, `email` equals the
-  // recipient (NEW), so the "from" line must render oldEmail to read
-  // "from OLD to NEW" instead of "from NEW to NEW".
+  // recipient (NEW), so the "from" line must render oldEmail.
   oldEmail: string
   email: string
   newEmail: string
@@ -58,36 +55,28 @@ export const EmailChangeEmail = ({
       <Container style={container}>
         <Section style={header}>
           <Img src={logoUrl} alt="MonInvit.com" style={logo} />
-          <Text style={brandTag}>Changement d'adresse</Text>
+          <Text style={brandTag}>Changement d'email</Text>
         </Section>
 
         <Section style={body}>
-          <Heading as="h2" style={h1}>Confirmer votre nouvel email</Heading>
+          <Heading as="h2" style={h1}>Confirmez votre nouvelle adresse</Heading>
           <Text style={text}>
             Vous avez demandé à changer l'adresse email de votre compte
-            MonInvit.com :<br />
-            de{' '}
-            <Link href={`mailto:${oldEmail}`} style={link}>{oldEmail}</Link>{' '}
-            vers{' '}
-            <Link href={`mailto:${newEmail}`} style={link}>{newEmail}</Link>.
+            MonInvit.com de <strong>{oldEmail}</strong> vers{' '}
+            <strong>{newEmail}</strong>.
           </Text>
 
           <Section style={buttonWrap}>
-            <Button style={button} href={confirmationUrl}>
+            <Button href={confirmationUrl} style={button}>
               Confirmer le changement
             </Button>
           </Section>
 
-          <Text style={smallText}>
-            Ou copiez ce lien dans votre navigateur :<br />
-            <Link href={confirmationUrl} style={link}>{confirmationUrl}</Link>
-          </Text>
-
           <Hr style={divider} />
 
           <Text style={smallText}>
-            Vous n'avez pas demandé ce changement ? Sécurisez votre compte dès
-            maintenant en changeant votre mot de passe.
+            Si vous n'êtes pas à l'origine de cette demande, sécurisez votre
+            compte immédiatement.
           </Text>
         </Section>
 

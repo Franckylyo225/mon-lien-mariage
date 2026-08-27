@@ -9,7 +9,6 @@ import {
   Hr,
   Html,
   Img,
-  Link,
   Preview,
   Section,
   Text,
@@ -26,7 +25,6 @@ import {
   footerBrand,
   h1,
   header,
-  link,
   logo,
   logoUrl,
   main,
@@ -47,32 +45,26 @@ export const MagicLinkEmail = ({ confirmationUrl }: MagicLinkEmailProps) => (
       <Container style={container}>
         <Section style={header}>
           <Img src={logoUrl} alt="MonInvit.com" style={logo} />
-          <Text style={brandTag}>Connexion sécurisée</Text>
+          <Text style={brandTag}>Connexion</Text>
         </Section>
 
         <Section style={body}>
-          <Heading as="h2" style={h1}>Votre lien magique</Heading>
+          <Heading as="h2" style={h1}>Votre lien de connexion</Heading>
           <Text style={text}>
             Cliquez sur le bouton ci-dessous pour vous connecter à votre espace
             MonInvit.com. Ce lien expirera dans quelques minutes.
           </Text>
 
           <Section style={buttonWrap}>
-            <Button style={button} href={confirmationUrl}>
-              Me connecter
+            <Button href={confirmationUrl} style={button}>
+              Se connecter
             </Button>
           </Section>
-
-          <Text style={smallText}>
-            Ou copiez ce lien dans votre navigateur :<br />
-            <Link href={confirmationUrl} style={link}>{confirmationUrl}</Link>
-          </Text>
 
           <Hr style={divider} />
 
           <Text style={smallText}>
-            Vous n'avez pas demandé ce lien ? Ignorez cet email en toute
-            sécurité.
+            Vous n'avez pas demandé ce lien ? Ignorez cet email.
           </Text>
         </Section>
 

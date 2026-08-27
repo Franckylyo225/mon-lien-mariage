@@ -1,24 +1,9 @@
-import * as React from 'react'
-import { render } from '@react-email/render'
 import { createClient } from '@supabase/supabase-js'
 import { createFileRoute } from '@tanstack/react-router'
-import { TEMPLATES } from '@/lib/email-templates/registry'
+import { sendTemplateEmail } from '@/lib/email-templates/send-email'
 
 // Internal webhook called by the on_rsvp_confirmed Postgres trigger via pg_net.
-// Authenticated with the service-role key stored in Vault (email_queue_service_role_key).
-// Renders the milestone email and enqueues it in the transactional queue.
-const SITE_NAME = 'MonInvit.com'
-const SENDER_DOMAIN = 'notify.moninvit.com'
-const FROM_DOMAIN = 'notify.moninvit.com'
-
-function generateToken(): string {
-  const bytes = new Uint8Array(32)
-  crypto.getRandomValues(bytes)
-  return Array.from(bytes)
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('')
-}
-
+// Authenticated with the service-role key.
 export const Route = createFileRoute('/api/public/hooks/rsvp-milestone')({
   server: {
     handlers: {
@@ -57,100 +42,47 @@ export const Route = createFileRoute('/api/public/hooks/rsvp-milestone')({
           auth: { persistSession: false },
         })
 
-        // Suppression check
-        const { data: suppressed } = await supabase
-          .from('suppressed_emails')
-          .select('id')
-          .eq('email', recipientEmail.toLowerCase())
-          .maybeSingle()
-        if (suppressed) {
-          return Response.json({ success: false, reason: 'suppressed' })
-        }
-
-        // Unsubscribe token (reuse or create)
-        const normalized = recipientEmail.toLowerCase()
-        let unsubscribeToken: string
-        const { data: existingToken } = await supabase
-          .from('email_unsubscribe_tokens')
-          .select('token, used_at')
-          .eq('email', normalized)
-          .maybeSingle()
-        if (existingToken && !existingToken.used_at) {
-          unsubscribeToken = existingToken.token
-        } else {
-          unsubscribeToken = generateToken()
-          await supabase
-            .from('email_unsubscribe_tokens')
-            .upsert(
-              { token: unsubscribeToken, email: normalized },
-              { onConflict: 'email', ignoreDuplicates: true },
-            )
-          const { data: stored } = await supabase
-            .from('email_unsubscribe_tokens')
-            .select('token')
-            .eq('email', normalized)
-            .maybeSingle()
-          if (stored?.token) unsubscribeToken = stored.token
-        }
-
-        const template = TEMPLATES['rsvp-milestone']
-        if (!template) {
-          return Response.json({ error: 'template_missing' }, { status: 500 })
-        }
-
-        const templateData = {
-          milestone,
-          coupleLabel,
-          slug: payload?.slug ?? '',
-        }
-        const element = React.createElement(template.component, templateData)
-        const html = await render(element)
-        const plainText = await render(element, { plainText: true })
-        const subject =
-          typeof template.subject === 'function'
-            ? template.subject(templateData)
-            : template.subject
-
-        const messageId = crypto.randomUUID()
-        const idempotencyKey = `milestone-${weddingId}-${milestone}`
-
-        await supabase.from('email_send_log').insert({
-          message_id: messageId,
-          template_name: 'rsvp-milestone',
-          recipient_email: recipientEmail,
-          status: 'pending',
-        })
-
-        const { error: enqueueError } = await supabase.rpc('enqueue_email', {
-          queue_name: 'transactional_emails',
-          payload: {
-            message_id: messageId,
-            to: recipientEmail,
-            from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
-            sender_domain: SENDER_DOMAIN,
-            subject,
-            html,
-            text: plainText,
-            purpose: 'transactional',
-            label: 'rsvp-milestone',
-            idempotency_key: idempotencyKey,
-            unsubscribe_token: unsubscribeToken,
-            queued_at: new Date().toISOString(),
-          },
-        })
-
-        if (enqueueError) {
-          await supabase.from('email_send_log').insert({
-            message_id: messageId,
+        const logSend = async (
+          status: 'sent' | 'suppressed' | 'failed',
+          errorMessage?: string,
+        ) => {
+          const { error } = await supabase.from('email_send_log').insert({
+            message_id: null,
             template_name: 'rsvp-milestone',
             recipient_email: recipientEmail,
-            status: 'failed',
-            error_message: enqueueError.message,
+            status,
+            ...(errorMessage ? { error_message: errorMessage } : {}),
           })
-          return Response.json({ error: 'enqueue_failed' }, { status: 500 })
+          if (error) {
+            console.error('Failed to write email_send_log', {
+              code: error.code,
+              message: error.message,
+            })
+          }
         }
 
-        return Response.json({ success: true, queued: true, milestone })
+        try {
+          const result = await sendTemplateEmail('rsvp-milestone', recipientEmail, {
+            templateData: {
+              milestone,
+              coupleLabel,
+              slug: payload?.slug ?? '',
+            },
+            idempotencyKey: `milestone-${weddingId}-${milestone}`,
+          })
+
+          if (!result.sent) {
+            await logSend('suppressed')
+            return Response.json({ success: false, reason: 'suppressed' })
+          }
+
+          await logSend('sent')
+          return Response.json({ success: true, milestone })
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error)
+          await logSend('failed', message.slice(0, 1000))
+          return Response.json({ error: 'send_failed' }, { status: 500 })
+        }
       },
     },
   },
