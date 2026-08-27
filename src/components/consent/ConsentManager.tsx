@@ -110,7 +110,7 @@ export function ConsentManager() {
       ) : null}
 
       {preferencesOpen ? (
-        <div className="fixed inset-0 z-[80] flex items-end justify-center sm:items-center">
+        <div className="fixed inset-0 z-[130] flex items-end justify-center sm:items-center">
           <div
             className="absolute inset-0 bg-black/40"
             onClick={() => (consent ? closePreferences() : undefined)}
