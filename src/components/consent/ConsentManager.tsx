@@ -23,7 +23,7 @@ function Toggle({
       onClick={() => onChange?.(!checked)}
       className={
         "relative h-6 w-11 shrink-0 rounded-full transition " +
-        (checked ? "bg-[#c17c74]" : "bg-[#d9c7bf]") +
+        (checked ? "bg-framboise" : "bg-[#E7DFE1]") +
         (disabled ? " opacity-60" : "")
       }
     >
@@ -70,37 +70,41 @@ export function ConsentManager() {
           className="fixed inset-x-0 bottom-0 z-[120] p-3 sm:p-5"
           style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
         >
-          <div className="mx-auto max-h-[80dvh] w-full max-w-3xl overflow-y-auto overscroll-contain rounded-3xl border border-[#e8c5b6]/70 bg-[#fdf7f3] p-4 shadow-2xl sm:p-5">
-            <h2 className="font-[family-name:var(--font-display)] text-lg italic text-[#2b1a14]">
+          <div className="mx-auto max-h-[80dvh] w-full max-w-3xl overflow-y-auto overscroll-contain rounded-3xl border border-champagne-light bg-greige p-4 shadow-[0_20px_60px_-15px_rgba(32,26,28,0.25)] sm:p-6">
+            <p className="kicker">Confidentialité</p>
+            <h2 className="mt-1 font-brand-serif text-xl italic text-encre sm:text-2xl">
               Votre vie privée compte
             </h2>
-            <p className="mt-2 text-sm leading-relaxed text-[#6b4a3e]">
+            <p className="mt-2 font-brand-body text-sm leading-relaxed text-encre-doux">
               Nous utilisons des cookies nécessaires au fonctionnement du site et, avec votre
               accord, des cookies de mesure d'audience pour améliorer MonInvit. Vous pouvez
               changer d'avis à tout moment.{" "}
-              <Link to="/politique-de-confidentialite" className="underline hover:text-[#2b1a14]">
+              <Link
+                to="/politique-de-confidentialite"
+                className="font-medium text-framboise underline decoration-framboise/40 underline-offset-2 hover:text-framboise-hover"
+              >
                 En savoir plus
               </Link>
             </p>
-            <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-end">
+            <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-end">
               <button
                 type="button"
                 onClick={openPreferences}
-                className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-[#e8c5b6] px-5 text-sm text-[#2b1a14] transition hover:bg-[#fbeee4]/60 sm:w-auto"
+                className="btn-outline-framboise min-h-11 w-full px-5 text-sm sm:w-auto"
               >
                 Personnaliser
               </button>
               <button
                 type="button"
                 onClick={rejectAll}
-                className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-[#e8c5b6] px-5 text-sm text-[#2b1a14] transition hover:bg-[#fbeee4]/60 sm:w-auto"
+                className="btn-outline-framboise min-h-11 w-full px-5 text-sm sm:w-auto"
               >
                 Tout refuser
               </button>
               <button
                 type="button"
                 onClick={acceptAll}
-                className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[#2b1a14] px-5 text-sm font-medium text-[#fdf7f3] transition hover:opacity-90 sm:w-auto"
+                className="btn-framboise min-h-11 w-full px-5 text-sm sm:w-auto"
               >
                 Tout accepter
               </button>
@@ -112,7 +116,7 @@ export function ConsentManager() {
       {preferencesOpen ? (
         <div className="fixed inset-0 z-[130] flex items-end justify-center sm:items-center">
           <div
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-encre/50 backdrop-blur-[2px]"
             onClick={() => (consent ? closePreferences() : undefined)}
             aria-hidden
           />
@@ -120,42 +124,43 @@ export function ConsentManager() {
             role="dialog"
             aria-modal="true"
             aria-label="Préférences de cookies"
-            className="relative z-10 max-h-[88dvh] w-full max-w-lg overflow-y-auto overscroll-contain rounded-t-3xl border border-[#e8c5b6]/70 bg-[#fdf7f3] p-5 shadow-2xl sm:rounded-3xl sm:p-6"
+            className="relative z-10 max-h-[88dvh] w-full max-w-lg overflow-y-auto overscroll-contain rounded-t-3xl border border-champagne-light bg-greige p-5 shadow-[0_20px_60px_-15px_rgba(32,26,28,0.3)] sm:rounded-3xl sm:p-6"
             style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))" }}
           >
-            <h2 className="font-[family-name:var(--font-display)] text-xl italic text-[#2b1a14]">
+            <div className="h-1 w-10 rounded-full bg-gradient-to-r from-framboise to-champagne" />
+            <h2 className="mt-3 font-brand-serif text-2xl italic text-encre">
               Préférences de cookies
             </h2>
-            <p className="mt-2 text-sm text-[#6b4a3e]">
+            <p className="mt-2 font-brand-body text-sm text-encre-doux">
               Choisissez les catégories que vous acceptez. Votre choix est enregistré sur cet
               appareil.
             </p>
 
-            <div className="mt-5 flex flex-col gap-4">
-              <div className="flex items-start justify-between gap-3 rounded-2xl border border-[#e8c5b6]/60 p-3 sm:gap-4 sm:p-4">
+            <div className="mt-5 flex flex-col gap-3">
+              <div className="flex items-start justify-between gap-3 rounded-2xl border border-brand-border bg-white/60 p-4">
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-[#2b1a14]">Nécessaires</p>
-                  <p className="mt-1 text-xs leading-relaxed text-[#6b4a3e]">
+                  <p className="font-brand-ui text-sm font-semibold text-encre">Nécessaires</p>
+                  <p className="mt-1 font-brand-body text-xs leading-relaxed text-encre-leger">
                     Connexion, sécurité et enregistrement de vos préférences. Toujours actifs.
                   </p>
                 </div>
                 <Toggle checked disabled label="Cookies nécessaires (toujours actifs)" />
               </div>
 
-              <div className="flex items-start justify-between gap-3 rounded-2xl border border-[#e8c5b6]/60 p-3 sm:gap-4 sm:p-4">
+              <div className="flex items-start justify-between gap-3 rounded-2xl border border-brand-border bg-white/60 p-4">
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-[#2b1a14]">Mesure d'audience</p>
-                  <p className="mt-1 text-xs leading-relaxed text-[#6b4a3e]">
+                  <p className="font-brand-ui text-sm font-semibold text-encre">Mesure d'audience</p>
+                  <p className="mt-1 font-brand-body text-xs leading-relaxed text-encre-leger">
                     Google Analytics, pour comprendre l'usage du site et l'améliorer.
                   </p>
                 </div>
                 <Toggle checked={analytics} onChange={setAnalytics} label="Cookies de mesure d'audience" />
               </div>
 
-              <div className="flex items-start justify-between gap-3 rounded-2xl border border-[#e8c5b6]/60 p-3 sm:gap-4 sm:p-4">
+              <div className="flex items-start justify-between gap-3 rounded-2xl border border-brand-border bg-white/60 p-4">
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-[#2b1a14]">Marketing</p>
-                  <p className="mt-1 text-xs leading-relaxed text-[#6b4a3e]">
+                  <p className="font-brand-ui text-sm font-semibold text-encre">Marketing</p>
+                  <p className="mt-1 font-brand-body text-xs leading-relaxed text-encre-leger">
                     Personnalisation des publicités et mesure des campagnes.
                   </p>
                 </div>
@@ -167,14 +172,14 @@ export function ConsentManager() {
               <button
                 type="button"
                 onClick={rejectAll}
-                className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-[#e8c5b6] px-5 text-sm text-[#2b1a14] transition hover:bg-[#fbeee4]/60 sm:w-auto"
+                className="btn-outline-framboise min-h-11 w-full px-5 text-sm sm:w-auto"
               >
                 Tout refuser
               </button>
               <button
                 type="button"
                 onClick={() => save({ analytics, marketing })}
-                className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[#2b1a14] px-5 text-sm font-medium text-[#fdf7f3] transition hover:opacity-90 sm:w-auto"
+                className="btn-framboise min-h-11 w-full px-5 text-sm sm:w-auto"
               >
                 Enregistrer mes choix
               </button>
