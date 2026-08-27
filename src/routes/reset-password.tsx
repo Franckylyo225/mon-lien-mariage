@@ -29,6 +29,10 @@ function ResetPasswordPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [otpEmail, setOtpEmail] = useState("");
+  const [otpCode, setOtpCode] = useState("");
+  const [otpError, setOtpError] = useState<string | null>(null);
+  const [otpLoading, setOtpLoading] = useState(false);
 
   // Supabase may deliver the recovery token as either:
   //   - a PKCE code in the query string (?code=...), requiring exchangeCodeForSession
