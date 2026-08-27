@@ -7,6 +7,7 @@ import { MagicLinkEmail } from '@/lib/email-templates/magic-link'
 import { RecoveryEmail } from '@/lib/email-templates/recovery'
 import { EmailChangeEmail } from '@/lib/email-templates/email-change'
 import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
+import { canonicalizeAuthUrl } from '@/lib/email-redirect'
 
 // Configuration
 const SITE_NAME = "Mon Invit"
@@ -34,7 +35,7 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                   siteName: SITE_NAME,
                   siteUrl: SITE_URL,
                   recipient: data.email,
-                  confirmationUrl: data.url,
+                  confirmationUrl: canonicalizeAuthUrl(data.url, data.action_type),
                 }),
             },
             invite: {
@@ -43,7 +44,7 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                 React.createElement(InviteEmail, {
                   siteName: SITE_NAME,
                   siteUrl: SITE_URL,
-                  confirmationUrl: data.url,
+                  confirmationUrl: canonicalizeAuthUrl(data.url, data.action_type),
                 }),
             },
             magiclink: {
@@ -51,7 +52,7 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
               render: (data) =>
                 React.createElement(MagicLinkEmail, {
                   siteName: SITE_NAME,
-                  confirmationUrl: data.url,
+                  confirmationUrl: canonicalizeAuthUrl(data.url, data.action_type),
                 }),
             },
             recovery: {
@@ -59,7 +60,8 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
               render: (data) =>
                 React.createElement(RecoveryEmail, {
                   siteName: SITE_NAME,
-                  confirmationUrl: data.url,
+                  confirmationUrl: canonicalizeAuthUrl(data.url, data.action_type),
+                  token: data.token ?? '',
                 }),
             },
             email_change: {
@@ -70,7 +72,7 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
                   oldEmail: data.old_email ?? '',
                   email: data.email,
                   newEmail: data.new_email ?? '',
-                  confirmationUrl: data.url,
+                  confirmationUrl: canonicalizeAuthUrl(data.url, data.action_type),
                 }),
             },
             reauthentication: {
