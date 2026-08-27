@@ -42,6 +42,15 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
   const [error, setError] = useState<string | null>(null);
   const [editingColor, setEditingColor] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [previewKey, setPreviewKey] = useState(0);
+  const openPreview = () => {
+    setPreviewKey((k) => k + 1);
+    setPreview(true);
+  };
+  // Never leave a stale preview overlay mounted when the sheet closes.
+  useEffect(() => {
+    if (!open) setPreview(false);
+  }, [open]);
 
   const enabled = couple.splashEnabled !== false;
   const bgMode = couple.splashBgMode ?? "theme";
