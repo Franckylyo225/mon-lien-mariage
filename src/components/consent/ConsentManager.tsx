@@ -67,7 +67,7 @@ export function ConsentManager() {
           role="dialog"
           aria-live="polite"
           aria-label="Gestion des cookies"
-          className="fixed inset-x-0 bottom-0 z-[70] p-3 sm:p-5"
+          className="fixed inset-x-0 bottom-0 z-[120] p-3 sm:p-5"
           style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
         >
           <div className="mx-auto max-h-[80dvh] w-full max-w-3xl overflow-y-auto overscroll-contain rounded-3xl border border-[#e8c5b6]/70 bg-[#fdf7f3] p-4 shadow-2xl sm:p-5">
