@@ -64,6 +64,7 @@ import { Route as AdminBlogRouteImport } from './routes/admin.blog'
 import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as DashboardGuestsIndexRouteImport } from './routes/dashboard.guests.index'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
+import { Route as LovableEmailEventsRouteImport } from './routes/lovable/email/events'
 import { Route as GuestbookPrintIdRouteImport } from './routes/guestbook.print.$id'
 import { Route as DashboardGuestsNewRouteImport } from './routes/dashboard.guests.new'
 import { Route as DashboardCeremoniesIdRouteImport } from './routes/dashboard.ceremonies.$id'
@@ -355,6 +356,11 @@ const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
   path: '/lovable/email/suppression',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LovableEmailEventsRoute = LovableEmailEventsRouteImport.update({
+  id: '/lovable/email/events',
+  path: '/lovable/email/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GuestbookPrintIdRoute = GuestbookPrintIdRouteImport.update({
   id: '/guestbook/print/$id',
   path: '/guestbook/print/$id',
@@ -484,6 +490,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
   '/guestbook/print/$id': typeof GuestbookPrintIdRoute
+  '/lovable/email/events': typeof LovableEmailEventsRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests/': typeof DashboardGuestsIndexRoute
   '/api/public/blog-image/$': typeof ApiPublicBlogImageSplatRoute
@@ -552,6 +559,7 @@ export interface FileRoutesByTo {
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
   '/guestbook/print/$id': typeof GuestbookPrintIdRoute
+  '/lovable/email/events': typeof LovableEmailEventsRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests': typeof DashboardGuestsIndexRoute
   '/api/public/blog-image/$': typeof ApiPublicBlogImageSplatRoute
@@ -623,6 +631,7 @@ export interface FileRoutesById {
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
   '/guestbook/print/$id': typeof GuestbookPrintIdRoute
+  '/lovable/email/events': typeof LovableEmailEventsRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/dashboard/guests/': typeof DashboardGuestsIndexRoute
   '/api/public/blog-image/$': typeof ApiPublicBlogImageSplatRoute
@@ -695,6 +704,7 @@ export interface FileRouteTypes {
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
     | '/guestbook/print/$id'
+    | '/lovable/email/events'
     | '/lovable/email/suppression'
     | '/dashboard/guests/'
     | '/api/public/blog-image/$'
@@ -763,6 +773,7 @@ export interface FileRouteTypes {
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
     | '/guestbook/print/$id'
+    | '/lovable/email/events'
     | '/lovable/email/suppression'
     | '/dashboard/guests'
     | '/api/public/blog-image/$'
@@ -833,6 +844,7 @@ export interface FileRouteTypes {
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
     | '/guestbook/print/$id'
+    | '/lovable/email/events'
     | '/lovable/email/suppression'
     | '/dashboard/guests/'
     | '/api/public/blog-image/$'
@@ -878,6 +890,7 @@ export interface RootRouteChildren {
   BlogIndexRoute: typeof BlogIndexRoute
   ApiPublicHealthRoute: typeof ApiPublicHealthRoute
   GuestbookPrintIdRoute: typeof GuestbookPrintIdRoute
+  LovableEmailEventsRoute: typeof LovableEmailEventsRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicBlogImageSplatRoute: typeof ApiPublicBlogImageSplatRoute
   ApiPublicHooksNewUserRoute: typeof ApiPublicHooksNewUserRoute
@@ -1277,6 +1290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailSuppressionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lovable/email/events': {
+      id: '/lovable/email/events'
+      path: '/lovable/email/events'
+      fullPath: '/lovable/email/events'
+      preLoaderRoute: typeof LovableEmailEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/guestbook/print/$id': {
       id: '/guestbook/print/$id'
       path: '/guestbook/print/$id'
@@ -1494,6 +1514,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogIndexRoute: BlogIndexRoute,
   ApiPublicHealthRoute: ApiPublicHealthRoute,
   GuestbookPrintIdRoute: GuestbookPrintIdRoute,
+  LovableEmailEventsRoute: LovableEmailEventsRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicBlogImageSplatRoute: ApiPublicBlogImageSplatRoute,
   ApiPublicHooksNewUserRoute: ApiPublicHooksNewUserRoute,
