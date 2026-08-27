@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import imageCompression from "browser-image-compression";
 import { supabase } from "@/integrations/supabase/client";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
@@ -41,6 +42,15 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
   const [error, setError] = useState<string | null>(null);
   const [editingColor, setEditingColor] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [previewKey, setPreviewKey] = useState(0);
+  const openPreview = () => {
+    setPreviewKey((k) => k + 1);
+    setPreview(true);
+  };
+  // Never leave a stale preview overlay mounted when the sheet closes.
+  useEffect(() => {
+    if (!open) setPreview(false);
+  }, [open]);
 
   const enabled = couple.splashEnabled !== false;
   const bgMode = couple.splashBgMode ?? "theme";
@@ -339,7 +349,7 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
 
             <button
               type="button"
-              onClick={() => setPreview(true)}
+              onClick={openPreview}
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-foreground px-4 py-3 text-[12px] text-background"
             >
               <Eye className="size-4" />
@@ -355,32 +365,42 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
         </div>
       </BottomSheet>
 
-      {preview && (
-        <>
-          <InvitationSplash
-            brideName={couple.brideName}
-            groomName={couple.groomName}
-            weddingDate={couple.weddingDate}
-            city={couple.city}
-            theme={theme}
-            bgMode={bgMode}
-            bgColor={couple.splashBgColor}
-            bgImageUrl={couple.splashBgImageUrl}
-            kicker={couple.splashKicker}
-            tapLabel={couple.splashTapLabel}
-            showDate={showDate}
-            onDone={() => setPreview(false)}
-          />
-          <button
-            type="button"
-            onClick={() => setPreview(false)}
-            aria-label="Fermer l'aperçu"
-            className="fixed right-4 top-4 z-[10000] grid size-10 place-items-center rounded-full bg-black/60 text-white backdrop-blur-sm transition active:scale-95"
-          >
-            <X className="size-5" />
-          </button>
-        </>
-      )}
+      {/* Rendered in a portal on <body>: inside the sheet the overlay inherits
+          the dialog's pointer-events/aria-hidden lock and stops responding
+          after the first open. */}
+      {preview && typeof document !== "undefined"
+        ? createPortal(
+            <div
+              key={previewKey}
+              style={{ pointerEvents: "auto" }}
+              className="fixed inset-0 z-[9999]"
+            >
+              <InvitationSplash
+                brideName={couple.brideName}
+                groomName={couple.groomName}
+                weddingDate={couple.weddingDate}
+                city={couple.city}
+                theme={theme}
+                bgMode={bgMode}
+                bgColor={couple.splashBgColor}
+                bgImageUrl={couple.splashBgImageUrl}
+                kicker={couple.splashKicker}
+                tapLabel={couple.splashTapLabel}
+                showDate={showDate}
+                onDone={() => setPreview(false)}
+              />
+              <button
+                type="button"
+                onClick={() => setPreview(false)}
+                aria-label="Fermer l'aperçu"
+                className="fixed right-4 top-4 z-[10000] grid size-10 place-items-center rounded-full bg-black/60 text-white backdrop-blur-sm transition active:scale-95"
+              >
+                <X className="size-5" />
+              </button>
+            </div>,
+            document.body,
+          )
+        : null}
     </>
   );
 }
