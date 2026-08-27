@@ -29,6 +29,10 @@ function ResetPasswordPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [otpEmail, setOtpEmail] = useState("");
+  const [otpCode, setOtpCode] = useState("");
+  const [otpError, setOtpError] = useState<string | null>(null);
+  const [otpLoading, setOtpLoading] = useState(false);
 
   // Supabase may deliver the recovery token as either:
   //   - a PKCE code in the query string (?code=...), requiring exchangeCodeForSession
@@ -148,6 +152,29 @@ function ResetPasswordPage() {
     setTimeout(() => navigate({ to: "/dashboard" }), 1500);
   };
 
+  const submitCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setOtpError(null);
+    if (otpCode.length !== 6) {
+      setOtpError("Le code doit contenir 6 chiffres.");
+      return;
+    }
+    setOtpLoading(true);
+    const { error: err } = await supabase.auth.verifyOtp({
+      type: "recovery",
+      email: otpEmail.trim(),
+      token: otpCode,
+    });
+    setOtpLoading(false);
+    if (err) {
+      setOtpError("Code invalide ou expiré. Demandez un nouveau lien.");
+      return;
+    }
+    setInvalid(false);
+    setReady(true);
+  };
+
+
   return (
     <AuthLayout
       eyebrow="Nouveau mot de passe"
@@ -159,19 +186,58 @@ function ResetPasswordPage() {
       subtitle="Il vous servira à vous reconnecter à votre espace MonInvit.com."
     >
       {invalid ? (
-        <div className="rounded-2xl border border-[#F1E3C6]/70 bg-white/70 p-5 text-sm text-[#201A1C]">
-          <p className="font-serif text-lg italic">Lien expiré ou invalide</p>
-          <p className="mt-2 text-[#5A4F52]">
-            Ce lien de réinitialisation n'est plus valable. Demandez-en un
-            nouveau depuis la page « mot de passe oublié ».
-          </p>
+        <div className="space-y-4">
+          <div className="rounded-2xl border border-[#F1E3C6]/70 bg-white/70 p-5 text-sm text-[#201A1C]">
+            <p className="font-serif text-lg italic">Lien expiré ou invalide</p>
+            <p className="mt-2 text-[#5A4F52]">
+              Saisissez votre email et le code à 6 chiffres reçu par email pour
+              continuer, ou demandez un nouveau lien.
+            </p>
+          </div>
+          <form onSubmit={submitCode} className="space-y-4">
+            <Field label="Adresse email">
+              <input
+                type="email"
+                required
+                value={otpEmail}
+                onChange={(e) => setOtpEmail(e.target.value)}
+                className={inputClass}
+                placeholder="vous@exemple.ci"
+                autoComplete="email"
+              />
+            </Field>
+            <Field label="Code reçu par email">
+              <input
+                inputMode="numeric"
+                required
+                value={otpCode}
+                onChange={(e) =>
+                  setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))
+                }
+                className={inputClass}
+                placeholder="123456"
+                autoComplete="one-time-code"
+              />
+            </Field>
+            {otpError ? (
+              <p className="text-xs text-destructive">{otpError}</p>
+            ) : null}
+            <button
+              type="submit"
+              disabled={otpLoading}
+              className="w-full rounded-full bg-[#201A1C] px-4 py-3.5 text-sm font-medium tracking-wide text-[#FBF8F8] transition hover:-translate-y-0.5 disabled:opacity-50"
+            >
+              {otpLoading ? "Vérification…" : "Valider le code"}
+            </button>
+          </form>
           <Link
             to="/forgot-password"
-            className="mt-4 inline-block rounded-full bg-[#201A1C] px-4 py-2.5 text-xs font-medium tracking-wide text-[#FBF8F8] transition hover:-translate-y-0.5"
+            className="inline-block text-xs font-medium text-[#E82050] hover:underline"
           >
             Demander un nouveau lien
           </Link>
         </div>
+
       ) : done ? (
         <div className="rounded-2xl border border-[#F1E3C6]/70 bg-white/70 p-5 text-sm text-[#201A1C]">
           <p className="font-serif text-lg italic">Mot de passe mis à jour ✿</p>

@@ -35,9 +35,23 @@ import {
 interface RecoveryEmailProps {
   siteName: string
   confirmationUrl: string
+  token?: string
 }
 
-export const RecoveryEmail = ({ confirmationUrl }: RecoveryEmailProps) => (
+const codeBox: React.CSSProperties = {
+  margin: '0 auto',
+  padding: '14px 20px',
+  borderRadius: '14px',
+  border: '1px solid #F1E3C6',
+  backgroundColor: '#FBF8F8',
+  fontSize: '28px',
+  letterSpacing: '8px',
+  fontWeight: 700,
+  color: '#201A1C',
+  textAlign: 'center',
+}
+
+export const RecoveryEmail = ({ confirmationUrl, token }: RecoveryEmailProps) => (
   <Html lang="fr" dir="ltr">
     <Head />
     <Preview>Réinitialisez votre mot de passe MonInvit.com</Preview>
@@ -62,6 +76,16 @@ export const RecoveryEmail = ({ confirmationUrl }: RecoveryEmailProps) => (
           </Section>
 
           <Hr style={divider} />
+
+          {token ? (
+            <Section>
+              <Text style={smallText}>
+                Le bouton ne fonctionne pas ? Rendez-vous sur
+                moninvit.com/reset-password et saisissez ce code :
+              </Text>
+              <Text style={codeBox}>{token}</Text>
+            </Section>
+          ) : null}
 
           <Text style={smallText}>
             Si vous n'êtes pas à l'origine de cette demande, ignorez cet email :
