@@ -48,6 +48,11 @@ const HOME_FAQS: { q: string; a: string }[] = [
   },
 ];
 
+const publishedCountOptions = queryOptions({
+  queryKey: ["published-count"],
+  queryFn: () => getPublishedCount(),
+});
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
