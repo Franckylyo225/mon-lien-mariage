@@ -6,11 +6,31 @@ import {
   Container,
   Head,
   Heading,
+  Hr,
   Html,
-  Link,
+  Img,
   Preview,
+  Section,
   Text,
 } from '@react-email/components'
+
+import {
+  body,
+  brandTag,
+  button,
+  buttonWrap,
+  container,
+  divider,
+  footer,
+  footerBrand,
+  h1,
+  header,
+  logo,
+  logoUrl,
+  main,
+  smallText,
+  text,
+} from './_brand'
 
 interface SignupEmailProps {
   siteName: string
@@ -19,66 +39,45 @@ interface SignupEmailProps {
   confirmationUrl: string
 }
 
-export const SignupEmail = ({
-  siteName,
-  siteUrl,
-  recipient,
-  confirmationUrl,
-}: SignupEmailProps) => (
-  <Html lang="en" dir="ltr">
+export const SignupEmail = ({ confirmationUrl }: SignupEmailProps) => (
+  <Html lang="fr" dir="ltr">
     <Head />
-    <Preview>Confirm your email for {siteName}</Preview>
+    <Preview>Confirmez votre adresse email MonInvit.com</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Confirm your email</Heading>
-        <Text style={text}>
-          Thanks for signing up for{' '}
-          <Link href={siteUrl} style={link}>
-            <strong>{siteName}</strong>
-          </Link>
-          !
-        </Text>
-        <Text style={text}>
-          Please confirm your email address (
-          <Link href={`mailto:${recipient}`} style={link}>
-            {recipient}
-          </Link>
-          ) by clicking the button below:
-        </Text>
-        <Button style={button} href={confirmationUrl}>
-          Verify Email
-        </Button>
-        <Text style={footer}>
-          If you didn't create an account, you can safely ignore this email.
-        </Text>
+        <Section style={header}>
+          <Img src={logoUrl} alt="MonInvit.com" style={logo} />
+          <Text style={brandTag}>Bienvenue</Text>
+        </Section>
+
+        <Section style={body}>
+          <Heading as="h2" style={h1}>Confirmez votre email</Heading>
+          <Text style={text}>
+            Merci d'avoir créé votre compte MonInvit.com. Confirmez votre adresse
+            email pour commencer à préparer votre plus beau jour.
+          </Text>
+
+          <Section style={buttonWrap}>
+            <Button href={confirmationUrl} style={button}>
+              Confirmer mon email
+            </Button>
+          </Section>
+
+          <Hr style={divider} />
+
+          <Text style={smallText}>
+            Vous n'êtes pas à l'origine de cette inscription ? Vous pouvez
+            ignorer cet email en toute sécurité.
+          </Text>
+        </Section>
+
+        <Section style={footer}>
+          <Text style={footerBrand}>MonInvit.com</Text>
+          <Text style={{ margin: 0 }}>Vos mariages, vos invitations.</Text>
+        </Section>
       </Container>
     </Body>
   </Html>
 )
 
 export default SignupEmail
-
-const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
-const container = { padding: '20px 25px' }
-const h1 = {
-  fontSize: '22px',
-  fontWeight: 'bold' as const,
-  color: '#000000',
-  margin: '0 0 20px',
-}
-const text = {
-  fontSize: '14px',
-  color: '#55575d',
-  lineHeight: '1.5',
-  margin: '0 0 25px',
-}
-const link = { color: 'inherit', textDecoration: 'underline' }
-const button = {
-  backgroundColor: '#000000',
-  color: '#ffffff',
-  fontSize: '14px',
-  borderRadius: '8px',
-  padding: '12px 20px',
-  textDecoration: 'none',
-}
-const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
