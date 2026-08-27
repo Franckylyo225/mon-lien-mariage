@@ -2,99 +2,83 @@ import * as React from 'react'
 
 import {
   Body,
+  Button,
   Container,
   Head,
   Heading,
-  Hr,
   Html,
-  Img,
   Link,
   Preview,
-  Section,
   Text,
 } from '@react-email/components'
-
-import {
-  body,
-  brandTag,
-  codeBox,
-  container,
-  divider,
-  footer,
-  footerBrand,
-  h1,
-  header,
-  link,
-  logo,
-  logoUrl,
-  main,
-  smallText,
-  text,
-} from './_brand'
 
 interface SignupEmailProps {
   siteName: string
   siteUrl: string
   recipient: string
   confirmationUrl: string
-  token?: string
 }
 
 export const SignupEmail = ({
+  siteName,
   siteUrl,
   recipient,
-  token,
-}: SignupEmailProps) => {
-  const verifyUrl = `https://moninvit.com/verify-email?email=${encodeURIComponent(recipient)}`
-  return (
-    <Html lang="fr" dir="ltr">
-      <Head />
-      <Preview>Votre code de confirmation MonInvit.com</Preview>
-      <Body style={main}>
-        <Container style={container}>
-          <Section style={header}>
-            <Img src={logoUrl} alt="MonInvit.com" style={logo} />
-            <Text style={brandTag}>Invitations de mariage</Text>
-          </Section>
-
-          <Section style={body}>
-            <Heading as="h2" style={h1}>Bienvenue parmi nous</Heading>
-            <Text style={text}>
-              Merci de rejoindre <strong>MonInvit.com</strong>. Pour activer
-              votre compte <Link href={`mailto:${recipient}`} style={link}>{recipient}</Link>,
-              saisissez ce code sur la page de confirmation :
-            </Text>
-
-            <Text style={codeBox}>{token ?? '------'}</Text>
-
-            <Text style={smallText}>
-              Rendez-vous sur{' '}
-              <Link href={verifyUrl} style={link}>{verifyUrl}</Link>
-              {' '}pour saisir votre code. Il expire dans 1 heure.
-            </Text>
-
-            <Hr style={divider} />
-
-            <Text style={smallText}>
-              Vous n'êtes pas à l'origine de cette inscription ? Ignorez
-              simplement cet email, aucun compte ne sera créé.
-            </Text>
-          </Section>
-
-          <Section style={footer}>
-            <Text style={footerBrand}>MonInvit.com</Text>
-            <Text style={{ margin: 0 }}>
-              <Link href={siteUrl} style={{ color: '#6B6B6B', textDecoration: 'none' }}>
-                moninvit.com
-              </Link>
-              {' · '}
-              Vos mariages, vos invitations.
-            </Text>
-          </Section>
-        </Container>
-      </Body>
-    </Html>
-  )
-}
+  confirmationUrl,
+}: SignupEmailProps) => (
+  <Html lang="en" dir="ltr">
+    <Head />
+    <Preview>Confirm your email for {siteName}</Preview>
+    <Body style={main}>
+      <Container style={container}>
+        <Heading style={h1}>Confirm your email</Heading>
+        <Text style={text}>
+          Thanks for signing up for{' '}
+          <Link href={siteUrl} style={link}>
+            <strong>{siteName}</strong>
+          </Link>
+          !
+        </Text>
+        <Text style={text}>
+          Please confirm your email address (
+          <Link href={`mailto:${recipient}`} style={link}>
+            {recipient}
+          </Link>
+          ) by clicking the button below:
+        </Text>
+        <Button style={button} href={confirmationUrl}>
+          Verify Email
+        </Button>
+        <Text style={footer}>
+          If you didn't create an account, you can safely ignore this email.
+        </Text>
+      </Container>
+    </Body>
+  </Html>
+)
 
 export default SignupEmail
+
+const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
+const container = { padding: '20px 25px' }
+const h1 = {
+  fontSize: '22px',
+  fontWeight: 'bold' as const,
+  color: '#000000',
+  margin: '0 0 20px',
+}
+const text = {
+  fontSize: '14px',
+  color: '#55575d',
+  lineHeight: '1.5',
+  margin: '0 0 25px',
+}
+const link = { color: 'inherit', textDecoration: 'underline' }
+const button = {
+  backgroundColor: '#000000',
+  color: '#ffffff',
+  fontSize: '14px',
+  borderRadius: '8px',
+  padding: '12px 20px',
+  textDecoration: 'none',
+}
+const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }

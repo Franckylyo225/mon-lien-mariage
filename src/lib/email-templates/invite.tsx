@@ -6,33 +6,11 @@ import {
   Container,
   Head,
   Heading,
-  Hr,
   Html,
-  Img,
   Link,
   Preview,
-  Section,
   Text,
 } from '@react-email/components'
-
-import {
-  body,
-  brandTag,
-  button,
-  buttonWrap,
-  container,
-  divider,
-  footer,
-  footerBrand,
-  h1,
-  header,
-  link,
-  logo,
-  logoUrl,
-  main,
-  smallText,
-  text,
-} from './_brand'
 
 interface InviteEmailProps {
   siteName: string
@@ -40,52 +18,60 @@ interface InviteEmailProps {
   confirmationUrl: string
 }
 
-export const InviteEmail = ({ siteUrl, confirmationUrl }: InviteEmailProps) => (
-  <Html lang="fr" dir="ltr">
+export const InviteEmail = ({
+  siteName,
+  siteUrl,
+  confirmationUrl,
+}: InviteEmailProps) => (
+  <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Vous êtes invité(e) à rejoindre MonInvit.com</Preview>
+    <Preview>You've been invited to join {siteName}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Section style={header}>
-          <Img src={logoUrl} alt="MonInvit.com" style={logo} />
-          <Text style={brandTag}>Vous avez une invitation</Text>
-        </Section>
-
-        <Section style={body}>
-          <Heading as="h2" style={h1}>On vous invite à nous rejoindre</Heading>
-          <Text style={text}>
-            Vous avez été invité(e) à rejoindre{' '}
-            <Link href={siteUrl} style={link}><strong>MonInvit.com</strong></Link>{' '}
-            pour co-créer une page d'invitation. Cliquez sur le bouton
-            ci-dessous pour accepter et créer votre compte.
-          </Text>
-
-          <Section style={buttonWrap}>
-            <Button style={button} href={confirmationUrl}>
-              Accepter l'invitation
-            </Button>
-          </Section>
-
-          <Text style={smallText}>
-            Ou copiez ce lien dans votre navigateur :<br />
-            <Link href={confirmationUrl} style={link}>{confirmationUrl}</Link>
-          </Text>
-
-          <Hr style={divider} />
-
-          <Text style={smallText}>
-            Vous n'attendiez pas cette invitation ? Vous pouvez ignorer cet
-            email en toute sécurité.
-          </Text>
-        </Section>
-
-        <Section style={footer}>
-          <Text style={footerBrand}>MonInvit.com</Text>
-          <Text style={{ margin: 0 }}>Vos mariages, vos invitations.</Text>
-        </Section>
+        <Heading style={h1}>You've been invited</Heading>
+        <Text style={text}>
+          You've been invited to join{' '}
+          <Link href={siteUrl} style={link}>
+            <strong>{siteName}</strong>
+          </Link>
+          . Click the button below to accept the invitation and create your
+          account.
+        </Text>
+        <Button style={button} href={confirmationUrl}>
+          Accept Invitation
+        </Button>
+        <Text style={footer}>
+          If you weren't expecting this invitation, you can safely ignore this
+          email.
+        </Text>
       </Container>
     </Body>
   </Html>
 )
 
 export default InviteEmail
+
+const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
+const container = { padding: '20px 25px' }
+const h1 = {
+  fontSize: '22px',
+  fontWeight: 'bold' as const,
+  color: '#000000',
+  margin: '0 0 20px',
+}
+const text = {
+  fontSize: '14px',
+  color: '#55575d',
+  lineHeight: '1.5',
+  margin: '0 0 25px',
+}
+const link = { color: 'inherit', textDecoration: 'underline' }
+const button = {
+  backgroundColor: '#000000',
+  color: '#ffffff',
+  fontSize: '14px',
+  borderRadius: '8px',
+  padding: '12px 20px',
+  textDecoration: 'none',
+}
+const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }

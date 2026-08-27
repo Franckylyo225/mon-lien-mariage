@@ -5,70 +5,54 @@ import {
   Container,
   Head,
   Heading,
-  Hr,
   Html,
-  Img,
   Preview,
-  Section,
   Text,
 } from '@react-email/components'
-
-import {
-  body,
-  brandTag,
-  codeBox,
-  container,
-  divider,
-  footer,
-  footerBrand,
-  h1,
-  header,
-  logo,
-  logoUrl,
-  main,
-  smallText,
-  text,
-} from './_brand'
 
 interface ReauthenticationEmailProps {
   token: string
 }
 
 export const ReauthenticationEmail = ({ token }: ReauthenticationEmailProps) => (
-  <Html lang="fr" dir="ltr">
+  <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Votre code de vérification MonInvit.com</Preview>
+    <Preview>Your verification code</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Section style={header}>
-          <Img src={logoUrl} alt="MonInvit.com" style={logo} />
-          <Text style={brandTag}>Vérification d'identité</Text>
-        </Section>
-
-        <Section style={body}>
-          <Heading as="h2" style={h1}>Votre code de sécurité</Heading>
-          <Text style={text}>
-            Utilisez le code ci-dessous pour confirmer votre identité. Il
-            expirera dans quelques minutes.
-          </Text>
-
-          <Text style={codeBox}>{token}</Text>
-
-          <Hr style={divider} />
-
-          <Text style={smallText}>
-            Vous n'êtes pas à l'origine de cette demande ? Ignorez cet email et
-            envisagez de changer votre mot de passe.
-          </Text>
-        </Section>
-
-        <Section style={footer}>
-          <Text style={footerBrand}>MonInvit.com</Text>
-          <Text style={{ margin: 0 }}>Vos mariages, vos invitations.</Text>
-        </Section>
+        <Heading style={h1}>Confirm reauthentication</Heading>
+        <Text style={text}>Use the code below to confirm your identity:</Text>
+        <Text style={codeStyle}>{token}</Text>
+        <Text style={footer}>
+          This code will expire shortly. If you didn't request this, you can
+          safely ignore this email.
+        </Text>
       </Container>
     </Body>
   </Html>
 )
 
 export default ReauthenticationEmail
+
+const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
+const container = { padding: '20px 25px' }
+const h1 = {
+  fontSize: '22px',
+  fontWeight: 'bold' as const,
+  color: '#000000',
+  margin: '0 0 20px',
+}
+const text = {
+  fontSize: '14px',
+  color: '#55575d',
+  lineHeight: '1.5',
+  margin: '0 0 25px',
+}
+const codeStyle = {
+  fontFamily: 'Courier, monospace',
+  fontSize: '22px',
+  fontWeight: 'bold' as const,
+  color: '#000000',
+  margin: '0 0 30px',
+}
+const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
