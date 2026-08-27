@@ -83,6 +83,17 @@ export const checkSlugAvailability = createServerFn({ method: "GET" })
     return { available: !taken };
   });
 
+export const getPublishedCount = createServerFn({ method: "GET" })
+  .handler(async () => {
+    const supabase = getSupabase();
+    const { count, error } = await supabase
+      .from("weddings")
+      .select("id", { head: true, count: "exact" })
+      .eq("is_published", true);
+    if (error) return { count: 0 };
+    return { count: count ?? 0 };
+  });
+
 const rsvpSchema = z.object({
   weddingId: z.string().uuid(),
   ceremonyId: z.string().uuid().nullable().optional(),
