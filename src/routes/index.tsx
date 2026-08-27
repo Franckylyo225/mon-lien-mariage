@@ -213,6 +213,14 @@ function HeroPreview() {
 /* ---------------------------------- hero ---------------------------------- */
 
 function Hero() {
+  const { data } = useSuspenseQuery(publishedCountOptions);
+  const count = data.count;
+  const countLabel =
+    count > 0
+      ? count >= 100
+        ? `${count}+`
+        : `${count}`
+      : "Nouveau";
   return (
     <section
       className="border-b border-[#F4EFF0]"
@@ -221,8 +229,8 @@ function Hero() {
       <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 pb-14 pt-10 sm:gap-12 sm:pb-16 sm:pt-14 lg:grid-cols-[55fr_45fr] lg:pb-24 lg:pt-20">
         <div className="animate-fade-up text-center lg:text-left">
           <span className="inline-flex items-center gap-2 rounded-full border border-[#F1E3C6] bg-white px-3.5 py-1.5 font-[family-name:var(--font-brand-ui)] text-[11.5px] font-semibold text-[#5A4F52] sm:px-4 sm:py-2 sm:text-[13px]">
-            <span className="text-[#C6A15B]">★</span> 4.9 · Choisie par +500
-            couples ivoiriens
+            <span className="text-[#C6A15B]">★</span> {countLabel} pages
+            d'invitations en ligne
           </span>
 
           <h1 className="mx-auto mt-5 max-w-[16ch] text-balance font-[family-name:var(--font-brand-serif)] text-[clamp(30px,8.2vw,42px)] font-medium leading-[1.06] tracking-[-0.015em] text-[#201A1C] sm:mt-6 sm:max-w-[18ch] sm:text-[clamp(42px,5.4vw,56px)] sm:leading-[1.04] lg:mx-0 lg:text-[66px] lg:leading-[1.02]">
