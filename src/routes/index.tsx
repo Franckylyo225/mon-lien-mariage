@@ -111,6 +111,9 @@ export const Route = createFileRoute("/")({
       },
     ],
   }),
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData(publishedCountOptions);
+  },
   component: Landing,
 });
 
