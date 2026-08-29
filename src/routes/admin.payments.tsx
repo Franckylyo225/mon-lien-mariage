@@ -32,6 +32,30 @@ const TYPE_LABEL: Record<string, string> = {
   addon_guestbook: "Livre d'or",
 };
 
+type PeriodKey = "all" | "week" | "month" | "year" | "custom";
+
+const DAY_MS = 24 * 3600 * 1000;
+
+const PERIODS: { key: PeriodKey; label: string }[] = [
+  { key: "all", label: "Tout" },
+  { key: "week", label: "Semaine" },
+  { key: "month", label: "Mois" },
+  { key: "year", label: "Année" },
+  { key: "custom", label: "Personnalisé" },
+];
+
+function periodBounds(key: PeriodKey, customFrom: string, customTo: string) {
+  if (key === "all") return { from: null as Date | null, to: null as Date | null };
+  const now = Date.now();
+  if (key === "week") return { from: new Date(now - 7 * DAY_MS), to: new Date(now) };
+  if (key === "month") return { from: new Date(now - 30 * DAY_MS), to: new Date(now) };
+  if (key === "year") return { from: new Date(now - 365 * DAY_MS), to: new Date(now) };
+  return {
+    from: customFrom ? new Date(customFrom + "T00:00:00") : new Date(now - 30 * DAY_MS),
+    to: customTo ? new Date(customTo + "T23:59:59.999") : new Date(now),
+  };
+}
+
 const FILTERS = [
   { key: "all", label: "Tous" },
   { key: "success", label: "Payés" },
@@ -43,15 +67,29 @@ const FILTERS = [
 function AdminPayments() {
   const fetchPayments = useServerFn(listPayments);
   const [filter, setFilter] = useState<(typeof FILTERS)[number]["key"]>("all");
+  const [period, setPeriod] = useState<PeriodKey>("all");
+  const [customFrom, setCustomFrom] = useState("");
+  const [customTo, setCustomTo] = useState("");
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "payments"],
     queryFn: () => fetchPayments(),
   });
 
+  const periodData = useMemo(() => {
+    if (!data) return data;
+    const { from, to } = periodBounds(period, customFrom, customTo);
+    if (!from || !to) return data;
+    return data.filter((p) => {
+      if (!p.created_at) return false;
+      const t = new Date(p.created_at).getTime();
+      return t >= from.getTime() && t <= to.getTime();
+    });
+  }, [data, period, customFrom, customTo]);
+
   const totals = useMemo(() => {
     const base = { total: 0, count: 0, pending: 0, failed: 0 };
-    if (!data) return base;
-    for (const p of data) {
+    if (!periodData) return base;
+    for (const p of periodData) {
       if (p.status === "success") {
         base.total += p.amount_xof;
         base.count += 1;
@@ -59,13 +97,13 @@ function AdminPayments() {
       else base.failed += 1;
     }
     return base;
-  }, [data]);
+  }, [periodData]);
 
   const rows = useMemo(() => {
-    if (!data) return data;
-    if (filter === "all") return data;
-    return data.filter((p) => p.status === filter);
-  }, [data, filter]);
+    if (!periodData) return periodData;
+    if (filter === "all") return periodData;
+    return periodData.filter((p) => p.status === filter);
+  }, [periodData, filter]);
 
   const columns: Column<Row>[] = [
     {
@@ -168,6 +206,44 @@ function AdminPayments() {
           </div>
           <div className="text-xl font-semibold">{totals.failed}</div>
         </div>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-[11px] uppercase tracking-wider text-muted-foreground">
+          Période
+        </span>
+        {PERIODS.map((p) => (
+          <button
+            key={p.key}
+            type="button"
+            onClick={() => setPeriod(p.key)}
+            className={cn(
+              "rounded-full border px-3 py-1 text-[12px] transition",
+              period === p.key
+                ? "border-foreground bg-foreground text-background"
+                : "border-border/60 bg-white text-muted-foreground hover:text-foreground",
+            )}
+          >
+            {p.label}
+          </button>
+        ))}
+        {period === "custom" && (
+          <span className="flex items-center gap-2">
+            <input
+              type="date"
+              value={customFrom}
+              onChange={(e) => setCustomFrom(e.target.value)}
+              className="rounded-full border border-border/60 bg-white px-3 py-1 text-[12px]"
+            />
+            <span className="text-[12px] text-muted-foreground">→</span>
+            <input
+              type="date"
+              value={customTo}
+              onChange={(e) => setCustomTo(e.target.value)}
+              className="rounded-full border border-border/60 bg-white px-3 py-1 text-[12px]"
+            />
+          </span>
+        )}
       </div>
 
       <div className="flex flex-wrap gap-2">
