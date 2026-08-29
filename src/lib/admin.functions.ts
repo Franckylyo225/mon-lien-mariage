@@ -53,15 +53,26 @@ function trend(current: number, previous: number) {
   return Math.round(((current - previous) / previous) * 100);
 }
 
+export interface StatsRangeInput {
+  from?: string; // ISO date
+  to?: string; // ISO date
+}
+
 export const getPlatformStats = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
+  .inputValidator((data: StatsRangeInput | undefined) => data ?? {})
+  .handler(async ({ data: range, context }) => {
     await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const nowIso = new Date().toISOString();
-    const since30 = new Date(Date.now() - 30 * DAY_MS).toISOString();
-    const since60 = new Date(Date.now() - 60 * DAY_MS).toISOString();
+    const toMs = range.to ? Date.parse(range.to) : Date.now();
+    const fromMs = range.from ? Date.parse(range.from) : toMs - 30 * DAY_MS;
+    const safeFrom = Number.isFinite(fromMs) ? fromMs : toMs - 30 * DAY_MS;
+    const safeTo = Number.isFinite(toMs) ? toMs : Date.now();
+    const since = new Date(safeFrom).toISOString();
+    const until = new Date(safeTo).toISOString();
+    const prevSince = new Date(safeFrom - (safeTo - safeFrom)).toISOString();
+    const dayCount = Math.max(1, Math.min(370, Math.round((safeTo - safeFrom) / DAY_MS) + 1));
 
     const [
       usersCount,
