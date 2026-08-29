@@ -74,18 +74,17 @@ export const getPlatformStats = createServerFn({ method: "GET" })
     const prevSince = new Date(safeFrom - (safeTo - safeFrom)).toISOString();
     const dayCount = Math.max(1, Math.min(370, Math.round((safeTo - safeFrom) / DAY_MS) + 1));
 
+    const inRange = (q: any, col: string) => q.gte(col, since).lte(col, until);
+    const inPrev = (q: any, col: string) => q.gte(col, prevSince).lt(col, since);
+
     const [
       usersCount,
-      usersRecent,
       usersPrev,
       weddingsCount,
-      weddingsRecent,
       weddingsPrev,
       publishedCount,
-      publishedRecent,
       publishedPrev,
       rsvpsCount,
-      rsvpsRecent,
       rsvpsPrev,
       guestsCount,
       recentWeddings,
@@ -94,40 +93,29 @@ export const getPlatformStats = createServerFn({ method: "GET" })
       rsvpByDay,
       themeRows,
     ] = await Promise.all([
-      supabaseAdmin.from("profiles").select("id", { count: "exact", head: true }),
-      supabaseAdmin.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", since30),
-      supabaseAdmin
-        .from("profiles")
-        .select("id", { count: "exact", head: true })
-        .gte("created_at", since60)
-        .lt("created_at", since30),
-      supabaseAdmin.from("weddings").select("id", { count: "exact", head: true }),
-      supabaseAdmin.from("weddings").select("id", { count: "exact", head: true }).gte("created_at", since30),
-      supabaseAdmin
-        .from("weddings")
-        .select("id", { count: "exact", head: true })
-        .gte("created_at", since60)
-        .lt("created_at", since30),
-      supabaseAdmin.from("weddings").select("id", { count: "exact", head: true }).eq("is_published", true),
-      supabaseAdmin
-        .from("weddings")
-        .select("id", { count: "exact", head: true })
-        .eq("is_published", true)
-        .gte("published_at", since30),
-      supabaseAdmin
-        .from("weddings")
-        .select("id", { count: "exact", head: true })
-        .eq("is_published", true)
-        .gte("published_at", since60)
-        .lt("published_at", since30),
-      supabaseAdmin.from("rsvps").select("id", { count: "exact", head: true }),
-      supabaseAdmin.from("rsvps").select("id", { count: "exact", head: true }).gte("created_at", since30),
-      supabaseAdmin
-        .from("rsvps")
-        .select("id", { count: "exact", head: true })
-        .gte("created_at", since60)
-        .lt("created_at", since30),
-      supabaseAdmin.from("guests").select("id", { count: "exact", head: true }),
+      inRange(supabaseAdmin.from("profiles").select("id", { count: "exact", head: true }), "created_at"),
+      inPrev(supabaseAdmin.from("profiles").select("id", { count: "exact", head: true }), "created_at"),
+      inRange(supabaseAdmin.from("weddings").select("id", { count: "exact", head: true }), "created_at"),
+      inPrev(supabaseAdmin.from("weddings").select("id", { count: "exact", head: true }), "created_at"),
+      inRange(
+        supabaseAdmin
+          .from("weddings")
+          .select("id", { count: "exact", head: true })
+          .eq("is_published", true)
+          .not("published_at", "is", null),
+        "published_at",
+      ),
+      inPrev(
+        supabaseAdmin
+          .from("weddings")
+          .select("id", { count: "exact", head: true })
+          .eq("is_published", true)
+          .not("published_at", "is", null),
+        "published_at",
+      ),
+      inRange(supabaseAdmin.from("rsvps").select("id", { count: "exact", head: true }), "created_at"),
+      inPrev(supabaseAdmin.from("rsvps").select("id", { count: "exact", head: true }), "created_at"),
+      inRange(supabaseAdmin.from("guests").select("id", { count: "exact", head: true }), "created_at"),
       supabaseAdmin
         .from("weddings")
         .select("id, bride_name, groom_name, is_published, created_at, published_at, slug")
@@ -138,18 +126,17 @@ export const getPlatformStats = createServerFn({ method: "GET" })
         .select("id, email, user_first_name, created_at")
         .order("created_at", { ascending: false })
         .limit(6),
-      supabaseAdmin
-        .from("weddings")
-        .select("published_at")
-        .eq("is_published", true)
-        .not("published_at", "is", null)
-        .gte("published_at", since30),
-      supabaseAdmin.from("rsvps").select("created_at").gte("created_at", since30),
+      inRange(
+        supabaseAdmin
+          .from("weddings")
+          .select("published_at")
+          .eq("is_published", true)
+          .not("published_at", "is", null),
+        "published_at",
+      ),
+      inRange(supabaseAdmin.from("rsvps").select("created_at"), "created_at"),
       supabaseAdmin.from("weddings").select("theme").not("theme", "is", null),
     ]);
-
-    // Suppress unused nowIso warning
-    void nowIso;
 
     const published = publishedCount.count ?? 0;
     const revenueXof = published * BASE_PRICE_XOF;
