@@ -208,6 +208,44 @@ function AdminPayments() {
         </div>
       </div>
 
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-[11px] uppercase tracking-wider text-muted-foreground">
+          Période
+        </span>
+        {PERIODS.map((p) => (
+          <button
+            key={p.key}
+            type="button"
+            onClick={() => setPeriod(p.key)}
+            className={cn(
+              "rounded-full border px-3 py-1 text-[12px] transition",
+              period === p.key
+                ? "border-foreground bg-foreground text-background"
+                : "border-border/60 bg-white text-muted-foreground hover:text-foreground",
+            )}
+          >
+            {p.label}
+          </button>
+        ))}
+        {period === "custom" && (
+          <span className="flex items-center gap-2">
+            <input
+              type="date"
+              value={customFrom}
+              onChange={(e) => setCustomFrom(e.target.value)}
+              className="rounded-full border border-border/60 bg-white px-3 py-1 text-[12px]"
+            />
+            <span className="text-[12px] text-muted-foreground">→</span>
+            <input
+              type="date"
+              value={customTo}
+              onChange={(e) => setCustomTo(e.target.value)}
+              className="rounded-full border border-border/60 bg-white px-3 py-1 text-[12px]"
+            />
+          </span>
+        )}
+      </div>
+
       <div className="flex flex-wrap gap-2">
         {FILTERS.map((f) => (
           <button
