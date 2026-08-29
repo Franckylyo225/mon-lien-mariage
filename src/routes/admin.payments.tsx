@@ -32,6 +32,30 @@ const TYPE_LABEL: Record<string, string> = {
   addon_guestbook: "Livre d'or",
 };
 
+type PeriodKey = "all" | "week" | "month" | "year" | "custom";
+
+const DAY_MS = 24 * 3600 * 1000;
+
+const PERIODS: { key: PeriodKey; label: string }[] = [
+  { key: "all", label: "Tout" },
+  { key: "week", label: "Semaine" },
+  { key: "month", label: "Mois" },
+  { key: "year", label: "Année" },
+  { key: "custom", label: "Personnalisé" },
+];
+
+function periodBounds(key: PeriodKey, customFrom: string, customTo: string) {
+  if (key === "all") return { from: null as Date | null, to: null as Date | null };
+  const now = Date.now();
+  if (key === "week") return { from: new Date(now - 7 * DAY_MS), to: new Date(now) };
+  if (key === "month") return { from: new Date(now - 30 * DAY_MS), to: new Date(now) };
+  if (key === "year") return { from: new Date(now - 365 * DAY_MS), to: new Date(now) };
+  return {
+    from: customFrom ? new Date(customFrom + "T00:00:00") : new Date(now - 30 * DAY_MS),
+    to: customTo ? new Date(customTo + "T23:59:59.999") : new Date(now),
+  };
+}
+
 const FILTERS = [
   { key: "all", label: "Tous" },
   { key: "success", label: "Payés" },
