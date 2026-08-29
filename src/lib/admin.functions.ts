@@ -40,10 +40,11 @@ function dayKey(d: Date) {
   return d.toISOString().slice(0, 10);
 }
 
-function buildDayMap(days: number) {
+function buildRangeDayMap(fromMs: number, toMs: number) {
   const map = new Map<string, number>();
+  const days = Math.max(1, Math.min(370, Math.round((toMs - fromMs) / DAY_MS) + 1));
   for (let i = days - 1; i >= 0; i--) {
-    map.set(dayKey(new Date(Date.now() - i * DAY_MS)), 0);
+    map.set(dayKey(new Date(toMs - i * DAY_MS)), 0);
   }
   return map;
 }
@@ -53,28 +54,38 @@ function trend(current: number, previous: number) {
   return Math.round(((current - previous) / previous) * 100);
 }
 
+export interface StatsRangeInput {
+  from?: string; // ISO date
+  to?: string; // ISO date
+}
+
 export const getPlatformStats = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
+  .inputValidator((data: StatsRangeInput | undefined) => data ?? {})
+  .handler(async ({ data: range, context }) => {
     await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const nowIso = new Date().toISOString();
-    const since30 = new Date(Date.now() - 30 * DAY_MS).toISOString();
-    const since60 = new Date(Date.now() - 60 * DAY_MS).toISOString();
+    const toMs = range.to ? Date.parse(range.to) : Date.now();
+    const fromMs = range.from ? Date.parse(range.from) : toMs - 30 * DAY_MS;
+    const safeFrom = Number.isFinite(fromMs) ? fromMs : toMs - 30 * DAY_MS;
+    const safeTo = Number.isFinite(toMs) ? toMs : Date.now();
+    const since = new Date(safeFrom).toISOString();
+    const until = new Date(safeTo).toISOString();
+    const prevSince = new Date(safeFrom - (safeTo - safeFrom)).toISOString();
+    const dayCount = Math.max(1, Math.min(370, Math.round((safeTo - safeFrom) / DAY_MS) + 1));
+
+    const inRange = (q: any, col: string) => q.gte(col, since).lte(col, until);
+    const inPrev = (q: any, col: string) => q.gte(col, prevSince).lt(col, since);
 
     const [
       usersCount,
-      usersRecent,
       usersPrev,
       weddingsCount,
-      weddingsRecent,
       weddingsPrev,
       publishedCount,
-      publishedRecent,
       publishedPrev,
       rsvpsCount,
-      rsvpsRecent,
       rsvpsPrev,
       guestsCount,
       recentWeddings,
@@ -83,40 +94,29 @@ export const getPlatformStats = createServerFn({ method: "GET" })
       rsvpByDay,
       themeRows,
     ] = await Promise.all([
-      supabaseAdmin.from("profiles").select("id", { count: "exact", head: true }),
-      supabaseAdmin.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", since30),
-      supabaseAdmin
-        .from("profiles")
-        .select("id", { count: "exact", head: true })
-        .gte("created_at", since60)
-        .lt("created_at", since30),
-      supabaseAdmin.from("weddings").select("id", { count: "exact", head: true }),
-      supabaseAdmin.from("weddings").select("id", { count: "exact", head: true }).gte("created_at", since30),
-      supabaseAdmin
-        .from("weddings")
-        .select("id", { count: "exact", head: true })
-        .gte("created_at", since60)
-        .lt("created_at", since30),
-      supabaseAdmin.from("weddings").select("id", { count: "exact", head: true }).eq("is_published", true),
-      supabaseAdmin
-        .from("weddings")
-        .select("id", { count: "exact", head: true })
-        .eq("is_published", true)
-        .gte("published_at", since30),
-      supabaseAdmin
-        .from("weddings")
-        .select("id", { count: "exact", head: true })
-        .eq("is_published", true)
-        .gte("published_at", since60)
-        .lt("published_at", since30),
-      supabaseAdmin.from("rsvps").select("id", { count: "exact", head: true }),
-      supabaseAdmin.from("rsvps").select("id", { count: "exact", head: true }).gte("created_at", since30),
-      supabaseAdmin
-        .from("rsvps")
-        .select("id", { count: "exact", head: true })
-        .gte("created_at", since60)
-        .lt("created_at", since30),
-      supabaseAdmin.from("guests").select("id", { count: "exact", head: true }),
+      inRange(supabaseAdmin.from("profiles").select("id", { count: "exact", head: true }), "created_at"),
+      inPrev(supabaseAdmin.from("profiles").select("id", { count: "exact", head: true }), "created_at"),
+      inRange(supabaseAdmin.from("weddings").select("id", { count: "exact", head: true }), "created_at"),
+      inPrev(supabaseAdmin.from("weddings").select("id", { count: "exact", head: true }), "created_at"),
+      inRange(
+        supabaseAdmin
+          .from("weddings")
+          .select("id", { count: "exact", head: true })
+          .eq("is_published", true)
+          .not("published_at", "is", null),
+        "published_at",
+      ),
+      inPrev(
+        supabaseAdmin
+          .from("weddings")
+          .select("id", { count: "exact", head: true })
+          .eq("is_published", true)
+          .not("published_at", "is", null),
+        "published_at",
+      ),
+      inRange(supabaseAdmin.from("rsvps").select("id", { count: "exact", head: true }), "created_at"),
+      inPrev(supabaseAdmin.from("rsvps").select("id", { count: "exact", head: true }), "created_at"),
+      inRange(supabaseAdmin.from("guests").select("id", { count: "exact", head: true }), "created_at"),
       supabaseAdmin
         .from("weddings")
         .select("id, bride_name, groom_name, is_published, created_at, published_at, slug")
@@ -127,23 +127,22 @@ export const getPlatformStats = createServerFn({ method: "GET" })
         .select("id, email, user_first_name, created_at")
         .order("created_at", { ascending: false })
         .limit(6),
-      supabaseAdmin
-        .from("weddings")
-        .select("published_at")
-        .eq("is_published", true)
-        .not("published_at", "is", null)
-        .gte("published_at", since30),
-      supabaseAdmin.from("rsvps").select("created_at").gte("created_at", since30),
+      inRange(
+        supabaseAdmin
+          .from("weddings")
+          .select("published_at")
+          .eq("is_published", true)
+          .not("published_at", "is", null),
+        "published_at",
+      ),
+      inRange(supabaseAdmin.from("rsvps").select("created_at"), "created_at"),
       supabaseAdmin.from("weddings").select("theme").not("theme", "is", null),
     ]);
-
-    // Suppress unused nowIso warning
-    void nowIso;
 
     const published = publishedCount.count ?? 0;
     const revenueXof = published * BASE_PRICE_XOF;
 
-    const publishedDayMap = buildDayMap(30);
+    const publishedDayMap = buildRangeDayMap(safeFrom, safeTo);
     for (const row of publishedByDay.data ?? []) {
       const key = String(row.published_at).slice(0, 10);
       if (publishedDayMap.has(key)) publishedDayMap.set(key, (publishedDayMap.get(key) ?? 0) + 1);
@@ -154,7 +153,7 @@ export const getPlatformStats = createServerFn({ method: "GET" })
       revenueXof: count * BASE_PRICE_XOF,
     }));
 
-    const rsvpDayMap = buildDayMap(30);
+    const rsvpDayMap = buildRangeDayMap(safeFrom, safeTo);
     for (const row of rsvpByDay.data ?? []) {
       const key = String(row.created_at).slice(0, 10);
       if (rsvpDayMap.has(key)) rsvpDayMap.set(key, (rsvpDayMap.get(key) ?? 0) + 1);
@@ -181,16 +180,17 @@ export const getPlatformStats = createServerFn({ method: "GET" })
       rsvps: rsvpsCount.count ?? 0,
       guests: guestsCount.count ?? 0,
       revenueXof,
-      revenue30Xof: (publishedRecent.count ?? 0) * BASE_PRICE_XOF,
+      revenuePeriodXof: revenueXof,
       pricePerPublish: BASE_PRICE_XOF,
       conversionRate: conversion,
+      range: { from: since, to: until, days: dayCount },
       trends: {
-        users: trend(usersRecent.count ?? 0, usersPrev.count ?? 0),
-        weddings: trend(weddingsRecent.count ?? 0, weddingsPrev.count ?? 0),
-        published: trend(publishedRecent.count ?? 0, publishedPrev.count ?? 0),
-        rsvps: trend(rsvpsRecent.count ?? 0, rsvpsPrev.count ?? 0),
+        users: trend(usersCount.count ?? 0, usersPrev.count ?? 0),
+        weddings: trend(totalWed, weddingsPrev.count ?? 0),
+        published: trend(published, publishedPrev.count ?? 0),
+        rsvps: trend(rsvpsCount.count ?? 0, rsvpsPrev.count ?? 0),
         revenue: trend(
-          (publishedRecent.count ?? 0) * BASE_PRICE_XOF,
+          published * BASE_PRICE_XOF,
           (publishedPrev.count ?? 0) * BASE_PRICE_XOF,
         ),
       },

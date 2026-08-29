@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import {
   IconUsers,
   IconCalendarHeart,
@@ -15,6 +16,26 @@ import { getPlatformStats } from "@/lib/admin.functions";
 export const Route = createFileRoute("/admin/")({
   component: AdminOverview,
 });
+
+type PeriodKey = "week" | "month" | "year" | "custom";
+
+const DAY_MS = 24 * 3600 * 1000;
+
+function periodRange(key: PeriodKey, customFrom: string, customTo: string) {
+  const now = Date.now();
+  if (key === "week") return { from: new Date(now - 7 * DAY_MS).toISOString(), to: new Date(now).toISOString() };
+  if (key === "month") return { from: new Date(now - 30 * DAY_MS).toISOString(), to: new Date(now).toISOString() };
+  if (key === "year") return { from: new Date(now - 365 * DAY_MS).toISOString(), to: new Date(now).toISOString() };
+  const from = customFrom ? new Date(customFrom + "T00:00:00").toISOString() : new Date(now - 30 * DAY_MS).toISOString();
+  const to = customTo ? new Date(customTo + "T23:59:59").toISOString() : new Date(now).toISOString();
+  return { from, to };
+}
+
+function formatPeriodLabel(range: { from: string; to: string }) {
+  const fmt = (iso: string) =>
+    new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
+  return `${fmt(range.from)} — ${fmt(range.to)}`;
+}
 
 function formatXof(n: number) {
   return n.toLocaleString("fr-FR") + " XOF";
@@ -41,9 +62,14 @@ function TrendBadge({ value }: { value: number }) {
 
 function AdminOverview() {
   const fetchStats = useServerFn(getPlatformStats);
+  const [period, setPeriod] = useState<PeriodKey>("month");
+  const [customFrom, setCustomFrom] = useState("");
+  const [customTo, setCustomTo] = useState("");
+
+  const range = periodRange(period, customFrom, customTo);
   const { data, isLoading, error } = useQuery({
-    queryKey: ["admin", "stats"],
-    queryFn: () => fetchStats(),
+    queryKey: ["admin", "stats", range.from, range.to],
+    queryFn: () => fetchStats({ data: range }),
     retry: false,
   });
 
@@ -107,9 +133,58 @@ function AdminOverview() {
   return (
     <div className="space-y-6">
       <div className="rounded-2xl border border-border/60 bg-white p-5 shadow-[0_1px_2px_rgba(16,24,40,0.05)]">
-        <h1 className="font-serif text-2xl">Vue d'ensemble</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Pilotez la plateforme : croissance, publications, revenus.
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 className="font-serif text-2xl">Vue d'ensemble</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Pilotez la plateforme : croissance, publications, revenus.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex overflow-hidden rounded-full border border-border/60 bg-white text-[12px]">
+              {(
+                [
+                  ["week", "Semaine"],
+                  ["month", "Mois"],
+                  ["year", "Année"],
+                  ["custom", "Personnalisé"],
+                ] as const
+              ).map(([k, label]) => (
+                <button
+                  key={k}
+                  onClick={() => setPeriod(k)}
+                  className={
+                    "px-3 py-1.5 " +
+                    (period === k
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-secondary")
+                  }
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            {period === "custom" && (
+              <div className="flex items-center gap-1.5 text-[12px]">
+                <input
+                  type="date"
+                  value={customFrom}
+                  onChange={(e) => setCustomFrom(e.target.value)}
+                  className="rounded-full border border-border/60 bg-white px-3 py-1.5 text-[12px]"
+                />
+                <span className="text-muted-foreground">→</span>
+                <input
+                  type="date"
+                  value={customTo}
+                  onChange={(e) => setCustomTo(e.target.value)}
+                  className="rounded-full border border-border/60 bg-white px-3 py-1.5 text-[12px]"
+                />
+              </div>
+            )}
+          </div>
+        </div>
+        <p className="mt-2 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+          Période : {formatPeriodLabel(range)}
         </p>
       </div>
 
@@ -137,13 +212,13 @@ function AdminOverview() {
         <div className="rounded-2xl border border-border/60 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)] lg:col-span-2">
           <div className="flex items-center justify-between border-b border-border/50 px-5 py-4">
             <div>
-              <h2 className="font-serif text-lg">Revenus — 30 derniers jours</h2>
+              <h2 className="font-serif text-lg">Revenus sur la période</h2>
               <p className="text-[12px] text-muted-foreground">
                 1 publication = {formatXof(data.pricePerPublish)}
               </p>
             </div>
             <span className="rounded-full bg-emerald-50 px-3 py-1 text-[12px] font-medium text-emerald-700">
-              {formatXof(data.revenue30Xof)}
+              {formatXof(data.revenuePeriodXof)}
             </span>
           </div>
           <div className="flex h-36 items-end gap-[3px] px-5 py-4">
@@ -187,7 +262,7 @@ function AdminOverview() {
 
       <section className="rounded-2xl border border-border/60 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)]">
         <div className="flex items-center justify-between border-b border-border/50 px-5 py-4">
-          <h2 className="font-serif text-lg">RSVP — 30 derniers jours</h2>
+          <h2 className="font-serif text-lg">RSVP sur la période</h2>
           <span className="rounded-full bg-violet-50 px-3 py-1 text-[12px] font-medium text-violet-700">
             Total : {data.rsvps.toLocaleString("fr-FR")}
           </span>
