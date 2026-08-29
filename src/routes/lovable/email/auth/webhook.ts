@@ -29,13 +29,13 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
           sendUrl: process.env['LOVABLE_SEND_URL'],
           emails: {
             signup: {
-              subject: 'Confirm your email',
+              subject: 'Votre code de confirmation MonInvit.com',
               render: (data) =>
                 React.createElement(SignupEmail, {
                   siteName: SITE_NAME,
                   siteUrl: SITE_URL,
                   recipient: data.email,
-                  confirmationUrl: canonicalizeAuthUrl(data.url, data.action_type),
+                  token: data.token ?? '',
                 }),
             },
             invite: {
