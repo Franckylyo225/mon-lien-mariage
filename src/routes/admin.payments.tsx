@@ -97,13 +97,13 @@ function AdminPayments() {
       else base.failed += 1;
     }
     return base;
-  }, [data]);
+  }, [periodData]);
 
   const rows = useMemo(() => {
-    if (!data) return data;
-    if (filter === "all") return data;
-    return data.filter((p) => p.status === filter);
-  }, [data, filter]);
+    if (!periodData) return periodData;
+    if (filter === "all") return periodData;
+    return periodData.filter((p) => p.status === filter);
+  }, [periodData, filter]);
 
   const columns: Column<Row>[] = [
     {
