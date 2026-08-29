@@ -40,10 +40,11 @@ function dayKey(d: Date) {
   return d.toISOString().slice(0, 10);
 }
 
-function buildDayMap(days: number) {
+function buildRangeDayMap(fromMs: number, toMs: number) {
   const map = new Map<string, number>();
+  const days = Math.max(1, Math.min(370, Math.round((toMs - fromMs) / DAY_MS) + 1));
   for (let i = days - 1; i >= 0; i--) {
-    map.set(dayKey(new Date(Date.now() - i * DAY_MS)), 0);
+    map.set(dayKey(new Date(toMs - i * DAY_MS)), 0);
   }
   return map;
 }
