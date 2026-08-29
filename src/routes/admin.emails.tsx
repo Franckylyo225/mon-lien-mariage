@@ -75,8 +75,12 @@ function AdminEmails() {
       <div>
         <h1 className="font-serif text-2xl">Emails</h1>
         <p className="text-sm text-muted-foreground">
-          Journal des envois transactionnels (auth, notifications).
+          Événements de livraison (envois, rebonds, plaintes, désinscriptions).
+          {data?.historyStartsAt
+            ? ` Historique visible depuis le ${new Date(data.historyStartsAt).toLocaleDateString("fr-FR")}.`
+            : ""}
         </p>
+
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">

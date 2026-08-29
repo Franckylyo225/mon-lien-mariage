@@ -351,31 +351,36 @@ export const listEmailLog = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     await assertAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const [{ data: logs }, sentCount, failedCount, last24Count] = await Promise.all([
-      supabaseAdmin
-        .from("email_send_log")
-        .select("id, template_name, recipient_email, status, error_message, created_at")
-        .order("created_at", { ascending: false })
-        .limit(500),
-      supabaseAdmin.from("email_send_log").select("id", { count: "exact", head: true }).eq("status", "sent"),
-      supabaseAdmin.from("email_send_log").select("id", { count: "exact", head: true }).eq("status", "failed"),
-      supabaseAdmin
-        .from("email_send_log")
-        .select("id", { count: "exact", head: true })
-        .gte("created_at", new Date(Date.now() - DAY_MS).toISOString()),
-    ]);
+    const apiKey = process.env['LOVABLE_API_KEY'];
+    if (!apiKey) {
+      return { logs: [], totals: { sent: 0, failed: 0, last24: 0 }, historyStartsAt: null as string | null };
+    }
+
+    const { listEmailLogs } = await import("@lovable.dev/email-js");
+    const res = await listEmailLogs({ limit: 100 }, { apiKey });
+
+    const since24 = Date.now() - DAY_MS;
+    const logs = res.data.map((e, i) => ({
+      id: `${e.message_id ?? "evt"}-${e.timestamp}-${i}`,
+      template_name: (e.tags ?? []).join(", ") || null,
+      recipient_email: e.recipient,
+      status: e.event_type,
+      error_message: e.event_type === "sent" ? null : (e.status ?? null),
+      created_at: e.timestamp,
+    }));
 
     return {
-      logs: logs ?? [],
+      logs,
       totals: {
-        sent: sentCount.count ?? 0,
-        failed: failedCount.count ?? 0,
-        last24: last24Count.count ?? 0,
+        sent: logs.filter((l) => l.status === "sent").length,
+        failed: logs.filter((l) => ["bounced", "rejected", "complained", "suppressed"].includes(l.status)).length,
+        last24: logs.filter((l) => new Date(l.created_at).getTime() >= since24).length,
       },
+      historyStartsAt: res.history_starts_at ?? null,
     };
   });
+
 
 type ActivityItem = {
   id: string;
