@@ -473,7 +473,7 @@ export const setUserRole = createServerFn({ method: "POST" })
   .inputValidator((data: RoleInput) => data)
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const supabaseAdmin = context.supabase;
 
     if (data.grant) {
       const { error } = await supabaseAdmin
@@ -539,7 +539,7 @@ export const upsertPromoCode = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
     const { code, discount, max_uses } = validatePromoInput(data);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const supabaseAdmin = context.supabase;
 
     const payload = {
       code,
@@ -579,7 +579,7 @@ export const deletePromoCode = createServerFn({ method: "POST" })
   .inputValidator((data: { id: string }) => data)
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const supabaseAdmin = context.supabase;
     const { error } = await supabaseAdmin.from("promo_codes").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
@@ -646,7 +646,7 @@ export const upsertBlogPost = createServerFn({ method: "POST" })
     if (!slug) throw new Error("Slug invalide.");
     if (!BLOG_CATEGORIES.includes(data.category)) throw new Error("Catégorie invalide.");
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const supabaseAdmin = context.supabase;
 
     const payload = {
       slug,
@@ -699,7 +699,7 @@ export const setBlogPostPublished = createServerFn({ method: "POST" })
   .inputValidator((data: { id: string; is_published: boolean }) => data)
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const supabaseAdmin = context.supabase;
     const { error } = await supabaseAdmin
       .from("blog_posts")
       .update({
@@ -716,7 +716,7 @@ export const deleteBlogPost = createServerFn({ method: "POST" })
   .inputValidator((data: { id: string }) => data)
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const supabaseAdmin = context.supabase;
     const { error } = await supabaseAdmin.from("blog_posts").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
