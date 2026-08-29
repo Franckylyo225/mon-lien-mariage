@@ -187,8 +187,14 @@ function AdminOverview() {
             )}
           </div>
         </div>
-        <p className="mt-2 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+        <p className="mt-2 flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
           Période : {formatPeriodLabel(range)}
+          {isFetching && (
+            <span
+              className="inline-block size-3 animate-spin rounded-full border-2 border-primary/30 border-t-primary"
+              aria-label="Mise à jour des données"
+            />
+          )}
         </p>
       </div>
 
