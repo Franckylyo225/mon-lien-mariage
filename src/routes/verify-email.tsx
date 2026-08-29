@@ -30,6 +30,13 @@ function VerifyEmailPage() {
   const [info, setInfo] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setInterval(() => setCooldown((c) => Math.max(0, c - 1)), 1000);
+    return () => clearInterval(t);
+  }, [cooldown]);
 
   const canonicalCode = useMemo(() => code.replace(/\D/g, "").slice(0, 10), [code]);
 
@@ -63,6 +70,7 @@ function VerifyEmailPage() {
     setError(null);
     setInfo(null);
     if (!email.includes("@")) return setError("Adresse email invalide.");
+    if (resending || cooldown > 0) return;
     setResending(true);
     const { error: err } = await supabase.auth.resend({
       type: "signup",
@@ -72,9 +80,11 @@ function VerifyEmailPage() {
     setResending(false);
     if (err) {
       setError(err.message);
+      setCooldown(30);
       return;
     }
-    setInfo("Un nouveau code vient d'être envoyé.");
+    setInfo("Un nouveau code vient d'être envoyé. Pensez à vérifier vos spams.");
+    setCooldown(60);
   };
 
   return (
