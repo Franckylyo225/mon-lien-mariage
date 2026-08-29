@@ -262,7 +262,7 @@ function AdminOverview() {
 
       <section className="rounded-2xl border border-border/60 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)]">
         <div className="flex items-center justify-between border-b border-border/50 px-5 py-4">
-          <h2 className="font-serif text-lg">RSVP — 30 derniers jours</h2>
+          <h2 className="font-serif text-lg">RSVP sur la période</h2>
           <span className="rounded-full bg-violet-50 px-3 py-1 text-[12px] font-medium text-violet-700">
             Total : {data.rsvps.toLocaleString("fr-FR")}
           </span>
