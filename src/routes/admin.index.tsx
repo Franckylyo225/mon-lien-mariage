@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import {
   IconUsers,
@@ -70,10 +70,11 @@ function AdminOverview() {
     () => periodRange(period, customFrom, customTo),
     [period, customFrom, customTo],
   );
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, isFetching, error } = useQuery({
     queryKey: ["admin", "stats", range.from, range.to],
     queryFn: () => fetchStats({ data: range }),
     retry: false,
+    placeholderData: keepPreviousData,
   });
 
   if (isLoading) return <p className="text-sm text-muted-foreground">Chargement…</p>;
