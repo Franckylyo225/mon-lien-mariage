@@ -212,13 +212,13 @@ function AdminOverview() {
         <div className="rounded-2xl border border-border/60 bg-white shadow-[0_1px_2px_rgba(16,24,40,0.05)] lg:col-span-2">
           <div className="flex items-center justify-between border-b border-border/50 px-5 py-4">
             <div>
-              <h2 className="font-serif text-lg">Revenus — 30 derniers jours</h2>
+              <h2 className="font-serif text-lg">Revenus sur la période</h2>
               <p className="text-[12px] text-muted-foreground">
                 1 publication = {formatXof(data.pricePerPublish)}
               </p>
             </div>
             <span className="rounded-full bg-emerald-50 px-3 py-1 text-[12px] font-medium text-emerald-700">
-              {formatXof(data.revenue30Xof)}
+              {formatXof(data.revenuePeriodXof)}
             </span>
           </div>
           <div className="flex h-36 items-end gap-[3px] px-5 py-4">
