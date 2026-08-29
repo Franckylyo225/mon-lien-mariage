@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   IconUsers,
   IconCalendarHeart,
@@ -66,7 +66,10 @@ function AdminOverview() {
   const [customFrom, setCustomFrom] = useState("");
   const [customTo, setCustomTo] = useState("");
 
-  const range = periodRange(period, customFrom, customTo);
+  const range = useMemo(
+    () => periodRange(period, customFrom, customTo),
+    [period, customFrom, customTo],
+  );
   const { data, isLoading, error } = useQuery({
     queryKey: ["admin", "stats", range.from, range.to],
     queryFn: () => fetchStats({ data: range }),
