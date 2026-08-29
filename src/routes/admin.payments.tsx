@@ -67,15 +67,29 @@ const FILTERS = [
 function AdminPayments() {
   const fetchPayments = useServerFn(listPayments);
   const [filter, setFilter] = useState<(typeof FILTERS)[number]["key"]>("all");
+  const [period, setPeriod] = useState<PeriodKey>("all");
+  const [customFrom, setCustomFrom] = useState("");
+  const [customTo, setCustomTo] = useState("");
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "payments"],
     queryFn: () => fetchPayments(),
   });
 
+  const periodData = useMemo(() => {
+    if (!data) return data;
+    const { from, to } = periodBounds(period, customFrom, customTo);
+    if (!from || !to) return data;
+    return data.filter((p) => {
+      if (!p.created_at) return false;
+      const t = new Date(p.created_at).getTime();
+      return t >= from.getTime() && t <= to.getTime();
+    });
+  }, [data, period, customFrom, customTo]);
+
   const totals = useMemo(() => {
     const base = { total: 0, count: 0, pending: 0, failed: 0 };
-    if (!data) return base;
-    for (const p of data) {
+    if (!periodData) return base;
+    for (const p of periodData) {
       if (p.status === "success") {
         base.total += p.amount_xof;
         base.count += 1;
