@@ -64,7 +64,7 @@ export const getPlatformStats = createServerFn({ method: "GET" })
   .inputValidator((data: StatsRangeInput | undefined) => data ?? {})
   .handler(async ({ data: range, context }) => {
     await assertAdmin(context);
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const supabaseAdmin = context.supabase;
 
     const toMs = range.to ? Date.parse(range.to) : Date.now();
     const fromMs = range.from ? Date.parse(range.from) : toMs - 30 * DAY_MS;
