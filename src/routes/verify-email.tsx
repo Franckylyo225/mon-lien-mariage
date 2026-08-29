@@ -137,10 +137,14 @@ function VerifyEmailPage() {
         <button
           type="button"
           onClick={resend}
-          disabled={resending}
-          className="font-medium text-[#E82050] hover:underline disabled:opacity-50"
+          disabled={resending || cooldown > 0}
+          className="font-medium text-[#E82050] hover:underline disabled:opacity-50 disabled:no-underline"
         >
-          {resending ? "Envoi…" : "Renvoyer un code"}
+          {resending
+            ? "Envoi…"
+            : cooldown > 0
+              ? `Renvoyer un code (${cooldown}s)`
+              : "Renvoyer un code"}
         </button>
       </p>
       <p className="mt-6 text-center text-xs text-[#5A4F52]">
