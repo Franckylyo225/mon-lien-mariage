@@ -2,7 +2,6 @@ import * as React from 'react'
 
 import {
   Body,
-  Button,
   Container,
   Head,
   Heading,
@@ -17,8 +16,6 @@ import {
 import {
   body,
   brandTag,
-  button,
-  buttonWrap,
   container,
   divider,
   footer,
@@ -36,13 +33,26 @@ interface SignupEmailProps {
   siteName: string
   siteUrl: string
   recipient: string
-  confirmationUrl: string
+  token: string
 }
 
-export const SignupEmail = ({ confirmationUrl }: SignupEmailProps) => (
+const codeBox: React.CSSProperties = {
+  margin: '0 auto',
+  padding: '14px 20px',
+  borderRadius: '14px',
+  border: '1px solid #F1E3C6',
+  backgroundColor: '#FBF8F8',
+  fontSize: '28px',
+  letterSpacing: '8px',
+  fontWeight: 700,
+  color: '#201A1C',
+  textAlign: 'center',
+}
+
+export const SignupEmail = ({ token }: SignupEmailProps) => (
   <Html lang="fr" dir="ltr">
     <Head />
-    <Preview>Confirmez votre adresse email MonInvit.com</Preview>
+    <Preview>Votre code de confirmation MonInvit.com</Preview>
     <Body style={main}>
       <Container style={container}>
         <Section style={header}>
@@ -51,17 +61,19 @@ export const SignupEmail = ({ confirmationUrl }: SignupEmailProps) => (
         </Section>
 
         <Section style={body}>
-          <Heading as="h2" style={h1}>Confirmez votre email</Heading>
+          <Heading as="h2" style={h1}>Votre code de confirmation</Heading>
           <Text style={text}>
-            Merci d'avoir créé votre compte MonInvit.com. Confirmez votre adresse
-            email pour commencer à préparer votre plus beau jour.
+            Merci d'avoir créé votre compte MonInvit.com. Saisissez ce code sur
+            la page de confirmation (moninvit.com/verify-email) pour activer
+            votre compte :
           </Text>
 
-          <Section style={buttonWrap}>
-            <Button href={confirmationUrl} style={button}>
-              Confirmer mon email
-            </Button>
-          </Section>
+          <Text style={codeBox}>{token}</Text>
+
+          <Text style={smallText}>
+            Ce code est valable pendant une heure et ne doit être partagé avec
+            personne.
+          </Text>
 
           <Hr style={divider} />
 
