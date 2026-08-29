@@ -62,9 +62,14 @@ function TrendBadge({ value }: { value: number }) {
 
 function AdminOverview() {
   const fetchStats = useServerFn(getPlatformStats);
+  const [period, setPeriod] = useState<PeriodKey>("month");
+  const [customFrom, setCustomFrom] = useState("");
+  const [customTo, setCustomTo] = useState("");
+
+  const range = periodRange(period, customFrom, customTo);
   const { data, isLoading, error } = useQuery({
-    queryKey: ["admin", "stats"],
-    queryFn: () => fetchStats(),
+    queryKey: ["admin", "stats", range.from, range.to],
+    queryFn: () => fetchStats({ data: range }),
     retry: false,
   });
 
