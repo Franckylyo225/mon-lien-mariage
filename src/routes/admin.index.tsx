@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import {
   IconUsers,
   IconCalendarHeart,
@@ -15,6 +16,26 @@ import { getPlatformStats } from "@/lib/admin.functions";
 export const Route = createFileRoute("/admin/")({
   component: AdminOverview,
 });
+
+type PeriodKey = "week" | "month" | "year" | "custom";
+
+const DAY_MS = 24 * 3600 * 1000;
+
+function periodRange(key: PeriodKey, customFrom: string, customTo: string) {
+  const now = Date.now();
+  if (key === "week") return { from: new Date(now - 7 * DAY_MS).toISOString(), to: new Date(now).toISOString() };
+  if (key === "month") return { from: new Date(now - 30 * DAY_MS).toISOString(), to: new Date(now).toISOString() };
+  if (key === "year") return { from: new Date(now - 365 * DAY_MS).toISOString(), to: new Date(now).toISOString() };
+  const from = customFrom ? new Date(customFrom + "T00:00:00").toISOString() : new Date(now - 30 * DAY_MS).toISOString();
+  const to = customTo ? new Date(customTo + "T23:59:59").toISOString() : new Date(now).toISOString();
+  return { from, to };
+}
+
+function formatPeriodLabel(range: { from: string; to: string }) {
+  const fmt = (iso: string) =>
+    new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
+  return `${fmt(range.from)} — ${fmt(range.to)}`;
+}
 
 function formatXof(n: number) {
   return n.toLocaleString("fr-FR") + " XOF";
