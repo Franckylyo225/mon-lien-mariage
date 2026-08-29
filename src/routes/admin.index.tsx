@@ -133,9 +133,58 @@ function AdminOverview() {
   return (
     <div className="space-y-6">
       <div className="rounded-2xl border border-border/60 bg-white p-5 shadow-[0_1px_2px_rgba(16,24,40,0.05)]">
-        <h1 className="font-serif text-2xl">Vue d'ensemble</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Pilotez la plateforme : croissance, publications, revenus.
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 className="font-serif text-2xl">Vue d'ensemble</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Pilotez la plateforme : croissance, publications, revenus.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex overflow-hidden rounded-full border border-border/60 bg-white text-[12px]">
+              {(
+                [
+                  ["week", "Semaine"],
+                  ["month", "Mois"],
+                  ["year", "Année"],
+                  ["custom", "Personnalisé"],
+                ] as const
+              ).map(([k, label]) => (
+                <button
+                  key={k}
+                  onClick={() => setPeriod(k)}
+                  className={
+                    "px-3 py-1.5 " +
+                    (period === k
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:bg-secondary")
+                  }
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            {period === "custom" && (
+              <div className="flex items-center gap-1.5 text-[12px]">
+                <input
+                  type="date"
+                  value={customFrom}
+                  onChange={(e) => setCustomFrom(e.target.value)}
+                  className="rounded-full border border-border/60 bg-white px-3 py-1.5 text-[12px]"
+                />
+                <span className="text-muted-foreground">→</span>
+                <input
+                  type="date"
+                  value={customTo}
+                  onChange={(e) => setCustomTo(e.target.value)}
+                  className="rounded-full border border-border/60 bg-white px-3 py-1.5 text-[12px]"
+                />
+              </div>
+            )}
+          </div>
+        </div>
+        <p className="mt-2 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+          Période : {formatPeriodLabel(range)}
         </p>
       </div>
 
