@@ -142,7 +142,7 @@ export const getPlatformStats = createServerFn({ method: "GET" })
     const published = publishedCount.count ?? 0;
     const revenueXof = published * BASE_PRICE_XOF;
 
-    const publishedDayMap = buildDayMap(30);
+    const publishedDayMap = buildRangeDayMap(safeFrom, safeTo);
     for (const row of publishedByDay.data ?? []) {
       const key = String(row.published_at).slice(0, 10);
       if (publishedDayMap.has(key)) publishedDayMap.set(key, (publishedDayMap.get(key) ?? 0) + 1);
@@ -153,7 +153,7 @@ export const getPlatformStats = createServerFn({ method: "GET" })
       revenueXof: count * BASE_PRICE_XOF,
     }));
 
-    const rsvpDayMap = buildDayMap(30);
+    const rsvpDayMap = buildRangeDayMap(safeFrom, safeTo);
     for (const row of rsvpByDay.data ?? []) {
       const key = String(row.created_at).slice(0, 10);
       if (rsvpDayMap.has(key)) rsvpDayMap.set(key, (rsvpDayMap.get(key) ?? 0) + 1);
@@ -180,16 +180,17 @@ export const getPlatformStats = createServerFn({ method: "GET" })
       rsvps: rsvpsCount.count ?? 0,
       guests: guestsCount.count ?? 0,
       revenueXof,
-      revenue30Xof: (publishedRecent.count ?? 0) * BASE_PRICE_XOF,
+      revenuePeriodXof: revenueXof,
       pricePerPublish: BASE_PRICE_XOF,
       conversionRate: conversion,
+      range: { from: since, to: until, days: dayCount },
       trends: {
-        users: trend(usersRecent.count ?? 0, usersPrev.count ?? 0),
-        weddings: trend(weddingsRecent.count ?? 0, weddingsPrev.count ?? 0),
-        published: trend(publishedRecent.count ?? 0, publishedPrev.count ?? 0),
-        rsvps: trend(rsvpsRecent.count ?? 0, rsvpsPrev.count ?? 0),
+        users: trend(usersCount.count ?? 0, usersPrev.count ?? 0),
+        weddings: trend(totalWed, weddingsPrev.count ?? 0),
+        published: trend(published, publishedPrev.count ?? 0),
+        rsvps: trend(rsvpsCount.count ?? 0, rsvpsPrev.count ?? 0),
         revenue: trend(
-          (publishedRecent.count ?? 0) * BASE_PRICE_XOF,
+          published * BASE_PRICE_XOF,
           (publishedPrev.count ?? 0) * BASE_PRICE_XOF,
         ),
       },
