@@ -79,6 +79,14 @@ function VerifyEmailPage() {
     });
     setResending(false);
     if (err) {
+      const msg = err.message.toLowerCase();
+      if (msg.includes("already") || msg.includes("confirm")) {
+        setInfo(
+          "Cette adresse est déjà confirmée : vous pouvez vous connecter directement.",
+        );
+        setCooldown(0);
+        return;
+      }
       setError(err.message);
       setCooldown(30);
       return;
@@ -86,6 +94,7 @@ function VerifyEmailPage() {
     setInfo("Un nouveau code vient d'être envoyé. Pensez à vérifier vos spams.");
     setCooldown(60);
   };
+
 
   return (
     <AuthLayout
