@@ -30,6 +30,13 @@ function VerifyEmailPage() {
   const [info, setInfo] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setInterval(() => setCooldown((c) => Math.max(0, c - 1)), 1000);
+    return () => clearInterval(t);
+  }, [cooldown]);
 
   const canonicalCode = useMemo(() => code.replace(/\D/g, "").slice(0, 10), [code]);
 
@@ -63,6 +70,7 @@ function VerifyEmailPage() {
     setError(null);
     setInfo(null);
     if (!email.includes("@")) return setError("Adresse email invalide.");
+    if (resending || cooldown > 0) return;
     setResending(true);
     const { error: err } = await supabase.auth.resend({
       type: "signup",
@@ -72,9 +80,11 @@ function VerifyEmailPage() {
     setResending(false);
     if (err) {
       setError(err.message);
+      setCooldown(30);
       return;
     }
-    setInfo("Un nouveau code vient d'être envoyé.");
+    setInfo("Un nouveau code vient d'être envoyé. Pensez à vérifier vos spams.");
+    setCooldown(60);
   };
 
   return (
@@ -127,10 +137,14 @@ function VerifyEmailPage() {
         <button
           type="button"
           onClick={resend}
-          disabled={resending}
-          className="font-medium text-[#E82050] hover:underline disabled:opacity-50"
+          disabled={resending || cooldown > 0}
+          className="font-medium text-[#E82050] hover:underline disabled:opacity-50 disabled:no-underline"
         >
-          {resending ? "Envoi…" : "Renvoyer un code"}
+          {resending
+            ? "Envoi…"
+            : cooldown > 0
+              ? `Renvoyer un code (${cooldown}s)`
+              : "Renvoyer un code"}
         </button>
       </p>
       <p className="mt-6 text-center text-xs text-[#5A4F52]">
