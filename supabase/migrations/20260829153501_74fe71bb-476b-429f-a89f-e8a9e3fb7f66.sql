@@ -1,0 +1,2 @@
+CREATE POLICY "payments admin read" ON public.payments FOR SELECT TO authenticated USING (public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'owner'));
+CREATE POLICY "user_roles admin read" ON public.user_roles FOR SELECT TO authenticated USING (public.has_role(auth.uid(), 'admin') OR public.has_role(auth.uid(), 'owner'));
