@@ -621,7 +621,7 @@ function TemplateGallery() {
       <div className="mx-auto max-w-6xl px-5 text-center">
         <Kicker>Nos modèles</Kicker>
         <H2 className="mt-4">
-          {GALLERY_THEMES.length} modèles. Un seul qui te ressemble.
+          30 modèles. Un seul qui te ressemble.
         </H2>
         <Body className="mx-auto mt-4 max-w-xl">
           Du classique élégant aux motifs ivoiriens et orientaux — personnalise
