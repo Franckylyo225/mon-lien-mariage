@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useWedding } from "@/lib/wedding-store";
+import { DEMO_BRIDE, DEMO_GROOM } from "@/lib/couple-photos";
 import { Field } from "./signup";
 
 export const Route = createFileRoute("/onboarding/prenoms")({
@@ -11,8 +12,8 @@ export const Route = createFileRoute("/onboarding/prenoms")({
 function StepPrenoms() {
   const { couple, updateCouple, setOnboardingStep } = useWedding();
   const navigate = useNavigate();
-  const [brideName, setBride] = useState(couple.brideName ?? "");
-  const [groomName, setGroom] = useState(couple.groomName ?? "");
+  const [brideName, setBride] = useState(couple.brideName || DEMO_BRIDE);
+  const [groomName, setGroom] = useState(couple.groomName || DEMO_GROOM);
 
   const valid = brideName.trim() && groomName.trim();
 
