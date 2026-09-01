@@ -49,7 +49,10 @@ function BlogIndex() {
   );
 
   const filtered = useMemo(
-    () => (active === "all" ? posts : posts.filter((p) => p.category === active)),
+    () =>
+      posts
+        .filter((p) => p.category !== "histoires")
+        .filter((p) => (active === "all" ? true : p.category === active)),
     [posts, active],
   );
 
@@ -82,7 +85,7 @@ function BlogIndex() {
               <em className="italic text-[#E82050]">votre grand jour.</em>
             </h1>
             <p className="mx-auto mt-5 max-w-[520px] text-[16px] leading-relaxed text-[#7A6D70]">
-              Des histoires vraies, des guides pratiques et des idées pour préparer
+              Des guides pratiques et des idées pour préparer
               un mariage ivoirien à votre image. Chaque semaine, une nouvelle lecture.
             </p>
             <div className="mt-5 flex flex-wrap items-center justify-center gap-2">

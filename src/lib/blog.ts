@@ -31,7 +31,6 @@ export const CATEGORIES: { key: BlogCategory | "all"; label: string }[] = [
   { key: "organisation", label: "Organisation" },
   { key: "style", label: "Style" },
   { key: "reception", label: "Réception" },
-  { key: "histoires", label: "Histoires vraies" },
 ];
 
 export const CATEGORY_LABELS: Record<BlogCategory, string> = {
