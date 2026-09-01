@@ -135,7 +135,7 @@ function StepTheme() {
           themeSlug={selected}
           coupleName={{
             brideName: couple.brideName || "Aïcha",
-            groomName: couple.groomName || "Kouamé",
+            groomName: couple.groomName || "Loïc",
           }}
           weddingDate={couple.weddingDate}
           city={couple.city}

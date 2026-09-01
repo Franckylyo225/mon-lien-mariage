@@ -79,7 +79,7 @@ function FallbackThumb({ theme, className }: ThemeThumbnailProps) {
           className="text-[13px] leading-[1.05] italic"
           style={{ fontFamily: t.fontHeading, color: t.defaultText ?? "#1A1A1A" }}
         >
-          Aïcha <span style={{ color: accent }}>&amp;</span> Kouamé
+          Aïcha <span style={{ color: accent }}>&amp;</span> Loïc
         </p>
       </div>
       {t.bandCss ? (
