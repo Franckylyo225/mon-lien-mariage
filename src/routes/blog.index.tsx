@@ -58,8 +58,6 @@ function BlogIndex() {
   const rest = filtered.filter((p) => p.id !== featured?.id);
   const first = rest.slice(0, 6);
   const later = rest.slice(6);
-  const stories = later.filter((p) => p.category === "histoires");
-  const others = later.filter((p) => p.category !== "histoires");
 
   return (
     <div className="min-h-dvh overflow-x-hidden bg-[#FBF8F8] text-[#201A1C]">
@@ -217,34 +215,12 @@ function BlogIndex() {
               </div>
 
               {/* Others */}
-              {others.length > 0 ? (
+              {later.length > 0 ? (
                 <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {others.map((p) => (
+                  {later.map((p) => (
                     <BlogCard key={p.id} post={p} />
                   ))}
                 </div>
-              ) : null}
-
-              {/* Stories section */}
-              {stories.length > 0 ? (
-                <>
-                  <div className="mx-auto mt-12 mb-8 max-w-xl text-center">
-                    <p className="mb-2 text-[10px] uppercase tracking-[0.12em] text-[#C81A45]">
-                      ✦ Témoignages
-                    </p>
-                    <h2 className="mb-1.5 font-[family-name:var(--font-serif)] text-[26px] italic text-[#201A1C]">
-                      Ils ont dit oui avec MonInvit
-                    </h2>
-                    <p className="text-[14px] text-[#7A6D70]">
-                      Des couples ivoiriens partagent leur expérience.
-                    </p>
-                  </div>
-                  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {stories.map((p) => (
-                      <BlogCard key={p.id} post={p} />
-                    ))}
-                  </div>
-                </>
               ) : null}
             </div>
           )}
