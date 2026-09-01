@@ -351,8 +351,8 @@ const defaultAccount = (): Account => ({
 });
 
 const emptyCouple = (): Couple => ({
-  brideName: "",
-  groomName: "",
+  brideName: "Aïcha",
+  groomName: "Loïc",
   weddingDate: "",
   city: "Abidjan",
   introMessage: "",
