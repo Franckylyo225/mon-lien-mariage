@@ -4,6 +4,11 @@ import { componentForTheme } from "@/components/invitation-templates";
 import { THEMES, resolveTheme } from "@/lib/wedding-theme";
 import { ThemeRoot } from "@/components/theme/ThemeRoot";
 import type { Ceremony, Couple, ThemeId } from "@/lib/wedding-store";
+import {
+  couplePhotoForTheme,
+  DEMO_BRIDE,
+  DEMO_GROOM,
+} from "@/lib/couple-photos";
 
 /**
  * Internal route used ONLY to generate PNG thumbnails of themes via a
@@ -22,8 +27,9 @@ function ThemeThumbRoute() {
 
   const couple = useMemo<Couple>(
     () => ({
-      brideName: "Aïcha",
-      groomName: "Kouamé",
+      brideName: DEMO_BRIDE,
+      groomName: DEMO_GROOM,
+      heroImageUrl: couplePhotoForTheme(themeSlug),
       weddingDate: "2027-02-14",
       rsvpDeadline: undefined,
       city: "Abidjan",
