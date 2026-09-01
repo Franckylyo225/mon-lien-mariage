@@ -6,7 +6,6 @@ import logoFull from "@/assets/logo-moninvit.png.asset.json";
 const NAV = [
   { to: "/comment-ca-marche", label: "Comment ça marche" },
   { to: "/", hash: "tarifs", label: "Tarifs" },
-  { to: "/temoignages", label: "Témoignages" },
   { to: "/blog", label: "Blog" },
 ] as const;
 
