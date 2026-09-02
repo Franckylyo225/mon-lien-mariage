@@ -315,6 +315,24 @@ export function SiteFooter() {
             © {year} moninvit.com — Fait avec ♡ à Abidjan
           </p>
         </div>
+
+        <div className="pointer-events-none relative mt-10 overflow-hidden">
+          <div
+            className="flex justify-center"
+            style={{
+              maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 85%)",
+              WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0) 85%)",
+            }}
+          >
+            <img
+              src={logoFull.url}
+              alt=""
+              aria-hidden="true"
+              className="h-auto w-full max-w-5xl select-none opacity-40 grayscale"
+              style={{ filter: "brightness(1.05)" }}
+            />
+          </div>
+        </div>
       </div>
     </footer>
   );
