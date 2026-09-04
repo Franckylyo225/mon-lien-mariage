@@ -85,8 +85,10 @@ function ContactPage() {
     window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
       d.subject,
     )}&body=${encodeURIComponent(body)}`;
+    fbq("track", "Contact", { subject: d.subject });
     setSent(true);
   }
+
 
   return (
     <PageShell
