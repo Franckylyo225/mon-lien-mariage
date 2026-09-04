@@ -6,6 +6,8 @@ import {
   PasswordChecklist,
   validatePassword,
 } from "@/components/auth/password-strength";
+import { fbq } from "@/lib/facebook-pixel";
+
 
 export const Route = createFileRoute("/signup")({
   head: () => ({
