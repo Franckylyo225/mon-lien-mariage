@@ -7,6 +7,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { updateFacebookConsent } from "./facebook-pixel";
+
 
 export type ConsentCategories = {
   necessary: true;
