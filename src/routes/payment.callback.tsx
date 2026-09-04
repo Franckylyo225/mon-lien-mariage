@@ -4,6 +4,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { Check, Copy, Heart, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { getPaymentStatus } from "@/lib/paystack.functions";
+import { fbq } from "@/lib/facebook-pixel";
+
 
 export const Route = createFileRoute("/payment/callback")({
   head: () => ({
