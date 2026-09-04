@@ -2,6 +2,8 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { PageShell } from "@/components/site/SiteChrome";
+import { fbq } from "@/lib/facebook-pixel";
+
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
