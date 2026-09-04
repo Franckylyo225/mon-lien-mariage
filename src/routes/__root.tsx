@@ -15,6 +15,8 @@ import { WeddingProvider } from "../lib/wedding-store";
 import { Toaster } from "../components/ui/sonner";
 import { ConsentProvider } from "../lib/consent";
 import { ConsentManager } from "../components/consent/ConsentManager";
+import { useFacebookPixelPageView } from "../hooks/use-facebook-pixel";
+
 
 
 function NotFoundComponent() {
