@@ -157,7 +157,19 @@ function PaymentCallbackPage() {
     [steps],
   );
 
+  /* Conversion : achat confirmé */
+  useEffect(() => {
+    if (phase === "success" && amount) {
+      fbq("track", "Purchase", {
+        value: amount / 655.957, // valeur approximative en EUR pour le pixel
+        currency: "XOF",
+        content_type: paymentType === "addon_guestbook" ? "guestbook_addon" : "publication",
+      });
+    }
+  }, [phase, amount, paymentType]);
+
   /* Polling (logique inchangée) */
+
   useEffect(() => {
     if (started.current) return;
     started.current = true;
