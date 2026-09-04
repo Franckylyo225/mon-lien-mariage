@@ -1,28 +1,26 @@
 /**
  * Facebook Pixel (Meta Pixel) wrapper.
- * The base pixel script is injected in __root.tsx; this module only
- * initialises / resets it in response to the user's consent choices.
+ * The base pixel is loaded dynamically only after the user grants analytics
+ * or marketing consent (see src/lib/consent.tsx). This avoids firing the
+ * pixel before the ConsentManager choice is recorded.
  */
 
 export const FB_PIXEL_ID = "262463860846118";
 
 declare global {
   interface Window {
-    fbq?:
-      | ((
-          command: "track" | "trackCustom" | "init",
-          eventName: string,
-          params?: Record<string, unknown>,
-        ) => void)
-      & {
-        callMethod?: (...args: unknown[]) => void;
-        queue?: unknown[];
-        loaded?: boolean;
-        version?: string;
-        push?: (x: unknown) => void;
-      };
+    fbq?: Fbq;
+    _fbq?: Fbq;
   }
 }
+
+type Fbq = ((command: "init" | "track" | "trackCustom", ...args: unknown[]) => void) & {
+  callMethod?: (...args: unknown[]) => void;
+  queue?: unknown[];
+  loaded?: boolean;
+  version?: string;
+  push?: (x: unknown) => void;
+};
 
 export const FB_EVENTS = [
   "PageView",
@@ -39,52 +37,45 @@ export function fbq(
   eventName: FbEvent | string,
   params?: Record<string, unknown>,
 ) {
-  if (typeof window === "undefined" || !window.fbq) return;
-  if (command === "trackCustom") {
-    window.fbq(command, eventName, params);
-  } else {
-    window.fbq(command, eventName, params);
-  }
+  if (typeof window === "undefined" || typeof window.fbq !== "function") return;
+  window.fbq(command, eventName, params);
 }
 
 export function initFacebookPixel() {
   if (typeof window === "undefined") return;
-  if (window.fbq?.loaded) return;
 
   const w = window;
-  const d = document;
+  if (w.fbq?.loaded) return;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const existing: any = w.fbq;
-  if (existing) return;
-
-  const n = (w.fbq = function () {
-    // eslint-disable-next-line prefer-rest-params
-    n.callMethod ? n.callMethod.apply(n, arguments as never) : n.queue?.push(arguments);
-  } as Window["fbq"]);
+  const n: Fbq = (w.fbq = function (
+    this: unknown,
+    ...args: unknown[]
+  ) {
+    if (n.callMethod) {
+      n.callMethod.apply(this === w ? n : this, args);
+    } else {
+      n.queue?.push(args);
+    }
+  });
 
   if (!w._fbq) w._fbq = n;
-  if (n) {
-    n.push = n;
-    n.loaded = true;
-    n.version = "2.0";
-    n.queue = [];
-  }
+  n.push = n;
+  n.loaded = true;
+  n.version = "2.0";
+  n.queue = [];
 
+  const d = document;
   const t = d.createElement("script");
   t.async = true;
   t.src = "https://connect.facebook.net/en_US/fbevents.js";
   const s = d.getElementsByTagName("script")[0];
   s?.parentNode?.insertBefore(t, s);
 
-  n?.("init", FB_PIXEL_ID);
-  n?.("track", "PageView");
+  n("init", FB_PIXEL_ID);
+  n("track", "PageView");
 }
 
 export function updateFacebookConsent(allowed: boolean) {
-  if (typeof window === "undefined" || !window.fbq) return;
-  // Meta consent mode API is not identical to GTM, but we can at least
-  // avoid loading the pixel script when consent is denied. If already
-  // loaded, we do nothing (Facebook does not provide a granular revoke).
+  if (typeof window === "undefined") return;
   if (allowed) initFacebookPixel();
 }
