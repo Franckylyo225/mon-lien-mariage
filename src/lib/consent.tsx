@@ -82,7 +82,9 @@ function applyConsent(categories: ConsentCategories) {
     ad_personalization: categories.marketing ? "granted" : "denied",
   });
   if (categories.analytics) loadAnalytics();
+  updateFacebookConsent(categories.analytics || categories.marketing);
 }
+
 
 type ConsentContextValue = {
   consent: ConsentRecord | null;
