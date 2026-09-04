@@ -195,6 +195,7 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
+  useFacebookPixelPageView();
 
   useEffect(() => {
     import("@/integrations/supabase/client").then(({ supabase }) => {
@@ -213,6 +214,7 @@ function RootComponent() {
   }, [router, queryClient]);
 
   return (
+
     <QueryClientProvider client={queryClient}>
       <ConsentProvider>
         <WeddingProvider>
