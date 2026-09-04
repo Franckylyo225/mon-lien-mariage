@@ -21,6 +21,8 @@ import { validatePromoCode, publishWithPromo } from "@/lib/promo.functions";
 import { initializePaystackPayment } from "@/lib/paystack.functions";
 import { checkSlugAvailability } from "@/lib/public-wedding.functions";
 import { useNavigate } from "@tanstack/react-router";
+import { fbq } from "@/lib/facebook-pixel";
+
 
 
 export const Route = createFileRoute("/publish")({
