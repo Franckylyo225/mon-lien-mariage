@@ -15,6 +15,8 @@ import { WeddingProvider } from "../lib/wedding-store";
 import { Toaster } from "../components/ui/sonner";
 import { ConsentProvider } from "../lib/consent";
 import { ConsentManager } from "../components/consent/ConsentManager";
+import { useFacebookPixelPageView } from "../hooks/use-facebook-pixel";
+
 
 
 function NotFoundComponent() {
@@ -193,6 +195,7 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
+  useFacebookPixelPageView();
 
   useEffect(() => {
     import("@/integrations/supabase/client").then(({ supabase }) => {
@@ -211,6 +214,7 @@ function RootComponent() {
   }, [router, queryClient]);
 
   return (
+
     <QueryClientProvider client={queryClient}>
       <ConsentProvider>
         <WeddingProvider>

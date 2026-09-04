@@ -6,6 +6,8 @@ import {
   PasswordChecklist,
   validatePassword,
 } from "@/components/auth/password-strength";
+import { fbq } from "@/lib/facebook-pixel";
+
 
 export const Route = createFileRoute("/signup")({
   head: () => ({
@@ -59,12 +61,14 @@ function SignupPage() {
       setError(err.message);
       return;
     }
+    fbq("track", "CompleteRegistration", { content_name: "signup" });
     if (data.session) {
       navigate({ to: "/onboarding/prenoms" });
     } else {
       navigate({ to: "/verify-email", search: { email } });
     }
   };
+
 
   return (
     <AuthLayout

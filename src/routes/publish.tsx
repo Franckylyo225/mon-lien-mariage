@@ -21,6 +21,8 @@ import { validatePromoCode, publishWithPromo } from "@/lib/promo.functions";
 import { initializePaystackPayment } from "@/lib/paystack.functions";
 import { checkSlugAvailability } from "@/lib/public-wedding.functions";
 import { useNavigate } from "@tanstack/react-router";
+import { fbq } from "@/lib/facebook-pixel";
+
 
 
 export const Route = createFileRoute("/publish")({
@@ -243,9 +245,16 @@ function PublishPage() {
           hasEnvelopeAnimation: false,
           ...(includeGuestbook ? { hasGuestbook: true } : {}),
         });
+        fbq("track", "Purchase", {
+          value: 0,
+          currency: "XOF",
+          content_type: includeGuestbook ? "publication_with_guestbook" : "publication",
+          coupon: appliedPromo.code,
+        });
         toast.success("Votre invitation est publiée !");
         navigate({ to: "/dashboard/share" });
       } catch (e) {
+
         const msg = e instanceof Error ? e.message : "Publication impossible.";
         setPayError(msg);
         toast.error(msg);
