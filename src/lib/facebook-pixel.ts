@@ -59,7 +59,7 @@ export function initFacebookPixel() {
   });
 
   if (!w._fbq) w._fbq = n;
-  n.push = n;
+  n.push = (x: unknown) => n(x as Parameters<Fbq>[0]);
   n.loaded = true;
   n.version = "2.0";
   n.queue = [];
@@ -74,6 +74,7 @@ export function initFacebookPixel() {
   n("init", FB_PIXEL_ID);
   n("track", "PageView");
 }
+
 
 export function updateFacebookConsent(allowed: boolean) {
   if (typeof window === "undefined") return;
