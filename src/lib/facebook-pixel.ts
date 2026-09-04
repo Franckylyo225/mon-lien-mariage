@@ -59,8 +59,9 @@ export function initFacebookPixel() {
   });
 
   if (!w._fbq) w._fbq = n;
-  n.push = (x: unknown) => n(x as Parameters<Fbq>[0]);
+  n.push = n as unknown as (x: unknown) => void;
   n.loaded = true;
+
   n.version = "2.0";
   n.queue = [];
 
