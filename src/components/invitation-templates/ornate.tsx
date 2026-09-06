@@ -13,13 +13,13 @@ import {
 } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
 import {
-import { ThemeIcon } from "./theme-icon";
-import cityHallIcon from "@/assets/icons/city-hall.png.asset.json";
   CornerOrnaments,
   Divider,
   HeroFrame,
   OrnamentBand,
 } from "./ornaments";
+import { ThemeIcon } from "./theme-icon";
+import cityHallIcon from "@/assets/icons/city-hall.png.asset.json";
 
 /**
  * Gabarit ornemental partagé par les thèmes africains & orientaux.
