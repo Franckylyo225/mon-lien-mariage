@@ -443,7 +443,7 @@ export function DressCodeSection({
       <SectionTitle eyebrow="Tenue" title={heading} accent={accent} />
       <div className="mt-6 space-y-4 rounded-2xl border border-current/10 bg-white/5 p-5">
         <div className="flex items-start gap-3">
-          <Shirt className="mt-0.5 size-5 shrink-0" style={{ color: accent }} />
+          <ThemeIcon src={dressCodeIcon.url} color={accent} className="mt-0.5 size-5" />
           <div className="min-w-0 flex-1">
             {cleanNote ? (
               <p className="whitespace-pre-line text-sm italic leading-relaxed opacity-90">
@@ -624,7 +624,7 @@ export function RegistrySection({
             className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full"
             style={{ backgroundColor: (accent ?? "#999") + "22", color: accent }}
           >
-            <Gift className="size-4" />
+            <ThemeIcon src={loveLetterIcon.url} className="size-4" color={accent} />
           </span>
           <div className="min-w-0 flex-1 space-y-3">
             {note ? (
