@@ -4,6 +4,8 @@ import type { TemplateProps } from "./types";
 import { CeremonyProgramTabs } from "./program-tabs";
 import { Countdown, GallerySection, OurStorySection, ThemeBlockSection, TemplateBottomSections } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
+import { ThemeIcon } from "./theme-icon";
+import cityHallIcon from "@/assets/icons/city-hall.png.asset.json";
 
 export function BotaniqueDoreTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
   const published = ceremonies.filter((c) => c.status === "publiée");
@@ -75,6 +77,9 @@ export function BotaniqueDoreTemplate({ couple, ceremonies, rsvpSlot }: Template
         </p>
 
         <section className="mt-12">
+          <div className="text-center">
+            <ThemeIcon src={cityHallIcon.url} color={couple.accent ?? "#c9a84c"} className="mx-auto mb-3 size-8" />
+          </div>
           <div className="text-center">
             <span className="text-2xl text-[#c9a84c]">❦</span>
             <h2 className="mt-1 font-serif text-2xl italic">{eventTypeMeta[couple.eventType ?? "mariage"].programTitle}</h2>

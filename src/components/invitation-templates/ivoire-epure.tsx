@@ -10,6 +10,8 @@ import {
   TemplateBottomSections,
 } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
+import { ThemeIcon } from "./theme-icon";
+import cityHallIcon from "@/assets/icons/city-hall.png.asset.json";
 
 /**
  * Ivoire Épuré — minimaliste éditorial.
@@ -110,6 +112,9 @@ export function IvoireEpureTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
         ) : null}
 
         <section className="mt-20">
+          <div className="text-center">
+            <ThemeIcon src={cityHallIcon.url} color={couple.accent ?? "#c9a84c"} className="mx-auto mb-3 size-8" />
+          </div>
           <p className="text-[10px] uppercase tracking-[0.5em] opacity-50">
             {eventTypeMeta[couple.eventType ?? "mariage"].programTitle}
           </p>

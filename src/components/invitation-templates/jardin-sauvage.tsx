@@ -10,6 +10,8 @@ import {
   TemplateBottomSections,
 } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
+import { ThemeIcon } from "./theme-icon";
+import cityHallIcon from "@/assets/icons/city-hall.png.asset.json";
 
 /**
  * Jardin Sauvage — bohème champêtre.
@@ -122,6 +124,9 @@ export function JardinSauvageTemplate({ couple, ceremonies, rsvpSlot }: Template
         ) : null}
 
         <section className="mt-14">
+          <div className="text-center">
+            <ThemeIcon src={cityHallIcon.url} color={couple.accent ?? "#c9a84c"} className="mx-auto mb-3 size-8" />
+          </div>
           <div className="mb-6 text-center">
             <Sprig accent={accent} />
             <h2

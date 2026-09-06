@@ -4,6 +4,8 @@ import type { TemplateProps } from "./types";
 import { CeremonyProgramTabs } from "./program-tabs";
 import { Countdown, GallerySection, OurStorySection, ThemeBlockSection, TemplateBottomSections } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
+import { ThemeIcon } from "./theme-icon";
+import cityHallIcon from "@/assets/icons/city-hall.png.asset.json";
 
 export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
   const published = ceremonies.filter((c) => c.status === "publiée");
@@ -71,6 +73,9 @@ export function TerracottaTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
         </p>
 
         <section className="mt-14">
+          <div className="text-center">
+            <ThemeIcon src={cityHallIcon.url} color={couple.accent ?? "#c9a84c"} className="mx-auto mb-3 size-8" />
+          </div>
           <div className="mb-8 text-center">
             <span
               className="mx-auto mb-3 block h-px w-10"

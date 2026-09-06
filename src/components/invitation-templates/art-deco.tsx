@@ -4,6 +4,8 @@ import type { TemplateProps } from "./types";
 import { CeremonyProgramTabs } from "./program-tabs";
 import { Countdown, GallerySection, OurStorySection, ThemeBlockSection, TemplateBottomSections } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
+import { ThemeIcon } from "./theme-icon";
+import cityHallIcon from "@/assets/icons/city-hall.png.asset.json";
 
 export function ArtDecoTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
   const published = ceremonies.filter((c) => c.status === "publiée");
@@ -85,6 +87,9 @@ export function ArtDecoTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps)
         </p>
 
         <section className="mt-14">
+          <div className="text-center">
+            <ThemeIcon src={cityHallIcon.url} color={couple.accent ?? "#c9a84c"} className="mx-auto mb-3 size-8" />
+          </div>
           <div className="text-center">
             <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#c9a84c]">
               — {eventTypeMeta[couple.eventType ?? "mariage"].programTitle} —

@@ -10,6 +10,8 @@ import {
   TemplateBottomSections,
 } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
+import { ThemeIcon } from "./theme-icon";
+import cityHallIcon from "@/assets/icons/city-hall.png.asset.json";
 
 /**
  * Rose Élégance — classique formel.
@@ -126,6 +128,9 @@ export function RoseEleganceTemplate({ couple, ceremonies, rsvpSlot }: TemplateP
         ) : null}
 
         <section className="mt-14">
+          <div className="text-center">
+            <ThemeIcon src={cityHallIcon.url} color={couple.accent ?? "#c9a84c"} className="mx-auto mb-3 size-8" />
+          </div>
           <SectionTitle accent={accent}>
             {eventTypeMeta[couple.eventType ?? "mariage"].programTitle}
           </SectionTitle>
