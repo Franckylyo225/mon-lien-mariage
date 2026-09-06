@@ -62,6 +62,12 @@ function SignupPage() {
       return;
     }
     fbq("track", "CompleteRegistration", { content_name: "signup" });
+    void notifyAdminNewUser({
+      data: {
+        userEmail: email,
+        userName: `${firstName.trim()} ${lastName.trim()}`.trim(),
+      },
+    }).catch(() => {});
     if (data.session) {
       navigate({ to: "/onboarding/prenoms" });
     } else {
