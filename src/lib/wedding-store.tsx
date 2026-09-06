@@ -341,6 +341,10 @@ const defaultCouple = (): Couple => ({
     "Un service de navette gratuit sera disponible depuis l'hôtel Ivoire à partir de 18h30.",
   countdownEnabled: true,
   countdownUnits: ["days", "hours", "minutes", "seconds"],
+  registryEnabled: true,
+  registryTitle: "Liste de mariage",
+  registryNote: "Votre présence est notre plus beau cadeau.",
+  registryStores: [{ name: "Amazon", url: "https://amazon.fr/liste" }],
 });
 
 
