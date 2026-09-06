@@ -4,6 +4,8 @@ import type { TemplateProps } from "./types";
 import { CeremonyProgramTabs } from "./program-tabs";
 import { Countdown, GallerySection, OurStorySection, ThemeBlockSection, TemplateBottomSections } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
+import { ThemeIcon } from "./theme-icon";
+import cityHallIcon from "@/assets/icons/city-hall.png.asset.json";
 
 export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
   const published = ceremonies.filter((c) => c.status === "publiée");
@@ -62,6 +64,9 @@ export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
         </p>
 
         <section className="mt-16">
+          <div className="text-center">
+            <ThemeIcon src={cityHallIcon.url} color={couple.accent ?? "#c9a84c"} className="mx-auto mb-3 size-8" />
+          </div>
           <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#f5f3ee]/50">
             {eventTypeMeta[couple.eventType ?? "mariage"].programTitle}
           </p>
@@ -83,4 +88,3 @@ export function NoirMinimalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
     </main>
   );
 }
-

@@ -18,6 +18,8 @@ import {
   HeroFrame,
   OrnamentBand,
 } from "./ornaments";
+import { ThemeIcon } from "./theme-icon";
+import cityHallIcon from "@/assets/icons/city-hall.png.asset.json";
 
 /**
  * Gabarit ornemental partagé par les thèmes africains & orientaux.
@@ -252,6 +254,9 @@ export function OrnateTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) 
         ) : null}
 
         <section className="mt-14">
+          <div className="text-center">
+            <ThemeIcon src={cityHallIcon.url} color={couple.accent ?? "#c9a84c"} className="mx-auto mb-3 size-8" />
+          </div>
           <div className="mb-5 text-center">
             <p style={eyebrow()}>
               {eventTypeMeta[couple.eventType ?? "mariage"].programTitle}

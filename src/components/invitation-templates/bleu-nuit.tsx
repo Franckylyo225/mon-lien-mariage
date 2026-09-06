@@ -10,6 +10,8 @@ import {
   TemplateBottomSections,
 } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
+import { ThemeIcon } from "./theme-icon";
+import cityHallIcon from "@/assets/icons/city-hall.png.asset.json";
 
 /**
  * Bleu Nuit — éditorial soirée.
@@ -130,6 +132,9 @@ export function BleuNuitTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
         ) : null}
 
         <section className="mt-16">
+          <div className="text-center">
+            <ThemeIcon src={cityHallIcon.url} color={couple.accent ?? "#c9a84c"} className="mx-auto mb-3 size-8" />
+          </div>
           <div className="mb-6 flex items-center justify-center gap-3">
             <span className="h-px w-10" style={{ background: accent + "80" }} />
             <p

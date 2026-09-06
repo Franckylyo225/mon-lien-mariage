@@ -4,6 +4,8 @@ import type { TemplateProps } from "./types";
 import { CeremonyProgramTabs } from "./program-tabs";
 import { Countdown, GallerySection, OurStorySection, ThemeBlockSection, TemplateBottomSections } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
+import { ThemeIcon } from "./theme-icon";
+import cityHallIcon from "@/assets/icons/city-hall.png.asset.json";
 
 export function TropicalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
   const published = ceremonies.filter((c) => c.status === "publiée");
@@ -87,6 +89,9 @@ export function TropicalTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
         </p>
 
         <section className="mt-14">
+          <div className="text-center">
+            <ThemeIcon src={cityHallIcon.url} color={couple.accent ?? "#c9a84c"} className="mx-auto mb-3 size-8" />
+          </div>
           <div className="mb-8 flex items-center gap-3">
             <span className="text-2xl text-[#e88b62]">🌴</span>
             <h2 className="font-serif text-2xl italic">{eventTypeMeta[couple.eventType ?? "mariage"].programTitle}</h2>

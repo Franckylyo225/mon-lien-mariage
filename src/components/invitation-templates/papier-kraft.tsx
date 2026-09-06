@@ -10,6 +10,8 @@ import {
   TemplateBottomSections,
 } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
+import { ThemeIcon } from "./theme-icon";
+import cityHallIcon from "@/assets/icons/city-hall.png.asset.json";
 
 /**
  * Papier Kraft — carte postale vintage.
@@ -206,6 +208,9 @@ export function PapierKraftTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
         ) : null}
 
         <section className="mt-16">
+          <div className="text-center">
+            <ThemeIcon src={cityHallIcon.url} color={couple.accent ?? "#c9a84c"} className="mx-auto mb-3 size-8" />
+          </div>
           <div className="mb-6 text-center">
             <p
               className="text-[11px] uppercase tracking-[0.45em]"
