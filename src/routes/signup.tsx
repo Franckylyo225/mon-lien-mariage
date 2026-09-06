@@ -7,6 +7,7 @@ import {
   validatePassword,
 } from "@/components/auth/password-strength";
 import { fbq } from "@/lib/facebook-pixel";
+import { notifyAdminNewUser } from "@/lib/notify-admin.functions";
 
 
 export const Route = createFileRoute("/signup")({
