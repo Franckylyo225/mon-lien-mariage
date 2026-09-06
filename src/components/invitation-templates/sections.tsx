@@ -1,7 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
-import { MapPin, Phone, Mail, User, Shirt, Sparkles, Car, BedDouble, LifeBuoy, Gift, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { MapPin, Phone, Mail, User, Sparkles, Car, BedDouble, LifeBuoy, X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Ceremony, Couple } from "@/lib/wedding-store";
 import { StoryHeader, StoryTimeline } from "@/components/public/StoryTimeline";
+import { ThemeIcon } from "./theme-icon";
+import loveLetterIcon from "@/assets/icons/love-letter.png.asset.json";
+import dressCodeIcon from "@/assets/icons/dress-code.png.asset.json";
+import cityHallIcon from "@/assets/icons/city-hall.png.asset.json";
 
 function ImageLightbox({
   images,
