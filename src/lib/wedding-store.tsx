@@ -362,10 +362,6 @@ const emptyCouple = (): Couple => ({
 
   isPublished: false,
   isLocked: false,
-  registryEnabled: true,
-  registryTitle: "Liste de mariage",
-  registryNote: "Votre présence est notre plus beau cadeau.",
-  registryStores: [{ name: "Amazon", url: "https://amazon.fr/liste" }],
 });
 
 // ---------- Demo data (used for anonymous browsing on /invitation preview) ----------
