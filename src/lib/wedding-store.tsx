@@ -1335,8 +1335,11 @@ export function formatShortDate(dateISO: string): string {
 export function nextCeremony(ceremonies: Ceremony[]): Ceremony | undefined {
   const now = Date.now();
   return [...ceremonies]
-    .filter((c) => c.date && new Date(c.date + "T" + (c.timeStart || "00:00")).getTime() >= now)
-    .sort((a, b) => a.date.localeCompare(b.date) || a.timeStart.localeCompare(b.timeStart))[0];
+    .filter((c) => c.date && new Date(c.date + "T" + (ceremonyTimeStart(c) || "00:00")).getTime() >= now)
+    .sort(
+      (a, b) =>
+        a.date.localeCompare(b.date) || ceremonyTimeStart(a).localeCompare(ceremonyTimeStart(b)),
+    )[0];
 }
 
 export function guestStats(guests: Guest[], ceremonyId?: string) {

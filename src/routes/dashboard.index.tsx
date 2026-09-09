@@ -44,7 +44,7 @@ function DashboardHome() {
   // ---- 5 configuration criteria
   const infosDone = !!couple.brideName && !!couple.groomName && !!couple.weddingDate;
   const themeDone = !!couple.theme;
-  const programmeDone = ceremonies.some((c) => c.date && c.venue);
+  const programmeDone = ceremonies.some((c) => !!c.date);
   const pageDone = !!couple.heroImageUrl;
   const invitesDone = guests.length >= 5;
 
