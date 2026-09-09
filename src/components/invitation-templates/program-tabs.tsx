@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Ceremony } from "@/lib/wedding-store";
-import { programItemMapsHref } from "@/lib/wedding-store";
+import { programItemMapsHref, ceremonyTimeStart, ceremonyVenue } from "@/lib/wedding-store";
 
 export type ProgramTabsVariant =
   | "terracotta"
@@ -189,10 +189,10 @@ export function CeremonyProgramTabs({ ceremonies, variant }: Props) {
         <div className="relative">
           <div className="flex items-baseline justify-between gap-3">
             <h3 className={skin.title}>{active.name}</h3>
-            <span className={skin.time}>{active.timeStart}</span>
+            <span className={skin.time}>{ceremonyTimeStart(active)}</span>
           </div>
           <p className={skin.meta}>
-            {active.label} · {active.venue}
+            {active.label}{ceremonyVenue(active) ? ` · ${ceremonyVenue(active)}` : ""}
           </p>
           {active.dressCode ? (
             <p className={skin.dress}>

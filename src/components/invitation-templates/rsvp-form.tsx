@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { supabase } from "@/integrations/supabase/client";
 import type { Ceremony, ThemeId } from "@/lib/wedding-store";
+import { ceremonyTimeStart } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
 import { resolveRsvpDesign, type RsvpDesign } from "@/lib/rsvp-design";
 import { RsvpOrnament } from "./rsvp-ornament";
@@ -376,7 +377,7 @@ function RsvpModal({
                         className="truncate text-[9px] uppercase tracking-wider"
                         style={{ color: d.mutedInk }}
                       >
-                        {c.timeStart} · {c.label}
+                        {ceremonyTimeStart(c) ? `${ceremonyTimeStart(c)} · ` : ""}{c.label}
                       </p>
                     </div>
                   </div>

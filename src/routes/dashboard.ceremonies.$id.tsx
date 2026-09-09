@@ -66,63 +66,16 @@ function EditCeremony() {
             className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm"
           />
         </Field>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <Field label="Date">
-            <input
-              type="date"
-              value={form.date}
-              onChange={(e) => patch("date", e.target.value)}
-              className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm"
-            />
-          </Field>
-          <Field label="Heure de début">
-            <input
-              type="time"
-              value={form.timeStart}
-              onChange={(e) => patch("timeStart", e.target.value)}
-              className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm"
-            />
-          </Field>
-          <Field label="Heure de fin">
-            <input
-              type="time"
-              value={form.timeEnd ?? ""}
-              onChange={(e) => patch("timeEnd", e.target.value)}
-              className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm"
-            />
-          </Field>
-        </div>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className="font-serif text-lg italic">Lieu</h2>
-        <Field label="Nom du lieu">
+        <Field label="Date">
           <input
-            value={form.venue}
-            onChange={(e) => patch("venue", e.target.value)}
-            placeholder="Ex. Salle des fêtes Le Pacha"
-            className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm"
-          />
-        </Field>
-        <Field label="Adresse">
-          <textarea
-            value={form.notes ?? ""}
-            onChange={(e) => patch("notes", e.target.value)}
-            placeholder="Quartier, rue, point de repère…"
-            rows={2}
-            className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm"
-          />
-        </Field>
-        <Field label="Lien Google Maps (facultatif)">
-          <input
-            type="url"
-            value={form.mapsUrl ?? ""}
-            onChange={(e) => patch("mapsUrl", e.target.value)}
-            placeholder="https://maps.google.com/…"
+            type="date"
+            value={form.date}
+            onChange={(e) => patch("date", e.target.value)}
             className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm"
           />
         </Field>
       </section>
+
 
 
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background p-4 sm:static sm:border-0 sm:p-0">

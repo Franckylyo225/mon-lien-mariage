@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { MapPin, Phone, Mail, User, Sparkles, Car, BedDouble, LifeBuoy, X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Ceremony, Couple } from "@/lib/wedding-store";
+import { ceremonyMapsHref, ceremonyVenue } from "@/lib/wedding-store";
 import { StoryHeader, StoryTimeline } from "@/components/public/StoryTimeline";
 import { ThemeIcon } from "./theme-icon";
 import loveLetterIcon from "@/assets/icons/love-letter.png.asset.json";
@@ -323,7 +324,7 @@ export function LocationsSection({
   ceremonies: Ceremony[];
   accent?: string;
 }) {
-  const withVenue = ceremonies.filter((c) => c.venue);
+  const withVenue = ceremonies.filter((c) => ceremonyVenue(c));
   if (withVenue.length === 0) return null;
 
   return (
@@ -331,9 +332,7 @@ export function LocationsSection({
       <SectionTitle eyebrow="Se rendre" title="Lieux & itinéraires" accent={accent} />
       <ul className="mt-6 space-y-3">
         {withVenue.map((c) => {
-          const mapsUrl =
-            c.mapsUrl ??
-            `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.venue)}`;
+          const mapsUrl = ceremonyMapsHref(c) ?? "#";
           return (
             <li
               key={c.id}
@@ -347,7 +346,7 @@ export function LocationsSection({
               </span>
               <div className="min-w-0 flex-1">
                 <p className="font-serif text-base italic">{c.label}</p>
-                <p className="mt-0.5 text-sm opacity-80">{c.venue}</p>
+                <p className="mt-0.5 text-sm opacity-80">{ceremonyVenue(c)}</p>
                 <a
                   href={mapsUrl}
                   target="_blank"

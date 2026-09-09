@@ -4,6 +4,8 @@ import {
   useWedding,
   formatShortDate,
   guestStats,
+  ceremonyTimeStart,
+  ceremonyVenue,
   type Ceremony,
   type CeremonyType,
   type ProgramItem,
@@ -65,10 +67,10 @@ function CeremoniesPage() {
                       <h3 className="font-serif text-lg">{c.name}</h3>
                     </div>
                     <p className="mt-0.5 font-mono text-[10px] uppercase tracking-widest opacity-60">
-                      {c.label} · {formatShortDate(c.date)} · {c.timeStart}
-                      {c.timeEnd ? `–${c.timeEnd}` : ""}
+                      {c.label} · {formatShortDate(c.date)}
+                      {ceremonyTimeStart(c) ? ` · ${ceremonyTimeStart(c)}` : ""}
                     </p>
-                    <p className="mt-1 text-xs opacity-70">{c.venue}</p>
+                    <p className="mt-1 text-xs opacity-70">{ceremonyVenue(c)}</p>
                     <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[10px] uppercase tracking-widest">
                       <span>
                         <span className="text-primary">{s.confirmés}</span> conf.
@@ -140,9 +142,10 @@ function CeremonySheet({
 
   const [name, setName] = useState(initial?.name ?? "");
   const [date, setDate] = useState(initial?.date ?? "2027-02-14");
-  const [timeStart, setTimeStart] = useState(initial?.timeStart ?? "18:00");
-  const [timeEnd, setTimeEnd] = useState(initial?.timeEnd ?? "");
-  const [venue, setVenue] = useState(initial?.venue ?? "");
+  const timeStart = initial?.timeStart ?? "";
+  const timeEnd = initial?.timeEnd;
+  const venue = initial?.venue ?? "";
+
   const color = initial?.color ?? "#d97757";
   const [program, setProgram] = useState<ProgramItem[]>(initial?.program ?? []);
 
@@ -210,31 +213,12 @@ function CeremonySheet({
             className="w-full rounded-full border border-input bg-background px-4 py-3 text-sm"
           />
           <input
-            value={venue}
-            onChange={(e) => setVenue(e.target.value)}
-            placeholder="Lieu"
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
             className="w-full rounded-full border border-input bg-background px-4 py-3 text-sm"
           />
-          <div className="grid grid-cols-3 gap-2">
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="rounded-full border border-input bg-background px-3 py-3 text-sm"
-            />
-            <input
-              type="time"
-              value={timeStart}
-              onChange={(e) => setTimeStart(e.target.value)}
-              className="rounded-full border border-input bg-background px-3 py-3 text-sm"
-            />
-            <input
-              type="time"
-              value={timeEnd}
-              onChange={(e) => setTimeEnd(e.target.value)}
-              className="rounded-full border border-input bg-background px-3 py-3 text-sm"
-            />
-          </div>
+
 
           <div className="rounded-2xl border border-border bg-muted/30 p-4">
             <div className="mb-3 flex items-center justify-between">
@@ -359,7 +343,7 @@ function CeremonySheet({
             Annuler
           </button>
           <button
-            disabled={!name.trim() || !venue.trim()}
+            disabled={!name.trim()}
             onClick={() =>
               onSave({
                 type,
@@ -368,7 +352,8 @@ function CeremonySheet({
                 date,
                 timeStart,
                 timeEnd: timeEnd || undefined,
-                venue: venue.trim(),
+                venue,
+
                 dressCode: initial?.dressCode,
                 color,
                 capacity: initial?.capacity,
