@@ -226,3 +226,21 @@ export const getPaymentStatus = createServerFn({ method: "POST" })
 
   });
 
+
+/** Marque le moment où le couple a atteint le paywall (relances email). */
+export const markPaywallReached = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { weddingId: string }) => input)
+  .handler(async ({ data, context }) => {
+    const { data: row } = await context.supabase
+      .from("weddings")
+      .select("id, paywall_reached_at, is_published")
+      .eq("id", data.weddingId)
+      .maybeSingle();
+    if (!row || row.is_published || row.paywall_reached_at) return { updated: false };
+    await context.supabase
+      .from("weddings")
+      .update({ paywall_reached_at: new Date().toISOString() })
+      .eq("id", data.weddingId);
+    return { updated: true };
+  });
