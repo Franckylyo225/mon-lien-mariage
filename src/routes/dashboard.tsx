@@ -181,6 +181,7 @@ function DashboardChrome({
 
       {!editing && <Fab />}
       {!editing && <BottomNav isPublished={isPublished} />}
+      {!editing && <InstallPrompt />}
       <SideDrawer
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
