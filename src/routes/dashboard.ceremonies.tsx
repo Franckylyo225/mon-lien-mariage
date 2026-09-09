@@ -140,9 +140,10 @@ function CeremonySheet({
 
   const [name, setName] = useState(initial?.name ?? "");
   const [date, setDate] = useState(initial?.date ?? "2027-02-14");
-  const [timeStart, setTimeStart] = useState(initial?.timeStart ?? "18:00");
-  const [timeEnd, setTimeEnd] = useState(initial?.timeEnd ?? "");
-  const [venue, setVenue] = useState(initial?.venue ?? "");
+  const timeStart = initial?.timeStart ?? "";
+  const timeEnd = initial?.timeEnd;
+  const venue = initial?.venue ?? "";
+
   const color = initial?.color ?? "#d97757";
   const [program, setProgram] = useState<ProgramItem[]>(initial?.program ?? []);
 
@@ -340,7 +341,7 @@ function CeremonySheet({
             Annuler
           </button>
           <button
-            disabled={!name.trim() || !venue.trim()}
+            disabled={!name.trim()}
             onClick={() =>
               onSave({
                 type,
@@ -349,7 +350,8 @@ function CeremonySheet({
                 date,
                 timeStart,
                 timeEnd: timeEnd || undefined,
-                venue: venue.trim(),
+                venue,
+
                 dressCode: initial?.dressCode,
                 color,
                 capacity: initial?.capacity,
