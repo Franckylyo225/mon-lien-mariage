@@ -98,6 +98,19 @@ function substitute(html: string, vars: Record<string, string>) {
   return html.replace(/\{(\w+)\}/g, (_m, key: string) => vars[key] ?? '')
 }
 
+function htmlToText(html: string) {
+  return html
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/(p|div|tr|h1|h2)>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+}
+
 function escapeHtml(s: string) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 }
@@ -146,6 +159,7 @@ export async function sendAutomationEmail(
         sender_domain: SENDER_DOMAIN,
         subject,
         html,
+        text: htmlToText(html),
         purpose: 'transactional',
         label: `automation-${automation.trigger_key}`,
         idempotency_key:

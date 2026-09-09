@@ -832,7 +832,7 @@ export const updateEmailAutomation = createServerFn({ method: "POST" })
     const { id, ...patch } = data;
     const clean = Object.fromEntries(
       Object.entries(patch).filter(([, v]) => v !== undefined),
-    );
+    ) as never;
     const { error } = await context.supabase
       .from("email_automations")
       .update(clean)
