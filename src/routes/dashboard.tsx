@@ -9,8 +9,22 @@ import { Fab } from "@/components/mobile-shell/Fab";
 import { EditModeProvider, useEditMode } from "@/lib/edit-mode";
 import { PageChromeProvider, usePageChrome } from "@/lib/page-chrome";
 import { AutosaveProvider } from "@/lib/autosave-context";
+import { InstallPrompt } from "@/components/pwa/InstallPrompt";
 
 export const Route = createFileRoute("/dashboard")({
+  head: () => ({
+    meta: [
+      { name: "theme-color", content: "#E82050" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "apple-mobile-web-app-title", content: "MonInvit" },
+    ],
+    links: [
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "apple-touch-icon", sizes: "180x180", href: "/icons/apple-touch-icon-180.png" },
+    ],
+  }),
   component: DashboardLayout,
 });
 
