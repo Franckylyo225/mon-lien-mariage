@@ -210,31 +210,12 @@ function CeremonySheet({
             className="w-full rounded-full border border-input bg-background px-4 py-3 text-sm"
           />
           <input
-            value={venue}
-            onChange={(e) => setVenue(e.target.value)}
-            placeholder="Lieu"
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
             className="w-full rounded-full border border-input bg-background px-4 py-3 text-sm"
           />
-          <div className="grid grid-cols-3 gap-2">
-            <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="rounded-full border border-input bg-background px-3 py-3 text-sm"
-            />
-            <input
-              type="time"
-              value={timeStart}
-              onChange={(e) => setTimeStart(e.target.value)}
-              className="rounded-full border border-input bg-background px-3 py-3 text-sm"
-            />
-            <input
-              type="time"
-              value={timeEnd}
-              onChange={(e) => setTimeEnd(e.target.value)}
-              className="rounded-full border border-input bg-background px-3 py-3 text-sm"
-            />
-          </div>
+
 
           <div className="rounded-2xl border border-border bg-muted/30 p-4">
             <div className="mb-3 flex items-center justify-between">
