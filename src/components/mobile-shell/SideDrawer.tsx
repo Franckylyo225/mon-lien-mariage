@@ -292,6 +292,27 @@ export function SideDrawer({
           {renderSection("Mon mariage", weddingItems, true)}
           {renderSection("Mon compte", accountItems)}
           {renderSection("Aide", helpItems)}
+          {installState !== "unavailable" ? (
+            <button
+              onClick={onInstallClick}
+              className="drawer-item"
+              disabled={installState === "installed"}
+            >
+              <span className="drawer-item-icon">
+                {installState === "installed" ? (
+                  <IconCheck size={16} strokeWidth={1.75} />
+                ) : installState === "ios" ? (
+                  <IconShare2 size={16} strokeWidth={1.75} />
+                ) : (
+                  <IconDeviceMobileShare size={16} strokeWidth={1.75} />
+                )}
+              </span>
+              <span className="drawer-item-label">
+                {installState === "installed" ? "Application installée" : "Installer l'application"}
+              </span>
+              <IconChevronRight size={14} className="drawer-item-chevron" />
+            </button>
+          ) : null}
         </div>
 
         <div className="drawer-footer">
