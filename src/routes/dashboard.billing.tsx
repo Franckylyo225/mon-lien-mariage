@@ -184,7 +184,7 @@ function BillingPage() {
                 .replace(/[^a-z0-9]+/g, "-")
                 .replace(/(^-|-$)/g, "");
               const handleDownload = () => {
-                downloadInvoicePdf(
+                void downloadInvoicePdf(
                   {
                     invoiceNumber,
                     issuedAt: r.publishedAt,
