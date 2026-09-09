@@ -1273,6 +1273,10 @@ export type Database = {
       }
       rsvp_confirmed_count: { Args: { _wedding_id: string }; Returns: number }
       unaccent_fallback: { Args: { _t: string }; Returns: string }
+      verify_email_automation_token: {
+        Args: { _token: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user" | "owner"
