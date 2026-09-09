@@ -1,0 +1,18 @@
+{
+  "name": "MonInvit.com",
+  "short_name": "MonInvit",
+  "description": "Espace mariés MonInvit.com : programme, invités et page d'invitation.",
+  "id": "/dashboard",
+  "start_url": "/dashboard",
+  "scope": "/dashboard",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "fr",
+  "theme_color": "#E82050",
+  "background_color": "#FFFFFF",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
