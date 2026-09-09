@@ -14,9 +14,14 @@ import {
   IconLogout,
   IconX,
   IconChevronRight,
+  IconDeviceMobileShare,
+  IconShare2,
+  IconPlus,
+  IconCheck,
 } from "@tabler/icons-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useWedding } from "@/lib/wedding-store";
+import { getDeferredPrompt, getInstallState, subscribeInstallPrompt } from "@/components/pwa/pwa-install";
 import {
   AlertDialog,
   AlertDialogAction,
