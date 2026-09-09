@@ -14,9 +14,14 @@ import {
   IconLogout,
   IconX,
   IconChevronRight,
+  IconDeviceMobileShare,
+  IconShare2,
+  IconPlus,
+  IconCheck,
 } from "@tabler/icons-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useWedding } from "@/lib/wedding-store";
+import { getDeferredPrompt, getInstallState, subscribeInstallPrompt } from "@/components/pwa/pwa-install";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -109,7 +114,24 @@ export function SideDrawer({
   const [guestbookCount, setGuestbookCount] = useState(0);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [confirmOut, setConfirmOut] = useState(false);
+  const [installState, setInstallState] = useState<ReturnType<typeof getInstallState>>(getInstallState);
+  const [iosGuideOpen, setIosGuideOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  useEffect(() => subscribeInstallPrompt(() => setInstallState(getInstallState())), []);
+
+  const onInstallClick = async () => {
+    if (installState === "ios") {
+      setIosGuideOpen(true);
+      return;
+    }
+    const evt = getDeferredPrompt();
+    if (evt) {
+      await evt.prompt();
+      await evt.userChoice;
+      setInstallState(getInstallState());
+    }
+  };
 
   // Google avatar (fallback = initial)
   useEffect(() => {
@@ -270,6 +292,27 @@ export function SideDrawer({
           {renderSection("Mon mariage", weddingItems, true)}
           {renderSection("Mon compte", accountItems)}
           {renderSection("Aide", helpItems)}
+          {installState !== "unavailable" ? (
+            <button
+              onClick={onInstallClick}
+              className="drawer-item"
+              disabled={installState === "installed"}
+            >
+              <span className="drawer-item-icon">
+                {installState === "installed" ? (
+                  <IconCheck size={16} strokeWidth={1.75} />
+                ) : installState === "ios" ? (
+                  <IconShare2 size={16} strokeWidth={1.75} />
+                ) : (
+                  <IconDeviceMobileShare size={16} strokeWidth={1.75} />
+                )}
+              </span>
+              <span className="drawer-item-label">
+                {installState === "installed" ? "Application installée" : "Installer l'application"}
+              </span>
+              <IconChevronRight size={14} className="drawer-item-chevron" />
+            </button>
+          ) : null}
         </div>
 
         <div className="drawer-footer">
@@ -299,6 +342,47 @@ export function SideDrawer({
             >
               Se déconnecter
             </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={iosGuideOpen} onOpenChange={setIosGuideOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Ajouter MonInvit à l'écran d'accueil</AlertDialogTitle>
+          </AlertDialogHeader>
+          <ol className="space-y-3 text-left">
+            <li className="flex items-start gap-3">
+              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#E82050]/10 text-[#E82050]">
+                <IconShare2 size={18} strokeWidth={1.8} />
+              </span>
+              <p className="text-[13px] leading-snug text-muted-foreground">
+                <span className="font-medium text-foreground">1.</span> Appuyez sur{" "}
+                <span className="font-medium text-foreground">Partager</span> (le carré avec la
+                flèche vers le haut, en bas de Safari).
+              </p>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#E82050]/10 text-[#E82050]">
+                <IconPlus size={18} strokeWidth={1.8} />
+              </span>
+              <p className="text-[13px] leading-snug text-muted-foreground">
+                <span className="font-medium text-foreground">2.</span> Faites défiler et touchez{" "}
+                <span className="font-medium text-foreground">« Sur l'écran d'accueil »</span>.
+              </p>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#E82050]/10 text-[#E82050]">
+                <IconCheck size={18} strokeWidth={1.8} />
+              </span>
+              <p className="text-[13px] leading-snug text-muted-foreground">
+                <span className="font-medium text-foreground">3.</span> Appuyez sur{" "}
+                <span className="font-medium text-foreground">Ajouter</span> en haut à droite.
+              </p>
+            </li>
+          </ol>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setIosGuideOpen(false)}>J'ai compris</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
