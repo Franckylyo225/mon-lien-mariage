@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { IconReceipt, IconCircleCheck, IconDownload } from "@tabler/icons-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useWedding } from "@/lib/wedding-store";
-import { downloadInvoicePdf } from "@/lib/invoice-pdf";
+import { downloadInvoicePdf, type InvoiceLine } from "@/lib/invoice-pdf";
 
 export const Route = createFileRoute("/dashboard/billing")({
   head: () => ({ meta: [{ title: "Paiement & facture — MonInvit.com" }] }),
@@ -11,6 +11,7 @@ export const Route = createFileRoute("/dashboard/billing")({
 });
 
 const UNIT_PRICE_XOF = 24900;
+const GUESTBOOK_PRICE_XOF = 1990;
 
 interface PaymentRow {
   id: string;
@@ -18,6 +19,9 @@ interface PaymentRow {
   groomName: string;
   publishedAt: string;
   slug: string | null;
+  hasGuestbook: boolean;
+  amount: number;
+  lines: InvoiceLine[];
 }
 
 function formatDateLong(iso: string): string {
@@ -45,26 +49,81 @@ function BillingPage() {
     if (accountLoading || !account.isAuthenticated) return;
     let cancelled = false;
     (async () => {
-      const { data, error } = await supabase
-        .from("weddings")
-        .select("id, bride_name, groom_name, published_at, slug, is_published")
-        .eq("is_published", true)
-        .not("published_at", "is", null)
-        .order("published_at", { ascending: false });
+      const { data: userData } = await supabase.auth.getUser();
+      const uid = userData.user?.id;
       if (cancelled) return;
-      if (error) {
-        setError(error.message);
+      if (!uid) {
         setRows([]);
         return;
       }
+
+      const [weddingsRes, paymentsRes] = await Promise.all([
+        supabase
+          .from("weddings")
+          .select("id, bride_name, groom_name, published_at, slug, is_published, has_guestbook, owner_id")
+          .eq("owner_id", uid)
+          .eq("is_published", true)
+          .not("published_at", "is", null)
+          .order("published_at", { ascending: false }),
+        supabase
+          .from("payments")
+          .select("id, wedding_id, amount_fcfa, payment_type, status, metadata, user_id")
+          .eq("user_id", uid)
+          .eq("status", "success"),
+      ]);
+      if (cancelled) return;
+      if (weddingsRes.error) {
+        setError(weddingsRes.error.message);
+        setRows([]);
+        return;
+      }
+
+      const payments = paymentsRes.data ?? [];
+
       setRows(
-        (data ?? []).map((w) => ({
-          id: w.id as string,
-          brideName: (w.bride_name as string) ?? "",
-          groomName: (w.groom_name as string) ?? "",
-          publishedAt: (w.published_at as string) ?? "",
-          slug: (w.slug as string | null) ?? null,
-        })),
+        (weddingsRes.data ?? []).map((w) => {
+          const id = w.id as string;
+          const label =
+            `${(w.bride_name as string) || "…"} & ${(w.groom_name as string) || "…"}`;
+          const own = payments.filter((p) => p.wedding_id === id);
+          const paid = own.reduce((s, p) => s + Number(p.amount_fcfa ?? 0), 0);
+          const addonPaid =
+            (w.has_guestbook as boolean) === true ||
+            own.some(
+              (p) =>
+                p.payment_type === "addon_guestbook" ||
+                (p.metadata as { include_guestbook?: boolean } | null)?.include_guestbook === true,
+            );
+
+          const lines: InvoiceLine[] = [
+            {
+              description: `Publication de l'invitation « ${label} » sur MonInvit.com`,
+              amountXof: UNIT_PRICE_XOF,
+            },
+          ];
+          if (addonPaid) {
+            lines.push({
+              description: "Option Livre d'or (add-on)",
+              amountXof: GUESTBOOK_PRICE_XOF,
+            });
+          }
+          const gross = lines.reduce((s, l) => s + l.amountXof, 0);
+          const amount = paid > 0 ? paid : gross;
+          if (paid > 0 && paid !== gross) {
+            lines.push({ description: "Remise appliquée", amountXof: paid - gross });
+          }
+
+          return {
+            id,
+            brideName: (w.bride_name as string) ?? "",
+            groomName: (w.groom_name as string) ?? "",
+            publishedAt: (w.published_at as string) ?? "",
+            slug: (w.slug as string | null) ?? null,
+            hasGuestbook: addonPaid,
+            amount,
+            lines,
+          };
+        }),
       );
     })();
     return () => {
@@ -80,7 +139,7 @@ function BillingPage() {
     );
   }
 
-  const total = rows.length * UNIT_PRICE_XOF;
+  const total = rows.reduce((s, r) => s + r.amount, 0);
 
   return (
     <div className="space-y-6 py-2">
@@ -133,7 +192,8 @@ function BillingPage() {
                     customerName: label,
                     customerEmail: account.email ?? null,
                     description: `Publication de l'invitation « ${label} » sur MonInvit.com`,
-                    amountXof: UNIT_PRICE_XOF,
+                    amountXof: r.amount,
+                    lines: r.lines,
                     slug: r.slug,
                   },
                   `facture-moninvit-${safeName}-${invoiceNumber}.pdf`,
@@ -155,11 +215,12 @@ function BillingPage() {
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-serif text-[13px] italic">{label}</p>
                         <p className="truncate text-[10px] text-muted-foreground">
-                          Publication · {formatDateLong(r.publishedAt)}
+                          Publication{r.hasGuestbook ? " + Livre d'or" : ""} ·{" "}
+                          {formatDateLong(r.publishedAt)}
                         </p>
                       </div>
                       <div className="shrink-0 text-right">
-                        <p className="text-[13px] font-medium tabular-nums">{formatXOF(UNIT_PRICE_XOF)}</p>
+                        <p className="text-[13px] font-medium tabular-nums">{formatXOF(r.amount)}</p>
                         <p className="text-[9px] uppercase tracking-wide text-emerald-700">Payé</p>
                       </div>
                     </div>
