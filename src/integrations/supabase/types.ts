@@ -913,6 +913,9 @@ export type Database = {
           registry_stores: Json
           registry_title: string | null
           rsvp_deadline: string | null
+          rsvp_enabled: boolean
+          rsvp_quota: number | null
+          rsvp_quota_behavior: string
           share_description: string | null
           share_image_url: string | null
           share_title: string | null
@@ -1007,6 +1010,9 @@ export type Database = {
           registry_stores?: Json
           registry_title?: string | null
           rsvp_deadline?: string | null
+          rsvp_enabled?: boolean
+          rsvp_quota?: number | null
+          rsvp_quota_behavior?: string
           share_description?: string | null
           share_image_url?: string | null
           share_title?: string | null
@@ -1101,6 +1107,9 @@ export type Database = {
           registry_stores?: Json
           registry_title?: string | null
           rsvp_deadline?: string | null
+          rsvp_enabled?: boolean
+          rsvp_quota?: number | null
+          rsvp_quota_behavior?: string
           share_description?: string | null
           share_image_url?: string | null
           share_title?: string | null
@@ -1161,6 +1170,7 @@ export type Database = {
         Args: { _reference: string; _status: string; _token: string }
         Returns: string
       }
+      rsvp_confirmed_count: { Args: { _wedding_id: string }; Returns: number }
       unaccent_fallback: { Args: { _t: string }; Returns: string }
     }
     Enums: {
