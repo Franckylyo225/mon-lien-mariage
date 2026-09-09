@@ -156,6 +156,27 @@ function VerifyEmailPage() {
               : "Renvoyer un code"}
         </button>
       </p>
+      <div className="mt-4 rounded-xl border border-[#C6A15B]/40 bg-[#FAF8F5] px-4 py-3 text-xs leading-relaxed text-[#5A4F52]">
+        <p className="font-medium text-[#201A1C]">Vous ne trouvez pas le code ?</p>
+        <ul className="mt-1.5 list-disc space-y-1 pl-4">
+          <li>Le code à 6 chiffres apparaît dans l'objet de l'email.</li>
+          <li>Regardez dans Spam / Courrier indésirable et l'onglet Promotions.</li>
+          <li>
+            Adresse mal saisie ?{" "}
+            <Link to="/signup" className="font-medium text-[#E82050] hover:underline">
+              recommencez l'inscription
+            </Link>{" "}
+            avec la bonne adresse.
+          </li>
+          <li>
+            Toujours rien ? Écrivez à{" "}
+            <a href="mailto:support@moninvit.com" className="font-medium text-[#E82050] hover:underline">
+              support@moninvit.com
+            </a>
+            .
+          </li>
+        </ul>
+      </div>
       <p className="mt-6 text-center text-xs text-[#5A4F52]">
         <Link to="/login" className="font-medium text-[#E82050] hover:underline">
           Retour à la connexion
