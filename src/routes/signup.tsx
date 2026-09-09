@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Logo } from "@/components/site/SiteChrome";
 import {
@@ -8,6 +8,7 @@ import {
 } from "@/components/auth/password-strength";
 import { fbq } from "@/lib/facebook-pixel";
 import { notifyAdminNewUser } from "@/lib/notify-admin.functions";
+import { checkEmailAvailability } from "@/lib/auth.functions";
 
 
 export const Route = createFileRoute("/signup")({
@@ -30,6 +31,36 @@ function SignupPage() {
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [emailStatus, setEmailStatus] = useState<
+    "idle" | "checking" | "available" | "used"
+  >("idle");
+
+  const emailTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const checkEmail = (value: string) => {
+    if (emailTimeoutRef.current) clearTimeout(emailTimeoutRef.current);
+    if (!value.includes("@")) {
+      setEmailStatus("idle");
+      return;
+    }
+    setEmailStatus("checking");
+    emailTimeoutRef.current = setTimeout(async () => {
+      try {
+        const { available } = await checkEmailAvailability({
+          data: { email: value },
+        });
+        setEmailStatus(available ? "available" : "used");
+      } catch {
+        setEmailStatus("idle");
+      }
+    }, 450);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (emailTimeoutRef.current) clearTimeout(emailTimeoutRef.current);
+    };
+  }, []);
 
   const pwCheck = useMemo(() => validatePassword(password), [password]);
 
@@ -39,7 +70,11 @@ function SignupPage() {
     setInfo(null);
     if (!firstName.trim()) return setError("Merci d'indiquer votre prénom.");
     if (!lastName.trim()) return setError("Merci d'indiquer votre nom.");
-    if (!email.includes("@")) return setError("Adresse email invalide.");
+    if (!email.trim().includes("@")) return setError("Adresse email invalide.");
+    if (emailStatus === "checking")
+      return setError("Vérification de l'adresse email en cours…");
+    if (emailStatus === "used")
+      return setError("Cette adresse est déjà utilisée.");
     if (!pwCheck.valid)
       return setError(
         "Votre mot de passe ne respecte pas tous les critères ci-dessous.",
@@ -115,10 +150,32 @@ function SignupPage() {
             type="email"
             required
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value.toLowerCase().trim();
+              setEmail(value);
+              checkEmail(value);
+            }}
             className={inputClass}
             placeholder="vous@exemple.ci"
+            aria-invalid={emailStatus === "used"}
           />
+          {emailStatus === "used" ? (
+            <p className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive">
+              <span aria-hidden>•</span>
+              Cette adresse est déjà utilisée.{" "}
+              <Link
+                to="/login"
+                className="font-medium text-[#E82050] underline"
+              >
+                Se connecter
+              </Link>
+            </p>
+          ) : emailStatus === "available" ? (
+            <p className="mt-1.5 flex items-center gap-1.5 text-xs text-emerald-600">
+              <span aria-hidden>✓</span>
+              Cette adresse est disponible.
+            </p>
+          ) : null}
         </Field>
         <Field label="Mot de passe">
           <input
