@@ -49,26 +49,81 @@ function BillingPage() {
     if (accountLoading || !account.isAuthenticated) return;
     let cancelled = false;
     (async () => {
-      const { data, error } = await supabase
-        .from("weddings")
-        .select("id, bride_name, groom_name, published_at, slug, is_published")
-        .eq("is_published", true)
-        .not("published_at", "is", null)
-        .order("published_at", { ascending: false });
+      const { data: userData } = await supabase.auth.getUser();
+      const uid = userData.user?.id;
       if (cancelled) return;
-      if (error) {
-        setError(error.message);
+      if (!uid) {
         setRows([]);
         return;
       }
+
+      const [weddingsRes, paymentsRes] = await Promise.all([
+        supabase
+          .from("weddings")
+          .select("id, bride_name, groom_name, published_at, slug, is_published, has_guestbook, owner_id")
+          .eq("owner_id", uid)
+          .eq("is_published", true)
+          .not("published_at", "is", null)
+          .order("published_at", { ascending: false }),
+        supabase
+          .from("payments")
+          .select("id, wedding_id, amount_fcfa, payment_type, status, metadata, user_id")
+          .eq("user_id", uid)
+          .eq("status", "success"),
+      ]);
+      if (cancelled) return;
+      if (weddingsRes.error) {
+        setError(weddingsRes.error.message);
+        setRows([]);
+        return;
+      }
+
+      const payments = paymentsRes.data ?? [];
+
       setRows(
-        (data ?? []).map((w) => ({
-          id: w.id as string,
-          brideName: (w.bride_name as string) ?? "",
-          groomName: (w.groom_name as string) ?? "",
-          publishedAt: (w.published_at as string) ?? "",
-          slug: (w.slug as string | null) ?? null,
-        })),
+        (weddingsRes.data ?? []).map((w) => {
+          const id = w.id as string;
+          const label =
+            `${(w.bride_name as string) || "…"} & ${(w.groom_name as string) || "…"}`;
+          const own = payments.filter((p) => p.wedding_id === id);
+          const paid = own.reduce((s, p) => s + Number(p.amount_fcfa ?? 0), 0);
+          const addonPaid =
+            (w.has_guestbook as boolean) === true ||
+            own.some(
+              (p) =>
+                p.payment_type === "addon_guestbook" ||
+                (p.metadata as { include_guestbook?: boolean } | null)?.include_guestbook === true,
+            );
+
+          const lines: InvoiceLine[] = [
+            {
+              description: `Publication de l'invitation « ${label} » sur MonInvit.com`,
+              amountXof: UNIT_PRICE_XOF,
+            },
+          ];
+          if (addonPaid) {
+            lines.push({
+              description: "Option Livre d'or (add-on)",
+              amountXof: GUESTBOOK_PRICE_XOF,
+            });
+          }
+          const gross = lines.reduce((s, l) => s + l.amountXof, 0);
+          const amount = paid > 0 ? paid : gross;
+          if (paid > 0 && paid !== gross) {
+            lines.push({ description: "Remise appliquée", amountXof: paid - gross });
+          }
+
+          return {
+            id,
+            brideName: (w.bride_name as string) ?? "",
+            groomName: (w.groom_name as string) ?? "",
+            publishedAt: (w.published_at as string) ?? "",
+            slug: (w.slug as string | null) ?? null,
+            hasGuestbook: addonPaid,
+            amount,
+            lines,
+          };
+        }),
       );
     })();
     return () => {
