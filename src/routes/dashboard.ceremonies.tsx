@@ -4,6 +4,8 @@ import {
   useWedding,
   formatShortDate,
   guestStats,
+  ceremonyTimeStart,
+  ceremonyVenue,
   type Ceremony,
   type CeremonyType,
   type ProgramItem,
@@ -65,10 +67,10 @@ function CeremoniesPage() {
                       <h3 className="font-serif text-lg">{c.name}</h3>
                     </div>
                     <p className="mt-0.5 font-mono text-[10px] uppercase tracking-widest opacity-60">
-                      {c.label} · {formatShortDate(c.date)} · {c.timeStart}
-                      {c.timeEnd ? `–${c.timeEnd}` : ""}
+                      {c.label} · {formatShortDate(c.date)}
+                      {ceremonyTimeStart(c) ? ` · ${ceremonyTimeStart(c)}` : ""}
                     </p>
-                    <p className="mt-1 text-xs opacity-70">{c.venue}</p>
+                    <p className="mt-1 text-xs opacity-70">{ceremonyVenue(c)}</p>
                     <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[10px] uppercase tracking-widest">
                       <span>
                         <span className="text-primary">{s.confirmés}</span> conf.
