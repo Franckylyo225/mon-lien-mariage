@@ -58,6 +58,19 @@ export const Route = createFileRoute("/api/public/webhooks/paystack")({
           return new Response("Not configured", { status: 500 });
         }
 
+        // Email « votre page est en ligne » (best-effort, jamais bloquant)
+        const meta = event.data?.metadata ?? {};
+        if (result === "activated" && meta?.payment_type === "publication" && meta?.wedding_id) {
+          try {
+            const { triggerAutomationForWedding } = await import(
+              "@/lib/email-automation.server"
+            );
+            await triggerAutomationForWedding("published_success", meta.wedding_id);
+          } catch (e) {
+            console.error("[paystack] published_success email failed", e);
+          }
+        }
+
 
         return new Response("OK", { status: 200 });
       },
