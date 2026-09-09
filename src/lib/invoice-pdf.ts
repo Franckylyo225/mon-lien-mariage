@@ -1,5 +1,10 @@
 import { jsPDF } from "jspdf";
 
+export interface InvoiceLine {
+  description: string;
+  amountXof: number;
+}
+
 export interface InvoiceData {
   invoiceNumber: string;
   issuedAt: string; // ISO
@@ -9,6 +14,8 @@ export interface InvoiceData {
   description: string;
   amountXof: number;
   slug: string | null;
+  /** Optional detailed lines (publication, add-ons, discount). */
+  lines?: InvoiceLine[];
 }
 
 function fmtXof(n: number): string {
