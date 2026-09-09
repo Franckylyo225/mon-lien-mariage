@@ -260,6 +260,14 @@ function PublicInvitationPage() {
     publicSlug: c.public_slug ?? "",
   }));
 
+  // ---- RSVP visibility: enabled toggle + optional quota
+  const rsvpEnabled = !!w.rsvp_enabled;
+  const rsvpQuota =
+    typeof w.rsvp_quota === "number" && w.rsvp_quota > 0 ? w.rsvp_quota : null;
+  const rsvpCount = data.rsvpCount ?? 0;
+  const quotaReached = rsvpQuota != null && rsvpCount >= rsvpQuota;
+  const quotaBehavior = w.rsvp_quota_behavior === "hide" ? "hide" : "message";
+
   const resolved = resolveTheme(couple);
   // Override couple.accent with resolved accent so templates that read couple.accent
   // reflect the user's chosen colour.
@@ -317,16 +325,7 @@ function PublicInvitationPage() {
         <Template
           couple={coupleTheme}
           ceremonies={ceremonies}
-          rsvpSlot={
-            <TemplateRsvpForm
-              theme={coupleTheme.theme}
-              weddingId={w.id}
-              ceremonies={ceremonies}
-              onConfirmed={() => {
-                if (coupleTheme.particleTriggerRsvp !== false) setRsvpBurst(true);
-              }}
-            />
-          }
+          rsvpSlot={rsvpSlot}
         />
       </RevealOnScroll>
       {coupleTheme.hasGuestbook ? (
