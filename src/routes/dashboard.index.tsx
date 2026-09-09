@@ -54,6 +54,7 @@ function DashboardHome() {
   const pct = Math.round((done / total) * 100);
 
   const canPublish = programmeDone && pageDone && invitesDone;
+  const bannerReady = programmeDone && pageDone;
   const isPublished = !!couple.isPublished;
 
   // ---- Done items (compact list)
