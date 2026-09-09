@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { IconReceipt, IconCircleCheck, IconDownload } from "@tabler/icons-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useWedding } from "@/lib/wedding-store";
-import { downloadInvoicePdf } from "@/lib/invoice-pdf";
+import { downloadInvoicePdf, type InvoiceLine } from "@/lib/invoice-pdf";
 
 export const Route = createFileRoute("/dashboard/billing")({
   head: () => ({ meta: [{ title: "Paiement & facture — MonInvit.com" }] }),
@@ -11,6 +11,7 @@ export const Route = createFileRoute("/dashboard/billing")({
 });
 
 const UNIT_PRICE_XOF = 24900;
+const GUESTBOOK_PRICE_XOF = 1990;
 
 interface PaymentRow {
   id: string;
@@ -18,6 +19,9 @@ interface PaymentRow {
   groomName: string;
   publishedAt: string;
   slug: string | null;
+  hasGuestbook: boolean;
+  amount: number;
+  lines: InvoiceLine[];
 }
 
 function formatDateLong(iso: string): string {
