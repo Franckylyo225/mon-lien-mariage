@@ -199,7 +199,7 @@ function DashboardHome() {
       </section>
 
       {/* Bannière de relance publication */}
-      {canPublish && !isPublished && couple.weddingDate ? (
+      {bannerReady && !isPublished && couple.weddingDate ? (
         <PublishReminderBanner
           weddingDate={couple.weddingDate}
           brideFirstName={couple.brideName || "Prénom A"}
