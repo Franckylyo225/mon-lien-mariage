@@ -5,6 +5,7 @@ import * as XLSX from "xlsx";
 import { useWedding, type RSVPStatus } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
 import { useAllGuests } from "@/hooks/use-all-guests";
+import { BottomSheet } from "@/components/ui/bottom-sheet";
 
 export const Route = createFileRoute("/dashboard/guests/")({
   head: () => ({ meta: [{ title: "Mes invités — MonInvit.com" }] }),
