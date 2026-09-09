@@ -120,6 +120,32 @@ export interface Ceremony {
   publicSlug: string;
 }
 
+/** Lieu affiché pour une étape : celui de la première sous-étape qui en a un. */
+export function ceremonyVenue(c: Ceremony): string {
+  if (c.venue?.trim()) return c.venue.trim();
+  const it = c.program?.find((p) => p.location?.trim());
+  return it?.location?.trim() ?? "";
+}
+
+/** Heure de début affichée : celle de la première sous-étape horodatée. */
+export function ceremonyTimeStart(c: Ceremony): string {
+  if (c.timeStart?.trim()) return c.timeStart.trim();
+  const it = c.program?.find((p) => p.time?.trim());
+  return it?.time?.trim() ?? "";
+}
+
+/** Lien Maps de l'étape, sinon celui de la première sous-étape localisée. */
+export function ceremonyMapsHref(c: Ceremony): string | null {
+  const url = c.mapsUrl?.trim();
+  if (url) return /^https?:\/\//i.test(url) ? url : `https://${url}`;
+  const it = c.program?.find((p) => programItemMapsHref(p));
+  if (it) return programItemMapsHref(it);
+  const v = ceremonyVenue(c);
+  return v ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v)}` : null;
+}
+
+
+
 export interface RSVP {
   ceremonyId: string;
   status: RSVPStatus;
