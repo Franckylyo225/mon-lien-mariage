@@ -758,3 +758,135 @@ export const adminSetUserPassword = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+
+/* ------------------------------------------------- emails automatiques --- */
+
+export interface EmailAutomationRow {
+  id: string;
+  trigger_key: string;
+  name: string;
+  description: string | null;
+  phase: string;
+  delay_value: number;
+  delay_unit: "minutes" | "hours" | "days";
+  subject: string;
+  body_html: string;
+  cta_label: string | null;
+  cta_url_pattern: string | null;
+  is_active: boolean;
+  sort_order: number;
+  sent_count: number;
+  last_sent_at: string | null;
+}
+
+export const listEmailAutomations = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<EmailAutomationRow[]> => {
+    await assertAdmin(context);
+
+    const [{ data: rows, error }, { data: logs }] = await Promise.all([
+      context.supabase
+        .from("email_automations")
+        .select(
+          "id, trigger_key, name, description, phase, delay_value, delay_unit, subject, body_html, cta_label, cta_url_pattern, is_active, sort_order",
+        )
+        .order("sort_order"),
+      context.supabase
+        .from("email_automation_log")
+        .select("trigger_key, sent_at")
+        .order("sent_at", { ascending: false })
+        .limit(5000),
+    ]);
+    if (error) throw new Error(error.message);
+
+    const stats = new Map<string, { count: number; last: string | null }>();
+    for (const l of (logs ?? []) as any[]) {
+      const prev = stats.get(l.trigger_key) ?? { count: 0, last: null };
+      prev.count += 1;
+      if (!prev.last || l.sent_at > prev.last) prev.last = l.sent_at;
+      stats.set(l.trigger_key, prev);
+    }
+
+    return ((rows ?? []) as any[]).map((r) => ({
+      ...r,
+      sent_count: stats.get(r.trigger_key)?.count ?? 0,
+      last_sent_at: stats.get(r.trigger_key)?.last ?? null,
+    }));
+  });
+
+export const updateEmailAutomation = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: {
+    id: string;
+    delay_value?: number;
+    delay_unit?: "minutes" | "hours" | "days";
+    subject?: string;
+    body_html?: string;
+    cta_label?: string | null;
+    cta_url_pattern?: string | null;
+    is_active?: boolean;
+  }) => input)
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { id, ...patch } = data;
+    const clean = Object.fromEntries(
+      Object.entries(patch).filter(([, v]) => v !== undefined),
+    );
+    const { error } = await context.supabase
+      .from("email_automations")
+      .update(clean)
+      .eq("id", id);
+    if (error) throw new Error(error.message);
+    return { success: true };
+  });
+
+export const sendAutomationTest = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { id: string; email?: string }) => input)
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+
+    const { data: automation, error } = await context.supabase
+      .from("email_automations")
+      .select("*")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!automation) throw new Error("Automatisation introuvable");
+
+    const { data: profile } = await context.supabase
+      .from("profiles")
+      .select("email, user_first_name, display_name")
+      .eq("id", context.userId)
+      .maybeSingle();
+
+    const recipient = data.email || profile?.email;
+    if (!recipient) throw new Error("Aucune adresse de destination");
+
+    const { sendAutomationEmail } = await import("@/lib/email-automation.server");
+    const result = await sendAutomationEmail(
+      automation as any,
+      {
+        user_id: context.userId,
+        wedding_id: null,
+        email: recipient,
+        first_name:
+          profile?.user_first_name || profile?.display_name?.split(" ")[0] || "Test",
+        bride_name: "Aïcha",
+        groom_name: "Loïc",
+        slug: "aicha-et-loic",
+      },
+      { idempotencyKey: `test-${automation.trigger_key}-${Date.now()}` },
+    );
+
+    return { success: result === "sent", recipient, result };
+  });
+
+export const runEmailAutomationsNow = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { runEmailAutomations } = await import("@/lib/email-automation.server");
+    return await runEmailAutomations();
+  });
