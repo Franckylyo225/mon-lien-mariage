@@ -274,6 +274,36 @@ function PublicInvitationPage() {
   const coupleTheme: Couple = { ...couple, accent: resolved.accent };
   const Template = componentForTheme(coupleTheme.theme);
 
+  const rsvpSlot = !rsvpEnabled
+    ? null
+    : quotaReached
+      ? quotaBehavior === "hide"
+        ? null
+        : (
+            <section className="mt-12 w-full max-w-full px-5 py-8 text-center sm:px-8">
+              <p
+                className="font-serif text-xl italic"
+                style={{ color: resolved.accent }}
+              >
+                Il n'y a plus de place disponible
+              </p>
+              <p className="mt-2 text-sm opacity-70">
+                Le nombre maximum d'invités a été atteint. Merci de votre
+                compréhension.
+              </p>
+            </section>
+          )
+      : (
+          <TemplateRsvpForm
+            theme={coupleTheme.theme}
+            weddingId={w.id}
+            ceremonies={ceremonies}
+            onConfirmed={() => {
+              if (coupleTheme.particleTriggerRsvp !== false) setRsvpBurst(true);
+            }}
+          />
+        );
+
   return (
     <>
       {showSplash && coupleTheme.splashEnabled !== false ? (
