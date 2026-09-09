@@ -12,7 +12,7 @@ export const Route = createFileRoute("/dashboard/guests/")({
 });
 
 function GuestsPage() {
-  const { ceremonies } = useWedding();
+  const { ceremonies, couple, updateCouple } = useWedding();
   const { allGuests } = useAllGuests();
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<GuestType | "all">("all");
