@@ -105,30 +105,38 @@ export function generateInvoicePdf(data: InvoiceData): jsPDF {
   doc.text("TOTAL", pageW - marginX - 12, y + 17, { align: "right" });
   y += 26;
 
-  // Row
+  // Rows
+  const lines: InvoiceLine[] =
+    data.lines && data.lines.length > 0
+      ? data.lines
+      : [{ description: data.description, amountXof: data.amountXof }];
+
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
-  doc.setTextColor(30, 30, 30);
-  const descLines = doc.splitTextToSize(data.description, pageW - marginX * 2 - 250);
-  const rowH = Math.max(30, descLines.length * 14 + 12);
-  doc.text(descLines, marginX + 12, y + 18);
-  doc.text("1", pageW - marginX - 170, y + 18, { align: "right" });
-  doc.text(fmtXof(data.amountXof), pageW - marginX - 90, y + 18, { align: "right" });
-  doc.text(fmtXof(data.amountXof), pageW - marginX - 12, y + 18, { align: "right" });
-  y += rowH;
+  for (const line of lines) {
+    doc.setTextColor(30, 30, 30);
+    const descLines = doc.splitTextToSize(line.description, pageW - marginX * 2 - 250);
+    const rowH = Math.max(30, descLines.length * 14 + 12);
+    doc.text(descLines, marginX + 12, y + 18);
+    doc.text("1", pageW - marginX - 170, y + 18, { align: "right" });
+    doc.text(fmtXof(line.amountXof), pageW - marginX - 90, y + 18, { align: "right" });
+    doc.text(fmtXof(line.amountXof), pageW - marginX - 12, y + 18, { align: "right" });
+    y += rowH;
+  }
 
   doc.setDrawColor(230, 230, 230);
   doc.line(marginX, y, pageW - marginX, y);
   y += 20;
 
   // Totals
+  const subtotal = lines.reduce((s, l) => s + l.amountXof, 0);
   const totalsX = pageW - marginX - 12;
   const labelX = pageW - marginX - 160;
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
   doc.setTextColor(90, 90, 90);
   doc.text("Sous-total", labelX, y);
-  doc.text(fmtXof(data.amountXof), totalsX, y, { align: "right" });
+  doc.text(fmtXof(subtotal), totalsX, y, { align: "right" });
   y += 16;
   doc.text("TVA", labelX, y);
   doc.text("Incluse", totalsX, y, { align: "right" });
