@@ -345,6 +345,47 @@ export function SideDrawer({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <AlertDialog open={iosGuideOpen} onOpenChange={setIosGuideOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Ajouter MonInvit à l'écran d'accueil</AlertDialogTitle>
+          </AlertDialogHeader>
+          <ol className="space-y-3 text-left">
+            <li className="flex items-start gap-3">
+              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#E82050]/10 text-[#E82050]">
+                <IconShare2 size={18} strokeWidth={1.8} />
+              </span>
+              <p className="text-[13px] leading-snug text-muted-foreground">
+                <span className="font-medium text-foreground">1.</span> Appuyez sur{" "}
+                <span className="font-medium text-foreground">Partager</span> (le carré avec la
+                flèche vers le haut, en bas de Safari).
+              </p>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#E82050]/10 text-[#E82050]">
+                <IconPlus size={18} strokeWidth={1.8} />
+              </span>
+              <p className="text-[13px] leading-snug text-muted-foreground">
+                <span className="font-medium text-foreground">2.</span> Faites défiler et touchez{" "}
+                <span className="font-medium text-foreground">« Sur l'écran d'accueil »</span>.
+              </p>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#E82050]/10 text-[#E82050]">
+                <IconCheck size={18} strokeWidth={1.8} />
+              </span>
+              <p className="text-[13px] leading-snug text-muted-foreground">
+                <span className="font-medium text-foreground">3.</span> Appuyez sur{" "}
+                <span className="font-medium text-foreground">Ajouter</span> en haut à droite.
+              </p>
+            </li>
+          </ol>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setIosGuideOpen(false)}>J'ai compris</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }
