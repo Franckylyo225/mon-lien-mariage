@@ -25,7 +25,7 @@ const ENCRE: [number, number, number] = [32, 26, 28];
 const GRIS: [number, number, number] = [122, 114, 117];
 const CREME: [number, number, number] = [253, 246, 245];
 
-const LOGO_URL = "/media/a53d13c7-logo-moninvit.png";
+const LOGO_URL = "/media/logo-moninvit-invoice.png";
 const LOGO_RATIO = 1920 / 406;
 
 function fmtXof(n: number): string {
