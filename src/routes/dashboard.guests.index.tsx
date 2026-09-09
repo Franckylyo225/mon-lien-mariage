@@ -5,6 +5,7 @@ import * as XLSX from "xlsx";
 import { useWedding, type RSVPStatus } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
 import { useAllGuests } from "@/hooks/use-all-guests";
+import { BottomSheet } from "@/components/ui/bottom-sheet";
 
 export const Route = createFileRoute("/dashboard/guests/")({
   head: () => ({ meta: [{ title: "Mes invités — MonInvit.com" }] }),
@@ -253,7 +254,51 @@ function RsvpActivationCard({
   }) => void;
 }) {
   const mode: "unlimited" | "quota" = quota != null && quota > 0 ? "quota" : "unlimited";
-  const [quotaDraft, setQuotaDraft] = useState(quota != null ? String(quota) : "100");
+
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [activating, setActivating] = useState(false);
+  const [draftMode, setDraftMode] = useState<"unlimited" | "quota">(mode);
+  const [draftQuota, setDraftQuota] = useState(quota != null && quota > 0 ? String(quota) : "");
+  const [draftBehavior, setDraftBehavior] = useState<"message" | "hide">(behavior);
+
+  const openSheet = (isActivating: boolean) => {
+    setDraftMode(mode);
+    setDraftQuota(quota != null && quota > 0 ? String(quota) : "");
+    setDraftBehavior(behavior);
+    setActivating(isActivating);
+    setSheetOpen(true);
+  };
+
+  const handleToggle = () => {
+    if (enabled) {
+      // Désactivation : on conserve la configuration en base.
+      onChange({ rsvpEnabled: false });
+      return;
+    }
+    openSheet(true);
+  };
+
+  const quotaValue = Math.max(1, Number(draftQuota) || 0);
+  const canSubmit = draftMode === "unlimited" || quotaValue > 0;
+
+  const submit = () => {
+    onChange({
+      rsvpEnabled: true,
+      rsvpQuota: draftMode === "quota" ? quotaValue : null,
+      rsvpQuotaBehavior: draftBehavior,
+    });
+    setActivating(false);
+    setSheetOpen(false);
+  };
+
+  const handleSheetOpenChange = (open: boolean) => {
+    if (!open) {
+      // Fermeture sans validation : pas d'activation « à moitié ».
+      if (activating) onChange({ rsvpEnabled: false });
+      setActivating(false);
+    }
+    setSheetOpen(open);
+  };
 
   return (
     <section className="rounded-xl border border-border bg-card p-4">
@@ -269,7 +314,7 @@ function RsvpActivationCard({
           role="switch"
           aria-checked={enabled}
           aria-label="Activer la liste d'invitation"
-          onClick={() => onChange({ rsvpEnabled: !enabled })}
+          onClick={handleToggle}
           className={
             "relative mt-0.5 h-7 w-12 shrink-0 rounded-full transition " +
             (enabled ? "bg-primary" : "bg-muted")
@@ -285,36 +330,65 @@ function RsvpActivationCard({
       </div>
 
       {enabled ? (
-        <div className="mt-4 space-y-3 border-t border-border pt-4">
+        <div className="mt-4 space-y-2 border-t border-border pt-3">
+          <div className="flex items-center justify-between gap-3">
+            <p className="min-w-0 text-sm">
+              {mode === "quota"
+                ? `Avec quota · ${quota} max · ${
+                    behavior === "hide" ? "RSVP masqué au quota atteint" : "Message au quota atteint"
+                  }`
+                : "Sans limite · Tous les invités acceptés"}
+            </p>
+            <button
+              type="button"
+              onClick={() => openSheet(false)}
+              className="shrink-0 text-sm font-medium text-primary underline underline-offset-4"
+            >
+              Modifier
+            </button>
+          </div>
+          {mode === "quota" ? (
+            <p className="text-sm text-muted-foreground">
+              <span className="font-medium text-foreground">{confirmedCount}</span> / {quota}{" "}
+              inscrits
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+
+      <BottomSheet
+        open={sheetOpen}
+        onOpenChange={handleSheetOpenChange}
+        title="Configurer la liste d'invitation"
+        actionLabel="Fermer"
+      >
+        <div className="space-y-4">
           <div className="grid gap-2 sm:grid-cols-2">
             <OptionButton
-              active={mode === "unlimited"}
+              active={draftMode === "unlimited"}
               title="Sans limite"
               desc="Tous les invités qui s'inscrivent sont acceptés"
-              onClick={() => onChange({ rsvpQuota: null })}
+              onClick={() => setDraftMode("unlimited")}
             />
             <OptionButton
-              active={mode === "quota"}
+              active={draftMode === "quota"}
               title="Avec quota"
               desc="Limiter le nombre maximum d'invités"
-              onClick={() => onChange({ rsvpQuota: Math.max(1, Number(quotaDraft) || 100) })}
+              onClick={() => setDraftMode("quota")}
             />
           </div>
 
-          {mode === "quota" ? (
+          {draftMode === "quota" ? (
             <div className="space-y-3 rounded-lg bg-secondary/30 p-3">
               <label className="block text-xs font-medium">
                 Nombre maximum d'invités
                 <input
                   type="number"
                   min={1}
-                  value={quotaDraft}
-                  onChange={(e) => setQuotaDraft(e.target.value)}
-                  onBlur={() => {
-                    const n = Math.max(1, Number(quotaDraft) || 1);
-                    setQuotaDraft(String(n));
-                    onChange({ rsvpQuota: n });
-                  }}
+                  inputMode="numeric"
+                  value={draftQuota}
+                  onChange={(e) => setDraftQuota(e.target.value)}
+                  placeholder="Ex. 300"
                   className="mt-1 w-full rounded-lg border border-input bg-card px-3 py-2.5 text-base"
                 />
               </label>
@@ -322,27 +396,31 @@ function RsvpActivationCard({
               <p className="text-xs font-medium">Une fois le quota atteint :</p>
               <div className="grid gap-2 sm:grid-cols-2">
                 <OptionButton
-                  active={behavior === "message"}
+                  active={draftBehavior === "message"}
                   title="Afficher un message"
                   desc="« Il n'y a plus de place disponible »"
-                  onClick={() => onChange({ rsvpQuotaBehavior: "message" })}
+                  onClick={() => setDraftBehavior("message")}
                 />
                 <OptionButton
-                  active={behavior === "hide"}
+                  active={draftBehavior === "hide"}
                   title="Masquer le RSVP"
                   desc="La section disparaît de la page publique"
-                  onClick={() => onChange({ rsvpQuotaBehavior: "hide" })}
+                  onClick={() => setDraftBehavior("hide")}
                 />
               </div>
             </div>
           ) : null}
 
-          <p className="text-sm">
-            <span className="font-medium">{confirmedCount}</span>
-            {mode === "quota" ? ` / ${quota}` : ""} inscrits
-          </p>
+          <button
+            type="button"
+            disabled={!canSubmit}
+            onClick={submit}
+            className="w-full rounded-lg bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Valider
+          </button>
         </div>
-      ) : null}
+      </BottomSheet>
     </section>
   );
 }
