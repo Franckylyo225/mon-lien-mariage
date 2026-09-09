@@ -46,7 +46,7 @@ function DashboardHome() {
   const themeDone = !!couple.theme;
   const programmeDone = ceremonies.some((c) => !!c.date);
   const pageDone = !!couple.heroImageUrl;
-  const invitesDone = guests.length >= 5;
+  const invitesDone = !!couple.rsvpEnabled;
 
   const criteria = [infosDone, themeDone, programmeDone, pageDone, invitesDone];
   const done = criteria.filter(Boolean).length;
@@ -94,7 +94,7 @@ function DashboardHome() {
   if (invitesDone) {
     doneItems.push({
       key: "invites",
-      label: "Invités",
+      label: "Liste des invités activée",
       onEdit: () => navigate({ to: "/dashboard/guests" }),
     });
   }
@@ -119,8 +119,8 @@ function DashboardHome() {
     },
     {
       key: "invites",
-      label: "Les invités",
-      description: "Votre liste de convives",
+      label: "Activez la liste des invités",
+      description: "Permettez à vos invités de s'inscrire",
       Icon: IconUsers,
       to: "/dashboard/guests",
       done: invitesDone,
