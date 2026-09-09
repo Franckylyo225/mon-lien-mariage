@@ -160,8 +160,13 @@ function AutomationsTab() {
                       onClick={() =>
                         test({ data: { id: a.id } })
                           .then((r: any) => toast.success(`Test envoyé à ${r.recipient}`))
-                          .catch(() => toast.error("Échec de l'envoi de test"))
+                          .catch((e: any) =>
+                            toast.error(
+                              `Échec de l'envoi de test : ${e?.message ?? "erreur inconnue"}`,
+                            ),
+                          )
                       }
+
                       className="inline-flex items-center gap-1 rounded-full border border-border/60 px-3 py-1.5 text-[12px] hover:bg-secondary"
                     >
                       <IconSend size={13} /> Test
