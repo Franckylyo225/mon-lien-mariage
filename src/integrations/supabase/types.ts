@@ -166,6 +166,101 @@ export type Database = {
           },
         ]
       }
+      email_automation_log: {
+        Row: {
+          id: string
+          recipient_email: string | null
+          sent_at: string
+          status: string
+          trigger_key: string
+          user_id: string | null
+          wedding_id: string | null
+        }
+        Insert: {
+          id?: string
+          recipient_email?: string | null
+          sent_at?: string
+          status?: string
+          trigger_key: string
+          user_id?: string | null
+          wedding_id?: string | null
+        }
+        Update: {
+          id?: string
+          recipient_email?: string | null
+          sent_at?: string
+          status?: string
+          trigger_key?: string
+          user_id?: string | null
+          wedding_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_automation_log_wedding_id_fkey"
+            columns: ["wedding_id"]
+            isOneToOne: false
+            referencedRelation: "weddings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      email_automations: {
+        Row: {
+          body_html: string
+          created_at: string
+          cta_label: string | null
+          cta_url_pattern: string | null
+          delay_unit: string
+          delay_value: number
+          description: string | null
+          id: string
+          is_active: boolean
+          max_sends_per_user: number
+          name: string
+          phase: string
+          sort_order: number
+          subject: string
+          trigger_key: string
+          updated_at: string
+        }
+        Insert: {
+          body_html: string
+          created_at?: string
+          cta_label?: string | null
+          cta_url_pattern?: string | null
+          delay_unit?: string
+          delay_value?: number
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          max_sends_per_user?: number
+          name: string
+          phase?: string
+          sort_order?: number
+          subject: string
+          trigger_key: string
+          updated_at?: string
+        }
+        Update: {
+          body_html?: string
+          created_at?: string
+          cta_label?: string | null
+          cta_url_pattern?: string | null
+          delay_unit?: string
+          delay_value?: number
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          max_sends_per_user?: number
+          name?: string
+          phase?: string
+          sort_order?: number
+          subject?: string
+          trigger_key?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       email_send_log: {
         Row: {
           created_at: string
@@ -490,6 +585,7 @@ export type Database = {
           id: string
           user_first_name: string | null
           user_last_name: string | null
+          welcome_email_sent_at: string | null
         }
         Insert: {
           active_wedding_id?: string | null
@@ -501,6 +597,7 @@ export type Database = {
           id: string
           user_first_name?: string | null
           user_last_name?: string | null
+          welcome_email_sent_at?: string | null
         }
         Update: {
           active_wedding_id?: string | null
@@ -512,6 +609,7 @@ export type Database = {
           id?: string
           user_first_name?: string | null
           user_last_name?: string | null
+          welcome_email_sent_at?: string | null
         }
         Relationships: [
           {
@@ -902,6 +1000,7 @@ export type Database = {
           particle_trigger_loop: boolean | null
           particle_trigger_open: boolean | null
           particle_trigger_rsvp: boolean | null
+          paywall_reached_at: string | null
           practical_accommodation: string | null
           practical_contact_name: string | null
           practical_contact_phone: string | null
@@ -999,6 +1098,7 @@ export type Database = {
           particle_trigger_loop?: boolean | null
           particle_trigger_open?: boolean | null
           particle_trigger_rsvp?: boolean | null
+          paywall_reached_at?: string | null
           practical_accommodation?: string | null
           practical_contact_name?: string | null
           practical_contact_phone?: string | null
@@ -1096,6 +1196,7 @@ export type Database = {
           particle_trigger_loop?: boolean | null
           particle_trigger_open?: boolean | null
           particle_trigger_rsvp?: boolean | null
+          paywall_reached_at?: string | null
           practical_accommodation?: string | null
           practical_contact_name?: string | null
           practical_contact_phone?: string | null

@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { redirectToCheckout } from "@/lib/checkout-redirect";
 import { useWedding, slugify } from "@/lib/wedding-store";
 import { validatePromoCode, publishWithPromo } from "@/lib/promo.functions";
-import { initializePaystackPayment } from "@/lib/paystack.functions";
+import { initializePaystackPayment, markPaywallReached } from "@/lib/paystack.functions";
 import { checkSlugAvailability } from "@/lib/public-wedding.functions";
 import { useNavigate } from "@tanstack/react-router";
 import { fbq } from "@/lib/facebook-pixel";
@@ -88,6 +88,12 @@ function PublishPage() {
   useEffect(() => {
     setSlug(baseSlug);
   }, [baseSlug]);
+
+  // Marque l'arrivée sur le paywall (utilisé par les relances email)
+  useEffect(() => {
+    if (!weddingId) return;
+    markPaywallReached({ data: { weddingId } }).catch(() => {});
+  }, [weddingId]);
 
   const runCheck = async (candidate: string): Promise<SlugStatus> => {
     const s = candidate.trim().toLowerCase();

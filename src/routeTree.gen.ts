@@ -73,6 +73,7 @@ import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/em
 import { Route as ApiPublicWebhooksPaystackRouteImport } from './routes/api/public/webhooks/paystack'
 import { Route as ApiPublicHooksRsvpMilestoneRouteImport } from './routes/api/public/hooks/rsvp-milestone'
 import { Route as ApiPublicHooksNewUserRouteImport } from './routes/api/public/hooks/new-user'
+import { Route as ApiPublicHooksEmailAutomationsRouteImport } from './routes/api/public/hooks/email-automations'
 import { Route as ApiPublicBlogImageSplatRouteImport } from './routes/api/public/blog-image.$'
 
 const VerifyEmailRoute = VerifyEmailRouteImport.update({
@@ -400,6 +401,12 @@ const ApiPublicHooksNewUserRoute = ApiPublicHooksNewUserRouteImport.update({
   path: '/api/public/hooks/new-user',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksEmailAutomationsRoute =
+  ApiPublicHooksEmailAutomationsRouteImport.update({
+    id: '/api/public/hooks/email-automations',
+    path: '/api/public/hooks/email-automations',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicBlogImageSplatRoute = ApiPublicBlogImageSplatRouteImport.update({
   id: '/api/public/blog-image/$',
   path: '/api/public/blog-image/$',
@@ -466,6 +473,7 @@ export interface FileRoutesByFullPath {
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/dashboard/guests/': typeof DashboardGuestsIndexRoute
   '/api/public/blog-image/$': typeof ApiPublicBlogImageSplatRoute
+  '/api/public/hooks/email-automations': typeof ApiPublicHooksEmailAutomationsRoute
   '/api/public/hooks/new-user': typeof ApiPublicHooksNewUserRoute
   '/api/public/hooks/rsvp-milestone': typeof ApiPublicHooksRsvpMilestoneRoute
   '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
@@ -531,6 +539,7 @@ export interface FileRoutesByTo {
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/dashboard/guests': typeof DashboardGuestsIndexRoute
   '/api/public/blog-image/$': typeof ApiPublicBlogImageSplatRoute
+  '/api/public/hooks/email-automations': typeof ApiPublicHooksEmailAutomationsRoute
   '/api/public/hooks/new-user': typeof ApiPublicHooksNewUserRoute
   '/api/public/hooks/rsvp-milestone': typeof ApiPublicHooksRsvpMilestoneRoute
   '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
@@ -599,6 +608,7 @@ export interface FileRoutesById {
   '/lovable/email/events': typeof LovableEmailEventsRoute
   '/dashboard/guests/': typeof DashboardGuestsIndexRoute
   '/api/public/blog-image/$': typeof ApiPublicBlogImageSplatRoute
+  '/api/public/hooks/email-automations': typeof ApiPublicHooksEmailAutomationsRoute
   '/api/public/hooks/new-user': typeof ApiPublicHooksNewUserRoute
   '/api/public/hooks/rsvp-milestone': typeof ApiPublicHooksRsvpMilestoneRoute
   '/api/public/webhooks/paystack': typeof ApiPublicWebhooksPaystackRoute
@@ -668,6 +678,7 @@ export interface FileRouteTypes {
     | '/lovable/email/events'
     | '/dashboard/guests/'
     | '/api/public/blog-image/$'
+    | '/api/public/hooks/email-automations'
     | '/api/public/hooks/new-user'
     | '/api/public/hooks/rsvp-milestone'
     | '/api/public/webhooks/paystack'
@@ -733,6 +744,7 @@ export interface FileRouteTypes {
     | '/lovable/email/events'
     | '/dashboard/guests'
     | '/api/public/blog-image/$'
+    | '/api/public/hooks/email-automations'
     | '/api/public/hooks/new-user'
     | '/api/public/hooks/rsvp-milestone'
     | '/api/public/webhooks/paystack'
@@ -800,6 +812,7 @@ export interface FileRouteTypes {
     | '/lovable/email/events'
     | '/dashboard/guests/'
     | '/api/public/blog-image/$'
+    | '/api/public/hooks/email-automations'
     | '/api/public/hooks/new-user'
     | '/api/public/hooks/rsvp-milestone'
     | '/api/public/webhooks/paystack'
@@ -841,6 +854,7 @@ export interface RootRouteChildren {
   GuestbookPrintIdRoute: typeof GuestbookPrintIdRoute
   LovableEmailEventsRoute: typeof LovableEmailEventsRoute
   ApiPublicBlogImageSplatRoute: typeof ApiPublicBlogImageSplatRoute
+  ApiPublicHooksEmailAutomationsRoute: typeof ApiPublicHooksEmailAutomationsRoute
   ApiPublicHooksNewUserRoute: typeof ApiPublicHooksNewUserRoute
   ApiPublicHooksRsvpMilestoneRoute: typeof ApiPublicHooksRsvpMilestoneRoute
   ApiPublicWebhooksPaystackRoute: typeof ApiPublicWebhooksPaystackRoute
@@ -1299,6 +1313,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksNewUserRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/email-automations': {
+      id: '/api/public/hooks/email-automations'
+      path: '/api/public/hooks/email-automations'
+      fullPath: '/api/public/hooks/email-automations'
+      preLoaderRoute: typeof ApiPublicHooksEmailAutomationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/blog-image/$': {
       id: '/api/public/blog-image/$'
       path: '/api/public/blog-image/$'
@@ -1433,6 +1454,7 @@ const rootRouteChildren: RootRouteChildren = {
   GuestbookPrintIdRoute: GuestbookPrintIdRoute,
   LovableEmailEventsRoute: LovableEmailEventsRoute,
   ApiPublicBlogImageSplatRoute: ApiPublicBlogImageSplatRoute,
+  ApiPublicHooksEmailAutomationsRoute: ApiPublicHooksEmailAutomationsRoute,
   ApiPublicHooksNewUserRoute: ApiPublicHooksNewUserRoute,
   ApiPublicHooksRsvpMilestoneRoute: ApiPublicHooksRsvpMilestoneRoute,
   ApiPublicWebhooksPaystackRoute: ApiPublicWebhooksPaystackRoute,
