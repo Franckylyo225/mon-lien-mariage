@@ -21,6 +21,7 @@ import {
 } from "@/lib/wedding-store";
 import { cn } from "@/lib/utils";
 import { BasicInfoSheet } from "@/components/dashboard/BasicInfoSheet";
+import { PublishReminderBanner } from "@/components/dashboard/PublishReminderBanner";
 
 export const Route = createFileRoute("/dashboard/")({
   head: () => ({ meta: [{ title: "Tableau de bord — MonInvit.com" }] }),
@@ -196,6 +197,14 @@ function DashboardHome() {
         ) : null}
       </section>
 
+      {/* Bannière de relance publication */}
+      {canPublish && !isPublished && couple.weddingDate ? (
+        <PublishReminderBanner
+          weddingDate={couple.weddingDate}
+          brideFirstName={couple.brideName || "Prénom A"}
+          groomFirstName={couple.groomName || "Prénom B"}
+        />
+      ) : null}
 
       {/* Bloc 2 — Progression */}
       <section>
