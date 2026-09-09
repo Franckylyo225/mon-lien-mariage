@@ -84,10 +84,8 @@ export async function generateInvoicePdf(data: InvoiceData): Promise<jsPDF> {
     const padX = 14;
     const padY = 10;
     try {
-      doc.setFillColor(255, 255, 255);
-      doc.roundedRect(marginX, 30, logoW + padX * 2, logoH + padY * 2, 8, 8, "F");
-      doc.addImage(logo, "PNG", marginX + padX, 30 + padY, logoW, logoH);
-      brandBottom = 30 + logoH + padY * 2;
+      doc.addImage(logo, "PNG", marginX, 30, logoW, logoH);
+      brandBottom = 30 + logoH + 10;
     } catch {
       /* ignore */
     }
