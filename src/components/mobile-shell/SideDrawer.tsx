@@ -114,7 +114,24 @@ export function SideDrawer({
   const [guestbookCount, setGuestbookCount] = useState(0);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [confirmOut, setConfirmOut] = useState(false);
+  const [installState, setInstallState] = useState<ReturnType<typeof getInstallState>>(getInstallState);
+  const [iosGuideOpen, setIosGuideOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  useEffect(() => subscribeInstallPrompt(() => setInstallState(getInstallState())), []);
+
+  const onInstallClick = async () => {
+    if (installState === "ios") {
+      setIosGuideOpen(true);
+      return;
+    }
+    const evt = getDeferredPrompt();
+    if (evt) {
+      await evt.prompt();
+      await evt.userChoice;
+      setInstallState(getInstallState());
+    }
+  };
 
   // Google avatar (fallback = initial)
   useEffect(() => {
