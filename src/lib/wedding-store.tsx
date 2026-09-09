@@ -171,6 +171,9 @@ export interface Couple {
   groomName: string;
   weddingDate: string;
   rsvpDeadline?: string;
+  rsvpEnabled?: boolean;
+  rsvpQuota?: number | null;
+  rsvpQuotaBehavior?: "message" | "hide";
   city: string;
   introMessage: string;
   heroImageUrl?: string;
@@ -461,6 +464,9 @@ type WeddingRow = {
   groom_name: string;
   wedding_date: string | null;
   rsvp_deadline: string | null;
+  rsvp_enabled?: boolean | null;
+  rsvp_quota?: number | null;
+  rsvp_quota_behavior?: string | null;
   city: string | null;
   intro_message: string | null;
   couple_story: string | null;
@@ -529,6 +535,9 @@ function rowToCouple(w: WeddingRow): Couple {
     groomName: w.groom_name ?? "",
     weddingDate: w.wedding_date ?? "",
     rsvpDeadline: w.rsvp_deadline ?? undefined,
+    rsvpEnabled: w.rsvp_enabled ?? false,
+    rsvpQuota: w.rsvp_quota ?? null,
+    rsvpQuotaBehavior: ((w.rsvp_quota_behavior as Couple["rsvpQuotaBehavior"]) ?? "message"),
     city: w.city ?? "Abidjan",
     introMessage: w.intro_message ?? "",
     coupleStory: w.couple_story ?? undefined,
@@ -637,6 +646,9 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.groomName !== undefined) r.groom_name = p.groomName;
   if (p.weddingDate !== undefined) r.wedding_date = p.weddingDate || null;
   if (p.rsvpDeadline !== undefined) r.rsvp_deadline = p.rsvpDeadline || null;
+  if (p.rsvpEnabled !== undefined) r.rsvp_enabled = !!p.rsvpEnabled;
+  if (p.rsvpQuota !== undefined) r.rsvp_quota = p.rsvpQuota ?? null;
+  if (p.rsvpQuotaBehavior !== undefined) r.rsvp_quota_behavior = p.rsvpQuotaBehavior ?? "message";
   if (p.city !== undefined) r.city = p.city;
   if (p.introMessage !== undefined) r.intro_message = p.introMessage;
   if (p.coupleStory !== undefined) r.couple_story = p.coupleStory;
@@ -1369,7 +1381,7 @@ export function configProgress(state: {
     },
     { label: "Le programme", done: ceremonies.some((c) => c.date && c.venue) },
     { label: "Ma page d'invitation", done: !!couple.heroImageUrl },
-    { label: "Les invités", done: guests.length >= 5 },
+    { label: "Activez la liste des invités", done: !!couple.rsvpEnabled },
     { label: "Publier et partager", done: !!couple.isPublished },
   ];
   const done = items.filter((i) => i.done).length;

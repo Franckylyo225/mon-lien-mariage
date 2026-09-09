@@ -12,7 +12,7 @@ export const Route = createFileRoute("/dashboard/guests/")({
 });
 
 function GuestsPage() {
-  const { ceremonies } = useWedding();
+  const { ceremonies, couple, updateCouple } = useWedding();
   const { allGuests } = useAllGuests();
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<GuestType | "all">("all");
@@ -30,6 +30,17 @@ function GuestsPage() {
   }, [allGuests, query, typeFilter, ceremonyFilter]);
 
   const totalCeremonies = new Set(allGuests.flatMap((g) => g.ceremonyIds)).size;
+
+  const confirmedCount = useMemo(
+    () =>
+      allGuests.reduce((sum, g) => {
+        const confirmed = g.rsvps.filter((r) => r.status === "confirmé");
+        if (confirmed.length === 0) return sum;
+        const plus = confirmed.reduce((n, r) => Math.max(n, r.plusOnes ?? 0), 0);
+        return sum + 1 + plus;
+      }, 0),
+    [allGuests],
+  );
 
   const exportXlsx = () => {
     const ceremonyLabel = (id: string) => {
@@ -108,6 +119,14 @@ function GuestsPage() {
           </Link>
         </div>
       </header>
+
+      <RsvpActivationCard
+        enabled={!!couple.rsvpEnabled}
+        quota={couple.rsvpQuota ?? null}
+        behavior={couple.rsvpQuotaBehavior ?? "message"}
+        confirmedCount={confirmedCount}
+        onChange={(patch) => void updateCouple(patch)}
+      />
 
       <input
         value={query}
@@ -213,6 +232,154 @@ function GuestsPage() {
         )}
       </ul>
     </div>
+  );
+}
+
+function RsvpActivationCard({
+  enabled,
+  quota,
+  behavior,
+  confirmedCount,
+  onChange,
+}: {
+  enabled: boolean;
+  quota: number | null;
+  behavior: "message" | "hide";
+  confirmedCount: number;
+  onChange: (patch: {
+    rsvpEnabled?: boolean;
+    rsvpQuota?: number | null;
+    rsvpQuotaBehavior?: "message" | "hide";
+  }) => void;
+}) {
+  const mode: "unlimited" | "quota" = quota != null && quota > 0 ? "quota" : "unlimited";
+  const [quotaDraft, setQuotaDraft] = useState(quota != null ? String(quota) : "100");
+
+  return (
+    <section className="rounded-xl border border-border bg-card p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="font-medium">Activer la liste d'invitation</h2>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            Affiche le bouton « Confirmer ma présence » sur votre page d'invitation.
+          </p>
+        </div>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={enabled}
+          aria-label="Activer la liste d'invitation"
+          onClick={() => onChange({ rsvpEnabled: !enabled })}
+          className={
+            "relative mt-0.5 h-7 w-12 shrink-0 rounded-full transition " +
+            (enabled ? "bg-primary" : "bg-muted")
+          }
+        >
+          <span
+            className={
+              "absolute top-1 size-5 rounded-full bg-white shadow transition-all " +
+              (enabled ? "left-6" : "left-1")
+            }
+          />
+        </button>
+      </div>
+
+      {enabled ? (
+        <div className="mt-4 space-y-3 border-t border-border pt-4">
+          <div className="grid gap-2 sm:grid-cols-2">
+            <OptionButton
+              active={mode === "unlimited"}
+              title="Sans limite"
+              desc="Tous les invités qui s'inscrivent sont acceptés"
+              onClick={() => onChange({ rsvpQuota: null })}
+            />
+            <OptionButton
+              active={mode === "quota"}
+              title="Avec quota"
+              desc="Limiter le nombre maximum d'invités"
+              onClick={() => onChange({ rsvpQuota: Math.max(1, Number(quotaDraft) || 100) })}
+            />
+          </div>
+
+          {mode === "quota" ? (
+            <div className="space-y-3 rounded-lg bg-secondary/30 p-3">
+              <label className="block text-xs font-medium">
+                Nombre maximum d'invités
+                <input
+                  type="number"
+                  min={1}
+                  value={quotaDraft}
+                  onChange={(e) => setQuotaDraft(e.target.value)}
+                  onBlur={() => {
+                    const n = Math.max(1, Number(quotaDraft) || 1);
+                    setQuotaDraft(String(n));
+                    onChange({ rsvpQuota: n });
+                  }}
+                  className="mt-1 w-full rounded-lg border border-input bg-card px-3 py-2.5 text-base"
+                />
+              </label>
+
+              <p className="text-xs font-medium">Une fois le quota atteint :</p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <OptionButton
+                  active={behavior === "message"}
+                  title="Afficher un message"
+                  desc="« Il n'y a plus de place disponible »"
+                  onClick={() => onChange({ rsvpQuotaBehavior: "message" })}
+                />
+                <OptionButton
+                  active={behavior === "hide"}
+                  title="Masquer le RSVP"
+                  desc="La section disparaît de la page publique"
+                  onClick={() => onChange({ rsvpQuotaBehavior: "hide" })}
+                />
+              </div>
+            </div>
+          ) : null}
+
+          <p className="text-sm">
+            <span className="font-medium">{confirmedCount}</span>
+            {mode === "quota" ? ` / ${quota}` : ""} inscrits
+          </p>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+function OptionButton({
+  active,
+  title,
+  desc,
+  onClick,
+}: {
+  active: boolean;
+  title: string;
+  desc: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={
+        "rounded-lg border p-3 text-left transition " +
+        (active ? "border-primary bg-primary/5" : "border-border bg-card hover:bg-secondary/40")
+      }
+    >
+      <span className="flex items-center gap-2 text-sm font-medium">
+        <span
+          className={
+            "grid size-4 shrink-0 place-items-center rounded-full border " +
+            (active ? "border-primary" : "border-muted-foreground/40")
+          }
+        >
+          {active ? <span className="size-2 rounded-full bg-primary" /> : null}
+        </span>
+        {title}
+      </span>
+      <span className="mt-1 block text-xs text-muted-foreground">{desc}</span>
+    </button>
   );
 }
 
