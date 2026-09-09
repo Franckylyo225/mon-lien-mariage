@@ -139,7 +139,7 @@ function BillingPage() {
     );
   }
 
-  const total = rows.length * UNIT_PRICE_XOF;
+  const total = rows.reduce((s, r) => s + r.amount, 0);
 
   return (
     <div className="space-y-6 py-2">
@@ -192,7 +192,8 @@ function BillingPage() {
                     customerName: label,
                     customerEmail: account.email ?? null,
                     description: `Publication de l'invitation « ${label} » sur MonInvit.com`,
-                    amountXof: UNIT_PRICE_XOF,
+                    amountXof: r.amount,
+                    lines: r.lines,
                     slug: r.slug,
                   },
                   `facture-moninvit-${safeName}-${invoiceNumber}.pdf`,
@@ -214,11 +215,12 @@ function BillingPage() {
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-serif text-[13px] italic">{label}</p>
                         <p className="truncate text-[10px] text-muted-foreground">
-                          Publication · {formatDateLong(r.publishedAt)}
+                          Publication{r.hasGuestbook ? " + Livre d'or" : ""} ·{" "}
+                          {formatDateLong(r.publishedAt)}
                         </p>
                       </div>
                       <div className="shrink-0 text-right">
-                        <p className="text-[13px] font-medium tabular-nums">{formatXOF(UNIT_PRICE_XOF)}</p>
+                        <p className="text-[13px] font-medium tabular-nums">{formatXOF(r.amount)}</p>
                         <p className="text-[9px] uppercase tracking-wide text-emerald-700">Payé</p>
                       </div>
                     </div>
