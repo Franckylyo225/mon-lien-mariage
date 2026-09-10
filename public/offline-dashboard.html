@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#E82050" />
+    <title>MonInvit — Connexion indisponible</title>
+    <style>
+      :root { color-scheme: light; font-family: system-ui, sans-serif; }
+      * { box-sizing: border-box; }
+      body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; color: #201a1c; background: #fff; }
+      main { width: min(100%, 380px); text-align: center; }
+      img { width: 72px; height: 72px; border-radius: 18px; }
+      h1 { margin: 24px 0 8px; font-size: 24px; }
+      p { margin: 0; color: #6f6367; line-height: 1.55; }
+      button { margin-top: 24px; border: 0; border-radius: 999px; padding: 12px 22px; color: #fff; background: #e82050; font: inherit; font-weight: 700; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img src="/icons/icon-192.png" alt="MonInvit" width="72" height="72" />
+      <h1>Connexion indisponible</h1>
+      <p>Votre espace se reconnectera dès que le réseau sera revenu.</p>
+      <button type="button" onclick="location.reload()">Réessayer</button>
+    </main>
+  </body>
+</html>

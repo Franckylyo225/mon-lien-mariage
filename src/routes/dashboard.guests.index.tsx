@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Download } from "lucide-react";
-import * as XLSX from "xlsx";
 import { useWedding, isPastEvent, type RSVPStatus } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
 import { useAllGuests } from "@/hooks/use-all-guests";
@@ -44,7 +43,8 @@ function GuestsPage() {
     [allGuests],
   );
 
-  const exportXlsx = () => {
+  const exportXlsx = async () => {
+    const XLSX = await import("xlsx");
     const ceremonyLabel = (id: string) => {
       const c = ceremonies.find((x) => x.id === id);
       return c?.name || c?.label || id;
@@ -105,7 +105,7 @@ function GuestsPage() {
         <div className="flex shrink-0 items-center gap-2">
           <button
             type="button"
-            onClick={exportXlsx}
+            onClick={() => void exportXlsx()}
             disabled={filtered.length === 0}
             className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2.5 text-sm font-medium hover:bg-secondary/40 disabled:cursor-not-allowed disabled:opacity-50"
             title="Télécharger la liste au format Excel"

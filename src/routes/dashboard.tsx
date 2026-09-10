@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { useWedding, configProgress } from "@/lib/wedding-store";
 import { supabase } from "@/integrations/supabase/client";
 import { AppHeader } from "@/components/mobile-shell/AppHeader";
@@ -9,7 +9,11 @@ import { Fab } from "@/components/mobile-shell/Fab";
 import { EditModeProvider, useEditMode } from "@/lib/edit-mode";
 import { PageChromeProvider, usePageChrome } from "@/lib/page-chrome";
 import { AutosaveProvider } from "@/lib/autosave-context";
-import { InstallPrompt } from "@/components/pwa/InstallPrompt";
+import { registerDashboardServiceWorker } from "@/components/pwa/pwa-install";
+
+const InstallPrompt = lazy(() =>
+  import("@/components/pwa/InstallPrompt").then((module) => ({ default: module.InstallPrompt })),
+);
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -48,6 +52,22 @@ function DashboardLayout() {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [showInstallPrompt, setShowInstallPrompt] = useState(false);
+
+  useEffect(() => {
+    if (!account.isAuthenticated) return;
+    void registerDashboardServiceWorker();
+    const schedule = window.requestIdleCallback
+      ? window.requestIdleCallback(() => setShowInstallPrompt(true), { timeout: 2500 })
+      : window.setTimeout(() => setShowInstallPrompt(true), 1500);
+    return () => {
+      if (window.cancelIdleCallback && typeof schedule === "number") {
+        window.cancelIdleCallback(schedule);
+      } else {
+        window.clearTimeout(schedule);
+      }
+    };
+  }, [account.isAuthenticated]);
 
   useEffect(() => {
     if (!loading && !account.isAuthenticated) {
@@ -61,8 +81,8 @@ function DashboardLayout() {
       return;
     }
     let cancelled = false;
-    supabase.auth.getUser().then(({ data }) => {
-      if (!cancelled) setUserId(data.user?.id ?? null);
+    supabase.auth.getSession().then(({ data }) => {
+      if (!cancelled) setUserId(data.session?.user.id ?? null);
     });
     return () => {
       cancelled = true;
@@ -118,6 +138,7 @@ function DashboardLayout() {
             isPublished={couple.isPublished}
             drawerOpen={drawerOpen}
             setDrawerOpen={setDrawerOpen}
+            showInstallPrompt={showInstallPrompt}
             onSignOut={async () => {
               await signOut();
               navigate({ to: "/", replace: true });
@@ -143,6 +164,7 @@ function DashboardChrome({
   isPublished,
   drawerOpen,
   setDrawerOpen,
+  showInstallPrompt,
   onSignOut,
 }: {
   title: string;
@@ -155,6 +177,7 @@ function DashboardChrome({
   isPublished: boolean;
   drawerOpen: boolean;
   setDrawerOpen: (v: boolean) => void;
+  showInstallPrompt: boolean;
   onSignOut: () => Promise<void>;
 }) {
 
@@ -181,7 +204,11 @@ function DashboardChrome({
 
       {!editing && <Fab />}
       {!editing && <BottomNav isPublished={isPublished} />}
-      {!editing && <InstallPrompt />}
+      {!editing && showInstallPrompt ? (
+        <Suspense fallback={null}>
+          <InstallPrompt />
+        </Suspense>
+      ) : null}
       <SideDrawer
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}

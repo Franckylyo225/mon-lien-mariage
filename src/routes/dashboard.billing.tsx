@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { IconReceipt, IconCircleCheck, IconDownload } from "@tabler/icons-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useWedding } from "@/lib/wedding-store";
-import { downloadInvoicePdf, type InvoiceLine } from "@/lib/invoice-pdf";
+import type { InvoiceLine } from "@/lib/invoice-pdf";
 
 export const Route = createFileRoute("/dashboard/billing")({
   head: () => ({ meta: [{ title: "Paiement & facture — MonInvit.com" }] }),
@@ -183,7 +183,8 @@ function BillingPage() {
                 .replace(/[\u0300-\u036f]/g, "")
                 .replace(/[^a-z0-9]+/g, "-")
                 .replace(/(^-|-$)/g, "");
-              const handleDownload = () => {
+              const handleDownload = async () => {
+                const { downloadInvoicePdf } = await import("@/lib/invoice-pdf");
                 void downloadInvoicePdf(
                   {
                     invoiceNumber,
@@ -230,7 +231,7 @@ function BillingPage() {
                       </p>
                       <button
                         type="button"
-                        onClick={handleDownload}
+                        onClick={() => void handleDownload()}
                         className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5 text-[11px] font-medium text-foreground transition active:scale-95"
                       >
                         <IconDownload size={13} strokeWidth={1.75} />

@@ -858,6 +858,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
 
   const loadedSessionUser = useRef<string | null>(null);
   const loadedWeddingId = useRef<string | null>(null);
+  const weddingRows = useRef<Map<string, WeddingRow>>(new Map());
 
   // Auth subscription
   useEffect(() => {
@@ -909,17 +910,18 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
     (async () => {
       const userId = session.user.id;
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("active_wedding_id")
-        .eq("id", userId)
-        .maybeSingle();
-
-      const { data: list } = await supabase
-        .from("weddings")
-        .select("*")
-        .eq("owner_id", userId)
-        .order("created_at", { ascending: false });
+      const [{ data: profile }, { data: list }] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("active_wedding_id")
+          .eq("id", userId)
+          .maybeSingle(),
+        supabase
+          .from("weddings")
+          .select("*")
+          .eq("owner_id", userId)
+          .order("created_at", { ascending: false }),
+      ]);
 
       let rows = (list ?? []) as WeddingRow[];
 
@@ -941,6 +943,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       }
 
       setWeddings(rows.map(summarizeWedding));
+      weddingRows.current = new Map(rows.map((row) => [row.id, row]));
 
       const profileActive =
         (profile as { active_wedding_id?: string | null } | null)?.active_wedding_id ?? null;
@@ -965,11 +968,15 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
     setLoading(true);
 
     (async () => {
-      const { data: w } = await supabase
-        .from("weddings")
-        .select("*")
-        .eq("id", activeWeddingId)
-        .maybeSingle();
+      const cachedWedding = weddingRows.current.get(activeWeddingId);
+      const { data: fetchedWedding } = cachedWedding
+        ? { data: cachedWedding }
+        : await supabase
+            .from("weddings")
+            .select("*")
+            .eq("id", activeWeddingId)
+            .maybeSingle();
+      const w = fetchedWedding;
       if (!w) {
         setLoading(false);
         return;
