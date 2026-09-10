@@ -234,7 +234,9 @@ function EventCard({
   const type = EVENT_TYPE_LABELS[w.eventType] ?? "Événement";
   const dot = w.isPublished ? "#059669" : "hsl(var(--border))";
   const badge = past
-    ? { label: "Terminé", bg: "hsl(var(--muted))", fg: "hsl(var(--muted-foreground))" }
+    ? w.isPublished
+      ? { label: "Terminé", bg: "hsl(var(--muted))", fg: "hsl(var(--muted-foreground))" }
+      : { label: "Non publié", bg: "#fff7ed", fg: "#b45309" }
     : w.isPublished
       ? { label: "En ligne", bg: "#ecfdf5", fg: "#047857" }
       : { label: "Brouillon", bg: "hsl(var(--muted))", fg: "hsl(var(--muted-foreground))" };
