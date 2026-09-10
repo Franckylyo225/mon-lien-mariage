@@ -30,7 +30,9 @@ const typeOptions: { value: CeremonyType; label: string }[] = [
 
 
 function CeremoniesPage() {
-  const { ceremonies, addCeremony, updateCeremony, removeCeremony, guests } = useWedding();
+  const { ceremonies, addCeremony, updateCeremony, removeCeremony, guests, couple } =
+    useWedding();
+  const isPast = isPastEvent(couple.weddingDate);
   const [editing, setEditing] = useState<Ceremony | null>(null);
   const [creating, setCreating] = useState(false);
 
