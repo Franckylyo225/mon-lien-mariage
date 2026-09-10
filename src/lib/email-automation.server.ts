@@ -459,8 +459,10 @@ export async function runEmailAutomations(serviceKey?: string): Promise<RunSumma
             .update({ welcome_email_sent_at: new Date().toISOString() })
             .eq('id', candidate.user_id)
         }
+        emailedThisRun.add(runKey)
         detail.sent++
         summary.sent++
+
       } catch (error) {
         console.error('[automations] send failed', automation.trigger_key, error)
         detail.failed++
