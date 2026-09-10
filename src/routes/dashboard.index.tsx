@@ -373,7 +373,7 @@ function DashboardHome() {
               Partager
             </button>
           </div>
-        ) : canPublish ? (
+        ) : canPublish && !isPast ? (
           <Link
             to="/publish"
             className="flex items-center gap-3 rounded-xl bg-foreground px-3.5 py-3 text-background transition active:scale-[0.99]"
