@@ -42,10 +42,10 @@ export interface Candidate {
   slug?: string
 }
 
-export function createServiceClient(): SupabaseClient {
+export function createServiceClient(keyOverride?: string): SupabaseClient {
   const url =
     process.env['SUPABASE_URL'] || (import.meta.env.VITE_SUPABASE_URL as string)
-  const key = process.env['SUPABASE_SERVICE_ROLE_KEY']
+  const key = keyOverride || process.env['SUPABASE_SERVICE_ROLE_KEY']
   if (!url || !key) throw new Error('server_misconfigured')
   return createClient(url, key, { auth: { persistSession: false } })
 }
