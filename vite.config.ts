@@ -23,25 +23,5 @@ export default defineConfig({
   },
   nitro: {
     ...(isVercel ? { preset: "vercel" } : {}),
-    routeRules: {
-      "/_build/assets/**": {
-        headers: { "Cache-Control": "public, max-age=31536000, immutable" },
-      },
-      "/assets/**": {
-        headers: { "Cache-Control": "public, max-age=31536000, immutable" },
-      },
-      "/media/**": {
-        headers: { "Cache-Control": "public, max-age=31536000, immutable" },
-      },
-      "/manifest.webmanifest": {
-        headers: { "Cache-Control": "public, max-age=3600, must-revalidate" },
-      },
-      "/favicon.ico": {
-        headers: { "Cache-Control": "public, max-age=3600, must-revalidate" },
-      },
-      "/icons/**": {
-        headers: { "Cache-Control": "public, max-age=3600, must-revalidate" },
-      },
-    },
   },
 });
