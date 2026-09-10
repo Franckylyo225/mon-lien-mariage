@@ -18,12 +18,30 @@ export default defineConfig({
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
     server: { entry: "server" },
+    pages: [{ path: "/" }],
+    prerender: { enabled: true, autoStaticPathsDiscovery: false },
   },
-  ...(isVercel
-    ? {
-        nitro: {
-          preset: "vercel",
-        },
-      }
-    : {}),
+  nitro: {
+    ...(isVercel ? { preset: "vercel" } : {}),
+    routeRules: {
+      "/_build/assets/**": {
+        headers: { "Cache-Control": "public, max-age=31536000, immutable" },
+      },
+      "/assets/**": {
+        headers: { "Cache-Control": "public, max-age=31536000, immutable" },
+      },
+      "/media/**": {
+        headers: { "Cache-Control": "public, max-age=31536000, immutable" },
+      },
+      "/manifest.webmanifest": {
+        headers: { "Cache-Control": "public, max-age=3600, must-revalidate" },
+      },
+      "/favicon.ico": {
+        headers: { "Cache-Control": "public, max-age=3600, must-revalidate" },
+      },
+      "/icons/**": {
+        headers: { "Cache-Control": "public, max-age=3600, must-revalidate" },
+      },
+    },
+  },
 });

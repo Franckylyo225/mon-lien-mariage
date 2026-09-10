@@ -28,6 +28,7 @@ export function Logo({ className = "h-[26px]" }: { className?: string }) {
       className={`w-auto ${className}`}
       width={640}
       height={140}
+      decoding="async"
     />
   );
 }
@@ -328,6 +329,10 @@ export function SiteFooter() {
               src={logoFull.url}
               alt=""
               aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              width={640}
+              height={140}
               className="h-auto w-full max-w-5xl select-none opacity-40 grayscale"
               style={{ filter: "brightness(1.05)" }}
             />
