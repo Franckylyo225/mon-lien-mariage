@@ -53,6 +53,7 @@ export default defineConfig({
             {
               urlPattern: ({ request, url }) =>
                 url.origin === self.location.origin &&
+                url.pathname.startsWith("/assets/") &&
                 ["script", "style", "font", "image"].includes(request.destination),
               handler: "CacheFirst",
               options: {
