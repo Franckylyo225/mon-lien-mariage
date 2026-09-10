@@ -42,10 +42,10 @@ export interface Candidate {
   slug?: string
 }
 
-export function createServiceClient(): SupabaseClient {
+export function createServiceClient(keyOverride?: string): SupabaseClient {
   const url =
     process.env['SUPABASE_URL'] || (import.meta.env.VITE_SUPABASE_URL as string)
-  const key = process.env['SUPABASE_SERVICE_ROLE_KEY']
+  const key = keyOverride || process.env['SUPABASE_SERVICE_ROLE_KEY']
   if (!url || !key) throw new Error('server_misconfigured')
   return createClient(url, key, { auth: { persistSession: false } })
 }
@@ -409,8 +409,8 @@ async function alreadySent(
   return Boolean(data?.length)
 }
 
-export async function runEmailAutomations(): Promise<RunSummary> {
-  const supabase = createServiceClient()
+export async function runEmailAutomations(serviceKey?: string): Promise<RunSummary> {
+  const supabase = createServiceClient(serviceKey)
   const { data: automations } = await supabase
     .from('email_automations')
     .select('*')

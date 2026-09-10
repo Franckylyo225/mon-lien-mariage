@@ -14,11 +14,19 @@ export const Route = createFileRoute('/api/public/hooks/email-automations')({
           return Response.json({ error: 'unauthorized' }, { status: 401 })
         }
 
+        // La planification transmet la clé de service (stockée dans le coffre
+        // de la base) car l'hébergeur de production ne l'expose pas en variable
+        // d'environnement.
+        const serviceKey =
+          request.headers.get('x-service-key') ||
+          process.env['SUPABASE_SERVICE_ROLE_KEY'] ||
+          undefined
+
         try {
           const { createServiceClient, runEmailAutomations } = await import(
             '@/lib/email-automation.server'
           )
-          const supabase = createServiceClient()
+          const supabase = createServiceClient(serviceKey)
           const { data: secret } = await supabase
             .from('app_secrets')
             .select('value_hash')
@@ -30,7 +38,7 @@ export const Route = createFileRoute('/api/public/hooks/email-automations')({
             return Response.json({ error: 'unauthorized' }, { status: 401 })
           }
 
-          const summary = await runEmailAutomations()
+          const summary = await runEmailAutomations(serviceKey)
           return Response.json({ success: true, ...summary })
         } catch (error) {
           console.error('[automations] run failed', error)
