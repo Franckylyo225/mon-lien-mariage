@@ -103,6 +103,7 @@ function EventsPage() {
                 w={w}
                 isActive={w.id === activeWeddingId}
                 onOpen={() => handleOpen(w.id)}
+                onDelete={w.isPublished ? undefined : () => setPendingDelete(w)}
               />
             ))}
           </Section>
@@ -117,6 +118,7 @@ function EventsPage() {
                 past
                 isActive={w.id === activeWeddingId}
                 onOpen={() => handleOpen(w.id)}
+                onDelete={w.isPublished ? undefined : () => setPendingDelete(w)}
               />
             ))}
           </Section>
