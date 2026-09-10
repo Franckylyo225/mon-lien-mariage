@@ -184,33 +184,47 @@ function EventCard({
       : { label: "Brouillon", bg: "hsl(var(--muted))", fg: "hsl(var(--muted-foreground))" };
 
   return (
-    <button
-      onClick={onOpen}
-      className="flex w-full items-center gap-3 rounded-[10px] bg-card px-3 py-2.5 text-left transition active:bg-secondary/60"
+    <div
+      className="flex w-full items-center gap-2 rounded-[10px] bg-card pr-1 transition"
       style={{
         border: "0.5px solid " + (isActive ? "hsl(var(--foreground))" : "hsl(var(--border))"),
         opacity: past ? 0.65 : 1,
       }}
     >
-      <span
-        className="mt-1 inline-block size-2 shrink-0 rounded-full"
-        style={{ background: dot }}
-      />
-      <div className="min-w-0 flex-1">
-        <p className="truncate font-serif text-[13px] italic">{label}</p>
-        <p className="truncate text-[10px] text-muted-foreground">
-          {type}
-          {w.weddingDate ? ` · ${formatShortDate(w.weddingDate)}` : ""}
-        </p>
-      </div>
-      <span
-        className="shrink-0 rounded-full px-2 py-0.5 text-[9px] font-medium uppercase tracking-wide"
-        style={{ background: badge.bg, color: badge.fg }}
+      <button
+        onClick={onOpen}
+        className="flex min-w-0 flex-1 items-center gap-3 px-3 py-2.5 text-left transition active:bg-secondary/60"
       >
-        {badge.label}
-      </span>
-      <IconChevronRight size={14} className="shrink-0 text-muted-foreground" />
-    </button>
+        <span
+          className="mt-1 inline-block size-2 shrink-0 rounded-full"
+          style={{ background: dot }}
+        />
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-serif text-[13px] italic">{label}</p>
+          <p className="truncate text-[10px] text-muted-foreground">
+            {type}
+            {w.weddingDate ? ` · ${formatShortDate(w.weddingDate)}` : ""}
+          </p>
+        </div>
+        <span
+          className="shrink-0 rounded-full px-2 py-0.5 text-[9px] font-medium uppercase tracking-wide"
+          style={{ background: badge.bg, color: badge.fg }}
+        >
+          {badge.label}
+        </span>
+        <IconChevronRight size={14} className="shrink-0 text-muted-foreground" />
+      </button>
+      {onDelete ? (
+        <button
+          type="button"
+          onClick={onDelete}
+          aria-label="Supprimer ce brouillon"
+          className="grid size-9 shrink-0 place-items-center rounded-full text-muted-foreground transition active:bg-secondary"
+        >
+          <IconTrash size={15} strokeWidth={1.75} />
+        </button>
+      ) : null}
+    </div>
   );
 }
 
