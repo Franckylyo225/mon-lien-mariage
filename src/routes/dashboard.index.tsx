@@ -39,9 +39,25 @@ type TodoItem = {
 };
 
 function DashboardHome() {
-  const { couple, ceremonies, weddings } = useWedding();
+  const { couple, ceremonies, weddings, weddingId, duplicateWedding } = useWedding();
   const navigate = useNavigate();
   const [infoSheetOpen, setInfoSheetOpen] = useState(false);
+  const [duplicating, setDuplicating] = useState(false);
+
+  const isPast = isPastEvent(couple.weddingDate);
+
+  const handleDuplicate = async () => {
+    if (!weddingId || duplicating) return;
+    setDuplicating(true);
+    const id = await duplicateWedding(weddingId);
+    setDuplicating(false);
+    if (id) {
+      toast.success("Événement dupliqué. Choisissez une nouvelle date.");
+      navigate({ to: "/dashboard" });
+    } else {
+      toast.error("Duplication impossible.");
+    }
+  };
 
   // ---- 5 configuration criteria
   const infosDone = !!couple.brideName && !!couple.groomName && !!couple.weddingDate;
