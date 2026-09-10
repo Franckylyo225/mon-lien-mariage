@@ -3,7 +3,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   IconChevronRight,
   IconPlus,
+  IconTrash,
 } from "@tabler/icons-react";
+import { toast } from "sonner";
 
 
 import {
