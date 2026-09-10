@@ -418,6 +418,8 @@ export async function runEmailAutomations(serviceKey?: string): Promise<RunSumma
     .order('sort_order')
 
   const summary: RunSummary = { processed: 0, sent: 0, skipped: 0, failed: 0, details: [] }
+  // Un seul email automatique par utilisateur et par passage.
+  const emailedThisRun = new Set<string>()
 
   for (const automation of ((automations ?? []) as Automation[])) {
     const detail = { trigger_key: automation.trigger_key, sent: 0, skipped: 0, failed: 0 }
@@ -432,11 +434,16 @@ export async function runEmailAutomations(serviceKey?: string): Promise<RunSumma
 
     for (const candidate of candidates) {
       summary.processed++
-      if (await alreadySent(supabase, automation.trigger_key, candidate.user_id, candidate.wedding_id)) {
+      const runKey = candidate.user_id ?? candidate.email
+      if (
+        emailedThisRun.has(runKey) ||
+        (await alreadySent(supabase, automation.trigger_key, candidate.user_id, candidate.wedding_id))
+      ) {
         detail.skipped++
         summary.skipped++
         continue
       }
+
       try {
         const result = await sendAutomationEmail(automation, candidate)
         await supabase.from('email_automation_log').insert({
