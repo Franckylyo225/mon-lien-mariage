@@ -38,7 +38,7 @@ export const Route = createFileRoute('/api/public/hooks/email-automations')({
             return Response.json({ error: 'unauthorized' }, { status: 401 })
           }
 
-          const summary = await runEmailAutomations()
+          const summary = await runEmailAutomations(serviceKey)
           return Response.json({ success: true, ...summary })
         } catch (error) {
           console.error('[automations] run failed', error)
