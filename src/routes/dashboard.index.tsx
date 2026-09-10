@@ -18,7 +18,9 @@ import {
   useWedding,
   daysUntil,
   formatFrenchDate,
+  isPastEvent,
 } from "@/lib/wedding-store";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { BasicInfoSheet } from "@/components/dashboard/BasicInfoSheet";
 import { PublishReminderBanner } from "@/components/dashboard/PublishReminderBanner";
