@@ -55,6 +55,7 @@ function DashboardLayout() {
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
 
   useEffect(() => {
+    if (!account.isAuthenticated) return;
     void registerDashboardServiceWorker();
     const schedule = window.requestIdleCallback
       ? window.requestIdleCallback(() => setShowInstallPrompt(true), { timeout: 2500 })
@@ -66,7 +67,7 @@ function DashboardLayout() {
         window.clearTimeout(schedule);
       }
     };
-  }, []);
+  }, [account.isAuthenticated]);
 
   useEffect(() => {
     if (!loading && !account.isAuthenticated) {

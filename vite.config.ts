@@ -29,6 +29,9 @@ export default defineConfig({
           clientsClaim: true,
           skipWaiting: true,
           navigateFallback: null,
+          additionalManifestEntries: [
+            { url: "/offline-dashboard.html", revision: "1" },
+          ],
           globPatterns: ["**/*.{js,css,woff2,png,svg,webp,avif,ico}"],
           globIgnores: ["media/**"],
           runtimeCaching: [
@@ -42,6 +45,7 @@ export default defineConfig({
               options: {
                 cacheName: "moninvit-dashboard-pages",
                 networkTimeoutSeconds: 4,
+                precacheFallback: { fallbackURL: "/offline-dashboard.html" },
                 expiration: { maxEntries: 12, maxAgeSeconds: 24 * 60 * 60 },
                 cacheableResponse: { statuses: [0, 200] },
               },
