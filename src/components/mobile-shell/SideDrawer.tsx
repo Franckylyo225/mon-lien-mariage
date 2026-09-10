@@ -133,9 +133,9 @@ export function SideDrawer({
     }
   };
 
-  // Google avatar (fallback = initial)
+  // Load secondary account data only when the menu is opened.
   useEffect(() => {
-    if (!userId) return;
+    if (!open || !userId) return;
     let cancelled = false;
     supabase.auth.getUser().then(({ data }) => {
       if (cancelled) return;
@@ -145,11 +145,11 @@ export function SideDrawer({
     return () => {
       cancelled = true;
     };
-  }, [userId]);
+  }, [open, userId]);
 
   // Approved guestbook messages count
   useEffect(() => {
-    if (!weddingId || !couple.hasGuestbook) {
+    if (!open || !weddingId || !couple.hasGuestbook) {
       setGuestbookCount(0);
       return;
     }

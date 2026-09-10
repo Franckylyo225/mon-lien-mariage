@@ -81,8 +81,8 @@ function DashboardLayout() {
       return;
     }
     let cancelled = false;
-    supabase.auth.getUser().then(({ data }) => {
-      if (!cancelled) setUserId(data.user?.id ?? null);
+    supabase.auth.getSession().then(({ data }) => {
+      if (!cancelled) setUserId(data.session?.user.id ?? null);
     });
     return () => {
       cancelled = true;

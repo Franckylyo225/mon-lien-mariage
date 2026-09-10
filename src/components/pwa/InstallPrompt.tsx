@@ -1,31 +1,23 @@
 import { useEffect, useState } from "react";
 import { IconX, IconDeviceMobileShare, IconShare2 } from "@tabler/icons-react";
-
-type BeforeInstallPromptEvent = Event & {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
-};
+import {
+  getDeferredPrompt,
+  isIos,
+  isStandalone,
+  subscribeInstallPrompt,
+  type BeforeInstallPromptEvent,
+} from "./pwa-install";
 
 const VISITS_KEY = "moninvit_pwa_visits";
 const DISMISSED_KEY = "moninvit_pwa_banner_dismissed_at";
 const MIN_VISITS = 2;
 const SNOOZE_MS = 7 * 24 * 60 * 60 * 1000;
 
-function isStandalone() {
-  if (typeof window === "undefined") return false;
-  return (
-    window.matchMedia?.("(display-mode: standalone)").matches ||
-    // iOS Safari
-    (window.navigator as Navigator & { standalone?: boolean }).standalone === true
-  );
-}
-
 function isIosSafari() {
   if (typeof navigator === "undefined") return false;
   const ua = navigator.userAgent;
-  const ios = /iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && "ontouchend" in document);
   const safari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS|OPiOS/.test(ua);
-  return ios && safari;
+  return isIos() && safari;
 }
 
 export function InstallPrompt() {
@@ -62,16 +54,18 @@ export function InstallPrompt() {
       return () => window.clearTimeout(t);
     }
 
-    const onPrompt = (e: Event) => {
-      e.preventDefault();
-      setDeferred(e as BeforeInstallPromptEvent);
+    const syncPrompt = () => {
+      const prompt = getDeferredPrompt();
+      if (!prompt) return;
+      setDeferred(prompt);
       setVisible(true);
     };
-    window.addEventListener("beforeinstallprompt", onPrompt);
+    syncPrompt();
+    const unsubscribe = subscribeInstallPrompt(syncPrompt);
     const onInstalled = () => setVisible(false);
     window.addEventListener("appinstalled", onInstalled);
     return () => {
-      window.removeEventListener("beforeinstallprompt", onPrompt);
+      unsubscribe();
       window.removeEventListener("appinstalled", onInstalled);
     };
   }, []);
