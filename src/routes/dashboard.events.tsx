@@ -120,18 +120,36 @@ function EventsPage() {
         ) : null}
 
         {past.length > 0 ? (
-          <Section title="Passés">
-            {past.map((w) => (
-              <EventCard
-                key={w.id}
-                w={w}
-                past
-                isActive={w.id === activeWeddingId}
-                onOpen={() => handleOpen(w.id)}
-                onDelete={w.isPublished ? undefined : () => setPendingDelete(w)}
-              />
-            ))}
-          </Section>
+          <section>
+            <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
+              Passés
+            </p>
+            <ul className="space-y-2">
+              {visiblePast.map((w) => (
+                <li key={w.id}>
+                  <EventCard
+                    w={w}
+                    past
+                    isActive={w.id === activeWeddingId}
+                    onOpen={() => handleOpen(w.id)}
+                    onDelete={w.isPublished ? undefined : () => setPendingDelete(w)}
+                  />
+                </li>
+              ))}
+            </ul>
+            {past.length > 5 ? (
+              <button
+                type="button"
+                onClick={() => setShowAllPast((v) => !v)}
+                className="mt-2 w-full rounded-[10px] border border-dashed border-border px-3 py-2 text-[11px] text-muted-foreground transition active:bg-secondary/60"
+                style={{ borderWidth: "0.5px" }}
+              >
+                {showAllPast
+                  ? "Réduire"
+                  : `Voir tous les événements passés (${past.length})`}
+              </button>
+            ) : null}
+          </section>
         ) : null}
 
         <button
