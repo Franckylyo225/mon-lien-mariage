@@ -94,14 +94,16 @@ function CeremoniesPage() {
                     </div>
                   </div>
                 </div>
-                <div className="flex shrink-0 gap-2 sm:flex-col">
-                  <button
-                    onClick={() => setEditing(c)}
-                    className="flex-1 rounded-full border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest hover:bg-accent/20 sm:flex-none"
-                  >
-                    Éditer
-                  </button>
-                </div>
+                {isPast ? null : (
+                  <div className="flex shrink-0 gap-2 sm:flex-col">
+                    <button
+                      onClick={() => setEditing(c)}
+                      className="flex-1 rounded-full border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest hover:bg-accent/20 sm:flex-none"
+                    >
+                      Éditer
+                    </button>
+                  </div>
+                )}
               </div>
             </li>
 
