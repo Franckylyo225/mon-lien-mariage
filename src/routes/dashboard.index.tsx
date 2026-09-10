@@ -216,8 +216,34 @@ function DashboardHome() {
         ) : null}
       </section>
 
+      {/* Bandeau événement passé */}
+      {isPast ? (
+        <section className="rounded-xl border border-amber-200 bg-amber-50/70 px-3.5 py-3">
+          <p className="text-[12px] font-medium text-amber-900">
+            Cet événement est passé — certaines actions ne sont plus disponibles.
+          </p>
+          {!isPublished ? (
+            <>
+              <p className="mt-1 text-[11px] leading-snug text-amber-800">
+                Cette page n'a jamais été publiée et sa date est passée. Vous
+                pouvez consulter vos données ou dupliquer l'événement pour une
+                nouvelle date.
+              </p>
+              <button
+                type="button"
+                onClick={handleDuplicate}
+                disabled={duplicating}
+                className="mt-2 rounded-full bg-foreground px-3 py-1.5 text-[11px] font-medium text-background transition active:scale-95 disabled:opacity-60"
+              >
+                {duplicating ? "Duplication…" : "Dupliquer l'événement"}
+              </button>
+            </>
+          ) : null}
+        </section>
+      ) : null}
+
       {/* Bannière de relance publication */}
-      {bannerReady && !isPublished && couple.weddingDate ? (
+      {!isPast && bannerReady && !isPublished && couple.weddingDate ? (
         <PublishReminderBanner
           weddingDate={couple.weddingDate}
           brideFirstName={couple.brideName || "Prénom A"}
