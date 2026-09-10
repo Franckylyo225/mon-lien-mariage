@@ -52,6 +52,7 @@ function EventsPage() {
   const [creating, setCreating] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<WeddingSummary | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [showAllPast, setShowAllPast] = useState(false);
 
   const handleDelete = async () => {
     if (!pendingDelete || deleting) return;
