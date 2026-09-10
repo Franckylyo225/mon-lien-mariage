@@ -21,6 +21,7 @@ import {
 import {
   useWedding,
   formatShortDate,
+  isPastEvent,
   type WeddingSummary,
 } from "@/lib/wedding-store";
 
