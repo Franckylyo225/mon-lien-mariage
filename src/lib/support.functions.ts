@@ -125,7 +125,7 @@ export const adminListTickets = createServerFn({ method: "GET" })
   .inputValidator((data: { status?: string } | undefined) => data ?? {})
   .handler(async ({ data, context }) => {
     if (!(await isAdmin(context))) throw new Error("Accès refusé");
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const supabaseAdmin = context.supabase;
     let q = supabaseAdmin
       .from("support_tickets")
       .select("*")
@@ -159,7 +159,7 @@ export const adminGetTicket = createServerFn({ method: "GET" })
   .inputValidator((data: { ticketId: string }) => data)
   .handler(async ({ data, context }) => {
     if (!(await isAdmin(context))) throw new Error("Accès refusé");
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const supabaseAdmin = context.supabase;
     const { data: ticket, error } = await supabaseAdmin
       .from("support_tickets")
       .select("*")
