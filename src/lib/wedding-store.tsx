@@ -317,6 +317,7 @@ interface WeddingState {
   switchActiveWedding: (id: string) => Promise<void>;
   createNewWedding: () => Promise<string | null>;
   deleteWedding: (id: string) => Promise<boolean>;
+  duplicateWedding: (id: string) => Promise<string | null>;
   signOut: () => Promise<void>;
   setOnboardingStep: (n: Account["onboardingStep"]) => Promise<void>;
   updateCouple: (patch: Partial<Couple>) => Promise<void>;
@@ -1252,6 +1253,92 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
     [session, weddings, activeWeddingId],
   );
 
+  const duplicateWedding = useCallback<WeddingState["duplicateWedding"]>(
+    async (id) => {
+      if (!session) return null;
+      const userId = session.user.id;
+      const { data: src } = await supabase
+        .from("weddings")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
+      if (!src) return null;
+      const source = src as Record<string, unknown>;
+      const copy: Record<string, unknown> = { ...source };
+      for (const k of [
+        "id",
+        "created_at",
+        "updated_at",
+        "slug",
+        "is_published",
+        "published_at",
+        "is_locked",
+        "paywall_reached_at",
+        "wedding_date",
+      ]) {
+        delete copy[k];
+      }
+      copy["owner_id"] = userId;
+      copy["is_published"] = false;
+      copy["is_locked"] = false;
+      copy["wedding_date"] = null;
+      copy["onboarding_step"] = 4;
+
+      const { data: created, error } = await supabase
+        .from("weddings")
+        .insert(copy as never)
+        .select("*")
+        .single();
+      if (error || !created) {
+        console.error("duplicateWedding", error);
+        return null;
+      }
+      const newRow = created as WeddingRow;
+
+      const [{ data: srcCeremonies }, { data: srcStory }] = await Promise.all([
+        supabase.from("ceremonies").select("*").eq("wedding_id", id).order("sort_order"),
+        supabase
+          .from("wedding_story_steps")
+          .select("*")
+          .eq("wedding_id", id)
+          .order("sort_order"),
+      ]);
+
+      if (srcCeremonies?.length) {
+        const rows = (srcCeremonies as Record<string, unknown>[]).map((c) => {
+          const r: Record<string, unknown> = { ...c };
+          delete r["id"];
+          delete r["created_at"];
+          delete r["public_slug"];
+          r["wedding_id"] = newRow.id;
+          r["date"] = null;
+          return r;
+        });
+        await supabase.from("ceremonies").insert(rows as never);
+      }
+      if (srcStory?.length) {
+        const rows = (srcStory as Record<string, unknown>[]).map((s) => {
+          const r: Record<string, unknown> = { ...s };
+          delete r["id"];
+          delete r["created_at"];
+          delete r["updated_at"];
+          r["wedding_id"] = newRow.id;
+          return r;
+        });
+        await supabase.from("wedding_story_steps").insert(rows as never);
+      }
+
+      setWeddings((prev) => [summarizeWedding(newRow), ...prev]);
+      await supabase
+        .from("profiles")
+        .upsert({ id: userId, active_wedding_id: newRow.id } as never, { onConflict: "id" });
+      loadedWeddingId.current = null;
+      setActiveWeddingId(newRow.id);
+      return newRow.id;
+    },
+    [session],
+  );
+
   // Keep the weddings summary list in sync when active wedding's key fields change
   useEffect(() => {
     if (!weddingId) return;
@@ -1294,6 +1381,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       switchActiveWedding,
       createNewWedding,
       deleteWedding,
+      duplicateWedding,
       signOut,
       setOnboardingStep,
       updateCouple,
@@ -1320,6 +1408,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       switchActiveWedding,
       createNewWedding,
       deleteWedding,
+      duplicateWedding,
       signOut,
       setOnboardingStep,
       updateCouple,
@@ -1346,6 +1435,15 @@ export function useWedding(): WeddingState {
 }
 
 // Helpers ------------------------------------------------------------
+
+/** Un événement devient "passé" à J+1 (date strictement antérieure à aujourd'hui). */
+export function isPastEvent(dateISO: string | null | undefined): boolean {
+  if (!dateISO) return false;
+  const target = new Date(dateISO + "T00:00:00");
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return target.getTime() < today.getTime();
+}
 
 export function daysUntil(dateISO: string): number {
   if (!dateISO) return 0;

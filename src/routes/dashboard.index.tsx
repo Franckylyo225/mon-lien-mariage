@@ -18,7 +18,9 @@ import {
   useWedding,
   daysUntil,
   formatFrenchDate,
+  isPastEvent,
 } from "@/lib/wedding-store";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { BasicInfoSheet } from "@/components/dashboard/BasicInfoSheet";
 import { PublishReminderBanner } from "@/components/dashboard/PublishReminderBanner";
@@ -37,9 +39,25 @@ type TodoItem = {
 };
 
 function DashboardHome() {
-  const { couple, ceremonies, weddings } = useWedding();
+  const { couple, ceremonies, weddings, weddingId, duplicateWedding } = useWedding();
   const navigate = useNavigate();
   const [infoSheetOpen, setInfoSheetOpen] = useState(false);
+  const [duplicating, setDuplicating] = useState(false);
+
+  const isPast = isPastEvent(couple.weddingDate);
+
+  const handleDuplicate = async () => {
+    if (!weddingId || duplicating) return;
+    setDuplicating(true);
+    const id = await duplicateWedding(weddingId);
+    setDuplicating(false);
+    if (id) {
+      toast.success("Événement dupliqué. Choisissez une nouvelle date.");
+      navigate({ to: "/dashboard" });
+    } else {
+      toast.error("Duplication impossible.");
+    }
+  };
 
   // ---- 5 configuration criteria
   const infosDone = !!couple.brideName && !!couple.groomName && !!couple.weddingDate;
@@ -198,8 +216,34 @@ function DashboardHome() {
         ) : null}
       </section>
 
+      {/* Bandeau événement passé */}
+      {isPast ? (
+        <section className="rounded-xl border border-amber-200 bg-amber-50/70 px-3.5 py-3">
+          <p className="text-[12px] font-medium text-amber-900">
+            Cet événement est passé — certaines actions ne sont plus disponibles.
+          </p>
+          {!isPublished ? (
+            <>
+              <p className="mt-1 text-[11px] leading-snug text-amber-800">
+                Cette page n'a jamais été publiée et sa date est passée. Vous
+                pouvez consulter vos données ou dupliquer l'événement pour une
+                nouvelle date.
+              </p>
+              <button
+                type="button"
+                onClick={handleDuplicate}
+                disabled={duplicating}
+                className="mt-2 rounded-full bg-foreground px-3 py-1.5 text-[11px] font-medium text-background transition active:scale-95 disabled:opacity-60"
+              >
+                {duplicating ? "Duplication…" : "Dupliquer l'événement"}
+              </button>
+            </>
+          ) : null}
+        </section>
+      ) : null}
+
       {/* Bannière de relance publication */}
-      {bannerReady && !isPublished && couple.weddingDate ? (
+      {!isPast && bannerReady && !isPublished && couple.weddingDate ? (
         <PublishReminderBanner
           weddingDate={couple.weddingDate}
           brideFirstName={couple.brideName || "Prénom A"}
@@ -255,7 +299,7 @@ function DashboardHome() {
       ) : null}
 
       {/* Bloc 4 — À compléter */}
-      {todos.length > 0 || showInfosCard ? (
+      {isPast ? null : todos.length > 0 || showInfosCard ? (
         <section>
           <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
             À compléter
@@ -329,7 +373,7 @@ function DashboardHome() {
               Partager
             </button>
           </div>
-        ) : canPublish ? (
+        ) : canPublish && !isPast ? (
           <Link
             to="/publish"
             className="flex items-center gap-3 rounded-xl bg-foreground px-3.5 py-3 text-background transition active:scale-[0.99]"

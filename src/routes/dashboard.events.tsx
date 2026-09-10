@@ -21,6 +21,7 @@ import {
 import {
   useWedding,
   formatShortDate,
+  isPastEvent,
   type WeddingSummary,
 } from "@/lib/wedding-store";
 
@@ -52,6 +53,7 @@ function EventsPage() {
   const [creating, setCreating] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<WeddingSummary | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [showAllPast, setShowAllPast] = useState(false);
 
   const handleDelete = async () => {
     if (!pendingDelete || deleting) return;
@@ -66,17 +68,17 @@ function EventsPage() {
 
 
   const { upcoming, past } = useMemo(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
     const up: WeddingSummary[] = [];
     const pa: WeddingSummary[] = [];
     for (const w of weddings) {
-      const d = w.weddingDate ? new Date(w.weddingDate + "T00:00:00") : null;
-      if (!d || d >= today || w.isPublished) up.push(w);
-      else pa.push(w);
+      if (isPastEvent(w.weddingDate)) pa.push(w);
+      else up.push(w);
     }
+    pa.sort((a, b) => (b.weddingDate ?? "").localeCompare(a.weddingDate ?? ""));
     return { upcoming: up, past: pa };
   }, [weddings]);
+
+  const visiblePast = showAllPast ? past : past.slice(0, 5);
 
   if (loading || !account.isAuthenticated) {
     return (
@@ -120,18 +122,36 @@ function EventsPage() {
         ) : null}
 
         {past.length > 0 ? (
-          <Section title="Passés">
-            {past.map((w) => (
-              <EventCard
-                key={w.id}
-                w={w}
-                past
-                isActive={w.id === activeWeddingId}
-                onOpen={() => handleOpen(w.id)}
-                onDelete={w.isPublished ? undefined : () => setPendingDelete(w)}
-              />
-            ))}
-          </Section>
+          <section>
+            <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
+              Passés
+            </p>
+            <ul className="space-y-2">
+              {visiblePast.map((w) => (
+                <li key={w.id}>
+                  <EventCard
+                    w={w}
+                    past
+                    isActive={w.id === activeWeddingId}
+                    onOpen={() => handleOpen(w.id)}
+                    onDelete={w.isPublished ? undefined : () => setPendingDelete(w)}
+                  />
+                </li>
+              ))}
+            </ul>
+            {past.length > 5 ? (
+              <button
+                type="button"
+                onClick={() => setShowAllPast((v) => !v)}
+                className="mt-2 w-full rounded-[10px] border border-dashed border-border px-3 py-2 text-[11px] text-muted-foreground transition active:bg-secondary/60"
+                style={{ borderWidth: "0.5px" }}
+              >
+                {showAllPast
+                  ? "Réduire"
+                  : `Voir tous les événements passés (${past.length})`}
+              </button>
+            ) : null}
+          </section>
         ) : null}
 
         <button
@@ -214,7 +234,9 @@ function EventCard({
   const type = EVENT_TYPE_LABELS[w.eventType] ?? "Événement";
   const dot = w.isPublished ? "#059669" : "hsl(var(--border))";
   const badge = past
-    ? { label: "Terminé", bg: "hsl(var(--muted))", fg: "hsl(var(--muted-foreground))" }
+    ? w.isPublished
+      ? { label: "Terminé", bg: "hsl(var(--muted))", fg: "hsl(var(--muted-foreground))" }
+      : { label: "Non publié", bg: "#fff7ed", fg: "#b45309" }
     : w.isPublished
       ? { label: "En ligne", bg: "#ecfdf5", fg: "#047857" }
       : { label: "Brouillon", bg: "hsl(var(--muted))", fg: "hsl(var(--muted-foreground))" };

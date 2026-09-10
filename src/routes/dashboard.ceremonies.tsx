@@ -6,6 +6,7 @@ import {
   guestStats,
   ceremonyTimeStart,
   ceremonyVenue,
+  isPastEvent,
   type Ceremony,
   type CeremonyType,
   type ProgramItem,
@@ -30,7 +31,9 @@ const typeOptions: { value: CeremonyType; label: string }[] = [
 
 
 function CeremoniesPage() {
-  const { ceremonies, addCeremony, updateCeremony, removeCeremony, guests } = useWedding();
+  const { ceremonies, addCeremony, updateCeremony, removeCeremony, guests, couple } =
+    useWedding();
+  const isPast = isPastEvent(couple.weddingDate);
   const [editing, setEditing] = useState<Ceremony | null>(null);
   const [creating, setCreating] = useState(false);
 
@@ -43,13 +46,21 @@ function CeremoniesPage() {
           </p>
           <h1 className="mt-1 font-serif text-3xl italic">Vos étapes</h1>
         </div>
-        <button
-          onClick={() => setCreating(true)}
-          className="rounded-full bg-primary px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.2em] text-primary-foreground shadow-md shadow-primary/20 transition hover:opacity-90"
-        >
-          + Étape
-        </button>
+        {isPast ? null : (
+          <button
+            onClick={() => setCreating(true)}
+            className="rounded-full bg-primary px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.2em] text-primary-foreground shadow-md shadow-primary/20 transition hover:opacity-90"
+          >
+            + Étape
+          </button>
+        )}
       </div>
+
+      {isPast ? (
+        <p className="rounded-xl border border-amber-200 bg-amber-50/70 px-3.5 py-2.5 text-[12px] text-amber-900">
+          Cet événement est passé — le programme est en lecture seule.
+        </p>
+      ) : null}
 
       <ul className="space-y-3">
         {ceremonies.map((c) => {
@@ -84,14 +95,16 @@ function CeremoniesPage() {
                     </div>
                   </div>
                 </div>
-                <div className="flex shrink-0 gap-2 sm:flex-col">
-                  <button
-                    onClick={() => setEditing(c)}
-                    className="flex-1 rounded-full border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest hover:bg-accent/20 sm:flex-none"
-                  >
-                    Éditer
-                  </button>
-                </div>
+                {isPast ? null : (
+                  <div className="flex shrink-0 gap-2 sm:flex-col">
+                    <button
+                      onClick={() => setEditing(c)}
+                      className="flex-1 rounded-full border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest hover:bg-accent/20 sm:flex-none"
+                    >
+                      Éditer
+                    </button>
+                  </div>
+                )}
               </div>
             </li>
 

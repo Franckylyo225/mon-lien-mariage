@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Download } from "lucide-react";
 import * as XLSX from "xlsx";
-import { useWedding, type RSVPStatus } from "@/lib/wedding-store";
+import { useWedding, isPastEvent, type RSVPStatus } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
 import { useAllGuests } from "@/hooks/use-all-guests";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
@@ -14,6 +14,7 @@ export const Route = createFileRoute("/dashboard/guests/")({
 
 function GuestsPage() {
   const { ceremonies, couple, updateCouple } = useWedding();
+  const isPast = isPastEvent(couple.weddingDate);
   const { allGuests } = useAllGuests();
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<GuestType | "all">("all");
@@ -112,22 +113,31 @@ function GuestsPage() {
             <Download className="size-4" />
             <span className="hidden sm:inline">Excel</span>
           </button>
-          <Link
-            to="/dashboard/guests/new"
-            className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90"
-          >
-            + Ajouter
-          </Link>
+          {isPast ? null : (
+            <Link
+              to="/dashboard/guests/new"
+              className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90"
+            >
+              + Ajouter
+            </Link>
+          )}
         </div>
       </header>
 
-      <RsvpActivationCard
-        enabled={!!couple.rsvpEnabled}
-        quota={couple.rsvpQuota ?? null}
-        behavior={couple.rsvpQuotaBehavior ?? "message"}
-        confirmedCount={confirmedCount}
-        onChange={(patch) => void updateCouple(patch)}
-      />
+      {isPast ? (
+        <p className="rounded-xl border border-amber-200 bg-amber-50/70 px-3.5 py-2.5 text-[12px] text-amber-900">
+          Cet événement est passé — les inscriptions et les rappels ne sont plus
+          disponibles. Vous pouvez toujours consulter et exporter votre liste.
+        </p>
+      ) : (
+        <RsvpActivationCard
+          enabled={!!couple.rsvpEnabled}
+          quota={couple.rsvpQuota ?? null}
+          behavior={couple.rsvpQuotaBehavior ?? "message"}
+          confirmedCount={confirmedCount}
+          onChange={(patch) => void updateCouple(patch)}
+        />
+      )}
 
       <input
         value={query}
