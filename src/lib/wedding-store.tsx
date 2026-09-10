@@ -1436,6 +1436,15 @@ export function useWedding(): WeddingState {
 
 // Helpers ------------------------------------------------------------
 
+/** Un événement devient "passé" à J+1 (date strictement antérieure à aujourd'hui). */
+export function isPastEvent(dateISO: string | null | undefined): boolean {
+  if (!dateISO) return false;
+  const target = new Date(dateISO + "T00:00:00");
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return target.getTime() < today.getTime();
+}
+
 export function daysUntil(dateISO: string): number {
   if (!dateISO) return 0;
   const target = new Date(dateISO + "T00:00:00");
