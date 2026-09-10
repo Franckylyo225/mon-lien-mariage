@@ -66,17 +66,17 @@ function EventsPage() {
 
 
   const { upcoming, past } = useMemo(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
     const up: WeddingSummary[] = [];
     const pa: WeddingSummary[] = [];
     for (const w of weddings) {
-      const d = w.weddingDate ? new Date(w.weddingDate + "T00:00:00") : null;
-      if (!d || d >= today || w.isPublished) up.push(w);
-      else pa.push(w);
+      if (isPastEvent(w.weddingDate)) pa.push(w);
+      else up.push(w);
     }
+    pa.sort((a, b) => (b.weddingDate ?? "").localeCompare(a.weddingDate ?? ""));
     return { upcoming: up, past: pa };
   }, [weddings]);
+
+  const visiblePast = showAllPast ? past : past.slice(0, 5);
 
   if (loading || !account.isAuthenticated) {
     return (
