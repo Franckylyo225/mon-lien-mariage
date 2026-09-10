@@ -37,8 +37,22 @@ function EventsPage() {
     loading,
     switchActiveWedding,
     createNewWedding,
+    deleteWedding,
   } = useWedding();
   const [creating, setCreating] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<WeddingSummary | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    if (!pendingDelete || deleting) return;
+    setDeleting(true);
+    const ok = await deleteWedding(pendingDelete.id);
+    setDeleting(false);
+    setPendingDelete(null);
+    toast[ok ? "success" : "error"](
+      ok ? "Brouillon supprimé." : "Suppression impossible.",
+    );
+  };
 
 
   const { upcoming, past } = useMemo(() => {
