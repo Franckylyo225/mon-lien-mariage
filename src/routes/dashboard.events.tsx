@@ -139,6 +139,32 @@ function EventsPage() {
             </p>
           </div>
         </button>
+
+        <AlertDialog
+          open={pendingDelete !== null}
+          onOpenChange={(o) => { if (!o && !deleting) setPendingDelete(null); }}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Supprimer ce brouillon ?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Toutes les informations de cet événement (programme, invités,
+                messages) seront définitivement effacées. Cette action est
+                irréversible.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={deleting}>Annuler</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={(e) => { e.preventDefault(); void handleDelete(); }}
+                disabled={deleting}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                {deleting ? "Suppression…" : "Supprimer"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
     </div>
   );
 
