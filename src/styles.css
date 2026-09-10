@@ -124,6 +124,12 @@
   animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/* Skip layout and paint work for homepage sections until they approach view. */
+.home-performance main > section:nth-child(n + 3) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 760px;
+}
+
 
 
 

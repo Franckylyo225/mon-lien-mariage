@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { getPublishedCount } from "@/lib/public-wedding.functions";
 import {
@@ -23,6 +23,8 @@ import apercuInvitationAvif from "@/assets/home/apercu-invitation.avif";
 import apercuInvitationWebp from "@/assets/home/apercu-invitation.webp";
 import apercuSplashAvif from "@/assets/home/apercu-splash.avif";
 import apercuSplashWebp from "@/assets/home/apercu-splash.webp";
+import brandSerifFont from "@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-normal.woff2?url";
+import brandUiFont from "@fontsource/quicksand/files/quicksand-latin-600-normal.woff2?url";
 
 const OG_IMAGE_URL = "https://moninvit.com/media/og-image-v3.jpg";
 const DEMO_URL = "https://www.moninvit.com/e/basile-et-armelle1";
@@ -94,6 +96,20 @@ export const Route = createFileRoute("/")({
         type: "image/avif",
         fetchPriority: "high",
       },
+      {
+        rel: "preload",
+        as: "font",
+        href: brandSerifFont,
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "preload",
+        as: "font",
+        href: brandUiFont,
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
     ],
     scripts: [
       {
@@ -127,7 +143,7 @@ export const Route = createFileRoute("/")({
 
 function Landing() {
   return (
-    <div className="min-h-dvh overflow-x-clip bg-white text-[#201A1C]">
+    <div className="home-performance min-h-dvh overflow-x-clip bg-white text-[#201A1C]">
       <SiteHeader />
       <main id="main">
         <Hero />
@@ -186,13 +202,41 @@ function PhoneMock({ height = 420, rotate = 0, className = "" }: { height?: numb
       className={`overflow-hidden rounded-[44px] border-[8px] border-[#201A1C] bg-[#201A1C] shadow-[0_30px_70px_-25px_rgba(32,26,28,0.45)] ${className}`}
       style={{ width: height * 0.49, height, transform: rotate ? `rotate(${rotate}deg)` : undefined }}
     >
-      <iframe
-        src={DEMO_URL}
-        title="Aperçu d'une invitation moninvit"
-        loading="lazy"
-        tabIndex={-1}
-        className="pointer-events-none h-full w-full rounded-[36px] bg-white"
-      />
+      <DeferredDemoFrame className="rounded-[36px]" />
+    </div>
+  );
+}
+
+function DeferredDemoFrame({ className = "" }: { className?: string }) {
+  const holderRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const holder = holderRef.current;
+    if (!holder || visible) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setVisible(true);
+        observer.disconnect();
+      },
+      { rootMargin: "300px" },
+    );
+    observer.observe(holder);
+    return () => observer.disconnect();
+  }, [visible]);
+
+  return (
+    <div ref={holderRef} className={`h-full w-full bg-[#FBF8F8] ${className}`}>
+      {visible ? (
+        <iframe
+          src={DEMO_URL}
+          title="Aperçu d'une invitation moninvit"
+          loading="lazy"
+          tabIndex={-1}
+          className="pointer-events-none h-full w-full bg-white"
+        />
+      ) : null}
     </div>
   );
 }
@@ -545,13 +589,7 @@ function LiveDemo() {
             className="overflow-hidden rounded-[28px] shadow-[0_24px_60px_-24px_rgba(32,26,28,0.4)] ring-1 ring-black/5"
             style={{ width: 235, height: 480 }}
           >
-            <iframe
-              src={DEMO_URL}
-              title="Aperçu d'une invitation moninvit"
-              loading="lazy"
-              tabIndex={-1}
-              className="pointer-events-none h-full w-full bg-white"
-            />
+            <DeferredDemoFrame />
           </div>
           <span className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#201A1C] px-4 py-2 font-[family-name:var(--font-brand-ui)] text-xs font-semibold text-white">
             <span className="size-1.5 rounded-full bg-[#2E9E6B]" /> En ligne ·
@@ -729,13 +767,7 @@ function Pricing() {
               className="overflow-hidden rounded-[28px] shadow-[0_24px_60px_-24px_rgba(32,26,28,0.4)] ring-1 ring-black/5"
               style={{ width: 235, height: 480 }}
             >
-              <iframe
-                src={DEMO_URL}
-                title="Aperçu d'une invitation moninvit"
-                loading="lazy"
-                tabIndex={-1}
-                className="pointer-events-none h-full w-full bg-white"
-              />
+              <DeferredDemoFrame />
             </div>
             <a
               href={DEMO_URL}
