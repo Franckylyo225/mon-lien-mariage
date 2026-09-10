@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Download } from "lucide-react";
 import * as XLSX from "xlsx";
-import { useWedding, type RSVPStatus } from "@/lib/wedding-store";
+import { useWedding, isPastEvent, type RSVPStatus } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
 import { useAllGuests } from "@/hooks/use-all-guests";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
