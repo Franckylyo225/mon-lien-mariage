@@ -6,6 +6,7 @@ import {
   guestStats,
   ceremonyTimeStart,
   ceremonyVenue,
+  isPastEvent,
   type Ceremony,
   type CeremonyType,
   type ProgramItem,
