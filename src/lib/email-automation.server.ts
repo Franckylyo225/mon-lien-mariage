@@ -409,8 +409,8 @@ async function alreadySent(
   return Boolean(data?.length)
 }
 
-export async function runEmailAutomations(): Promise<RunSummary> {
-  const supabase = createServiceClient()
+export async function runEmailAutomations(serviceKey?: string): Promise<RunSummary> {
+  const supabase = createServiceClient(serviceKey)
   const { data: automations } = await supabase
     .from('email_automations')
     .select('*')
