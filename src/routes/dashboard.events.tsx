@@ -3,7 +3,19 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   IconChevronRight,
   IconPlus,
+  IconTrash,
 } from "@tabler/icons-react";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 
 import {
@@ -35,8 +47,22 @@ function EventsPage() {
     loading,
     switchActiveWedding,
     createNewWedding,
+    deleteWedding,
   } = useWedding();
   const [creating, setCreating] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<WeddingSummary | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    if (!pendingDelete || deleting) return;
+    setDeleting(true);
+    const ok = await deleteWedding(pendingDelete.id);
+    setDeleting(false);
+    setPendingDelete(null);
+    toast[ok ? "success" : "error"](
+      ok ? "Brouillon supprimé." : "Suppression impossible.",
+    );
+  };
 
 
   const { upcoming, past } = useMemo(() => {
@@ -87,6 +113,7 @@ function EventsPage() {
                 w={w}
                 isActive={w.id === activeWeddingId}
                 onOpen={() => handleOpen(w.id)}
+                onDelete={w.isPublished ? undefined : () => setPendingDelete(w)}
               />
             ))}
           </Section>
@@ -101,6 +128,7 @@ function EventsPage() {
                 past
                 isActive={w.id === activeWeddingId}
                 onOpen={() => handleOpen(w.id)}
+                onDelete={w.isPublished ? undefined : () => setPendingDelete(w)}
               />
             ))}
           </Section>
@@ -121,6 +149,32 @@ function EventsPage() {
             </p>
           </div>
         </button>
+
+        <AlertDialog
+          open={pendingDelete !== null}
+          onOpenChange={(o) => { if (!o && !deleting) setPendingDelete(null); }}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Supprimer ce brouillon ?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Toutes les informations de cet événement (programme, invités,
+                messages) seront définitivement effacées. Cette action est
+                irréversible.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={deleting}>Annuler</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={(e) => { e.preventDefault(); void handleDelete(); }}
+                disabled={deleting}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                {deleting ? "Suppression…" : "Supprimer"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
     </div>
   );
 
@@ -146,11 +200,13 @@ function EventCard({
   past = false,
   isActive,
   onOpen,
+  onDelete,
 }: {
   w: WeddingSummary;
   past?: boolean;
   isActive: boolean;
   onOpen: () => void;
+  onDelete?: () => void;
 }) {
   const label = w.brideName || w.groomName
     ? `${w.brideName || "…"} & ${w.groomName || "…"}`
@@ -164,33 +220,47 @@ function EventCard({
       : { label: "Brouillon", bg: "hsl(var(--muted))", fg: "hsl(var(--muted-foreground))" };
 
   return (
-    <button
-      onClick={onOpen}
-      className="flex w-full items-center gap-3 rounded-[10px] bg-card px-3 py-2.5 text-left transition active:bg-secondary/60"
+    <div
+      className="flex w-full items-center gap-2 rounded-[10px] bg-card pr-1 transition"
       style={{
         border: "0.5px solid " + (isActive ? "hsl(var(--foreground))" : "hsl(var(--border))"),
         opacity: past ? 0.65 : 1,
       }}
     >
-      <span
-        className="mt-1 inline-block size-2 shrink-0 rounded-full"
-        style={{ background: dot }}
-      />
-      <div className="min-w-0 flex-1">
-        <p className="truncate font-serif text-[13px] italic">{label}</p>
-        <p className="truncate text-[10px] text-muted-foreground">
-          {type}
-          {w.weddingDate ? ` · ${formatShortDate(w.weddingDate)}` : ""}
-        </p>
-      </div>
-      <span
-        className="shrink-0 rounded-full px-2 py-0.5 text-[9px] font-medium uppercase tracking-wide"
-        style={{ background: badge.bg, color: badge.fg }}
+      <button
+        onClick={onOpen}
+        className="flex min-w-0 flex-1 items-center gap-3 px-3 py-2.5 text-left transition active:bg-secondary/60"
       >
-        {badge.label}
-      </span>
-      <IconChevronRight size={14} className="shrink-0 text-muted-foreground" />
-    </button>
+        <span
+          className="mt-1 inline-block size-2 shrink-0 rounded-full"
+          style={{ background: dot }}
+        />
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-serif text-[13px] italic">{label}</p>
+          <p className="truncate text-[10px] text-muted-foreground">
+            {type}
+            {w.weddingDate ? ` · ${formatShortDate(w.weddingDate)}` : ""}
+          </p>
+        </div>
+        <span
+          className="shrink-0 rounded-full px-2 py-0.5 text-[9px] font-medium uppercase tracking-wide"
+          style={{ background: badge.bg, color: badge.fg }}
+        >
+          {badge.label}
+        </span>
+        <IconChevronRight size={14} className="shrink-0 text-muted-foreground" />
+      </button>
+      {onDelete ? (
+        <button
+          type="button"
+          onClick={onDelete}
+          aria-label="Supprimer ce brouillon"
+          className="grid size-9 shrink-0 place-items-center rounded-full text-muted-foreground transition active:bg-secondary"
+        >
+          <IconTrash size={15} strokeWidth={1.75} />
+        </button>
+      ) : null}
+    </div>
   );
 }
 

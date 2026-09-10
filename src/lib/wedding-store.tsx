@@ -316,6 +316,7 @@ interface WeddingState {
   activeWeddingId: string | null;
   switchActiveWedding: (id: string) => Promise<void>;
   createNewWedding: () => Promise<string | null>;
+  deleteWedding: (id: string) => Promise<boolean>;
   signOut: () => Promise<void>;
   setOnboardingStep: (n: Account["onboardingStep"]) => Promise<void>;
   updateCouple: (patch: Partial<Couple>) => Promise<void>;
@@ -1224,6 +1225,33 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
     return wRow.id;
   }, [session]);
 
+  const deleteWedding = useCallback<WeddingState["deleteWedding"]>(
+    async (id) => {
+      if (!session) return false;
+      const target = weddings.find((w) => w.id === id);
+      if (target?.isPublished) return false;
+      const { error } = await supabase.from("weddings").delete().eq("id", id);
+      if (error) {
+        console.error("deleteWedding", error);
+        return false;
+      }
+      const remaining = weddings.filter((w) => w.id !== id);
+      setWeddings(remaining);
+      if (activeWeddingId === id) {
+        const next = remaining[0]?.id ?? null;
+        await supabase
+          .from("profiles")
+          .upsert({ id: session.user.id, active_wedding_id: next } as never, {
+            onConflict: "id",
+          });
+        loadedWeddingId.current = null;
+        setActiveWeddingId(next);
+      }
+      return true;
+    },
+    [session, weddings, activeWeddingId],
+  );
+
   // Keep the weddings summary list in sync when active wedding's key fields change
   useEffect(() => {
     if (!weddingId) return;
@@ -1265,6 +1293,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       activeWeddingId,
       switchActiveWedding,
       createNewWedding,
+      deleteWedding,
       signOut,
       setOnboardingStep,
       updateCouple,
@@ -1290,6 +1319,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       activeWeddingId,
       switchActiveWedding,
       createNewWedding,
+      deleteWedding,
       signOut,
       setOnboardingStep,
       updateCouple,
