@@ -299,7 +299,7 @@ function DashboardHome() {
       ) : null}
 
       {/* Bloc 4 — À compléter */}
-      {todos.length > 0 || showInfosCard ? (
+      {isPast ? null : todos.length > 0 || showInfosCard ? (
         <section>
           <p className="mb-3 text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground">
             À compléter
