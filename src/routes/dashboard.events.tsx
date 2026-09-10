@@ -164,11 +164,13 @@ function EventCard({
   past = false,
   isActive,
   onOpen,
+  onDelete,
 }: {
   w: WeddingSummary;
   past?: boolean;
   isActive: boolean;
   onOpen: () => void;
+  onDelete?: () => void;
 }) {
   const label = w.brideName || w.groomName
     ? `${w.brideName || "…"} & ${w.groomName || "…"}`
