@@ -317,6 +317,7 @@ interface WeddingState {
   switchActiveWedding: (id: string) => Promise<void>;
   createNewWedding: () => Promise<string | null>;
   deleteWedding: (id: string) => Promise<boolean>;
+  duplicateWedding: (id: string) => Promise<string | null>;
   signOut: () => Promise<void>;
   setOnboardingStep: (n: Account["onboardingStep"]) => Promise<void>;
   updateCouple: (patch: Partial<Couple>) => Promise<void>;
