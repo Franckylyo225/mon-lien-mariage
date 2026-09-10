@@ -1408,6 +1408,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       switchActiveWedding,
       createNewWedding,
       deleteWedding,
+      duplicateWedding,
       signOut,
       setOnboardingStep,
       updateCouple,
