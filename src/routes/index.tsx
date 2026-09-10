@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useRef, useState } from "react";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useEffect, useRef, useState } from "react";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { getPublishedCount } from "@/lib/public-wedding.functions";
 import {
   HeartHandshake,
@@ -19,8 +19,12 @@ import {
   MobileStickyCta,
 } from "@/components/site/SiteChrome";
 import logoHeart from "@/assets/logo-heart.png.asset.json";
-import apercuInvitation from "@/assets/apercu-invitation.png.asset.json";
-import apercuSplash from "@/assets/apercu-splash.png";
+import apercuInvitationAvif from "@/assets/home/apercu-invitation.avif";
+import apercuInvitationWebp from "@/assets/home/apercu-invitation.webp";
+import apercuSplashAvif from "@/assets/home/apercu-splash.avif";
+import apercuSplashWebp from "@/assets/home/apercu-splash.webp";
+import brandSerifFont from "@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-normal.woff2?url";
+import brandUiFont from "@fontsource/quicksand/files/quicksand-latin-600-normal.woff2?url";
 
 const OG_IMAGE_URL = "https://moninvit.com/media/og-image-v3.jpg";
 const DEMO_URL = "https://www.moninvit.com/e/basile-et-armelle1";
@@ -83,7 +87,30 @@ export const Route = createFileRoute("/")({
       },
       { name: "twitter:image", content: OG_IMAGE_URL },
     ],
-    links: [{ rel: "canonical", href: "https://moninvit.com/" }],
+    links: [
+      { rel: "canonical", href: "https://moninvit.com/" },
+      {
+        rel: "preload",
+        as: "image",
+        href: apercuSplashAvif,
+        type: "image/avif",
+        fetchPriority: "high",
+      },
+      {
+        rel: "preload",
+        as: "font",
+        href: brandSerifFont,
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "preload",
+        as: "font",
+        href: brandUiFont,
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
+    ],
     scripts: [
       {
         type: "application/ld+json",
@@ -111,15 +138,12 @@ export const Route = createFileRoute("/")({
       },
     ],
   }),
-  loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(publishedCountOptions);
-  },
   component: Landing,
 });
 
 function Landing() {
   return (
-    <div className="min-h-dvh overflow-x-clip bg-white text-[#201A1C]">
+    <div className="home-performance min-h-dvh overflow-x-clip bg-white text-[#201A1C]">
       <SiteHeader />
       <main id="main">
         <Hero />
@@ -178,33 +202,75 @@ function PhoneMock({ height = 420, rotate = 0, className = "" }: { height?: numb
       className={`overflow-hidden rounded-[44px] border-[8px] border-[#201A1C] bg-[#201A1C] shadow-[0_30px_70px_-25px_rgba(32,26,28,0.45)] ${className}`}
       style={{ width: height * 0.49, height, transform: rotate ? `rotate(${rotate}deg)` : undefined }}
     >
-      <iframe
-        src={DEMO_URL}
-        title="Aperçu d'une invitation moninvit"
-        loading="lazy"
-        tabIndex={-1}
-        className="pointer-events-none h-full w-full rounded-[36px] bg-white"
-      />
+      <DeferredDemoFrame className="rounded-[36px]" />
+    </div>
+  );
+}
+
+function DeferredDemoFrame({ className = "" }: { className?: string }) {
+  const holderRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const holder = holderRef.current;
+    if (!holder || visible) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setVisible(true);
+        observer.disconnect();
+      },
+      { rootMargin: "300px" },
+    );
+    observer.observe(holder);
+    return () => observer.disconnect();
+  }, [visible]);
+
+  return (
+    <div ref={holderRef} className={`h-full w-full bg-[#FBF8F8] ${className}`}>
+      {visible ? (
+        <iframe
+          src={DEMO_URL}
+          title="Aperçu d'une invitation moninvit"
+          loading="lazy"
+          tabIndex={-1}
+          className="pointer-events-none h-full w-full bg-white"
+        />
+      ) : null}
     </div>
   );
 }
 
 function HeroPreview() {
   return (
-    <div className="relative mx-auto flex w-full max-w-[430px] justify-center pb-6 pr-4 lg:max-w-[460px]">
+    <div className="relative mx-auto flex aspect-[430/480] w-full max-w-[430px] justify-center pb-6 pr-4 lg:max-w-[460px]">
       {/* écran arrière — page invitation */}
-      <img
-        src={apercuInvitation.url}
-        alt="Aperçu de la page d'invitation de Basile & Armelle"
-        loading="lazy"
-        className="absolute right-0 top-8 w-[52%] rounded-[26px] object-cover shadow-[0_24px_60px_-24px_rgba(32,26,28,0.4)] ring-1 ring-black/5 sm:top-12"
-      />
+      <picture>
+        <source srcSet={apercuInvitationAvif} type="image/avif" />
+        <source srcSet={apercuInvitationWebp} type="image/webp" />
+        <img
+          src={apercuInvitationWebp}
+          alt="Aperçu de la page d'invitation de Basile & Armelle"
+          width={327}
+          height={704}
+          decoding="async"
+          className="absolute right-0 top-8 w-[52%] rounded-[26px] object-cover shadow-[0_24px_60px_-24px_rgba(32,26,28,0.4)] ring-1 ring-black/5 sm:top-12"
+        />
+      </picture>
       {/* écran avant — page d'ouverture */}
-      <img
-        src={apercuSplash}
-        alt="Aperçu de l'écran d'ouverture de l'invitation"
-        className="animate-floaty relative left-[-14%] w-[58%] rounded-[26px] object-cover shadow-[0_30px_70px_-25px_rgba(32,26,28,0.5)] ring-1 ring-black/5"
-      />
+      <picture className="contents">
+        <source srcSet={apercuSplashAvif} type="image/avif" />
+        <source srcSet={apercuSplashWebp} type="image/webp" />
+        <img
+          src={apercuSplashWebp}
+          alt="Aperçu de l'écran d'ouverture de l'invitation"
+          width={336}
+          height={741}
+          decoding="sync"
+          fetchPriority="high"
+          className="animate-floaty relative left-[-14%] h-auto w-[58%] self-start rounded-[26px] object-cover shadow-[0_30px_70px_-25px_rgba(32,26,28,0.5)] ring-1 ring-black/5"
+        />
+      </picture>
     </div>
   );
 }
@@ -213,8 +279,8 @@ function HeroPreview() {
 /* ---------------------------------- hero ---------------------------------- */
 
 function Hero() {
-  const { data } = useSuspenseQuery(publishedCountOptions);
-  const count = data.count;
+  const { data } = useQuery(publishedCountOptions);
+  const count = data?.count ?? 0;
   const countLabel =
     count > 0
       ? count >= 100
@@ -523,13 +589,7 @@ function LiveDemo() {
             className="overflow-hidden rounded-[28px] shadow-[0_24px_60px_-24px_rgba(32,26,28,0.4)] ring-1 ring-black/5"
             style={{ width: 235, height: 480 }}
           >
-            <iframe
-              src={DEMO_URL}
-              title="Aperçu d'une invitation moninvit"
-              loading="lazy"
-              tabIndex={-1}
-              className="pointer-events-none h-full w-full bg-white"
-            />
+            <DeferredDemoFrame />
           </div>
           <span className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#201A1C] px-4 py-2 font-[family-name:var(--font-brand-ui)] text-xs font-semibold text-white">
             <span className="size-1.5 rounded-full bg-[#2E9E6B]" /> En ligne ·
@@ -640,6 +700,9 @@ function TemplateGallery() {
                   src={THEME_THUMBNAIL_URL[slug]}
                   alt={`Modèle d'invitation ${t.name}`}
                   loading="lazy"
+                  decoding="async"
+                  width={600}
+                  height={1000}
                   className="absolute inset-0 size-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.04]"
                 />
                 <div
@@ -704,13 +767,7 @@ function Pricing() {
               className="overflow-hidden rounded-[28px] shadow-[0_24px_60px_-24px_rgba(32,26,28,0.4)] ring-1 ring-black/5"
               style={{ width: 235, height: 480 }}
             >
-              <iframe
-                src={DEMO_URL}
-                title="Aperçu d'une invitation moninvit"
-                loading="lazy"
-                tabIndex={-1}
-                className="pointer-events-none h-full w-full bg-white"
-              />
+              <DeferredDemoFrame />
             </div>
             <a
               href={DEMO_URL}
@@ -987,6 +1044,10 @@ function FinalCta() {
         src={logoHeart.url}
         alt=""
         aria-hidden
+        loading="lazy"
+        decoding="async"
+        width={512}
+        height={512}
         className="pointer-events-none absolute -bottom-10 -left-10 w-64 opacity-10 brightness-0 invert"
       />
       <div className="relative mx-auto max-w-3xl px-5">

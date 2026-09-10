@@ -20,6 +20,13 @@
 @import "@fontsource/nunito-sans/600.css";
 @import "@fontsource/nunito-sans/700.css";
 @import "@fontsource/nunito-sans/400-italic.css";
+@import "@fontsource/amiri/400.css";
+@import "@fontsource/amiri/400-italic.css";
+@import "@fontsource/amiri/700.css";
+@import "@fontsource/marcellus/400.css";
+@import "@fontsource/special-elite/400.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
 
 /* ── Charte moninvit v1.0 ─────────────────────────────── */
 :root {
@@ -115,6 +122,12 @@
 
 @utility animate-fade-up {
   animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Skip layout and paint work for homepage sections until they approach view. */
+.home-performance main > section:nth-child(n + 3) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 760px;
 }
 
 
