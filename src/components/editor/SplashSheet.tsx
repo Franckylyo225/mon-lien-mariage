@@ -207,7 +207,7 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
               </div>
             )}
 
-            {bgMode === "image" && (
+            {(bgMode === "image" || !isClassique) && (
               <div className="space-y-3">
                 {couple.splashBgImageUrl ? (
                   <div className="relative overflow-hidden rounded-xl border border-border">
