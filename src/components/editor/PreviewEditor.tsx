@@ -208,6 +208,20 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
               onClick={() => setSheet("theme")}
             />
             <EditChip
+              icon={<Sparkles className="size-4" />}
+              label="Page d'ouverture"
+              value={
+                couple.splashEnabled === false
+                  ? "Désactivée"
+                  : couple.splashBgMode === "image" && couple.splashBgImageUrl
+                    ? "Image de fond"
+                    : couple.splashBgMode === "color"
+                      ? "Couleur unie"
+                      : "Thème"
+              }
+              onClick={() => setSheet("splash")}
+            />
+            <EditChip
               icon={<ImageIcon className="size-4" />}
               label="Photo couverture"
               value={couple.heroImageUrl ? "Photo choisie" : "Ajouter"}
@@ -338,20 +352,6 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
                   : "Aucune"
               }
               onClick={() => setSheet("music")}
-            />
-            <EditChip
-              icon={<Sparkles className="size-4" />}
-              label="Page d'ouverture"
-              value={
-                couple.splashEnabled === false
-                  ? "Désactivée"
-                  : couple.splashBgMode === "image" && couple.splashBgImageUrl
-                    ? "Image de fond"
-                    : couple.splashBgMode === "color"
-                      ? "Couleur unie"
-                      : "Thème"
-              }
-              onClick={() => setSheet("splash")}
             />
 
 
