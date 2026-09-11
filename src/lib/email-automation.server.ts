@@ -6,11 +6,10 @@
  * modifiables depuis l'admin sans redéploiement.
  */
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
-import { EmailAPIError, sendLovableEmail } from '@lovable.dev/email-js'
+import { sendResendEmail } from '@/lib/email-resend.server'
 
 const SITE_URL = 'https://moninvit.com'
 const SITE_NAME = 'MonInvit.com'
-const SENDER_DOMAIN = 'notify.moninvit.com'
 const FROM_DOMAIN = 'moninvit.com'
 const LOGO_URL = 'https://moninvit.com/media/a53d13c7-logo-moninvit.png'
 
