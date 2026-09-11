@@ -12,6 +12,7 @@ export const Route = createFileRoute("/api/public/health")({
             SUPABASE_SERVICE_ROLE_KEY: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY),
             PAYSTACK_SECRET_KEY: Boolean(process.env["PAYSTACK_SECRET_KEY"]),
             PAYMENT_ACTIVATION_SECRET: Boolean(process.env["PAYMENT_ACTIVATION_SECRET"]),
+            LOVABLE_API_KEY: Boolean(process.env["LOVABLE_API_KEY"]),
           },
         }),
     },
