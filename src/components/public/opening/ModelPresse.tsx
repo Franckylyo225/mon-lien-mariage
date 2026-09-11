@@ -11,7 +11,7 @@ export function ModelPresse({
   greeting,
   effectLabel,
   fontBody,
-}: OpeningModelProps & { effect?: never }) {
+}: OpeningModelProps) {
   return (
     <div
       className="relative flex h-full w-full flex-col items-center justify-center bg-white px-6 py-10 text-[#181818]"
