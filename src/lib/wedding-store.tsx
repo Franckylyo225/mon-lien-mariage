@@ -757,6 +757,9 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.splashKicker !== undefined) r.splash_kicker = p.splashKicker || null;
   if (p.splashTapLabel !== undefined) r.splash_tap_label = p.splashTapLabel || null;
   if (p.splashShowDate !== undefined) r.splash_show_date = p.splashShowDate;
+  if (p.openingPageModel !== undefined) r.opening_page_model = p.openingPageModel || "classique";
+  if (p.openingPageEffect !== undefined) r.opening_page_effect = p.openingPageEffect || "tap";
+  if (p.openingPageConfig !== undefined) r.opening_page_config = p.openingPageConfig ?? {};
   return r;
 }
 
