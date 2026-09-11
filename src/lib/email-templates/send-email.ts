@@ -12,7 +12,7 @@ const SITE_NAME = "Mon Invit"
 const FROM_DOMAIN = "moninvit.com"
 
 export type SendTemplateEmailResult =
-  | { sent: true }
+  | { sent: true; messageId: string }
   | { sent: false; reason: 'recipient_suppressed' }
 
 export interface SendTemplateEmailOptions {
@@ -22,13 +22,7 @@ export interface SendTemplateEmailOptions {
   replyTo?: string
 }
 
-/**
- * Renders a registered template and sends it through Lovable's managed email
- * API. Suppression, retries, and rate limits are enforced by Lovable
- * server-side. A suppressed recipient is an expected outcome
- * ({ sent: false }); any other failure throws — EmailAPIError exposes
- * .code and .status for branching.
- */
+/** Renders a registered template and sends it through Resend. */
 export async function sendTemplateEmail(
   templateName: string,
   to: string,
@@ -57,7 +51,7 @@ export async function sendTemplateEmail(
       ? template.subject(templateData)
       : template.subject
 
-  await sendResendEmail({
+  const delivery = await sendResendEmail({
     to: recipient,
     from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
     subject,
@@ -66,7 +60,9 @@ export async function sendTemplateEmail(
     replyTo: options.replyTo,
     tags: [{ name: 'label', value: templateName.replace(/[^a-zA-Z0-9_-]/g, '_') }],
     idempotencyKey: options.idempotencyKey,
+    templateName,
+    source: 'transactional',
   })
 
-  return { sent: true }
+  return { sent: true, messageId: delivery.id }
 }

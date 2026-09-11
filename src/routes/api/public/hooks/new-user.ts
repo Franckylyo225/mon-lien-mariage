@@ -66,26 +66,6 @@ export const Route = createFileRoute('/api/public/hooks/new-user')({
           signedUpAt: new Date().toLocaleString('fr-FR', { timeZone: 'UTC' }) + ' UTC',
         }
 
-        const logSend = async (
-          recipient: string,
-          status: 'sent' | 'suppressed' | 'failed',
-          errorMessage?: string,
-        ) => {
-          const { error } = await supabase.from('email_send_log').insert({
-            message_id: null,
-            template_name: 'admin-new-user',
-            recipient_email: recipient,
-            status,
-            ...(errorMessage ? { error_message: errorMessage } : {}),
-          })
-          if (error) {
-            console.error('Failed to write email_send_log', {
-              code: error.code,
-              message: error.message,
-            })
-          }
-        }
-
         let notified = 0
         for (const recipient of recipients) {
           try {
@@ -95,13 +75,9 @@ export const Route = createFileRoute('/api/public/hooks/new-user')({
             })
             if (result.sent) {
               notified++
-              await logSend(recipient, 'sent')
-            } else {
-              await logSend(recipient, 'suppressed')
             }
           } catch (error) {
-            const message = error instanceof Error ? error.message : String(error)
-            await logSend(recipient, 'failed', message.slice(0, 1000))
+            console.error('[new-user] Resend notification failed', error)
           }
         }
 

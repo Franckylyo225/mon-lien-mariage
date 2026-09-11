@@ -142,12 +142,12 @@ export async function sendAutomationEmail(
   automation: Automation,
   candidate: Candidate,
   opts: { idempotencyKey?: string } = {},
-): Promise<'sent' | 'suppressed'> {
+): Promise<{ status: 'sent'; messageId: string }> {
   const vars = buildVars(candidate, automation)
   const html = renderAutomationEmail(automation, vars)
   const subject = substitute(automation.subject, vars)
 
-  await sendResendEmail({
+  const delivery = await sendResendEmail({
     to: candidate.email,
     from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
     subject,
@@ -159,8 +159,11 @@ export async function sendAutomationEmail(
     idempotencyKey:
       opts.idempotencyKey ||
       `${automation.trigger_key}-${candidate.user_id ?? 'anon'}-${candidate.wedding_id ?? 'none'}`,
+    templateName: automation.trigger_key,
+    source: 'automation',
+    metadata: { user_id: candidate.user_id, wedding_id: candidate.wedding_id },
   })
-  return 'sent'
+  return { status: 'sent', messageId: delivery.id }
 }
 
 /* ------------------------------------------------------------ candidats --- */
@@ -437,7 +440,7 @@ export async function runEmailAutomations(serviceKey?: string): Promise<RunSumma
           wedding_id: candidate.wedding_id,
           trigger_key: automation.trigger_key,
           recipient_email: candidate.email,
-          status: result,
+          status: result.status,
         })
         if (automation.trigger_key === 'welcome' && candidate.user_id) {
           await supabase
@@ -504,7 +507,7 @@ export async function triggerAutomationForWedding(
     wedding_id: candidate.wedding_id,
     trigger_key: triggerKey,
     recipient_email: candidate.email,
-    status: result,
+    status: result.status,
   })
   return 'sent'
 }

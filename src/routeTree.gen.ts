@@ -62,7 +62,6 @@ import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog'
 import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as DashboardGuestsIndexRouteImport } from './routes/dashboard.guests.index'
-import { Route as LovableEmailEventsRouteImport } from './routes/lovable/email/events'
 import { Route as GuestbookPrintIdRouteImport } from './routes/guestbook.print.$id'
 import { Route as DashboardGuestsNewRouteImport } from './routes/dashboard.guests.new'
 import { Route as DashboardCeremoniesIdRouteImport } from './routes/dashboard.ceremonies.$id'
@@ -343,11 +342,6 @@ const DashboardGuestsIndexRoute = DashboardGuestsIndexRouteImport.update({
   path: '/guests/',
   getParentRoute: () => DashboardRoute,
 } as any)
-const LovableEmailEventsRoute = LovableEmailEventsRouteImport.update({
-  id: '/lovable/email/events',
-  path: '/lovable/email/events',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const GuestbookPrintIdRoute = GuestbookPrintIdRouteImport.update({
   id: '/guestbook/print/$id',
   path: '/guestbook/print/$id',
@@ -470,7 +464,6 @@ export interface FileRoutesByFullPath {
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
   '/guestbook/print/$id': typeof GuestbookPrintIdRoute
-  '/lovable/email/events': typeof LovableEmailEventsRoute
   '/dashboard/guests/': typeof DashboardGuestsIndexRoute
   '/api/public/blog-image/$': typeof ApiPublicBlogImageSplatRoute
   '/api/public/hooks/email-automations': typeof ApiPublicHooksEmailAutomationsRoute
@@ -536,7 +529,6 @@ export interface FileRoutesByTo {
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
   '/guestbook/print/$id': typeof GuestbookPrintIdRoute
-  '/lovable/email/events': typeof LovableEmailEventsRoute
   '/dashboard/guests': typeof DashboardGuestsIndexRoute
   '/api/public/blog-image/$': typeof ApiPublicBlogImageSplatRoute
   '/api/public/hooks/email-automations': typeof ApiPublicHooksEmailAutomationsRoute
@@ -605,7 +597,6 @@ export interface FileRoutesById {
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
   '/guestbook/print/$id': typeof GuestbookPrintIdRoute
-  '/lovable/email/events': typeof LovableEmailEventsRoute
   '/dashboard/guests/': typeof DashboardGuestsIndexRoute
   '/api/public/blog-image/$': typeof ApiPublicBlogImageSplatRoute
   '/api/public/hooks/email-automations': typeof ApiPublicHooksEmailAutomationsRoute
@@ -675,7 +666,6 @@ export interface FileRouteTypes {
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
     | '/guestbook/print/$id'
-    | '/lovable/email/events'
     | '/dashboard/guests/'
     | '/api/public/blog-image/$'
     | '/api/public/hooks/email-automations'
@@ -741,7 +731,6 @@ export interface FileRouteTypes {
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
     | '/guestbook/print/$id'
-    | '/lovable/email/events'
     | '/dashboard/guests'
     | '/api/public/blog-image/$'
     | '/api/public/hooks/email-automations'
@@ -809,7 +798,6 @@ export interface FileRouteTypes {
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
     | '/guestbook/print/$id'
-    | '/lovable/email/events'
     | '/dashboard/guests/'
     | '/api/public/blog-image/$'
     | '/api/public/hooks/email-automations'
@@ -852,7 +840,6 @@ export interface RootRouteChildren {
   BlogIndexRoute: typeof BlogIndexRoute
   ApiPublicHealthRoute: typeof ApiPublicHealthRoute
   GuestbookPrintIdRoute: typeof GuestbookPrintIdRoute
-  LovableEmailEventsRoute: typeof LovableEmailEventsRoute
   ApiPublicBlogImageSplatRoute: typeof ApiPublicBlogImageSplatRoute
   ApiPublicHooksEmailAutomationsRoute: typeof ApiPublicHooksEmailAutomationsRoute
   ApiPublicHooksNewUserRoute: typeof ApiPublicHooksNewUserRoute
@@ -1236,13 +1223,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardGuestsIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/lovable/email/events': {
-      id: '/lovable/email/events'
-      path: '/lovable/email/events'
-      fullPath: '/lovable/email/events'
-      preLoaderRoute: typeof LovableEmailEventsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/guestbook/print/$id': {
       id: '/guestbook/print/$id'
       path: '/guestbook/print/$id'
@@ -1452,7 +1432,6 @@ const rootRouteChildren: RootRouteChildren = {
   BlogIndexRoute: BlogIndexRoute,
   ApiPublicHealthRoute: ApiPublicHealthRoute,
   GuestbookPrintIdRoute: GuestbookPrintIdRoute,
-  LovableEmailEventsRoute: LovableEmailEventsRoute,
   ApiPublicBlogImageSplatRoute: ApiPublicBlogImageSplatRoute,
   ApiPublicHooksEmailAutomationsRoute: ApiPublicHooksEmailAutomationsRoute,
   ApiPublicHooksNewUserRoute: ApiPublicHooksNewUserRoute,
