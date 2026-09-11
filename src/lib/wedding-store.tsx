@@ -290,6 +290,9 @@ export interface Couple {
   splashKicker?: string | null;
   splashTapLabel?: string | null;
   splashShowDate?: boolean;
+  openingPageModel?: string;
+  openingPageEffect?: string;
+  openingPageConfig?: { color?: string | null; photoUrl?: string | null };
 }
 
 
