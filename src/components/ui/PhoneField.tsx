@@ -43,6 +43,8 @@ export function PhoneField({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        required={required}
+        aria-required={required || undefined}
         data-invalid={invalid || undefined}
       />
       {invalid ? (
