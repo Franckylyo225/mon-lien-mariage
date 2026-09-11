@@ -21,6 +21,7 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as InvitationRouteImport } from './routes/invitation'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as DevMonoRouteImport } from './routes/dev-mono'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConditionsGeneralesDeVenteRouteImport } from './routes/conditions-generales-de-vente'
@@ -135,6 +136,11 @@ const InvitationRoute = InvitationRouteImport.update({
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
   id: '/forgot-password',
   path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevMonoRoute = DevMonoRouteImport.update({
+  id: '/dev-mono',
+  path: '/dev-mono',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
@@ -420,6 +426,7 @@ export interface FileRoutesByFullPath {
   '/conditions-generales-de-vente': typeof ConditionsGeneralesDeVenteRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/dev-mono': typeof DevMonoRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
@@ -486,6 +493,7 @@ export interface FileRoutesByTo {
   '/comment-ca-marche': typeof CommentCaMarcheRoute
   '/conditions-generales-de-vente': typeof ConditionsGeneralesDeVenteRoute
   '/contact': typeof ContactRoute
+  '/dev-mono': typeof DevMonoRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
@@ -555,6 +563,7 @@ export interface FileRoutesById {
   '/conditions-generales-de-vente': typeof ConditionsGeneralesDeVenteRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
+  '/dev-mono': typeof DevMonoRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
@@ -625,6 +634,7 @@ export interface FileRouteTypes {
     | '/conditions-generales-de-vente'
     | '/contact'
     | '/dashboard'
+    | '/dev-mono'
     | '/forgot-password'
     | '/invitation'
     | '/login'
@@ -691,6 +701,7 @@ export interface FileRouteTypes {
     | '/comment-ca-marche'
     | '/conditions-generales-de-vente'
     | '/contact'
+    | '/dev-mono'
     | '/forgot-password'
     | '/invitation'
     | '/login'
@@ -759,6 +770,7 @@ export interface FileRouteTypes {
     | '/conditions-generales-de-vente'
     | '/contact'
     | '/dashboard'
+    | '/dev-mono'
     | '/forgot-password'
     | '/invitation'
     | '/login'
@@ -828,6 +840,7 @@ export interface RootRouteChildren {
   ConditionsGeneralesDeVenteRoute: typeof ConditionsGeneralesDeVenteRoute
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRouteWithChildren
+  DevMonoRoute: typeof DevMonoRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   InvitationRoute: typeof InvitationRoute
   LoginRoute: typeof LoginRoute
@@ -947,6 +960,13 @@ declare module '@tanstack/react-router' {
       path: '/forgot-password'
       fullPath: '/forgot-password'
       preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dev-mono': {
+      id: '/dev-mono'
+      path: '/dev-mono'
+      fullPath: '/dev-mono'
+      preLoaderRoute: typeof DevMonoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dashboard': {
@@ -1428,6 +1448,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConditionsGeneralesDeVenteRoute: ConditionsGeneralesDeVenteRoute,
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRouteWithChildren,
+  DevMonoRoute: DevMonoRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   InvitationRoute: InvitationRoute,
   LoginRoute: LoginRoute,
