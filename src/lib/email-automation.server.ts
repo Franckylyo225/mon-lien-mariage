@@ -163,7 +163,7 @@ export async function sendAutomationEmail(
     source: 'automation',
     metadata: { user_id: candidate.user_id, wedding_id: candidate.wedding_id },
   })
-  return { status: 'sent', messageId: delivery.id as string }
+  return { status: 'sent', messageId: delivery.id }
 }
 
 /* ------------------------------------------------------------ candidats --- */

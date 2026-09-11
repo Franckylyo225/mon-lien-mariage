@@ -75,12 +75,17 @@ export class ResendSendError extends Error {
   }
 }
 
-export async function sendResendEmail(input: ResendSendInput): Promise<{ id?: string }> {
+export async function sendResendEmail(input: ResendSendInput): Promise<{ id: string }> {
   assertValidInput(input)
   const lovableKey = process.env['LOVABLE_API_KEY']
-  if (!lovableKey) throw new Error('LOVABLE_API_KEY is not configured')
   const resendKey = process.env['RESEND_API_KEY']
-  if (!resendKey) throw new Error('RESEND_API_KEY is not configured')
+  if (!lovableKey || !resendKey) {
+    const message = !lovableKey
+      ? 'LOVABLE_API_KEY is not configured'
+      : 'RESEND_API_KEY is not configured'
+    await recordAttempt(input, 'failed', null, message)
+    throw new Error(message)
+  }
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',

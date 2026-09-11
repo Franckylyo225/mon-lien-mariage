@@ -22,13 +22,7 @@ export interface SendTemplateEmailOptions {
   replyTo?: string
 }
 
-/**
- * Renders a registered template and sends it through Lovable's managed email
- * API. Suppression, retries, and rate limits are enforced by Lovable
- * server-side. A suppressed recipient is an expected outcome
- * ({ sent: false }); any other failure throws — EmailAPIError exposes
- * .code and .status for branching.
- */
+/** Renders a registered template and sends it through Resend. */
 export async function sendTemplateEmail(
   templateName: string,
   to: string,
@@ -70,5 +64,5 @@ export async function sendTemplateEmail(
     source: 'transactional',
   })
 
-  return { sent: true, messageId: delivery.id as string }
+  return { sent: true, messageId: delivery.id }
 }

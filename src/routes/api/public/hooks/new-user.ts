@@ -11,14 +11,13 @@ export const Route = createFileRoute('/api/public/hooks/new-user')({
       POST: async ({ request }) => {
         const supabaseUrl =
           process.env.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL
-        const auth = request.headers.get('Authorization') || ''
-        const suppliedKey = auth.startsWith('Bearer ') ? auth.slice(7) : ''
-        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || suppliedKey
+        const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
         if (!supabaseUrl || !serviceKey) {
           return Response.json({ error: 'server_misconfigured' }, { status: 500 })
         }
 
-        if (!suppliedKey || (process.env.SUPABASE_SERVICE_ROLE_KEY && suppliedKey !== serviceKey)) {
+        const auth = request.headers.get('Authorization') || ''
+        if (!auth.startsWith('Bearer ') || auth.slice(7) !== serviceKey) {
           return Response.json({ error: 'unauthorized' }, { status: 401 })
         }
 
@@ -38,10 +37,6 @@ export const Route = createFileRoute('/api/public/hooks/new-user')({
         const supabase = createClient(supabaseUrl, serviceKey, {
           auth: { persistSession: false },
         })
-        if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-          const { error: authError } = await supabase.auth.admin.listUsers({ page: 1, perPage: 1 })
-          if (authError) return Response.json({ error: 'unauthorized' }, { status: 401 })
-        }
 
         // Recipients: every platform admin.
         const { data: adminRows } = await supabase

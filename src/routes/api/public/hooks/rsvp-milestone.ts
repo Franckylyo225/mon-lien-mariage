@@ -8,13 +8,12 @@ export const Route = createFileRoute('/api/public/hooks/rsvp-milestone')({
     handlers: {
       POST: async ({ request }) => {
         const auth = request.headers.get('Authorization') || ''
-        const suppliedKey = auth.startsWith('Bearer ') ? auth.slice(7) : ''
         const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-        if (!suppliedKey) {
+        if (!serviceKey) {
           return Response.json({ error: 'server_misconfigured' }, { status: 500 })
         }
 
-        if (serviceKey && suppliedKey !== serviceKey) {
+        if (!auth.startsWith('Bearer ') || auth.slice(7) !== serviceKey) {
           return Response.json({ error: 'unauthorized' }, { status: 401 })
         }
 
