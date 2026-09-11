@@ -4,6 +4,7 @@ import { useWedding } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
 import { Field } from "./signup";
 import { PhoneField, isValidPhoneNumber } from "@/components/ui/PhoneField";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/dashboard/guests/new")({
   head: () => ({ meta: [{ title: "Nouvel invité — MonInvit.com" }] }),
@@ -141,8 +142,9 @@ function NewGuestPage() {
 
       {err ? <p className="text-sm text-destructive">{err}</p> : null}
 
-      <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background p-4 sm:static sm:border-0 sm:p-0">
-        <button
+      <div className="fixed inset-x-0 bottom-16 z-20 border-t border-border bg-background p-4 sm:static sm:border-0 sm:p-0">
+        <Button
+          type="button"
           onClick={() => {
             if (!name.trim()) return setErr("Le nom est obligatoire.");
             if (!phone || !isValidPhoneNumber(phone))
@@ -160,10 +162,10 @@ function NewGuestPage() {
             });
             navigate({ to: "/dashboard/guests" });
           }}
-          className="mx-auto block w-full max-w-xl rounded-lg bg-primary px-4 py-3.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+          className="mx-auto flex h-12 w-full max-w-xl"
         >
           Enregistrer l'invité
-        </button>
+        </Button>
       </div>
     </div>
   );
