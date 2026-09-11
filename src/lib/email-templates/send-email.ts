@@ -60,28 +60,16 @@ export async function sendTemplateEmail(
       ? template.subject(templateData)
       : template.subject
 
-  try {
-    await sendLovableEmail(
-      {
-        to: recipient,
-        from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
-        sender_domain: SENDER_DOMAIN,
-        subject,
-        html,
-        text,
-        purpose: 'transactional',
-        label: templateName,
-        idempotency_key: options.idempotencyKey || crypto.randomUUID(),
-        reply_to: options.replyTo,
-      },
-      { apiKey, sendUrl: process.env['LOVABLE_SEND_URL'] }
-    )
-  } catch (error) {
-    if (error instanceof EmailAPIError && error.code === 'recipient_suppressed') {
-      return { sent: false, reason: 'recipient_suppressed' }
-    }
-    throw error
-  }
+  await sendResendEmail({
+    to: recipient,
+    from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
+    subject,
+    html,
+    text,
+    replyTo: options.replyTo,
+    tags: [{ name: 'label', value: templateName.replace(/[^a-zA-Z0-9_-]/g, '_') }],
+    idempotencyKey: options.idempotencyKey,
+  })
 
   return { sent: true }
 }
