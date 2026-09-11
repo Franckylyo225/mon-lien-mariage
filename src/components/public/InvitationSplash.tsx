@@ -144,6 +144,10 @@ interface InvitationSplashProps extends SplashCustomization {
   theme: ResolvedTheme;
   onDone: () => void;
   onOpenStart?: () => void;
+  /** Effet d'ouverture choisi (toucher par défaut, comme historiquement). */
+  effect?: "tap" | "swipe_up" | "swipe_down";
+  /** « Hello {prénom} » quand l'invité arrive via son lien personnel. */
+  greeting?: string | null;
 }
 
 export function InvitationSplash({
