@@ -402,7 +402,6 @@ export const listEmailLog = createServerFn({ method: "GET" })
     const { data, error } = await context.supabase
       .from("email_send_log")
       .select("id, template_name, recipient_email, status, error_message, created_at")
-      .contains("metadata", { provider: "resend" })
       .order("created_at", { ascending: false })
       .limit(200);
     if (error) throw new Error(error.message);
@@ -411,7 +410,8 @@ export const listEmailLog = createServerFn({ method: "GET" })
       logs,
       totals: summarizeEmailLogs(logs),
       historyStartsAt: null as string | null,
-      notice: "Journal des envois acceptés directement par Resend.",
+      notice:
+        "Journal interne de tous les envois (Resend et historique antérieur). Le statut « sent » signifie accepté par le service d'envoi.",
     };
   });
 
