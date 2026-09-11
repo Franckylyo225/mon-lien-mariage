@@ -1,26 +1,6 @@
 import { OpeningHint } from "./OpeningHint";
+import { RoyalMonogram } from "./RoyalMonogram";
 import type { OpeningModelProps } from "./types";
-
-const CrownIcon = ({ className }: { className?: string }) => (
-  <svg
-    className={className}
-    viewBox="0 0 48 24"
-    fill="none"
-    aria-hidden="true"
-  >
-    <path
-      d="M4 18L8 8L16 14L24 4L32 14L40 8L44 18"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <circle cx="8" cy="8" r="1.5" fill="currentColor" />
-    <circle cx="24" cy="4" r="1.8" fill="currentColor" />
-    <circle cx="40" cy="8" r="1.5" fill="currentColor" />
-    <line x1="4" y1="20" x2="44" y2="20" stroke="currentColor" strokeWidth="1.2" />
-  </svg>
-);
 
 export function ModelArcheFloral({
   brideName,
