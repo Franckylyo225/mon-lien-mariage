@@ -293,7 +293,11 @@ function GuestsPage() {
                               rel="noreferrer"
                               aria-label={`Envoyer l'invitation WhatsApp à ${g.name}`}
                             >
-                              <MessageCircle />
+                              <img
+                                src={whatsappIconAsset.url}
+                                alt="WhatsApp"
+                                className="h-5 w-5 object-contain"
+                              />
                             </a>
                           </Button>
                         </TooltipTrigger>
