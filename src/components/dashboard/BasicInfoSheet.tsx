@@ -85,7 +85,7 @@ export function BasicInfoSheet({ open, onOpenChange }: Props) {
       await updateCouple({
         brideName: isLocked ? initial.brideName : brideName.trim(),
         groomName: isLocked ? initial.groomName : groomName.trim(),
-        eventType: isLocked ? initial.eventType : eventType,
+        eventType,
         weddingDate,
         rsvpDeadline: rsvpDeadline || undefined,
         city: city.trim(),
@@ -175,14 +175,12 @@ export function BasicInfoSheet({ open, onOpenChange }: Props) {
                     <button
                       key={o.value}
                       type="button"
-                      disabled={isLocked}
                       onClick={() => setEventType(o.value)}
                       className={cn(
                         "flex flex-col items-start gap-1.5 rounded-xl border p-3 text-left transition",
                         active
                           ? "border-[1.5px] border-foreground bg-secondary/60"
                           : "border-border bg-card",
-                        isLocked && "opacity-60",
                       )}
                     >
                       <span className="font-serif text-lg italic">{o.icon}</span>
