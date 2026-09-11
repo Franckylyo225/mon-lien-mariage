@@ -157,8 +157,87 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
           </label>
 
           <div className={"space-y-5 transition-opacity " + (!enabled ? "pointer-events-none opacity-40" : "")}>
-            {/* Background mode */}
+            {/* Étape 1 — modèle */}
             <div>
+              <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                Modèle
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                {OPENING_MODELS.map((m) => (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() =>
+                      onPatch({ openingPageModel: m.id, openingPageEffect: m.defaultEffect })
+                    }
+                    className={
+                      "rounded-xl border px-3 py-3 text-left text-[12px] transition " +
+                      (model === m.id
+                        ? "border-foreground bg-foreground text-background"
+                        : "border-border bg-background hover:border-foreground/40")
+                    }
+                  >
+                    <span className="block font-medium">{m.label}</span>
+                    <span className="block text-[10px] opacity-70">{m.description}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Étape 2 — effet d'ouverture */}
+            <div>
+              <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                Effet d'ouverture
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {OPENING_EFFECTS.map((e) => (
+                  <button
+                    key={e}
+                    type="button"
+                    onClick={() => onPatch({ openingPageEffect: e })}
+                    className={
+                      "rounded-xl border px-2 py-2 text-[11px] transition " +
+                      (effect === e
+                        ? "border-foreground bg-foreground text-background"
+                        : "border-border bg-background hover:border-foreground/40")
+                    }
+                  >
+                    {OPENING_EFFECT_LABEL[e]}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Couleur du modèle (modèles à fond coloré) */}
+            {!isClassique && modelMeta.supportsColor && (
+              <div>
+                <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                  Couleur du modèle
+                </p>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setEditingModelColor((v) => !v)}
+                    className="size-10 rounded-full shadow-sm ring-1 ring-black/10 transition active:scale-95"
+                    style={{ backgroundColor: modelColor }}
+                    aria-label="Choisir la couleur du modèle"
+                  />
+                  <span className="font-mono text-[12px] uppercase opacity-70">{modelColor}</span>
+                </div>
+                {editingModelColor && (
+                  <HexEditor
+                    value={modelColor}
+                    onChange={(v) =>
+                      onPatch({ openingPageConfig: { ...(couple.openingPageConfig ?? {}), color: v } })
+                    }
+                    onClose={() => setEditingModelColor(false)}
+                  />
+                )}
+              </div>
+            )}
+
+            {/* Background mode */}
+            <div className={isClassique ? undefined : "hidden"}>
               <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
                 Arrière-plan
               </p>
