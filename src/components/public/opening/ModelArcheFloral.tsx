@@ -55,15 +55,13 @@ export function ModelArcheFloral({
         }}
       >
         <div
-          className="-mt-8 grid h-28 w-28 place-items-center overflow-hidden rounded-full border-[2.5px] border-white/70 bg-gradient-to-b from-white/25 to-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.25)] backdrop-blur-sm"
+          className="-mt-8 grid h-32 w-32 place-items-center overflow-hidden rounded-full border-[2.5px] border-white/70 bg-gradient-to-b from-white/30 to-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.25)] backdrop-blur-sm"
         >
           <div className="flex flex-col items-center justify-center">
             <CrownIcon className="-mb-1 h-5 w-10 text-white/90" />
-            <span
-              className="text-[26px] font-medium leading-none tracking-[0.12em] text-white drop-shadow"
-              style={{ fontFamily: fontHeading }}
-            >
-              {initials}
+            <span className="royal-initials">
+              <span className="royal-initials-first">{brideName.charAt(0)}</span>
+              <span className="royal-initials-second">{groomName.charAt(0)}</span>
             </span>
           </div>
         </div>

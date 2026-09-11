@@ -74,6 +74,31 @@
   }
 }
 
+/* Royal monogram initials (Arc floral medallion) */
+.royal-initials {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: "Marcellus", "Playfair Display", ui-serif, Georgia, serif;
+  font-size: 42px;
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+  color: #fff;
+  text-shadow:
+    1px 1px 0 rgba(255, 255, 255, 0.55),
+    -1px -1px 0 rgba(0, 0, 0, 0.14),
+    0 1px 0 rgba(0, 0, 0, 0.08),
+    0 3px 6px rgba(0, 0, 0, 0.22);
+}
+.royal-initials-first {
+  margin-right: -0.12em;
+}
+.royal-initials-second {
+  font-size: 0.62em;
+  vertical-align: super;
+  margin-left: -0.06em;
+  opacity: 0.92;
+}
+
 .opening-marquee {
   overflow: hidden;
   white-space: nowrap;
