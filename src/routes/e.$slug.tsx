@@ -9,6 +9,7 @@ import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { getPublicWedding } from "@/lib/public-wedding.functions";
 import { componentForTheme } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
+import { IdentifiedRsvp } from "@/components/invitation-templates/rsvp-identified";
 import { ParticleCanvas, RsvpBurstOverlay } from "@/components/particles/ParticleCanvas";
 import { AmbientMusicPlayer } from "@/components/music/AmbientMusicPlayer";
 import { GuestbookFab } from "@/components/invitation-templates/guestbook-fab";
@@ -83,6 +84,7 @@ type GuestPrefill = {
 /** Identifie l'invité à partir du token présent dans le lien personnel (?g=...). */
 function useGuestFromInviteToken(slug: string) {
   const [guest, setGuest] = useState<GuestPrefill | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -95,6 +97,7 @@ function useGuestFromInviteToken(slug: string) {
         if (cancelled || error) return;
         const row = Array.isArray(data) ? data[0] : data;
         if (!row) return;
+        setToken(token);
         setGuest({
           id: row.id as string,
           name: (row.name as string) ?? "",
@@ -107,7 +110,7 @@ function useGuestFromInviteToken(slug: string) {
     };
   }, [slug]);
 
-  return guest;
+  return { token, guest };
 }
 
 function PublicInvitationPage() {
@@ -116,7 +119,7 @@ function PublicInvitationPage() {
   const [rsvpBurst, setRsvpBurst] = useState(false);
   const weddingId = data.wedding?.id ?? null;
   const [showSplash, setShowSplash] = useState(false);
-  const guestPrefill = useGuestFromInviteToken(slug);
+  const { token: inviteToken, guest: guestPrefill } = useGuestFromInviteToken(slug);
   const [contentRevealed, setContentRevealed] = useState(false);
 
   const splashOff =
@@ -332,17 +335,29 @@ function PublicInvitationPage() {
               </p>
             </section>
           )
-      : (
-          <TemplateRsvpForm
-            theme={coupleTheme.theme}
-            weddingId={w.id}
-            ceremonies={ceremonies}
-            guestPrefill={guestPrefill}
-            onConfirmed={() => {
-              if (coupleTheme.particleTriggerRsvp !== false) setRsvpBurst(true);
-            }}
-          />
-        );
+      : guestPrefill && inviteToken
+        ? (
+            <IdentifiedRsvp
+              theme={coupleTheme.theme}
+              slug={slug}
+              token={inviteToken}
+              guestName={guestPrefill.name}
+              onConfirmed={() => {
+                if (coupleTheme.particleTriggerRsvp !== false) setRsvpBurst(true);
+              }}
+            />
+          )
+        : (
+            <TemplateRsvpForm
+              theme={coupleTheme.theme}
+              slug={slug}
+              weddingId={w.id}
+              ceremonies={ceremonies}
+              onConfirmed={() => {
+                if (coupleTheme.particleTriggerRsvp !== false) setRsvpBurst(true);
+              }}
+            />
+          );
 
   return (
     <>
