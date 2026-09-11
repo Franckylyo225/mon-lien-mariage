@@ -25,7 +25,7 @@ export function RoyalMonogram({ first, second, className }: Props) {
         d="M26 128c14 20 44 20 62 4 20-18 24-52 46-64 18-10 38-2 40 16"
         fill="none"
         stroke="currentColor"
-        strokeWidth="1.1"
+        strokeWidth="1.5"
         strokeLinecap="round"
         opacity="0.85"
       />
@@ -33,7 +33,7 @@ export function RoyalMonogram({ first, second, className }: Props) {
         d="M22 126c-10-14 2-30 18-26 12 3 16 16 10 26"
         fill="none"
         stroke="currentColor"
-        strokeWidth="1"
+        strokeWidth="1.3"
         strokeLinecap="round"
         opacity="0.7"
       />
@@ -52,7 +52,7 @@ export function RoyalMonogram({ first, second, className }: Props) {
           x="82"
           y="126"
           fontSize="132"
-          strokeWidth="1.4"
+          strokeWidth="2"
           paintOrder="stroke"
         >
           {a}
@@ -62,7 +62,7 @@ export function RoyalMonogram({ first, second, className }: Props) {
           x="126"
           y="126"
           fontSize="108"
-          strokeWidth="1.2"
+          strokeWidth="1.7"
           opacity="0.95"
         >
           {b}
