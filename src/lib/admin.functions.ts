@@ -347,38 +347,87 @@ export const listPayments = createServerFn({ method: "GET" })
   });
 
 
+type EmailLogRow = {
+  id: string;
+  template_name: string | null;
+  recipient_email: string | null;
+  status: string;
+  error_message: string | null;
+  created_at: string;
+};
+
+function summarizeEmailLogs(logs: EmailLogRow[]) {
+  const since24 = Date.now() - DAY_MS;
+  return {
+    sent: logs.filter((l) => l.status === "sent").length,
+    failed: logs.filter((l) =>
+      ["bounced", "rejected", "complained", "suppressed", "failed"].includes(l.status),
+    ).length,
+    last24: logs.filter((l) => new Date(l.created_at).getTime() >= since24).length,
+  };
+}
+
 export const listEmailLog = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     await assertAdmin(context);
 
+    // Repli : journal interne des envois automatiques (toujours disponible,
+    // même si la clé d'envoi n'est pas présente sur l'hébergeur).
+    const localFallback = async (notice: string) => {
+      const { data } = await context.supabase
+        .from("email_automation_log")
+        .select("id, trigger_key, recipient_email, status, sent_at")
+        .order("sent_at", { ascending: false })
+        .limit(200);
+      const logs: EmailLogRow[] = ((data ?? []) as any[]).map((r) => ({
+        id: r.id as string,
+        template_name: r.trigger_key as string,
+        recipient_email: (r.recipient_email as string | null) ?? null,
+        status: (r.status as string) ?? "sent",
+        error_message: null,
+        created_at: r.sent_at as string,
+      }));
+      return {
+        logs,
+        totals: summarizeEmailLogs(logs),
+        historyStartsAt: null as string | null,
+        notice,
+      };
+    };
+
     const apiKey = process.env['LOVABLE_API_KEY'];
     if (!apiKey) {
-      return { logs: [], totals: { sent: 0, failed: 0, last24: 0 }, historyStartsAt: null as string | null };
+      return localFallback(
+        "Clé d'envoi absente sur l'hébergement : affichage du journal interne des emails automatiques uniquement.",
+      );
     }
 
-    const { listEmailLogs } = await import("@lovable.dev/email-js");
-    const res = await listEmailLogs({ limit: 100 }, { apiKey });
+    try {
+      const { listEmailLogs } = await import("@lovable.dev/email-js");
+      const res = await listEmailLogs({ limit: 100 }, { apiKey });
 
-    const since24 = Date.now() - DAY_MS;
-    const logs = res.data.map((e, i) => ({
-      id: `${e.message_id ?? "evt"}-${e.timestamp}-${i}`,
-      template_name: (e.tags ?? []).join(", ") || null,
-      recipient_email: e.recipient,
-      status: e.event_type,
-      error_message: e.event_type === "sent" ? null : (e.status ?? null),
-      created_at: e.timestamp,
-    }));
+      const logs: EmailLogRow[] = res.data.map((e, i) => ({
+        id: `${e.message_id ?? "evt"}-${e.timestamp}-${i}`,
+        template_name: (e.tags ?? []).join(", ") || null,
+        recipient_email: e.recipient,
+        status: e.event_type,
+        error_message: e.event_type === "sent" ? null : (e.status ?? null),
+        created_at: e.timestamp,
+      }));
 
-    return {
-      logs,
-      totals: {
-        sent: logs.filter((l) => l.status === "sent").length,
-        failed: logs.filter((l) => ["bounced", "rejected", "complained", "suppressed"].includes(l.status)).length,
-        last24: logs.filter((l) => new Date(l.created_at).getTime() >= since24).length,
-      },
-      historyStartsAt: res.history_starts_at ?? null,
-    };
+      return {
+        logs,
+        totals: summarizeEmailLogs(logs),
+        historyStartsAt: res.history_starts_at ?? null,
+        notice: null as string | null,
+      };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      return localFallback(
+        `Journal de livraison indisponible (${message.slice(0, 120)}) : affichage du journal interne.`,
+      );
+    }
   });
 
 
