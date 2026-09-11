@@ -56,6 +56,8 @@ function NewGuestPage() {
             onChange={setPhone}
             placeholder="Numéro de téléphone"
             showError
+            required
+            errorMessage="Numéro de téléphone invalide"
           />
         </Field>
         <Field label="Email (facultatif)">
