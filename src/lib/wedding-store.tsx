@@ -174,6 +174,7 @@ export interface Couple {
   rsvpEnabled?: boolean;
   rsvpQuota?: number | null;
   rsvpQuotaBehavior?: "message" | "hide";
+  whatsappInviteTemplate?: string;
   city: string;
   introMessage: string;
   heroImageUrl?: string;
@@ -469,6 +470,7 @@ type WeddingRow = {
   rsvp_enabled?: boolean | null;
   rsvp_quota?: number | null;
   rsvp_quota_behavior?: string | null;
+  whatsapp_invite_template?: string | null;
   city: string | null;
   intro_message: string | null;
   couple_story: string | null;
@@ -540,6 +542,7 @@ function rowToCouple(w: WeddingRow): Couple {
     rsvpEnabled: w.rsvp_enabled ?? false,
     rsvpQuota: w.rsvp_quota ?? null,
     rsvpQuotaBehavior: ((w.rsvp_quota_behavior as Couple["rsvpQuotaBehavior"]) ?? "message"),
+    whatsappInviteTemplate: w.whatsapp_invite_template ?? undefined,
     city: w.city ?? "Abidjan",
     introMessage: w.intro_message ?? "",
     coupleStory: w.couple_story ?? undefined,
@@ -651,6 +654,9 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.rsvpEnabled !== undefined) r.rsvp_enabled = !!p.rsvpEnabled;
   if (p.rsvpQuota !== undefined) r.rsvp_quota = p.rsvpQuota ?? null;
   if (p.rsvpQuotaBehavior !== undefined) r.rsvp_quota_behavior = p.rsvpQuotaBehavior ?? "message";
+  if (p.whatsappInviteTemplate !== undefined) {
+    r.whatsapp_invite_template = p.whatsappInviteTemplate.trim();
+  }
   if (p.city !== undefined) r.city = p.city;
   if (p.introMessage !== undefined) r.intro_message = p.introMessage;
   if (p.coupleStory !== undefined) r.couple_story = p.coupleStory;
