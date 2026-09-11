@@ -208,17 +208,17 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
               <div className="grid grid-cols-3 gap-2">
                 {OPENING_EFFECTS.map((e) => (
                   <button
-                    key={e}
+                    key={e.id}
                     type="button"
-                    onClick={() => onPatch({ openingPageEffect: e })}
+                    onClick={() => onPatch({ openingPageEffect: e.id })}
                     className={
                       "rounded-xl border px-2 py-2 text-[11px] transition " +
-                      (effect === e
+                      (effect === e.id
                         ? "border-foreground bg-foreground text-background"
                         : "border-border bg-background hover:border-foreground/40")
                     }
                   >
-                    {OPENING_EFFECT_LABEL[e]}
+                    {e.label}
                   </button>
                 ))}
               </div>
