@@ -290,6 +290,9 @@ export interface Couple {
   splashKicker?: string | null;
   splashTapLabel?: string | null;
   splashShowDate?: boolean;
+  openingPageModel?: string;
+  openingPageEffect?: string;
+  openingPageConfig?: { color?: string | null; photoUrl?: string | null };
 }
 
 
@@ -647,6 +650,14 @@ function rowToCouple(w: WeddingRow): Couple {
     splashKicker: (w as { splash_kicker?: string | null }).splash_kicker ?? null,
     splashTapLabel: (w as { splash_tap_label?: string | null }).splash_tap_label ?? null,
     splashShowDate: (w as { splash_show_date?: boolean | null }).splash_show_date ?? true,
+    openingPageModel:
+      (w as { opening_page_model?: string | null }).opening_page_model ?? "classique",
+    openingPageEffect:
+      (w as { opening_page_effect?: string | null }).opening_page_effect ?? "tap",
+    openingPageConfig:
+      ((w as { opening_page_config?: Record<string, unknown> | null }).opening_page_config as
+        | Couple["openingPageConfig"]
+        | null) ?? {},
   };
 }
 
@@ -746,6 +757,9 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.splashKicker !== undefined) r.splash_kicker = p.splashKicker || null;
   if (p.splashTapLabel !== undefined) r.splash_tap_label = p.splashTapLabel || null;
   if (p.splashShowDate !== undefined) r.splash_show_date = p.splashShowDate;
+  if (p.openingPageModel !== undefined) r.opening_page_model = p.openingPageModel || "classique";
+  if (p.openingPageEffect !== undefined) r.opening_page_effect = p.openingPageEffect || "tap";
+  if (p.openingPageConfig !== undefined) r.opening_page_config = p.openingPageConfig ?? {};
   return r;
 }
 

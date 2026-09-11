@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ResolvedTheme } from "@/lib/wedding-theme";
 import "./invitation-splash.css";
 
@@ -144,6 +144,10 @@ interface InvitationSplashProps extends SplashCustomization {
   theme: ResolvedTheme;
   onDone: () => void;
   onOpenStart?: () => void;
+  /** Effet d'ouverture choisi (toucher par défaut, comme historiquement). */
+  effect?: "tap" | "swipe_up" | "swipe_down";
+  /** « Hello {prénom} » quand l'invité arrive via son lien personnel. */
+  greeting?: string | null;
 }
 
 export function InvitationSplash({
@@ -160,8 +164,11 @@ export function InvitationSplash({
   kicker,
   tapLabel,
   showDate = true,
+  effect = "tap",
+  greeting,
 }: InvitationSplashProps) {
   const [phase, setPhase] = useState<Phase>("enter");
+  const startYRef = useRef<number | null>(null);
   const useImage = bgMode === "image" && !!bgImageUrl;
   const baseBg =
     bgMode === "color" && bgColor && /^#([0-9a-f]{6})$/i.test(bgColor.trim())
@@ -209,7 +216,13 @@ export function InvitationSplash({
     ? [formatWeddingDate(weddingDate), city].filter(Boolean).join(" · ")
     : "";
   const kickerText = (kicker ?? "").trim() || "Vous êtes invité(e)";
-  const tapText = (tapLabel ?? "").trim() || "Tapez pour ouvrir";
+  // Le texte suit l'effet réellement actif ; le texte libre ne vaut que pour « toucher ».
+  const tapText =
+    effect === "swipe_up"
+      ? "Glissez vers le haut"
+      : effect === "swipe_down"
+        ? "Glissez vers le bas"
+        : (tapLabel ?? "").trim() || "Tapez pour ouvrir";
 
   const visual = (
     <>
@@ -286,10 +299,29 @@ export function InvitationSplash({
         <span className="splash-tap-ring" style={{ borderColor: t.accent }}>
           <span className="splash-tap-dot" style={{ background: t.accent }} />
         </span>
+        {greeting ? <span className="splash-tap-label">{greeting}</span> : null}
         <span className="splash-tap-label">{tapText}</span>
       </div>
     </>
   );
+
+  const gesture =
+    effect === "tap"
+      ? { onClick: open }
+      : {
+          onPointerDown: (e: React.PointerEvent) => {
+            startYRef.current = e.clientY;
+          },
+          onPointerUp: (e: React.PointerEvent) => {
+            const from = startYRef.current;
+            startYRef.current = null;
+            if (from == null) return;
+            const delta = e.clientY - from;
+            if (Math.abs(delta) < 6) return open();
+            if (effect === "swipe_up" && delta < -50) open();
+            if (effect === "swipe_down" && delta > 50) open();
+          },
+        };
 
   return (
     <div
@@ -297,8 +329,8 @@ export function InvitationSplash({
       style={{ fontFamily: t.fontBody, color: t.text }}
       role="button"
       tabIndex={0}
-      onClick={open}
-      aria-label="Tapez pour ouvrir l'invitation"
+      {...gesture}
+      aria-label="Ouvrir l'invitation"
     >
       <div className="splash-half splash-half-left" aria-hidden={opening ? "true" : undefined}>
         <div className="splash-half-inner">{visual}</div>

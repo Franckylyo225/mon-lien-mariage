@@ -2,7 +2,8 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { usePageView } from "@/hooks/use-page-view";
 import { supabase } from "@/integrations/supabase/client";
-import { InvitationSplash } from "@/components/public/InvitationSplash";
+import { OpeningPage } from "@/components/public/opening/OpeningPage";
+import type { OpeningEffect, OpeningModel } from "@/components/public/opening/types";
 
 
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
@@ -281,6 +282,14 @@ function PublicInvitationPage() {
     splashKicker: (w as { splash_kicker?: string | null }).splash_kicker ?? null,
     splashTapLabel: (w as { splash_tap_label?: string | null }).splash_tap_label ?? null,
     splashShowDate: (w as { splash_show_date?: boolean | null }).splash_show_date ?? true,
+    openingPageModel:
+      (w as { opening_page_model?: string | null }).opening_page_model ?? "classique",
+    openingPageEffect:
+      (w as { opening_page_effect?: string | null }).opening_page_effect ?? "tap",
+    openingPageConfig:
+      ((w as { opening_page_config?: Record<string, unknown> | null }).opening_page_config as
+        | Couple["openingPageConfig"]
+        | null) ?? {},
   };
 
   const ceremonies: Ceremony[] = (data.ceremonies ?? []).map((c) => ({
@@ -362,7 +371,14 @@ function PublicInvitationPage() {
   return (
     <>
       {showSplash && coupleTheme.splashEnabled !== false ? (
-        <InvitationSplash
+        <OpeningPage
+          model={(coupleTheme.openingPageModel ?? "classique") as OpeningModel}
+          effect={(coupleTheme.openingPageEffect ?? "tap") as OpeningEffect}
+          config={coupleTheme.openingPageConfig}
+          greeting={
+            guestPrefill?.name ? `Hello ${guestPrefill.name.split(" ")[0]}` : null
+          }
+          heroImageUrl={coupleTheme.heroImageUrl}
           brideName={coupleTheme.brideName}
           groomName={coupleTheme.groomName}
           weddingDate={coupleTheme.weddingDate}

@@ -1004,6 +1004,9 @@ export type Database = {
           music_slug: string | null
           onboarding_step: number
           opening_effect_slug: string | null
+          opening_page_config: Json
+          opening_page_effect: string
+          opening_page_model: string
           owner_id: string
           particle_color_mode: string | null
           particle_effect_slug: string | null
@@ -1104,6 +1107,9 @@ export type Database = {
           music_slug?: string | null
           onboarding_step?: number
           opening_effect_slug?: string | null
+          opening_page_config?: Json
+          opening_page_effect?: string
+          opening_page_model?: string
           owner_id: string
           particle_color_mode?: string | null
           particle_effect_slug?: string | null
@@ -1204,6 +1210,9 @@ export type Database = {
           music_slug?: string | null
           onboarding_step?: number
           opening_effect_slug?: string | null
+          opening_page_config?: Json
+          opening_page_effect?: string
+          opening_page_model?: string
           owner_id?: string
           particle_color_mode?: string | null
           particle_effect_slug?: string | null
