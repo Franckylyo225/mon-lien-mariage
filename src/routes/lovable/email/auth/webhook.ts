@@ -22,8 +22,16 @@ export const Route = createFileRoute("/lovable/email/auth/webhook")({
   server: {
     handlers: {
       POST: ({ request }) => {
+        const apiKey = process.env['LOVABLE_API_KEY']
+        if (!apiKey) {
+          console.error('[auth-email] LOVABLE_API_KEY missing — confirmation emails cannot be sent')
+          return Response.json(
+            { error: 'email_not_configured', detail: 'LOVABLE_API_KEY is not set on this deployment' },
+            { status: 500 },
+          )
+        }
         const handler = createAuthEmailHandler({
-          apiKey: process.env['LOVABLE_API_KEY']!,
+          apiKey,
           from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
           senderDomain: SENDER_DOMAIN,
           sendUrl: process.env['LOVABLE_SEND_URL'],
