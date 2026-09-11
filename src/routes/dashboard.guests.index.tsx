@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Download, MessageCircle, Settings2 } from "lucide-react";
+import { Download, MessageCircle, Pencil, Settings2 } from "lucide-react";
 import { useWedding, isPastEvent, type RSVPStatus } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
 import { useAllGuests } from "@/hooks/use-all-guests";
@@ -112,7 +112,7 @@ function GuestsPage() {
 
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <header className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="text-xs text-muted-foreground">
@@ -148,21 +148,16 @@ function GuestsPage() {
           disponibles. Vous pouvez toujours consulter et exporter votre liste.
         </p>
       ) : (
-        <RsvpActivationCard
+        <InvitationSettings
           enabled={!!couple.rsvpEnabled}
+          everEnabled={!!couple.rsvpEverEnabled}
           quota={couple.rsvpQuota ?? null}
           behavior={couple.rsvpQuotaBehavior ?? "message"}
           confirmedCount={confirmedCount}
-          onChange={(patch) => void updateCouple(patch)}
+          template={couple.whatsappInviteTemplate ?? DEFAULT_WHATSAPP_INVITE_TEMPLATE}
+          onSave={(patch) => void updateCouple(patch)}
         />
       )}
-
-      {!isPast ? (
-        <WhatsAppMessageCard
-          template={couple.whatsappInviteTemplate ?? DEFAULT_WHATSAPP_INVITE_TEMPLATE}
-          onSave={(template) => void updateCouple({ whatsappInviteTemplate: template })}
-        />
-      ) : null}
 
       <input
         value={query}
@@ -196,9 +191,18 @@ function GuestsPage() {
       </select>
 
       <ul className="divide-y divide-border rounded-xl border border-border bg-card">
-        {filtered.length === 0 ? (
+        {allGuests.length === 0 ? (
+          <li className="flex flex-col items-center gap-4 p-8 text-center">
+            <p className="text-sm text-muted-foreground">Vous n'avez pas encore d'invité</p>
+            {isPast ? null : (
+              <Button asChild>
+                <Link to="/dashboard/guests/new">+ Ajouter votre premier invité</Link>
+              </Button>
+            )}
+          </li>
+        ) : filtered.length === 0 ? (
           <li className="p-8 text-center text-sm text-muted-foreground">
-            Aucun invité ne correspond.
+            Aucun invité ne correspond à votre recherche
           </li>
         ) : (
           filtered.map((g) => {
