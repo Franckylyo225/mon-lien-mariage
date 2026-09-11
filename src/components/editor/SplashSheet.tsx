@@ -9,7 +9,6 @@ import { HexEditor } from "./HexEditor";
 import { OpeningPage } from "@/components/public/opening/OpeningPage";
 import {
   OPENING_EFFECTS,
-  OPENING_EFFECT_LABEL,
   OPENING_MODELS,
   openingModelMeta,
   type OpeningEffect,
