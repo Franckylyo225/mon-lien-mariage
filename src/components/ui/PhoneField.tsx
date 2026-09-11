@@ -29,6 +29,7 @@ export function PhoneField({
   defaultCountry = "CI",
   showError,
   errorMessage = "Format de numéro invalide",
+  required,
   className,
 }: Props) {
   const invalid = showError && value ? !isValidPhoneNumber(value) : false;
