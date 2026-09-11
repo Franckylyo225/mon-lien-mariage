@@ -2,15 +2,34 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { IconShieldCheck, IconShield, IconMail, IconKey } from "@tabler/icons-react";
+import {
+  IconBan,
+  IconCheck,
+  IconDotsVertical,
+  IconKey,
+  IconMail,
+  IconShield,
+  IconShieldCheck,
+  IconTrash,
+} from "@tabler/icons-react";
 import { toast } from "sonner";
 import {
   listAllUsers,
   setUserRole,
   sendPasswordResetEmail,
   adminSetUserPassword,
+  adminSetUserDisabled,
+  adminDeleteUser,
 } from "@/lib/admin.functions";
 import { DataTable, type Column } from "@/components/admin/DataTable";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const Route = createFileRoute("/admin/users")({
   component: AdminUsers,
@@ -23,6 +42,8 @@ function AdminUsers() {
   const toggleRole = useServerFn(setUserRole);
   const sendReset = useServerFn(sendPasswordResetEmail);
   const setPassword = useServerFn(adminSetUserPassword);
+  const setDisabled = useServerFn(adminSetUserDisabled);
+  const deleteUser = useServerFn(adminDeleteUser);
   const qc = useQueryClient();
 
   const [pwTarget, setPwTarget] = useState<Row | null>(null);
@@ -67,6 +88,30 @@ function AdminUsers() {
     }
   }
 
+  async function handleDisabled(u: Row) {
+    const action = u.is_disabled ? "réactiver" : "désactiver";
+    if (!confirm(`Voulez-vous ${action} le compte ${u.email ?? "de cet utilisateur"} ?`)) return;
+    try {
+      await setDisabled({ data: { userId: u.id, disabled: !u.is_disabled } });
+      toast.success(u.is_disabled ? "Compte réactivé." : "Compte désactivé.");
+      await qc.invalidateQueries({ queryKey: ["admin", "users"] });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Action impossible");
+    }
+  }
+
+  async function handleDelete(u: Row) {
+    if (!confirm(`Supprimer définitivement le compte ${u.email ?? "de cet utilisateur"} et ses données ?`)) return;
+    if (!confirm("Cette action est irréversible. Confirmer la suppression définitive ?")) return;
+    try {
+      await deleteUser({ data: { userId: u.id } });
+      toast.success("Compte supprimé.");
+      await qc.invalidateQueries({ queryKey: ["admin", "users"] });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Suppression impossible");
+    }
+  }
+
 
   const columns: Column<Row>[] = [
     {
@@ -106,6 +151,34 @@ function AdminUsers() {
       ),
     },
     {
+      key: "status",
+      label: "Statut",
+      sortValue: (u) => (u.is_disabled ? "0" : u.email_confirmed_at ? "2" : "1"),
+      csvValue: (u) =>
+        u.is_disabled
+          ? "Désactivé"
+          : !u.auth_status_available
+            ? "Indisponible"
+            : u.email_confirmed_at
+              ? "Confirmé"
+              : "Non confirmé",
+      render: (u) => {
+        if (u.is_disabled) {
+          return <span className="rounded-full bg-destructive/10 px-2 py-1 text-[11px] text-destructive">Désactivé</span>;
+        }
+        if (!u.auth_status_available) {
+          return <span className="rounded-full bg-muted px-2 py-1 text-[11px] text-muted-foreground">Indisponible</span>;
+        }
+        return u.email_confirmed_at ? (
+          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-[11px] text-emerald-700">
+            <IconCheck size={12} /> Confirmé
+          </span>
+        ) : (
+          <span className="rounded-full bg-amber-50 px-2 py-1 text-[11px] text-amber-700">Non confirmé</span>
+        );
+      },
+    },
+    {
       key: "roles",
       label: "Rôles",
       sortValue: (u) => u.roles.join(","),
@@ -133,32 +206,40 @@ function AdminUsers() {
       render: (u) => {
         const isAdmin = u.roles.includes("admin");
         return (
-          <div className="flex flex-wrap items-center justify-end gap-1.5">
-            <button
-              onClick={() => handleSendReset(u)}
-              title="Envoyer un email de réinitialisation"
-              className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-white px-2.5 py-1 text-[11px] hover:bg-secondary"
-            >
-              <IconMail size={12} /> Lien reset
-            </button>
-            <button
-              onClick={() => {
-                setPwTarget(u);
-                setNewPassword("");
-              }}
-              title="Définir un nouveau mot de passe"
-              className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-white px-2.5 py-1 text-[11px] hover:bg-secondary"
-            >
-              <IconKey size={12} /> Mot de passe
-            </button>
-            <button
-              onClick={() => handleToggleAdmin(u.id, isAdmin)}
-              className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-white px-2.5 py-1 text-[11px] hover:bg-secondary"
-            >
-              <IconShield size={12} />
-              {isAdmin ? "Retirer admin" : "Promouvoir"}
-            </button>
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" aria-label={`Actions pour ${u.email ?? "cet utilisateur"}`}>
+                <IconDotsVertical size={18} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem onSelect={() => void handleSendReset(u)}>
+                <IconMail /> Envoyer un lien reset
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => {
+                  setPwTarget(u);
+                  setNewPassword("");
+                }}
+              >
+                <IconKey /> Définir le mot de passe
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={() => void handleToggleAdmin(u.id, isAdmin)}>
+                <IconShield /> {isAdmin ? "Retirer le rôle admin" : "Promouvoir admin"}
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => void handleDisabled(u)}>
+                <IconBan /> {u.is_disabled ? "Réactiver le compte" : "Désactiver le compte"}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onSelect={() => void handleDelete(u)}
+                className="text-destructive focus:text-destructive"
+              >
+                <IconTrash /> Supprimer définitivement
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         );
       },
     },
