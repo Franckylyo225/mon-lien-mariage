@@ -44,6 +44,7 @@
   --brand-border-champ: #F1E3C6;
   --succes: #2E9E6B;
   --erreur: #D33A3A;
+  --whatsapp: #25D366;
 }
 
 @theme inline {
@@ -58,6 +59,7 @@
   --color-greige: var(--greige);
   --color-rose-poudre: var(--rose-poudre);
   --color-brand-border: var(--brand-border);
+  --color-whatsapp: var(--whatsapp);
   --font-brand-serif: "Cormorant Garamond", ui-serif, Georgia, serif;
   --font-brand-ui: "Quicksand", ui-sans-serif, system-ui, sans-serif;
   --font-brand-body: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
