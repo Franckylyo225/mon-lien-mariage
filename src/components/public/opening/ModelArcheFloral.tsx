@@ -35,7 +35,7 @@ export function ModelArcheFloral({
   fontHeading,
   fontBody,
 }: OpeningModelProps) {
-  const initials = `${brideName.charAt(0)}${groomName.charAt(0)}`.toUpperCase();
+  
   return (
     <div
       className="relative h-full w-full overflow-hidden bg-[#2b2320] text-white"
