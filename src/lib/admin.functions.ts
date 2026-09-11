@@ -402,8 +402,7 @@ export const listEmailLog = createServerFn({ method: "GET" })
     const { data, error } = await context.supabase
       .from("email_send_log")
       .select("id, template_name, recipient_email, status, error_message, created_at")
-      .order("created_at", { ascending: false })
-      .limit(200);
+      .order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
     const logs = (data ?? []) as EmailLogRow[];
     return {
