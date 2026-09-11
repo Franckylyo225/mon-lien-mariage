@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Download, Pencil, Settings2 } from "lucide-react";
-import whatsappIconAsset from "@/assets/phone.png.asset.json";
+import whatsappIconUrl from "@/assets/whatsapp-phone.png";
 import { useWedding, isPastEvent, type RSVPStatus } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
 import { useAllGuests } from "@/hooks/use-all-guests";
@@ -299,7 +299,7 @@ function GuestsPage() {
                               aria-label={`Envoyer l'invitation WhatsApp à ${g.name}`}
                             >
                               <img
-                                src={whatsappIconAsset.url}
+                                src={whatsappIconUrl}
                                 alt="WhatsApp"
                                 className="h-5 w-5 object-contain"
                               />
@@ -321,7 +321,7 @@ function GuestsPage() {
                               aria-label={unavailableReason}
                             >
                               <img
-                                src={whatsappIconAsset.url}
+                                src={whatsappIconUrl}
                                 alt="WhatsApp"
                                 className="h-5 w-5 object-contain opacity-50"
                               />
