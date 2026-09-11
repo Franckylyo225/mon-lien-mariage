@@ -243,11 +243,38 @@ export const listAllUsers = createServerFn({ method: "GET" })
       roleMap.set(r.user_id, arr);
     }
 
+    let authUserMap = new Map<
+      string,
+      { email_confirmed_at: string | null; banned_until: string | null }
+    >();
+    try {
+      const { supabaseAdmin: authAdmin } = await import("@/integrations/supabase/client.server");
+      const { data, error } = await authAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+      if (error) throw error;
+      authUserMap = new Map(
+        data.users.map((user) => [
+          user.id,
+          {
+            email_confirmed_at: user.email_confirmed_at ?? null,
+            banned_until: user.banned_until ?? null,
+          },
+        ]),
+      );
+    } catch (error) {
+      console.error("Unable to load authentication status for admin users", error);
+    }
+
     return (profiles ?? []).map((p) => ({
       ...p,
       weddings_total: counts.get(p.id)?.total ?? 0,
       weddings_published: counts.get(p.id)?.published ?? 0,
       roles: roleMap.get(p.id) ?? [],
+      email_confirmed_at: authUserMap.get(p.id)?.email_confirmed_at ?? null,
+      auth_status_available: authUserMap.has(p.id),
+      is_disabled: Boolean(
+        authUserMap.get(p.id)?.banned_until &&
+          new Date(authUserMap.get(p.id)?.banned_until ?? 0).getTime() > Date.now(),
+      ),
     }));
   });
 
@@ -804,6 +831,36 @@ export const adminSetUserPassword = createServerFn({ method: "POST" })
     const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, {
       password: pw,
     });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const adminSetUserDisabled = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { userId: string; disabled: boolean }) => data)
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    if (data.userId === context.userId) {
+      throw new Error("Vous ne pouvez pas désactiver votre propre compte.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, {
+      ban_duration: data.disabled ? "876000h" : "none",
+    });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const adminDeleteUser = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { userId: string }) => data)
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    if (data.userId === context.userId) {
+      throw new Error("Vous ne pouvez pas supprimer votre propre compte.");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.auth.admin.deleteUser(data.userId);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
