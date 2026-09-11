@@ -399,62 +399,20 @@ export const listEmailLog = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await assertAdmin(context);
 
-    // Repli : journal interne des envois automatiques (toujours disponible,
-    // même si la clé d'envoi n'est pas présente sur l'hébergeur).
-    const localFallback = async (notice: string) => {
-      const { data } = await context.supabase
-        .from("email_automation_log")
-        .select("id, trigger_key, recipient_email, status, sent_at")
-        .order("sent_at", { ascending: false })
-        .limit(200);
-      const logs: EmailLogRow[] = ((data ?? []) as any[]).map((r) => ({
-        id: r.id as string,
-        template_name: r.trigger_key as string,
-        recipient_email: (r.recipient_email as string | null) ?? null,
-        status: (r.status as string) ?? "sent",
-        error_message: null,
-        created_at: r.sent_at as string,
-      }));
-      return {
-        logs,
-        totals: summarizeEmailLogs(logs),
-        historyStartsAt: null as string | null,
-        notice,
-      };
+    const { data, error } = await context.supabase
+      .from("email_send_log")
+      .select("id, template_name, recipient_email, status, error_message, created_at")
+      .contains("metadata", { provider: "resend" })
+      .order("created_at", { ascending: false })
+      .limit(200);
+    if (error) throw new Error(error.message);
+    const logs = (data ?? []) as EmailLogRow[];
+    return {
+      logs,
+      totals: summarizeEmailLogs(logs),
+      historyStartsAt: null as string | null,
+      notice: "Journal des envois acceptés directement par Resend.",
     };
-
-    const apiKey = process.env['LOVABLE_API_KEY'];
-    if (!apiKey) {
-      return localFallback(
-        "Clé d'envoi absente sur l'hébergement : affichage du journal interne des emails automatiques uniquement.",
-      );
-    }
-
-    try {
-      const { listEmailLogs } = await import("@lovable.dev/email-js");
-      const res = await listEmailLogs({ limit: 100 }, { apiKey });
-
-      const logs: EmailLogRow[] = res.data.map((e, i) => ({
-        id: `${e.message_id ?? "evt"}-${e.timestamp}-${i}`,
-        template_name: (e.tags ?? []).join(", ") || null,
-        recipient_email: e.recipient,
-        status: e.event_type,
-        error_message: e.event_type === "sent" ? null : (e.status ?? null),
-        created_at: e.timestamp,
-      }));
-
-      return {
-        logs,
-        totals: summarizeEmailLogs(logs),
-        historyStartsAt: res.history_starts_at ?? null,
-        notice: null as string | null,
-      };
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      return localFallback(
-        `Journal de livraison indisponible (${message.slice(0, 120)}) : affichage du journal interne.`,
-      );
-    }
   });
 
 
@@ -986,7 +944,7 @@ export const sendAutomationTest = createServerFn({ method: "POST" })
       { idempotencyKey: `test-${automation.trigger_key}-${Date.now()}` },
     );
 
-    return { success: result === "sent", recipient, result };
+    return { success: result.status === "sent", recipient, result: result.status };
   });
 
 export const runEmailAutomationsNow = createServerFn({ method: "POST" })

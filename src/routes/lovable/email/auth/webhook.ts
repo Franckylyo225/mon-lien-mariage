@@ -147,6 +147,10 @@ export const Route = createFileRoute('/lovable/email/auth/webhook')({
             html,
             text,
             tags: [{ name: 'label', value: actionType }],
+            idempotencyKey: event.run_id,
+            templateName: actionType,
+            source: 'auth',
+            metadata: { run_id: event.run_id ?? null },
           })
         } catch (error) {
           console.error('[auth-email] send failed:', error)
