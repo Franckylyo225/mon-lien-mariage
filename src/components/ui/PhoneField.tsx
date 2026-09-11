@@ -14,6 +14,7 @@ interface Props {
   defaultCountry?: Country;
   showError?: boolean;
   errorMessage?: string;
+  required?: boolean;
   className?: string;
 }
 
@@ -28,6 +29,7 @@ export function PhoneField({
   defaultCountry = "CI",
   showError,
   errorMessage = "Format de numéro invalide",
+  required,
   className,
 }: Props) {
   const invalid = showError && value ? !isValidPhoneNumber(value) : false;
@@ -41,6 +43,8 @@ export function PhoneField({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        required={required}
+        aria-required={required || undefined}
         data-invalid={invalid || undefined}
       />
       {invalid ? (
