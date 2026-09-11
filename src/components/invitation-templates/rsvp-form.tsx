@@ -96,8 +96,8 @@ export function TemplateRsvpForm({
         const { data, error: rpcError } = await supabase.rpc("rsvp_public_signup", {
           _slug: slug,
           _name: name.trim(),
-          _phone: phone || null,
-          _guest_type: guestType || null,
+          _phone: phone || undefined,
+          _guest_type: guestType || undefined,
           _companions: plus,
         });
         if (rpcError) throw rpcError;
