@@ -149,7 +149,8 @@ function NewGuestPage() {
           type="button"
           onClick={() => {
             if (!name.trim()) return setErr("Le nom est obligatoire.");
-            if (!phone || !isValidPhoneNumber(phone))
+            if (!phone) return setErr("Le numéro de téléphone WhatsApp est obligatoire.");
+            if (!isValidPhoneNumber(phone))
               return setErr("Numéro de téléphone invalide.");
             if (ids.length === 0) return setErr("Sélectionnez au moins une étape.");
             addGuest({
