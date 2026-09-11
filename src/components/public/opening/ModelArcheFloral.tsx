@@ -1,26 +1,6 @@
 import { OpeningHint } from "./OpeningHint";
+import { RoyalMonogram } from "./RoyalMonogram";
 import type { OpeningModelProps } from "./types";
-
-const CrownIcon = ({ className }: { className?: string }) => (
-  <svg
-    className={className}
-    viewBox="0 0 48 24"
-    fill="none"
-    aria-hidden="true"
-  >
-    <path
-      d="M4 18L8 8L16 14L24 4L32 14L40 8L44 18"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <circle cx="8" cy="8" r="1.5" fill="currentColor" />
-    <circle cx="24" cy="4" r="1.8" fill="currentColor" />
-    <circle cx="40" cy="8" r="1.5" fill="currentColor" />
-    <line x1="4" y1="20" x2="44" y2="20" stroke="currentColor" strokeWidth="1.2" />
-  </svg>
-);
 
 export function ModelArcheFloral({
   brideName,
@@ -60,13 +40,11 @@ export function ModelArcheFloral({
             background: "radial-gradient(circle at 30% 28%, rgba(255,255,255,0.32) 0%, rgba(255,255,255,0.14) 45%, rgba(255,255,255,0.08) 100%)",
           }}
         >
-          <div className="flex flex-col items-center justify-center">
-            <CrownIcon className="-mb-0.5 h-5 w-10 text-white/95" />
-            <span className="royal-initials">
-              <span className="royal-initials-first">{brideName.charAt(0)}</span>
-              <span className="royal-initials-second">{groomName.charAt(0)}</span>
-            </span>
-          </div>
+          <RoyalMonogram
+            first={brideName}
+            second={groomName}
+            className="royal-monogram"
+          />
         </div>
 
         <p className="mt-5 text-[12px] uppercase tracking-[0.4em] opacity-90">Save the date</p>
