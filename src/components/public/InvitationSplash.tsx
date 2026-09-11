@@ -216,7 +216,13 @@ export function InvitationSplash({
     ? [formatWeddingDate(weddingDate), city].filter(Boolean).join(" · ")
     : "";
   const kickerText = (kicker ?? "").trim() || "Vous êtes invité(e)";
-  const tapText = (tapLabel ?? "").trim() || "Tapez pour ouvrir";
+  // Le texte suit l'effet réellement actif ; le texte libre ne vaut que pour « toucher ».
+  const tapText =
+    effect === "swipe_up"
+      ? "Glissez vers le haut"
+      : effect === "swipe_down"
+        ? "Glissez vers le bas"
+        : (tapLabel ?? "").trim() || "Tapez pour ouvrir";
 
   const visual = (
     <>
