@@ -22,23 +22,16 @@ export function RoyalMonogram({ first, second, className }: Props) {
       role="img"
       aria-label={`Monogramme ${a}${b}`}
     >
-      {/* volute calligraphique qui relie les deux lettres */}
+      {/* volute calligraphique unique qui relie les deux lettres */}
       <path
-        d="M18 108c22 26 56 22 74-6 12-19 12-46 32-58 21-12 44 2 44 24 0 16-13 27-28 27-12 0-21-7-24-17"
+        d="M14 124c30 22 74 16 96-10 14-17 16-42 38-50 20-7 38 6 38 24"
         fill="none"
         stroke="currentColor"
-        strokeWidth="1.1"
+        strokeWidth="1"
         strokeLinecap="round"
-        opacity="0.75"
+        opacity="0.65"
       />
-      <path
-        d="M40 122c26 12 62 4 84-18"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="0.9"
-        strokeLinecap="round"
-        opacity="0.5"
-      />
+
 
       <g
         fill="none"
