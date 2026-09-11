@@ -1303,6 +1303,15 @@ export type Database = {
         Returns: string
       }
       rsvp_confirmed_count: { Args: { _wedding_id: string }; Returns: number }
+      rsvp_respond_by_token: {
+        Args: {
+          _attending: boolean
+          _companions?: number
+          _slug: string
+          _token: string
+        }
+        Returns: string
+      }
       unaccent_fallback: { Args: { _t: string }; Returns: string }
     }
     Enums: {
