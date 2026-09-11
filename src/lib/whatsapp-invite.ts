@@ -43,3 +43,9 @@ export function createWhatsAppInviteUrl(phone: string | undefined, message: stri
   if (!normalizedPhone) return null;
   return `https://wa.me/${normalizedPhone}?text=${encodeURIComponent(message)}`;
 }
+/** Lien RSVP personnel d'un invité : /e/<slug>?g=<token>. */
+export function buildGuestInviteUrl(slug: string, inviteToken?: string) {
+  if (!slug) return "";
+  const base = `https://moninvit.com/e/${slug}`;
+  return inviteToken ? `${base}?g=${encodeURIComponent(inviteToken)}` : base;
+}

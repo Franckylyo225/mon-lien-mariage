@@ -14,6 +14,7 @@ import {
   firstName,
   formatEventDate,
   renderWhatsAppInvite,
+  buildGuestInviteUrl,
 } from "@/lib/whatsapp-invite";
 
 export const Route = createFileRoute("/dashboard/guests/")({
@@ -214,7 +215,7 @@ function GuestsPage() {
               .map((s) => s[0])
               .join("");
             const global = globalRsvp(g.rsvps.map((r) => r.status));
-            const publicUrl = couple.slug ? `https://moninvit.com/e/${couple.slug}` : "";
+            const publicUrl = couple.slug ? buildGuestInviteUrl(couple.slug, g.inviteToken) : "";
             const message = renderWhatsAppInvite(
               couple.whatsappInviteTemplate ?? DEFAULT_WHATSAPP_INVITE_TEMPLATE,
               {
