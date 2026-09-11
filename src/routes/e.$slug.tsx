@@ -281,6 +281,14 @@ function PublicInvitationPage() {
     splashKicker: (w as { splash_kicker?: string | null }).splash_kicker ?? null,
     splashTapLabel: (w as { splash_tap_label?: string | null }).splash_tap_label ?? null,
     splashShowDate: (w as { splash_show_date?: boolean | null }).splash_show_date ?? true,
+    openingPageModel:
+      (w as { opening_page_model?: string | null }).opening_page_model ?? "classique",
+    openingPageEffect:
+      (w as { opening_page_effect?: string | null }).opening_page_effect ?? "tap",
+    openingPageConfig:
+      ((w as { opening_page_config?: Record<string, unknown> | null }).opening_page_config as
+        | Couple["openingPageConfig"]
+        | null) ?? {},
   };
 
   const ceremonies: Ceremony[] = (data.ceremonies ?? []).map((c) => ({
