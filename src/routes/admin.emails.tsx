@@ -404,9 +404,9 @@ function LogTab() {
   return (
     <div className="space-y-4">
       {data?.notice && (
-        <p className="rounded-xl border border-amber-300/60 bg-amber-50 px-3 py-2 text-[12px] text-amber-800">
-          {data.notice}
-        </p>
+        <div className="rounded-xl border border-blue-100 bg-blue-50/60 px-3 py-2 text-[12px] text-blue-900">
+          <p className="font-medium">{data.notice}</p>
+        </div>
       )}
       {data?.historyStartsAt && (
         <p className="text-[12px] text-muted-foreground">
