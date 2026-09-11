@@ -299,10 +299,29 @@ export function InvitationSplash({
         <span className="splash-tap-ring" style={{ borderColor: t.accent }}>
           <span className="splash-tap-dot" style={{ background: t.accent }} />
         </span>
+        {greeting ? <span className="splash-tap-label">{greeting}</span> : null}
         <span className="splash-tap-label">{tapText}</span>
       </div>
     </>
   );
+
+  const gesture =
+    effect === "tap"
+      ? { onClick: open }
+      : {
+          onPointerDown: (e: React.PointerEvent) => {
+            startYRef.current = e.clientY;
+          },
+          onPointerUp: (e: React.PointerEvent) => {
+            const from = startYRef.current;
+            startYRef.current = null;
+            if (from == null) return;
+            const delta = e.clientY - from;
+            if (Math.abs(delta) < 6) return open();
+            if (effect === "swipe_up" && delta < -50) open();
+            if (effect === "swipe_down" && delta > 50) open();
+          },
+        };
 
   return (
     <div
@@ -310,8 +329,8 @@ export function InvitationSplash({
       style={{ fontFamily: t.fontBody, color: t.text }}
       role="button"
       tabIndex={0}
-      onClick={open}
-      aria-label="Tapez pour ouvrir l'invitation"
+      {...gesture}
+      aria-label="Ouvrir l'invitation"
     >
       <div className="splash-half splash-half-left" aria-hidden={opening ? "true" : undefined}>
         <div className="splash-half-inner">{visual}</div>
