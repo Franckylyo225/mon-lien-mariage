@@ -11,6 +11,7 @@
         "@fontsource/jetbrains-mono": "^5.3.0",
         "@fontsource/marcellus": "^5.3.0",
         "@fontsource/nunito-sans": "^5.3.0",
+        "@fontsource/pinyon-script": "^5.3.0",
         "@fontsource/playfair-display": "^5.2.8",
         "@fontsource/quicksand": "^5.3.0",
         "@fontsource/special-elite": "^5.3.0",
@@ -392,6 +393,8 @@
     "@fontsource/marcellus": ["@fontsource/marcellus@5.3.0", "https://europe-west4-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@fontsource/marcellus/-/marcellus-5.3.0.tgz", {}, "sha512-cMnanjpiPIC7Rq4GXIA/Zal5WLSoDV5Mc681tMkWsWfKHXnRnLGlhuGeBnLF6HrqtFkiSdiuy4NCSPfOrz266w=="],
 
     "@fontsource/nunito-sans": ["@fontsource/nunito-sans@5.3.0", "https://europe-west4-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@fontsource/nunito-sans/-/nunito-sans-5.3.0.tgz", {}, "sha512-CctNhebQ2YYJUwVMCAkHexQg7yedfz9s8JzaETALyc9QIQuDFRlNTWXux9H5PsNLgptPkrzRDomAdLJt1sDFpQ=="],
+
+    "@fontsource/pinyon-script": ["@fontsource/pinyon-script@5.3.0", "https://europe-west4-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@fontsource/pinyon-script/-/pinyon-script-5.3.0.tgz", {}, "sha512-ilhy4l5apzyDkfuKb7PZBUT5Sf6nfxucdXT5TQ0wQDyWtDPlouLy1lQq3lMEPk1lPsHHVrd11EkPnEG8FqDgUA=="],
 
     "@fontsource/playfair-display": ["@fontsource/playfair-display@5.2.8", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@fontsource/playfair-display/-/playfair-display-5.2.8.tgz", {}, "sha512-fUEhib70SszNhQVsGbUMSsWJhr7Je0rdeuZdtGpDNu0GKF1xJM8QhpI/y0pckU25GcChXm9TLOmeZupkvvZo2g=="],
 
