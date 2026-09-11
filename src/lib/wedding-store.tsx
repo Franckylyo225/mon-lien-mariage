@@ -172,6 +172,7 @@ export interface Couple {
   weddingDate: string;
   rsvpDeadline?: string;
   rsvpEnabled?: boolean;
+  rsvpEverEnabled?: boolean;
   rsvpQuota?: number | null;
   rsvpQuotaBehavior?: "message" | "hide";
   whatsappInviteTemplate?: string;
@@ -468,6 +469,7 @@ type WeddingRow = {
   wedding_date: string | null;
   rsvp_deadline: string | null;
   rsvp_enabled?: boolean | null;
+  rsvp_ever_enabled?: boolean | null;
   rsvp_quota?: number | null;
   rsvp_quota_behavior?: string | null;
   whatsapp_invite_template?: string | null;
@@ -540,6 +542,7 @@ function rowToCouple(w: WeddingRow): Couple {
     weddingDate: w.wedding_date ?? "",
     rsvpDeadline: w.rsvp_deadline ?? undefined,
     rsvpEnabled: w.rsvp_enabled ?? false,
+    rsvpEverEnabled: w.rsvp_ever_enabled ?? false,
     rsvpQuota: w.rsvp_quota ?? null,
     rsvpQuotaBehavior: ((w.rsvp_quota_behavior as Couple["rsvpQuotaBehavior"]) ?? "message"),
     whatsappInviteTemplate: w.whatsapp_invite_template ?? undefined,
@@ -652,6 +655,7 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.weddingDate !== undefined) r.wedding_date = p.weddingDate || null;
   if (p.rsvpDeadline !== undefined) r.rsvp_deadline = p.rsvpDeadline || null;
   if (p.rsvpEnabled !== undefined) r.rsvp_enabled = !!p.rsvpEnabled;
+  if (p.rsvpEverEnabled !== undefined) r.rsvp_ever_enabled = !!p.rsvpEverEnabled;
   if (p.rsvpQuota !== undefined) r.rsvp_quota = p.rsvpQuota ?? null;
   if (p.rsvpQuotaBehavior !== undefined) r.rsvp_quota_behavior = p.rsvpQuotaBehavior ?? "message";
   if (p.whatsappInviteTemplate !== undefined) {
