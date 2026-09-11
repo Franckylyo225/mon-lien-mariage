@@ -144,36 +144,23 @@ export async function sendAutomationEmail(
   candidate: Candidate,
   opts: { idempotencyKey?: string } = {},
 ): Promise<'sent' | 'suppressed'> {
-  const apiKey = process.env['LOVABLE_API_KEY']
-  if (!apiKey) throw new Error('LOVABLE_API_KEY is not configured')
-
   const vars = buildVars(candidate, automation)
   const html = renderAutomationEmail(automation, vars)
   const subject = substitute(automation.subject, vars)
 
-  try {
-    await sendLovableEmail(
-      {
-        to: candidate.email,
-        from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
-        sender_domain: SENDER_DOMAIN,
-        subject,
-        html,
-        text: htmlToText(html),
-        purpose: 'transactional',
-        label: `automation-${automation.trigger_key}`,
-        idempotency_key:
-          opts.idempotencyKey ||
-          `${automation.trigger_key}-${candidate.user_id ?? 'anon'}-${candidate.wedding_id ?? 'none'}`,
-      },
-      { apiKey, sendUrl: process.env['LOVABLE_SEND_URL'] },
-    )
-  } catch (error) {
-    if (error instanceof EmailAPIError && error.code === 'recipient_suppressed') {
-      return 'suppressed'
-    }
-    throw error
-  }
+  await sendResendEmail({
+    to: candidate.email,
+    from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
+    subject,
+    html,
+    text: htmlToText(html),
+    tags: [
+      { name: 'label', value: `automation-${automation.trigger_key}`.replace(/[^a-zA-Z0-9_-]/g, '_') },
+    ],
+    idempotencyKey:
+      opts.idempotencyKey ||
+      `${automation.trigger_key}-${candidate.user_id ?? 'anon'}-${candidate.wedding_id ?? 'none'}`,
+  })
   return 'sent'
 }
 
