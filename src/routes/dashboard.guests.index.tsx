@@ -226,6 +226,8 @@ function GuestsPage() {
               },
             );
             const whatsappUrl = publicUrl ? createWhatsAppInviteUrl(g.phone, message) : null;
+            const selfSignup = g.source === "auto" || g.source === "qr_signup";
+            const showWhatsapp = !selfSignup && global === "en_attente";
             const unavailableReason = !g.phone
               ? "Ajoutez un numéro pour activer l’envoi WhatsApp"
               : !publicUrl
@@ -264,6 +266,16 @@ function GuestsPage() {
                       >
                         {meta.short}
                       </span>
+                      <span className="rounded-full border border-border px-2 py-0.5 text-[10px] text-muted-foreground">
+                        {selfSignup ? "Auto-inscrit" : "Ajouté manuellement"}
+                      </span>
+                      <span className="rounded-full border border-border px-2 py-0.5 text-[10px] text-muted-foreground">
+                        {global === "confirmé"
+                          ? "Confirmé"
+                          : global === "décliné"
+                            ? "Décliné"
+                            : "En attente"}
+                      </span>
                       {g.ceremonyIds.slice(0, 3).map((cid) => {
                         const c = ceremonies.find((x) => x.id === cid);
                         if (!c) return null;
@@ -283,6 +295,7 @@ function GuestsPage() {
                       ) : null}
                     </div>
                   </div>
+                  {showWhatsapp ? (
                   <TooltipProvider delayDuration={200}>
                     {whatsappUrl ? (
                       <Tooltip>
@@ -333,6 +346,7 @@ function GuestsPage() {
                       </Tooltip>
                     )}
                   </TooltipProvider>
+                  ) : null}
                 </div>
               </li>
             );
