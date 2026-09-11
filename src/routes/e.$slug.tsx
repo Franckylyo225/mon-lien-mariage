@@ -2,7 +2,8 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { usePageView } from "@/hooks/use-page-view";
 import { supabase } from "@/integrations/supabase/client";
-import { InvitationSplash } from "@/components/public/InvitationSplash";
+import { OpeningPage } from "@/components/public/opening/OpeningPage";
+import type { OpeningEffect, OpeningModel } from "@/components/public/opening/types";
 
 
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
