@@ -1,6 +1,27 @@
 import { OpeningHint } from "./OpeningHint";
 import type { OpeningModelProps } from "./types";
 
+const CrownIcon = ({ className }: { className?: string }) => (
+  <svg
+    className={className}
+    viewBox="0 0 48 24"
+    fill="none"
+    aria-hidden="true"
+  >
+    <path
+      d="M4 18L8 8L16 14L24 4L32 14L40 8L44 18"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <circle cx="8" cy="8" r="1.5" fill="currentColor" />
+    <circle cx="24" cy="4" r="1.8" fill="currentColor" />
+    <circle cx="40" cy="8" r="1.5" fill="currentColor" />
+    <line x1="4" y1="20" x2="44" y2="20" stroke="currentColor" strokeWidth="1.2" />
+  </svg>
+);
+
 export function ModelArcheFloral({
   brideName,
   groomName,
@@ -33,11 +54,21 @@ export function ModelArcheFloral({
           borderTopRightRadius: "50% 22%",
         }}
       >
-        <div className="-mt-6 grid h-24 w-[72px] place-items-center overflow-hidden rounded-[999px] border border-white/60 bg-white/15">
+        <div
+          className="-mt-8 grid h-28 w-28 place-items-center overflow-hidden rounded-full border-[2.5px] border-white/70 bg-gradient-to-b from-white/25 to-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.25)] backdrop-blur-sm"
+        >
           {photoUrl ? (
             <img src={photoUrl} alt="" className="h-full w-full object-cover" />
           ) : (
-            <span className="text-lg tracking-[0.15em]">{initials}</span>
+            <div className="flex flex-col items-center justify-center">
+              <CrownIcon className="-mb-1 h-5 w-10 text-white/90" />
+              <span
+                className="text-[26px] font-medium leading-none tracking-[0.12em] text-white drop-shadow"
+                style={{ fontFamily: fontHeading }}
+              >
+                {initials}
+              </span>
+            </div>
           )}
         </div>
 
