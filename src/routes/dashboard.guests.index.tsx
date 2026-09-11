@@ -314,7 +314,11 @@ function GuestsPage() {
                               disabled
                               aria-label={unavailableReason}
                             >
-                              <MessageCircle />
+                              <img
+                                src={whatsappIconAsset.url}
+                                alt="WhatsApp"
+                                className="h-5 w-5 object-contain opacity-40"
+                              />
                             </Button>
                           </span>
                         </TooltipTrigger>
