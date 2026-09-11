@@ -1045,6 +1045,7 @@ export type Database = {
           theme_block_title: string | null
           updated_at: string
           wedding_date: string | null
+          whatsapp_invite_template: string
         }
         Insert: {
           accent?: string | null
@@ -1143,6 +1144,7 @@ export type Database = {
           theme_block_title?: string | null
           updated_at?: string
           wedding_date?: string | null
+          whatsapp_invite_template?: string
         }
         Update: {
           accent?: string | null
@@ -1241,6 +1243,7 @@ export type Database = {
           theme_block_title?: string | null
           updated_at?: string
           wedding_date?: string | null
+          whatsapp_invite_template?: string
         }
         Relationships: []
       }
