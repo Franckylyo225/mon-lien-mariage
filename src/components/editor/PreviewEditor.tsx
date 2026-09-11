@@ -353,20 +353,6 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
               }
               onClick={() => setSheet("music")}
             />
-            <EditChip
-              icon={<Sparkles className="size-4" />}
-              label="Page d'ouverture"
-              value={
-                couple.splashEnabled === false
-                  ? "Désactivée"
-                  : couple.splashBgMode === "image" && couple.splashBgImageUrl
-                    ? "Image de fond"
-                    : couple.splashBgMode === "color"
-                      ? "Couleur unie"
-                      : "Thème"
-              }
-              onClick={() => setSheet("splash")}
-            />
 
 
           </div>
