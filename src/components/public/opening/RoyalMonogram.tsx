@@ -5,66 +5,54 @@ interface Props {
 }
 
 /**
- * Monogramme entrelacé généré dynamiquement pour n'importe quelle paire
- * d'initiales : serif italique à fort contraste, lettres imbriquées de
- * tailles différentes, tracé en contour fin + volute calligraphique.
+ * Monogramme entrelacé : deux initiales calligraphiques (Pinyon Script,
+ * fort contraste de graisse) qui se chevauchent au centre, tracées en
+ * contour fin, unifiées par une volute intégrée au tracé.
  */
 export function RoyalMonogram({ first, second, className }: Props) {
   const a = (first || "").charAt(0).toUpperCase();
   const b = (second || "").charAt(0).toUpperCase();
 
+  const fontFamily = "'Pinyon Script', 'Cormorant Garamond', ui-serif, Georgia, serif";
+
   return (
     <svg
-      viewBox="0 0 200 170"
+      viewBox="0 0 220 150"
       className={className}
       role="img"
       aria-label={`Monogramme ${a}${b}`}
     >
-      {/* volute calligraphique qui unifie les deux lettres */}
+      {/* volute calligraphique qui relie les deux lettres */}
       <path
-        d="M26 128c14 20 44 20 62 4 20-18 24-52 46-64 18-10 38-2 40 16"
+        d="M18 108c22 26 56 22 74-6 12-19 12-46 32-58 21-12 44 2 44 24 0 16-13 27-28 27-12 0-21-7-24-17"
         fill="none"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.1"
         strokeLinecap="round"
-        opacity="0.85"
+        opacity="0.75"
       />
       <path
-        d="M22 126c-10-14 2-30 18-26 12 3 16 16 10 26"
+        d="M40 122c26 12 62 4 84-18"
         fill="none"
         stroke="currentColor"
-        strokeWidth="1.3"
+        strokeWidth="0.9"
         strokeLinecap="round"
-        opacity="0.7"
+        opacity="0.5"
       />
 
       <g
         fill="none"
         stroke="currentColor"
-        fontFamily="'Playfair Display', 'Cormorant Garamond', ui-serif, Georgia, serif"
-        fontStyle="italic"
-        fontWeight={500}
+        fontFamily={fontFamily}
         textAnchor="middle"
         dominantBaseline="alphabetic"
       >
         {/* lettre dominante */}
-        <text
-          x="82"
-          y="126"
-          fontSize="132"
-          strokeWidth="2"
-          paintOrder="stroke"
-        >
+        <text x="86" y="112" fontSize="128" strokeWidth="1.4">
           {a}
         </text>
-        {/* seconde lettre, imbriquée et légèrement plus petite */}
-        <text
-          x="126"
-          y="126"
-          fontSize="108"
-          strokeWidth="1.7"
-          opacity="0.95"
-        >
+        {/* seconde lettre, imbriquée dans la première */}
+        <text x="138" y="118" fontSize="106" strokeWidth="1.2" opacity="0.95">
           {b}
         </text>
       </g>
