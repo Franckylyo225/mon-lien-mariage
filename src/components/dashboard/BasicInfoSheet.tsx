@@ -189,11 +189,6 @@ export function BasicInfoSheet({ open, onOpenChange }: Props) {
                   );
                 })}
               </div>
-              {isLocked ? (
-                <p className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                  <IconLock size={12} /> Non modifiable après publication
-                </p>
-              ) : null}
             </Section>
 
             {/* Dates */}
