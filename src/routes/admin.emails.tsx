@@ -403,6 +403,11 @@ function LogTab() {
 
   return (
     <div className="space-y-4">
+      {data?.notice && (
+        <p className="rounded-xl border border-amber-300/60 bg-amber-50 px-3 py-2 text-[12px] text-amber-800">
+          {data.notice}
+        </p>
+      )}
       {data?.historyStartsAt && (
         <p className="text-[12px] text-muted-foreground">
           Historique visible depuis le{" "}
