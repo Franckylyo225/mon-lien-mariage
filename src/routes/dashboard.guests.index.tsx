@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Download, Pencil, Settings2 } from "lucide-react";
-import whatsappIconAsset from "@/assets/whatsapp-icon.png.asset.json";
+import whatsappIconAsset from "@/assets/phone.png.asset.json";
 import { useWedding, isPastEvent, type RSVPStatus } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
 import { useAllGuests } from "@/hooks/use-all-guests";
@@ -286,7 +286,12 @@ function GuestsPage() {
                     {whatsappUrl ? (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <Button variant="outline" size="icon" asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="bg-whatsapp hover:bg-whatsapp/90 border-0 shadow-sm"
+                            asChild
+                          >
                             <a
                               href={whatsappUrl}
                               target="_blank"
@@ -309,15 +314,16 @@ function GuestsPage() {
                           <span className="inline-flex" tabIndex={0}>
                             <Button
                               type="button"
-                              variant="outline"
+                              variant="ghost"
                               size="icon"
                               disabled
+                              className="bg-whatsapp/60 border-0"
                               aria-label={unavailableReason}
                             >
                               <img
                                 src={whatsappIconAsset.url}
                                 alt="WhatsApp"
-                                className="h-5 w-5 object-contain opacity-40"
+                                className="h-5 w-5 object-contain opacity-50"
                               />
                             </Button>
                           </span>
