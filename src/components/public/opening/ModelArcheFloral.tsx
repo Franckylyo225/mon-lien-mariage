@@ -57,19 +57,15 @@ export function ModelArcheFloral({
         <div
           className="-mt-8 grid h-28 w-28 place-items-center overflow-hidden rounded-full border-[2.5px] border-white/70 bg-gradient-to-b from-white/25 to-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.25)] backdrop-blur-sm"
         >
-          {photoUrl ? (
-            <img src={photoUrl} alt="" className="h-full w-full object-cover" />
-          ) : (
-            <div className="flex flex-col items-center justify-center">
-              <CrownIcon className="-mb-1 h-5 w-10 text-white/90" />
-              <span
-                className="text-[26px] font-medium leading-none tracking-[0.12em] text-white drop-shadow"
-                style={{ fontFamily: fontHeading }}
-              >
-                {initials}
-              </span>
-            </div>
-          )}
+          <div className="flex flex-col items-center justify-center">
+            <CrownIcon className="-mb-1 h-5 w-10 text-white/90" />
+            <span
+              className="text-[26px] font-medium leading-none tracking-[0.12em] text-white drop-shadow"
+              style={{ fontFamily: fontHeading }}
+            >
+              {initials}
+            </span>
+          </div>
         </div>
 
         <p className="mt-5 text-[12px] uppercase tracking-[0.4em] opacity-90">Save the date</p>
