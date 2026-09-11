@@ -306,7 +306,7 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
               </div>
             </div>
 
-            <div>
+            <div className={isClassique && effect === "tap" ? undefined : "hidden"}>
               <label className="mb-2 block font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
                 Texte du bouton d'ouverture
               </label>
