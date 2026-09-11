@@ -1,13 +1,31 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Download } from "lucide-react";
+import { Download, MessageCircle, Settings2 } from "lucide-react";
 import { useWedding, isPastEvent, type RSVPStatus } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
 import { useAllGuests } from "@/hooks/use-all-guests";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  DEFAULT_WHATSAPP_INVITE_TEMPLATE,
+  createWhatsAppInviteUrl,
+  firstName,
+  formatEventDate,
+  renderWhatsAppInvite,
+} from "@/lib/whatsapp-invite";
 
 export const Route = createFileRoute("/dashboard/guests/")({
-  head: () => ({ meta: [{ title: "Mes invités — MonInvit.com" }] }),
+  head: () => ({
+    meta: [
+      { title: "Mes invités — MonInvit.com" },
+      { name: "description", content: "Gérez vos invités et envoyez leurs invitations personnalisées par WhatsApp." },
+      { property: "og:title", content: "Mes invités — MonInvit.com" },
+      { property: "og:description", content: "Gérez vos invités et leurs confirmations de présence." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: GuestsPage,
 });
 
@@ -139,6 +157,13 @@ function GuestsPage() {
         />
       )}
 
+      {!isPast ? (
+        <WhatsAppMessageCard
+          template={couple.whatsappInviteTemplate ?? DEFAULT_WHATSAPP_INVITE_TEMPLATE}
+          onSave={(template) => void updateCouple({ whatsappInviteTemplate: template })}
+        />
+      ) : null}
+
       <input
         value={query}
         onChange={(e) => setQuery(e.target.value)}
@@ -184,6 +209,22 @@ function GuestsPage() {
               .map((s) => s[0])
               .join("");
             const global = globalRsvp(g.rsvps.map((r) => r.status));
+            const publicUrl = couple.slug ? `https://moninvit.com/e/${couple.slug}` : "";
+            const message = renderWhatsAppInvite(
+              couple.whatsappInviteTemplate ?? DEFAULT_WHATSAPP_INVITE_TEMPLATE,
+              {
+                prenom: firstName(g.name),
+                noms_maries: `${couple.brideName} & ${couple.groomName}`,
+                date: formatEventDate(couple.weddingDate),
+                lien_rsvp: publicUrl,
+              },
+            );
+            const whatsappUrl = publicUrl ? createWhatsAppInviteUrl(g.phone, message) : null;
+            const unavailableReason = !g.phone
+              ? "Ajoutez un numéro pour activer l’envoi WhatsApp"
+              : !publicUrl
+                ? "Publiez votre page pour activer l’envoi WhatsApp"
+                : "Vérifiez le numéro pour activer l’envoi WhatsApp";
             return (
               <li key={g.id} className="p-4">
                 <div className="flex items-start gap-3">
@@ -236,6 +277,42 @@ function GuestsPage() {
                       ) : null}
                     </div>
                   </div>
+                  <TooltipProvider delayDuration={200}>
+                    {whatsappUrl ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button variant="outline" size="icon" asChild>
+                            <a
+                              href={whatsappUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              aria-label={`Envoyer l'invitation WhatsApp à ${g.name}`}
+                            >
+                              <MessageCircle />
+                            </a>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>Envoyer par WhatsApp</TooltipContent>
+                      </Tooltip>
+                    ) : (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="inline-flex" tabIndex={0}>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              disabled
+                              aria-label={unavailableReason}
+                            >
+                              <MessageCircle />
+                            </Button>
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>{unavailableReason}</TooltipContent>
+                      </Tooltip>
+                    )}
+                  </TooltipProvider>
                 </div>
               </li>
             );
@@ -243,6 +320,71 @@ function GuestsPage() {
         )}
       </ul>
     </div>
+  );
+}
+
+function WhatsAppMessageCard({
+  template,
+  onSave,
+}: {
+  template: string;
+  onSave: (template: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [draft, setDraft] = useState(template);
+  const isValid = draft.trim().length > 0 && draft.length <= 1000;
+
+  const edit = () => {
+    setDraft(template);
+    setOpen(true);
+  };
+
+  return (
+    <section className="rounded-xl border border-border bg-card p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="font-medium">Message d'invitation WhatsApp</h2>
+          <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">{template}</p>
+        </div>
+        <Button type="button" variant="outline" size="sm" onClick={edit}>
+          <Settings2 />
+          Modifier
+        </Button>
+      </div>
+
+      <BottomSheet open={open} onOpenChange={setOpen} title="Personnaliser le message WhatsApp" actionLabel="Fermer">
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="whatsapp-template" className="text-sm font-medium">
+              Message par défaut
+            </label>
+            <textarea
+              id="whatsapp-template"
+              value={draft}
+              onChange={(event) => setDraft(event.target.value)}
+              maxLength={1000}
+              rows={7}
+              className="mt-2 w-full resize-none rounded-lg border border-input bg-card px-3 py-3 text-base outline-none focus:ring-2 focus:ring-ring"
+            />
+            <div className="mt-2 flex items-center justify-between gap-3 text-xs text-muted-foreground">
+              <p>{"{prenom} · {noms_maries} · {date} · {lien_rsvp}"}</p>
+              <span>{draft.length}/1000</span>
+            </div>
+          </div>
+          <Button
+            type="button"
+            className="w-full"
+            disabled={!isValid}
+            onClick={() => {
+              onSave(draft.trim());
+              setOpen(false);
+            }}
+          >
+            Enregistrer le message
+          </Button>
+        </div>
+      </BottomSheet>
+    </section>
   );
 }
 
