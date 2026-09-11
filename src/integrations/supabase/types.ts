@@ -1303,6 +1303,16 @@ export type Database = {
         Returns: string
       }
       rsvp_confirmed_count: { Args: { _wedding_id: string }; Returns: number }
+      rsvp_public_signup: {
+        Args: {
+          _companions?: number
+          _guest_type?: string
+          _name: string
+          _phone?: string
+          _slug: string
+        }
+        Returns: string
+      }
       rsvp_respond_by_token: {
         Args: {
           _attending: boolean

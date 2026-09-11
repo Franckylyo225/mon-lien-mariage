@@ -25,13 +25,8 @@ interface Props {
   ceremonies?: Ceremony[];
   /** Called once when the guest successfully confirms their attendance. */
   onConfirmed?: () => void;
-  /** Invité identifié via son lien personnel (?g=token). */
-  guestPrefill?: {
-    id: string;
-    name: string;
-    phone?: string | null;
-    guestType?: string | null;
-  } | null;
+  /** Slug public : permet d'inscrire le visiteur dans la liste d'invités. */
+  slug?: string;
 }
 
 // Legacy tone → representative theme (kept only for invitation.tsx preview)
@@ -49,7 +44,7 @@ export function TemplateRsvpForm({
   weddingId,
   ceremonies = [],
   onConfirmed,
-  guestPrefill,
+  slug,
 }: Props) {
   const resolvedTheme: ThemeId | undefined =
     theme ?? (tone ? TONE_TO_THEME[tone] : undefined);
@@ -64,13 +59,6 @@ export function TemplateRsvpForm({
   const [done, setDone] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!guestPrefill) return;
-    setName((v) => v || guestPrefill.name);
-    setPhone((v) => v || guestPrefill.phone || "");
-    setGuestType((v) => v || ((guestPrefill.guestType as GuestType | null) ?? ""));
-  }, [guestPrefill]);
 
   useEffect(() => {
     if (!open) return;
@@ -104,13 +92,27 @@ export function TemplateRsvpForm({
     }
     setSubmitting(true);
     try {
+      if (slug) {
+        const { data, error: rpcError } = await supabase.rpc("rsvp_public_signup", {
+          _slug: slug,
+          _name: name.trim(),
+          _phone: phone || undefined,
+          _guest_type: guestType || undefined,
+          _companions: plus,
+        });
+        if (rpcError) throw rpcError;
+        if (data === "ok") {
+          setDone(true);
+          onConfirmed?.();
+          return true;
+        }
+      }
       const rows = published.map((c) => ({
         wedding_id: weddingId,
         ceremony_id: c.id,
         guest_name: name.trim(),
         guest_phone: phone || null,
         guest_type: guestType || null,
-        guest_id: guestPrefill?.id ?? null,
         attending: true,
         companions: plus,
         message: null,
