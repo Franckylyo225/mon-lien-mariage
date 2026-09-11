@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { usePageView } from "@/hooks/use-page-view";
+import { supabase } from "@/integrations/supabase/client";
 import { InvitationSplash } from "@/components/public/InvitationSplash";
 
 
@@ -72,12 +73,50 @@ export const Route = createFileRoute("/e/$slug")({
   errorComponent: () => <NotFound />,
 });
 
+type GuestPrefill = {
+  id: string;
+  name: string;
+  phone?: string | null;
+  guestType?: string | null;
+};
+
+/** Identifie l'invité à partir du token présent dans le lien personnel (?g=...). */
+function useGuestFromInviteToken(slug: string) {
+  const [guest, setGuest] = useState<GuestPrefill | null>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const token = new URLSearchParams(window.location.search).get("g");
+    if (!token) return;
+    let cancelled = false;
+    void supabase
+      .rpc("guest_by_invite_token", { _slug: slug, _token: token })
+      .then(({ data, error }) => {
+        if (cancelled || error) return;
+        const row = Array.isArray(data) ? data[0] : data;
+        if (!row) return;
+        setGuest({
+          id: row.id as string,
+          name: (row.name as string) ?? "",
+          phone: (row.phone as string | null) ?? null,
+          guestType: (row.guest_type as string | null) ?? null,
+        });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [slug]);
+
+  return guest;
+}
+
 function PublicInvitationPage() {
   const { slug } = Route.useParams();
   const { data } = useSuspenseQuery(publicWeddingQuery(slug));
   const [rsvpBurst, setRsvpBurst] = useState(false);
   const weddingId = data.wedding?.id ?? null;
   const [showSplash, setShowSplash] = useState(false);
+  const guestPrefill = useGuestFromInviteToken(slug);
   const [contentRevealed, setContentRevealed] = useState(false);
 
   const splashOff =
@@ -298,6 +337,7 @@ function PublicInvitationPage() {
             theme={coupleTheme.theme}
             weddingId={w.id}
             ceremonies={ceremonies}
+            guestPrefill={guestPrefill}
             onConfirmed={() => {
               if (coupleTheme.particleTriggerRsvp !== false) setRsvpBurst(true);
             }}
