@@ -52,6 +52,14 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
     if (!open) setPreview(false);
   }, [open]);
 
+  const [editingModelColor, setEditingModelColor] = useState(false);
+  const model = (couple.openingPageModel ?? "classique") as OpeningModel;
+  const effect = (couple.openingPageEffect ?? "tap") as OpeningEffect;
+  const modelMeta = openingModelMeta(model);
+  const isClassique = model === "classique";
+  const modelColor =
+    couple.openingPageConfig?.color || modelMeta.defaultColor || theme.accent;
+
   const enabled = couple.splashEnabled !== false;
   const bgMode = couple.splashBgMode ?? "theme";
   const bgColor = couple.splashBgColor ?? "#1f3a5f";
