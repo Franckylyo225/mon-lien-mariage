@@ -375,7 +375,11 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
               style={{ pointerEvents: "auto" }}
               className="fixed inset-0 z-[9999]"
             >
-              <InvitationSplash
+              <OpeningPage
+                model={model}
+                effect={effect}
+                config={couple.openingPageConfig}
+                heroImageUrl={couple.heroImageUrl}
                 brideName={couple.brideName}
                 groomName={couple.groomName}
                 weddingDate={couple.weddingDate}
