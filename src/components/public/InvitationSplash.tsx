@@ -164,8 +164,11 @@ export function InvitationSplash({
   kicker,
   tapLabel,
   showDate = true,
+  effect = "tap",
+  greeting,
 }: InvitationSplashProps) {
   const [phase, setPhase] = useState<Phase>("enter");
+  const startYRef = useRef<number | null>(null);
   const useImage = bgMode === "image" && !!bgImageUrl;
   const baseBg =
     bgMode === "color" && bgColor && /^#([0-9a-f]{6})$/i.test(bgColor.trim())
