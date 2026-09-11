@@ -1013,6 +1013,7 @@ export type Database = {
           registry_title: string | null
           rsvp_deadline: string | null
           rsvp_enabled: boolean
+          rsvp_ever_enabled: boolean
           rsvp_quota: number | null
           rsvp_quota_behavior: string
           share_description: string | null
@@ -1112,6 +1113,7 @@ export type Database = {
           registry_title?: string | null
           rsvp_deadline?: string | null
           rsvp_enabled?: boolean
+          rsvp_ever_enabled?: boolean
           rsvp_quota?: number | null
           rsvp_quota_behavior?: string
           share_description?: string | null
@@ -1211,6 +1213,7 @@ export type Database = {
           registry_title?: string | null
           rsvp_deadline?: string | null
           rsvp_enabled?: boolean
+          rsvp_ever_enabled?: boolean
           rsvp_quota?: number | null
           rsvp_quota_behavior?: string
           share_description?: string | null
