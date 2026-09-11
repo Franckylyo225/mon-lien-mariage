@@ -6,7 +6,15 @@ import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { Camera, Eye, ImageIcon, Loader2, Trash2, X } from "lucide-react";
 import { ensureAuthOrMessage, friendlyUploadError } from "@/lib/upload-errors";
 import { HexEditor } from "./HexEditor";
-import { InvitationSplash } from "@/components/public/InvitationSplash";
+import { OpeningPage } from "@/components/public/opening/OpeningPage";
+import {
+  OPENING_EFFECTS,
+  OPENING_EFFECT_LABEL,
+  OPENING_MODELS,
+  openingModelMeta,
+  type OpeningEffect,
+  type OpeningModel,
+} from "@/components/public/opening/types";
 import type { Couple } from "@/lib/wedding-store";
 import type { ResolvedTheme } from "@/lib/wedding-theme";
 
