@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ResolvedTheme } from "@/lib/wedding-theme";
 import "./invitation-splash.css";
 
