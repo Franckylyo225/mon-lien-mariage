@@ -399,7 +399,11 @@ export const listEmailLog = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await assertAdmin(context);
 
-    const { data, error } = await context.supabase
+    // This audit table is intentionally unreadable through a user's session.
+    // Elevate only after the caller's admin role has been verified above.
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data, error } = await supabaseAdmin
       .from("email_send_log")
       .select("id, template_name, recipient_email, status, error_message, created_at")
       .order("created_at", { ascending: false });
