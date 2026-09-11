@@ -370,7 +370,14 @@ function PublicInvitationPage() {
   return (
     <>
       {showSplash && coupleTheme.splashEnabled !== false ? (
-        <InvitationSplash
+        <OpeningPage
+          model={(coupleTheme.openingPageModel ?? "classique") as OpeningModel}
+          effect={(coupleTheme.openingPageEffect ?? "tap") as OpeningEffect}
+          config={coupleTheme.openingPageConfig}
+          greeting={
+            guestPrefill?.name ? `Hello ${guestPrefill.name.split(" ")[0]}` : null
+          }
+          heroImageUrl={coupleTheme.heroImageUrl}
           brideName={coupleTheme.brideName}
           groomName={coupleTheme.groomName}
           weddingDate={coupleTheme.weddingDate}
