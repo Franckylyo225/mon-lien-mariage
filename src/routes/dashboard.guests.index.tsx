@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Download, MessageCircle, Settings2 } from "lucide-react";
+import { Download, MessageCircle, Pencil, Settings2 } from "lucide-react";
 import { useWedding, isPastEvent, type RSVPStatus } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
 import { useAllGuests } from "@/hooks/use-all-guests";
@@ -112,7 +112,7 @@ function GuestsPage() {
 
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <header className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="text-xs text-muted-foreground">
@@ -148,21 +148,16 @@ function GuestsPage() {
           disponibles. Vous pouvez toujours consulter et exporter votre liste.
         </p>
       ) : (
-        <RsvpActivationCard
+        <InvitationSettings
           enabled={!!couple.rsvpEnabled}
+          everEnabled={!!couple.rsvpEverEnabled}
           quota={couple.rsvpQuota ?? null}
           behavior={couple.rsvpQuotaBehavior ?? "message"}
           confirmedCount={confirmedCount}
-          onChange={(patch) => void updateCouple(patch)}
+          template={couple.whatsappInviteTemplate ?? DEFAULT_WHATSAPP_INVITE_TEMPLATE}
+          onSave={(patch) => void updateCouple(patch)}
         />
       )}
-
-      {!isPast ? (
-        <WhatsAppMessageCard
-          template={couple.whatsappInviteTemplate ?? DEFAULT_WHATSAPP_INVITE_TEMPLATE}
-          onSave={(template) => void updateCouple({ whatsappInviteTemplate: template })}
-        />
-      ) : null}
 
       <input
         value={query}
@@ -196,9 +191,18 @@ function GuestsPage() {
       </select>
 
       <ul className="divide-y divide-border rounded-xl border border-border bg-card">
-        {filtered.length === 0 ? (
+        {allGuests.length === 0 ? (
+          <li className="flex flex-col items-center gap-4 p-8 text-center">
+            <p className="text-sm text-muted-foreground">Vous n'avez pas encore d'invité</p>
+            {isPast ? null : (
+              <Button asChild>
+                <Link to="/dashboard/guests/new">+ Ajouter votre premier invité</Link>
+              </Button>
+            )}
+          </li>
+        ) : filtered.length === 0 ? (
           <li className="p-8 text-center text-sm text-muted-foreground">
-            Aucun invité ne correspond.
+            Aucun invité ne correspond à votre recherche
           </li>
         ) : (
           filtered.map((g) => {
@@ -323,254 +327,168 @@ function GuestsPage() {
   );
 }
 
-function WhatsAppMessageCard({
-  template,
-  onSave,
-}: {
-  template: string;
-  onSave: (template: string) => void;
-}) {
-  const [open, setOpen] = useState(false);
-  const [draft, setDraft] = useState(template);
-  const isValid = draft.trim().length > 0 && draft.length <= 1000;
-
-  const edit = () => {
-    setDraft(template);
-    setOpen(true);
-  };
-
-  return (
-    <section className="rounded-xl border border-border bg-card p-4">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h2 className="font-medium">Message d'invitation WhatsApp</h2>
-          <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">{template}</p>
-        </div>
-        <Button type="button" variant="outline" size="sm" onClick={edit}>
-          <Settings2 />
-          Modifier
-        </Button>
-      </div>
-
-      <BottomSheet open={open} onOpenChange={setOpen} title="Personnaliser le message WhatsApp" actionLabel="Fermer">
-        <div className="space-y-4">
-          <div>
-            <label htmlFor="whatsapp-template" className="text-sm font-medium">
-              Message par défaut
-            </label>
-            <textarea
-              id="whatsapp-template"
-              value={draft}
-              onChange={(event) => setDraft(event.target.value)}
-              maxLength={1000}
-              rows={7}
-              className="mt-2 w-full resize-none rounded-lg border border-input bg-card px-3 py-3 text-base outline-none focus:ring-2 focus:ring-ring"
-            />
-            <div className="mt-2 flex items-center justify-between gap-3 text-xs text-muted-foreground">
-              <p>{"{prenom} · {noms_maries} · {date} · {lien_rsvp}"}</p>
-              <span>{draft.length}/1000</span>
-            </div>
-          </div>
-          <Button
-            type="button"
-            className="w-full"
-            disabled={!isValid}
-            onClick={() => {
-              onSave(draft.trim());
-              setOpen(false);
-            }}
-          >
-            Enregistrer le message
-          </Button>
-        </div>
-      </BottomSheet>
-    </section>
-  );
-}
-
-function RsvpActivationCard({
+function InvitationSettings({
   enabled,
+  everEnabled,
   quota,
   behavior,
   confirmedCount,
-  onChange,
+  template,
+  onSave,
 }: {
   enabled: boolean;
+  everEnabled: boolean;
   quota: number | null;
   behavior: "message" | "hide";
   confirmedCount: number;
-  onChange: (patch: {
+  template: string;
+  onSave: (patch: {
     rsvpEnabled?: boolean;
+    rsvpEverEnabled?: boolean;
     rsvpQuota?: number | null;
     rsvpQuotaBehavior?: "message" | "hide";
+    whatsappInviteTemplate?: string;
   }) => void;
 }) {
   const mode: "unlimited" | "quota" = quota != null && quota > 0 ? "quota" : "unlimited";
-
   const [sheetOpen, setSheetOpen] = useState(false);
-  const [activating, setActivating] = useState(false);
+  const [draftEnabled, setDraftEnabled] = useState(enabled);
   const [draftMode, setDraftMode] = useState<"unlimited" | "quota">(mode);
   const [draftQuota, setDraftQuota] = useState(quota != null && quota > 0 ? String(quota) : "");
   const [draftBehavior, setDraftBehavior] = useState<"message" | "hide">(behavior);
+  const [draftTemplate, setDraftTemplate] = useState(template);
 
-  const openSheet = (isActivating: boolean) => {
+  const openSheet = () => {
+    setDraftEnabled(enabled);
     setDraftMode(mode);
     setDraftQuota(quota != null && quota > 0 ? String(quota) : "");
     setDraftBehavior(behavior);
-    setActivating(isActivating);
+    setDraftTemplate(template);
     setSheetOpen(true);
   };
-
-  const handleToggle = () => {
-    if (enabled) {
-      // Désactivation : on conserve la configuration en base.
-      onChange({ rsvpEnabled: false });
-      return;
-    }
-    openSheet(true);
-  };
-
   const quotaValue = Math.max(1, Number(draftQuota) || 0);
-  const canSubmit = draftMode === "unlimited" || quotaValue > 0;
+  const canSubmit =
+    (!draftEnabled || draftMode === "unlimited" || quotaValue > 0) &&
+    draftTemplate.trim().length > 0 &&
+    draftTemplate.length <= 1000;
 
   const submit = () => {
-    onChange({
-      rsvpEnabled: true,
+    onSave({
+      rsvpEnabled: draftEnabled,
+      rsvpEverEnabled: everEnabled || draftEnabled,
       rsvpQuota: draftMode === "quota" ? quotaValue : null,
       rsvpQuotaBehavior: draftBehavior,
+      whatsappInviteTemplate: draftTemplate.trim(),
     });
-    setActivating(false);
     setSheetOpen(false);
   };
-
-  const handleSheetOpenChange = (open: boolean) => {
-    if (!open) {
-      // Fermeture sans validation : pas d'activation « à moitié ».
-      if (activating) onChange({ rsvpEnabled: false });
-      setActivating(false);
-    }
-    setSheetOpen(open);
-  };
+  const rsvpSummary = !enabled
+    ? "RSVP désactivé"
+    : mode === "quota"
+      ? `RSVP actif · ${confirmedCount}/${quota} inscrits`
+      : "RSVP actif · Sans limite";
 
   return (
-    <section className="rounded-xl border border-border bg-card p-4">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h2 className="font-medium">Activer la liste d'invitation</h2>
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            Affiche le bouton « Confirmer ma présence » sur votre page d'invitation.
-          </p>
-        </div>
-        <button
-          type="button"
-          role="switch"
-          aria-checked={enabled}
-          aria-label="Activer la liste d'invitation"
-          onClick={handleToggle}
-          className={
-            "relative mt-0.5 h-7 w-12 shrink-0 rounded-full transition " +
-            (enabled ? "bg-primary" : "bg-muted")
-          }
-        >
-          <span
-            className={
-              "absolute top-1 size-5 rounded-full bg-white shadow transition-all " +
-              (enabled ? "left-6" : "left-1")
-            }
-          />
+    <section className="rounded-lg border border-border bg-card p-3.5">
+      {everEnabled ? (
+        <button type="button" onClick={openSheet} className="flex w-full items-center gap-3 text-left">
+          <Settings2 className="size-5 shrink-0 text-primary" />
+          <div className="min-w-0 flex-1">
+            <h2 className="text-sm font-medium">Réglages de l'invitation</h2>
+            <p className="truncate text-xs text-muted-foreground">
+              {rsvpSummary} · Message WhatsApp personnalisé
+            </p>
+          </div>
+          <Pencil className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+          <span className="sr-only">Modifier les réglages</span>
         </button>
-      </div>
-
-      {enabled ? (
-        <div className="mt-4 space-y-2 border-t border-border pt-3">
-          <div className="flex items-center justify-between gap-3">
-            <p className="min-w-0 text-sm">
-              {mode === "quota"
-                ? `Avec quota · ${quota} max · ${
-                    behavior === "hide" ? "RSVP masqué au quota atteint" : "Message au quota atteint"
-                  }`
-                : "Sans limite · Tous les invités acceptés"}
+      ) : (
+        <div className="space-y-3">
+          <div>
+            <h2 className="font-medium">Réglages de l'invitation</h2>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              Activez les confirmations et préparez le message à envoyer à vos invités.
             </p>
-            <button
-              type="button"
-              onClick={() => openSheet(false)}
-              className="shrink-0 text-sm font-medium text-primary underline underline-offset-4"
-            >
-              Modifier
-            </button>
           </div>
-          {mode === "quota" ? (
-            <p className="text-sm text-muted-foreground">
-              <span className="font-medium text-foreground">{confirmedCount}</span> / {quota}{" "}
-              inscrits
-            </p>
-          ) : null}
-        </div>
-      ) : null}
-
-      <BottomSheet
-        open={sheetOpen}
-        onOpenChange={handleSheetOpenChange}
-        title="Configurer la liste d'invitation"
-        actionLabel="Fermer"
-      >
-        <div className="space-y-4">
           <div className="grid gap-2 sm:grid-cols-2">
-            <OptionButton
-              active={draftMode === "unlimited"}
-              title="Sans limite"
-              desc="Tous les invités qui s'inscrivent sont acceptés"
-              onClick={() => setDraftMode("unlimited")}
-            />
-            <OptionButton
-              active={draftMode === "quota"}
-              title="Avec quota"
-              desc="Limiter le nombre maximum d'invités"
-              onClick={() => setDraftMode("quota")}
-            />
-          </div>
-
-          {draftMode === "quota" ? (
-            <div className="space-y-3 rounded-lg bg-secondary/30 p-3">
-              <label className="block text-xs font-medium">
-                Nombre maximum d'invités
-                <input
-                  type="number"
-                  min={1}
-                  inputMode="numeric"
-                  value={draftQuota}
-                  onChange={(e) => setDraftQuota(e.target.value)}
-                  placeholder="Ex. 300"
-                  className="mt-1 w-full rounded-lg border border-input bg-card px-3 py-2.5 text-base"
-                />
-              </label>
-
-              <p className="text-xs font-medium">Une fois le quota atteint :</p>
-              <div className="grid gap-2 sm:grid-cols-2">
-                <OptionButton
-                  active={draftBehavior === "message"}
-                  title="Afficher un message"
-                  desc="« Il n'y a plus de place disponible »"
-                  onClick={() => setDraftBehavior("message")}
-                />
-                <OptionButton
-                  active={draftBehavior === "hide"}
-                  title="Masquer le RSVP"
-                  desc="La section disparaît de la page publique"
-                  onClick={() => setDraftBehavior("hide")}
-                />
-              </div>
+            <div className="rounded-lg bg-secondary/30 p-3">
+              <p className="text-sm font-medium">Liste RSVP</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">À configurer · limite facultative</p>
             </div>
-          ) : null}
+            <div className="rounded-lg bg-secondary/30 p-3">
+              <p className="text-sm font-medium">Message WhatsApp</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">Modèle personnalisable</p>
+            </div>
+          </div>
+          <Button type="button" className="w-full" onClick={openSheet}>
+            Configurer l'invitation
+          </Button>
+        </div>
+      )}
 
-          <button
-            type="button"
-            disabled={!canSubmit}
-            onClick={submit}
-            className="w-full rounded-lg bg-primary px-4 py-3 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Valider
-          </button>
+      <BottomSheet open={sheetOpen} onOpenChange={setSheetOpen} title="Réglages de l'invitation" actionLabel="Fermer">
+        <div className="space-y-6">
+          <section className="space-y-3">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h3 className="font-medium">Liste RSVP</h3>
+                <p className="text-xs text-muted-foreground">Confirmer sa présence depuis la page d'invitation.</p>
+              </div>
+              <Button
+                type="button"
+                role="switch"
+                aria-checked={draftEnabled}
+                aria-label="Activer la liste d'invitation"
+                variant={draftEnabled ? "default" : "secondary"}
+                size="sm"
+                onClick={() => setDraftEnabled((current) => !current)}
+              >
+                {draftEnabled ? "Activé" : "Désactivé"}
+              </Button>
+            </div>
+
+            {draftEnabled ? (
+              <>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <OptionButton active={draftMode === "unlimited"} title="Sans limite" desc="Tous les invités sont acceptés" onClick={() => setDraftMode("unlimited")} />
+                  <OptionButton active={draftMode === "quota"} title="Avec quota" desc="Limiter le nombre maximum d'invités" onClick={() => setDraftMode("quota")} />
+                </div>
+                {draftMode === "quota" ? (
+                  <div className="space-y-3 rounded-lg bg-secondary/30 p-3">
+                    <label className="block text-xs font-medium">
+                      Nombre maximum d'invités
+                      <input type="number" min={1} inputMode="numeric" value={draftQuota} onChange={(event) => setDraftQuota(event.target.value)} placeholder="Ex. 300" className="mt-1 w-full rounded-lg border border-input bg-card px-3 py-2.5 text-base" />
+                    </label>
+                    <p className="text-xs font-medium">Une fois le quota atteint :</p>
+                    <div className="grid gap-2 sm:grid-cols-2">
+                      <OptionButton active={draftBehavior === "message"} title="Afficher un message" desc="Indiquer qu'il n'y a plus de place" onClick={() => setDraftBehavior("message")} />
+                      <OptionButton active={draftBehavior === "hide"} title="Masquer le RSVP" desc="La section disparaît de la page publique" onClick={() => setDraftBehavior("hide")} />
+                    </div>
+                  </div>
+                ) : null}
+              </>
+            ) : null}
+          </section>
+
+          <section className="space-y-2 border-t border-border pt-5">
+            <label htmlFor="whatsapp-template" className="font-medium">Message d'invitation WhatsApp</label>
+            <textarea
+              id="whatsapp-template"
+              value={draftTemplate}
+              onChange={(event) => setDraftTemplate(event.target.value)}
+              maxLength={1000}
+              rows={6}
+              className="w-full resize-none rounded-lg border border-input bg-card px-3 py-3 text-base outline-none focus:ring-2 focus:ring-ring"
+            />
+            <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
+              <p className="min-w-0">{"{prenom} · {noms_maries} · {date} · {lien_rsvp}"}</p>
+              <span className="shrink-0">{draftTemplate.length}/1000</span>
+            </div>
+          </section>
+
+          <Button type="button" disabled={!canSubmit} onClick={submit} className="w-full">
+            Enregistrer les réglages
+          </Button>
         </div>
       </BottomSheet>
     </section>
