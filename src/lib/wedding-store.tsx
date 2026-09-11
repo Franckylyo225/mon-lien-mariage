@@ -164,6 +164,8 @@ export interface Guest {
   ceremonyIds: string[];
   rsvps: RSVP[];
   message?: string;
+  /** Code personnel utilisé dans le lien d'invitation. */
+  inviteToken?: string;
 }
 
 export interface Couple {
@@ -820,6 +822,7 @@ type GuestRow = {
   ceremony_ids: string[];
   rsvps: RSVP[] | null;
   message: string | null;
+  invite_token?: string | null;
 };
 
 function rowToGuest(g: GuestRow): Guest {
@@ -835,6 +838,7 @@ function rowToGuest(g: GuestRow): Guest {
     ceremonyIds: Array.isArray(g.ceremony_ids) ? g.ceremony_ids : [],
     rsvps: Array.isArray(g.rsvps) ? g.rsvps : [],
     message: g.message ?? undefined,
+    inviteToken: g.invite_token ?? undefined,
   };
 }
 
@@ -1124,8 +1128,17 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       setGuests((prev) => [created, ...prev]);
       if (weddingId) {
         const row = { id, wedding_id: weddingId, ...guestToRow(created) };
-        const { error } = await supabase.from("guests").insert(row as never);
+        const { data, error } = await supabase
+          .from("guests")
+          .insert(row as never)
+          .select("invite_token")
+          .single();
         if (error) console.error("addGuest", error);
+        const token = (data as { invite_token?: string | null } | null)?.invite_token ?? undefined;
+        if (token) {
+          created.inviteToken = token;
+          setGuests((prev) => prev.map((x) => (x.id === id ? { ...x, inviteToken: token } : x)));
+        }
       }
       return created;
     },

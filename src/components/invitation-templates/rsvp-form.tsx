@@ -25,6 +25,13 @@ interface Props {
   ceremonies?: Ceremony[];
   /** Called once when the guest successfully confirms their attendance. */
   onConfirmed?: () => void;
+  /** Invité identifié via son lien personnel (?g=token). */
+  guestPrefill?: {
+    id: string;
+    name: string;
+    phone?: string | null;
+    guestType?: string | null;
+  } | null;
 }
 
 // Legacy tone → representative theme (kept only for invitation.tsx preview)
@@ -36,7 +43,14 @@ const TONE_TO_THEME: Record<LegacyTone, ThemeId> = {
   deco: "or-antique",
 };
 
-export function TemplateRsvpForm({ theme, tone, weddingId, ceremonies = [], onConfirmed }: Props) {
+export function TemplateRsvpForm({
+  theme,
+  tone,
+  weddingId,
+  ceremonies = [],
+  onConfirmed,
+  guestPrefill,
+}: Props) {
   const resolvedTheme: ThemeId | undefined =
     theme ?? (tone ? TONE_TO_THEME[tone] : undefined);
   const design = resolveRsvpDesign(resolvedTheme);
@@ -50,6 +64,13 @@ export function TemplateRsvpForm({ theme, tone, weddingId, ceremonies = [], onCo
   const [done, setDone] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!guestPrefill) return;
+    setName((v) => v || guestPrefill.name);
+    setPhone((v) => v || guestPrefill.phone || "");
+    setGuestType((v) => v || ((guestPrefill.guestType as GuestType | null) ?? ""));
+  }, [guestPrefill]);
 
   useEffect(() => {
     if (!open) return;
@@ -89,6 +110,7 @@ export function TemplateRsvpForm({ theme, tone, weddingId, ceremonies = [], onCo
         guest_name: name.trim(),
         guest_phone: phone || null,
         guest_type: guestType || null,
+        guest_id: guestPrefill?.id ?? null,
         attending: true,
         companions: plus,
         message: null,
