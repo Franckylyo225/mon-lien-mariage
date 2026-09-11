@@ -14,6 +14,7 @@ interface Props {
   defaultCountry?: Country;
   showError?: boolean;
   errorMessage?: string;
+  required?: boolean;
   className?: string;
 }
 
