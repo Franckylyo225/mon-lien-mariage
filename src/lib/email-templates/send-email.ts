@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { render } from '@react-email/render'
-import { EmailAPIError, sendLovableEmail } from '@lovable.dev/email-js'
+import { sendResendEmail } from '@/lib/email-resend.server'
 import { TEMPLATES } from './registry'
 
-// Server-only: reads LOVABLE_API_KEY. Never import from client components.
+// Server-only: envoi via Resend. Never import from client components.
 
 // Configuration baked in at scaffold time
 const SITE_NAME = "Mon Invit"
