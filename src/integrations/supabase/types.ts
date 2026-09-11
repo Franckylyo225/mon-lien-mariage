@@ -398,6 +398,7 @@ export type Database = {
           group_name: string | null
           guest_type: string
           id: string
+          invite_token: string
           message: string | null
           name: string
           phone: string | null
@@ -413,6 +414,7 @@ export type Database = {
           group_name?: string | null
           guest_type?: string
           id?: string
+          invite_token?: string
           message?: string | null
           name: string
           phone?: string | null
@@ -428,6 +430,7 @@ export type Database = {
           group_name?: string | null
           guest_type?: string
           id?: string
+          invite_token?: string
           message?: string | null
           name?: string
           phone?: string | null
@@ -735,6 +738,7 @@ export type Database = {
           created_at: string
           dietary_notes: string | null
           guest_email: string | null
+          guest_id: string | null
           guest_name: string
           guest_phone: string | null
           guest_type: string | null
@@ -749,6 +753,7 @@ export type Database = {
           created_at?: string
           dietary_notes?: string | null
           guest_email?: string | null
+          guest_id?: string | null
           guest_name: string
           guest_phone?: string | null
           guest_type?: string | null
@@ -763,6 +768,7 @@ export type Database = {
           created_at?: string
           dietary_notes?: string | null
           guest_email?: string | null
+          guest_id?: string | null
           guest_name?: string
           guest_phone?: string | null
           guest_type?: string | null
@@ -776,6 +782,13 @@ export type Database = {
             columns: ["ceremony_id"]
             isOneToOne: false
             referencedRelation: "ceremonies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rsvps_guest_id_fkey"
+            columns: ["guest_id"]
+            isOneToOne: false
+            referencedRelation: "guests"
             referencedColumns: ["id"]
           },
           {
@@ -1266,6 +1279,17 @@ export type Database = {
         Returns: string
       }
       email_exists: { Args: { _email: string }; Returns: boolean }
+      guest_by_invite_token: {
+        Args: { _slug: string; _token: string }
+        Returns: {
+          allowed_plus_ones: number
+          ceremony_ids: string[]
+          guest_type: string
+          id: string
+          name: string
+          phone: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
