@@ -128,9 +128,9 @@
   transform: translateY(-55%);
   text-align: right;
   font-family: "Cormorant Garamond", ui-serif, Georgia, serif;
-  font-size: clamp(104px, 22vh, 190px);
+  font-size: clamp(120px, 27vh, 360px);
   font-weight: 400;
-  line-height: 0.55;
+  line-height: 0.64;
   opacity: 0.72;
   mix-blend-mode: screen;
   text-shadow: 0 2px 18px var(--editorial-text-shadow);
@@ -172,7 +172,8 @@
 
 @media (max-height: 620px) {
   .editorial-date-numerals {
-    font-size: clamp(88px, 21vh, 130px);
+    font-size: clamp(96px, 25vh, 170px);
+    line-height: 0.6;
   }
   .editorial-date-footer {
     bottom: max(94px, calc(env(safe-area-inset-bottom) + 78px));
