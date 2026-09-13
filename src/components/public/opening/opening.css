@@ -91,6 +91,96 @@
   padding-left: 100%;
   animation: opening-marquee 14s linear infinite;
 }
+
+.editorial-date {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: var(--editorial-placeholder);
+  color: var(--editorial-light);
+}
+.editorial-date-dark {
+  color: var(--editorial-dark);
+}
+.editorial-date-photo,
+.editorial-date-contrast {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+}
+.editorial-date-photo {
+  object-fit: cover;
+}
+.editorial-date-placeholder {
+  background: var(--editorial-placeholder);
+}
+.editorial-date-contrast {
+  background: linear-gradient(to bottom, transparent 46%, var(--editorial-shade) 100%);
+  pointer-events: none;
+}
+.editorial-date-numerals {
+  position: absolute;
+  right: clamp(12px, 5vw, 30px);
+  top: 50%;
+  display: grid;
+  transform: translateY(-55%);
+  text-align: right;
+  font-family: "Cormorant Garamond", ui-serif, Georgia, serif;
+  font-size: clamp(104px, 22vh, 190px);
+  font-weight: 400;
+  line-height: 0.55;
+  opacity: 0.72;
+  mix-blend-mode: screen;
+  text-shadow: 0 2px 18px var(--editorial-text-shadow);
+}
+.editorial-date-dark .editorial-date-numerals {
+  mix-blend-mode: multiply;
+}
+.editorial-date-numerals span {
+  min-width: 2ch;
+  font-variant-numeric: tabular-nums;
+}
+.editorial-date-footer {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  bottom: max(112px, calc(env(safe-area-inset-bottom) + 94px));
+  text-align: center;
+  text-shadow: 0 1px 12px var(--editorial-text-shadow);
+}
+.editorial-date-quote {
+  margin: 0 auto 14px;
+  max-width: 32ch;
+  font-family: "Cormorant Garamond", ui-serif, Georgia, serif;
+  font-size: clamp(16px, 2.4vh, 22px);
+  font-style: italic;
+  line-height: 1.15;
+}
+.editorial-date-names {
+  overflow-wrap: anywhere;
+  font-size: clamp(12px, 1.8vh, 16px);
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+.editorial-date .opening-hint {
+  text-shadow: 0 1px 10px var(--editorial-text-shadow);
+}
+
+@media (max-height: 620px) {
+  .editorial-date-numerals {
+    font-size: clamp(88px, 21vh, 130px);
+  }
+  .editorial-date-footer {
+    bottom: max(94px, calc(env(safe-area-inset-bottom) + 78px));
+  }
+  .editorial-date-quote {
+    margin-bottom: 8px;
+  }
+}
 @keyframes opening-marquee {
   from {
     transform: translate3d(0, 0, 0);

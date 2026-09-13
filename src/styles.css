@@ -46,6 +46,11 @@
   --succes: #2E9E6B;
   --erreur: #D33A3A;
   --whatsapp: #25D366;
+  --editorial-light: #FFFDF8;
+  --editorial-dark: #171315;
+  --editorial-placeholder: #403A3C;
+  --editorial-shade: rgb(0 0 0 / 0.48);
+  --editorial-text-shadow: rgb(0 0 0 / 0.42);
 }
 
 @theme inline {
