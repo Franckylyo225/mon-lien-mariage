@@ -292,7 +292,12 @@ export interface Couple {
   splashShowDate?: boolean;
   openingPageModel?: string;
   openingPageEffect?: string;
-  openingPageConfig?: { color?: string | null; photoUrl?: string | null };
+  openingPageConfig?: {
+    color?: string | null;
+    photoUrl?: string | null;
+    quote?: string | null;
+    textTone?: "auto" | "light" | "dark" | null;
+  };
 }
 
 

@@ -5,3 +5,4 @@
 - [x] Ajouter le statut de confirmation et le menu d'actions sur la page admin Utilisateurs.
 - [x] Ajouter l’envoi WhatsApp personnalisé par invité et le modèle de message éditable.
 - [x] Réorganiser « Mes invités » avec réglages fusionnés, onboarding et états vides distincts.
+- [ ] Ajouter le modèle d’ouverture « Date éditoriale » avec contraste adaptatif et citation.

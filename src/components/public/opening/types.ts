@@ -4,7 +4,8 @@ export type OpeningModel =
   | "olive"
   | "arche_floral"
   | "romantique"
-  | "breaking_news";
+  | "breaking_news"
+  | "editorial_date";
 
 export type OpeningEffect = "tap" | "swipe_up" | "swipe_down";
 
@@ -87,6 +88,14 @@ export const OPENING_MODELS: OpeningModelMeta[] = [
     defaultColor: "#C81E30",
     supportsPhoto: true,
   },
+  {
+    id: "editorial_date",
+    label: "Date éditoriale",
+    description: "Photo plein écran et date monumentale superposée.",
+    defaultEffect: "tap",
+    supportsColor: false,
+    supportsPhoto: true,
+  },
 ];
 
 export function openingModelMeta(id: OpeningModel | string | null | undefined): OpeningModelMeta {
@@ -96,12 +105,15 @@ export function openingModelMeta(id: OpeningModel | string | null | undefined): 
 export interface OpeningPageConfig {
   color?: string | null;
   photoUrl?: string | null;
+  quote?: string | null;
+  textTone?: "auto" | "light" | "dark" | null;
 }
 
 export interface OpeningModelProps {
   brideName: string;
   groomName: string;
   dateLabel: string;
+  numericDate: string;
   city?: string | null;
   photoUrl?: string | null;
   color: string;
@@ -112,6 +124,9 @@ export interface OpeningModelProps {
   /** « Hello Awa » quand l'invité arrive via son lien personnel. */
   greeting?: string | null;
   effectLabel: string;
+  effect?: OpeningEffect;
+  quote?: string | null;
+  textTone?: "auto" | "light" | "dark" | null;
 }
 
 export function formatOpeningDate(date?: string | null): string {
