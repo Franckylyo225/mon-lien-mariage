@@ -567,7 +567,7 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
                 theme={theme}
                 bgMode={bgMode}
                 bgColor={couple.splashBgColor}
-                bgImageUrl={couple.splashBgImageUrl}
+                bgImageUrl={previewPhotoFor(previewModel ?? model, couple)}
                 kicker={couple.splashKicker}
                 tapLabel={couple.splashTapLabel}
                 showDate={showDate}
