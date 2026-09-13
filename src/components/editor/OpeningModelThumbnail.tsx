@@ -16,6 +16,7 @@ import {
   openingModelMeta,
   type OpeningModel,
   type OpeningModelProps,
+  type OpeningEffect,
 } from "@/components/public/opening/types";
 import type { Couple } from "@/lib/wedding-store";
 import type { ResolvedTheme } from "@/lib/wedding-theme";
@@ -70,9 +71,12 @@ export function OpeningModelThumbnail({ model, couple, theme }: Props) {
   const [scale, setScale] = useState(0.4);
   const meta = openingModelMeta(model);
   const photoUrl = previewPhotoFor(model, couple);
-  const effect = model === couple.openingPageModel
-    ? (couple.openingPageEffect ?? meta.defaultEffect)
-    : meta.defaultEffect;
+  const savedEffect = couple.openingPageEffect;
+  const effect: OpeningEffect =
+    model === couple.openingPageModel &&
+    (savedEffect === "tap" || savedEffect === "swipe_up" || savedEffect === "swipe_down")
+      ? savedEffect
+      : meta.defaultEffect;
 
   useLayoutEffect(() => {
     const frame = frameRef.current;
