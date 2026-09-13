@@ -64,6 +64,7 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
   const effect = (couple.openingPageEffect ?? "tap") as OpeningEffect;
   const modelMeta = openingModelMeta(model);
   const isClassique = model === "classique";
+  const isEditorialDate = model === "editorial_date";
   const modelColor =
     couple.openingPageConfig?.color || modelMeta.defaultColor || theme.accent;
 
@@ -250,6 +251,68 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
                 )}
               </div>
             )}
+
+            {isEditorialDate ? (
+              <div className="space-y-4">
+                <div>
+                  <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                    Lisibilité du texte
+                  </p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {([
+                      { id: "auto", label: "Auto" },
+                      { id: "light", label: "Clair" },
+                      { id: "dark", label: "Foncé" },
+                    ] as const).map((tone) => (
+                      <button
+                        key={tone.id}
+                        type="button"
+                        onClick={() =>
+                          onPatch({
+                            openingPageConfig: {
+                              ...(couple.openingPageConfig ?? {}),
+                              textTone: tone.id,
+                            },
+                          })
+                        }
+                        className={
+                          "rounded-xl border px-3 py-2 text-[12px] transition " +
+                          ((couple.openingPageConfig?.textTone ?? "auto") === tone.id
+                            ? "border-foreground bg-foreground text-background"
+                            : "border-border bg-background hover:border-foreground/40")
+                        }
+                      >
+                        {tone.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="mb-2 block font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                    Citation facultative
+                  </label>
+                  <textarea
+                    value={couple.openingPageConfig?.quote ?? ""}
+                    maxLength={140}
+                    rows={3}
+                    placeholder="Notre plus belle histoire commence ici…"
+                    onChange={(event) =>
+                      onPatch({
+                        openingPageConfig: {
+                          ...(couple.openingPageConfig ?? {}),
+                          quote: event.target.value,
+                        },
+                      })
+                    }
+                    className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                  />
+                  <p className="mt-1 text-right text-[10px] opacity-50">
+                    {(couple.openingPageConfig?.quote ?? "").length}/140
+                  </p>
+                </div>
+              </div>
+            ) : null}
 
             {/* Background mode */}
             <div className={isClassique ? undefined : "hidden"}>

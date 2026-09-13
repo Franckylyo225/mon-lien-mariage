@@ -12,6 +12,16 @@ import {
   type OpeningPageConfig,
 } from "./types";
 
+function formatNumericOpeningDate(date?: string | null): string {
+  if (!date) return "-- / -- / --";
+  const parsed = new Date(`${date.slice(0, 10)}T12:00:00`);
+  if (Number.isNaN(parsed.getTime())) return "-- / -- / --";
+  const day = String(parsed.getDate()).padStart(2, "0");
+  const month = String(parsed.getMonth() + 1).padStart(2, "0");
+  const year = String(parsed.getFullYear()).slice(-2);
+  return `${day} / ${month} / ${year}`;
+}
+
 /** Chargement à la demande : seul le modèle choisi est téléchargé. */
 const LAZY_MODELS: Partial<Record<OpeningModel, ComponentType<OpeningModelProps>>> = {
   presse: lazy(() => import("./ModelPresse")),
@@ -19,6 +29,7 @@ const LAZY_MODELS: Partial<Record<OpeningModel, ComponentType<OpeningModelProps>
   arche_floral: lazy(() => import("./ModelArcheFloral")),
   romantique: lazy(() => import("./ModelRomantique")),
   breaking_news: lazy(() => import("./ModelBreakingNews")),
+  editorial_date: lazy(() => import("./ModelEditorialDate")),
 };
 
 interface Props extends SplashCustomization {
@@ -77,6 +88,7 @@ export function OpeningPage({
     brideName,
     groomName,
     dateLabel: formatOpeningDate(weddingDate),
+    numericDate: formatNumericOpeningDate(weddingDate),
     city,
     photoUrl: config?.photoUrl || splash.bgImageUrl || heroImageUrl || null,
     color: config?.color || meta.defaultColor || theme.accent,
@@ -86,6 +98,9 @@ export function OpeningPage({
     showDate: splash.showDate !== false,
     greeting,
     effectLabel: OPENING_EFFECT_LABEL[effect],
+    effect,
+    quote: config?.quote,
+    textTone: config?.textTone,
   };
 
   return (
