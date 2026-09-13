@@ -3,7 +3,8 @@ import { createPortal } from "react-dom";
 import imageCompression from "browser-image-compression";
 import { supabase } from "@/integrations/supabase/client";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
-import { Camera, Eye, ImageIcon, Loader2, Trash2, X } from "lucide-react";
+import { Camera, Check, Eye, ImageIcon, Loader2, Trash2, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { ensureAuthOrMessage, friendlyUploadError } from "@/lib/upload-errors";
 import { HexEditor } from "./HexEditor";
 import { OpeningPage } from "@/components/public/opening/OpeningPage";
@@ -16,6 +17,7 @@ import {
 } from "@/components/public/opening/types";
 import type { Couple } from "@/lib/wedding-store";
 import type { ResolvedTheme } from "@/lib/wedding-theme";
+import { OpeningModelThumbnail, previewPhotoFor } from "./OpeningModelThumbnail";
 
 const SIGNED_URL_EXPIRY = 60 * 60 * 24 * 365 * 10;
 
@@ -49,9 +51,13 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
   const [error, setError] = useState<string | null>(null);
   const [editingColor, setEditingColor] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [previewModel, setPreviewModel] = useState<OpeningModel | null>(null);
+  const [previewEffect, setPreviewEffect] = useState<OpeningEffect | null>(null);
   const [previewKey, setPreviewKey] = useState(0);
-  const openPreview = () => {
+  const openPreview = (nextModel: OpeningModel = model, nextEffect: OpeningEffect = effect) => {
     setPreviewKey((k) => k + 1);
+    setPreviewModel(nextModel);
+    setPreviewEffect(nextEffect);
     setPreview(true);
   };
   // Never leave a stale preview overlay mounted when the sheet closes.
@@ -178,25 +184,39 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
               <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
                 Modèle
               </p>
-              <div className="grid grid-cols-2 gap-2">
-                {OPENING_MODELS.map((m) => (
-                  <button
-                    key={m.id}
-                    type="button"
-                    onClick={() =>
-                      onPatch({ openingPageModel: m.id, openingPageEffect: m.defaultEffect })
-                    }
-                    className={
-                      "rounded-xl border px-3 py-3 text-left text-[12px] transition " +
-                      (model === m.id
-                        ? "border-foreground bg-foreground text-background"
-                        : "border-border bg-background hover:border-foreground/40")
-                    }
-                  >
-                    <span className="block font-medium">{m.label}</span>
-                    <span className="block text-[10px] opacity-70">{m.description}</span>
-                  </button>
-                ))}
+               <div className="grid grid-cols-2 gap-3">
+                 {OPENING_MODELS.map((m) => {
+                   const active = model === m.id;
+                   return (
+                     <Button
+                       key={m.id}
+                       type="button"
+                       variant="outline"
+                       onClick={() => {
+                         onPatch({ openingPageModel: m.id, openingPageEffect: m.defaultEffect });
+                         openPreview(m.id, m.defaultEffect);
+                       }}
+                       aria-pressed={active}
+                       aria-label={`${m.label}${active ? ", sélectionné" : ""}`}
+                       className={
+                         "group relative h-auto min-w-0 flex-col gap-2 whitespace-normal rounded-lg border-2 bg-background p-1.5 pb-2 shadow-none transition " +
+                         (active
+                           ? "border-primary ring-2 ring-primary/15"
+                           : "border-border hover:border-primary/50")
+                       }
+                     >
+                       <OpeningModelThumbnail model={m.id} couple={couple} theme={theme} />
+                       {active ? (
+                         <span className="absolute right-2 top-2 grid size-6 place-items-center rounded-full bg-primary text-primary-foreground shadow-sm">
+                           <Check className="size-3.5" />
+                         </span>
+                       ) : null}
+                       <span className={active ? "text-xs font-semibold text-primary" : "text-xs font-medium"}>
+                         {m.label}
+                       </span>
+                     </Button>
+                   );
+                 })}
               </div>
             </div>
 
@@ -504,14 +524,14 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
               </button>
             </label>
 
-            <button
+            <Button
               type="button"
-              onClick={openPreview}
+              onClick={() => openPreview()}
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-foreground px-4 py-3 text-[12px] text-background"
             >
               <Eye className="size-4" />
               Voir l'aperçu
-            </button>
+            </Button>
           </div>
 
           {error && (
@@ -533,9 +553,12 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
               className="fixed inset-0 z-[9999]"
             >
               <OpeningPage
-                model={model}
-                effect={effect}
-                config={couple.openingPageConfig}
+                model={previewModel ?? model}
+                effect={previewEffect ?? effect}
+                config={{
+                  ...(couple.openingPageConfig ?? {}),
+                  photoUrl: previewPhotoFor(previewModel ?? model, couple),
+                }}
                 heroImageUrl={couple.heroImageUrl}
                 brideName={couple.brideName}
                 groomName={couple.groomName}
@@ -544,20 +567,22 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
                 theme={theme}
                 bgMode={bgMode}
                 bgColor={couple.splashBgColor}
-                bgImageUrl={couple.splashBgImageUrl}
+                bgImageUrl={previewPhotoFor(previewModel ?? model, couple)}
                 kicker={couple.splashKicker}
                 tapLabel={couple.splashTapLabel}
                 showDate={showDate}
                 onDone={() => setPreview(false)}
               />
-              <button
+              <Button
                 type="button"
+                variant="secondary"
+                size="icon"
                 onClick={() => setPreview(false)}
                 aria-label="Fermer l'aperçu"
-                className="fixed right-4 top-4 z-[10000] grid size-10 place-items-center rounded-full bg-black/60 text-white backdrop-blur-sm transition active:scale-95"
+                className="fixed right-4 top-4 z-[10000] size-10 rounded-full bg-background/85 text-foreground shadow-lg backdrop-blur-sm transition active:scale-95"
               >
                 <X className="size-5" />
-              </button>
+              </Button>
             </div>,
             document.body,
           )
