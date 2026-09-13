@@ -20,6 +20,40 @@
   flex-direction: column;
 }
 
+.opening-model-thumbnail {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border-radius: 5px;
+  background: var(--muted);
+  pointer-events: none;
+  isolation: isolate;
+}
+
+.opening-model-thumbnail-stage {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 393px;
+  height: 699px;
+  transform-origin: top left;
+  overflow: hidden;
+}
+
+.opening-model-thumbnail-stage .opening-hint {
+  bottom: 22px;
+}
+
+.opening-model-thumbnail-stage .opening-hint-greeting,
+.opening-model-thumbnail-stage .opening-hint-label {
+  font-size: 10px;
+}
+
+.opening-model-thumbnail-stage .opening-marquee span,
+.opening-model-thumbnail-stage .opening-hint-arrow {
+  animation: none;
+}
+
 .opening-shell.is-open.effect-tap {
   opacity: 0;
   transform: scale(1.06);
