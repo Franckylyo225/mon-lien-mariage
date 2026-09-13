@@ -101,6 +101,8 @@ export function OpeningPage({
     effect,
     quote: config?.quote,
     textTone: config?.textTone,
+    tickerText: config?.tickerText,
+    channelLabel: config?.channelLabel,
   };
 
   return (
