@@ -1,5 +1,20 @@
+import { useEffect, useState } from "react";
 import { OpeningHint } from "./OpeningHint";
 import type { OpeningModelProps } from "./types";
+
+const DEFAULT_TICKER = "SAVE THE DATE • {PRENOM1} & {PRENOM2} • {DATE}";
+
+function resolveTicker(
+  template: string,
+  brideName: string,
+  groomName: string,
+  dateLabel: string,
+): string {
+  return template
+    .replaceAll("{PRENOM1}", brideName)
+    .replaceAll("{PRENOM2}", groomName)
+    .replaceAll("{DATE}", dateLabel);
+}
 
 export function ModelBreakingNews({
   brideName,
@@ -13,18 +28,31 @@ export function ModelBreakingNews({
   effectLabel,
   fontHeading,
   fontBody,
+  tickerText,
+  channelLabel,
 }: OpeningModelProps) {
-  const ticker = [
-    "Save the date",
-    `${brideName} & ${groomName}`,
-    [dateLabel, city].filter(Boolean).join(" · "),
-  ]
-    .filter(Boolean)
-    .join("   •   ");
+  const [clock, setClock] = useState("--:--");
+  const ticker = resolveTicker(tickerText?.trim() || DEFAULT_TICKER, brideName, groomName, dateLabel);
+  const tickerLoop = `${ticker}   •   ${ticker}   •   `;
+
+  useEffect(() => {
+    const updateClock = () => {
+      setClock(
+        new Intl.DateTimeFormat(undefined, {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        }).format(new Date()),
+      );
+    };
+    updateClock();
+    const interval = window.setInterval(updateClock, 30_000);
+    return () => window.clearInterval(interval);
+  }, []);
 
   return (
     <div
-      className="relative flex h-full w-full flex-col items-center justify-center px-6 py-10 text-white"
+      className="breaking-news-model relative flex h-full w-full flex-col items-center justify-center px-5 py-10"
       style={{ background: color, fontFamily: fontBody }}
     >
       <p className="text-center text-[11px] uppercase tracking-[0.3em] opacity-85">
@@ -37,18 +65,35 @@ export function ModelBreakingNews({
         {brideName} &amp; {groomName}
       </p>
 
-      <div className="mt-6 w-[76vw] max-w-[330px] rounded-[14px] border-[3px] border-white/85 bg-black/25 p-1.5">
-        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[8px] bg-black/40">
+      <div className="breaking-tv mt-6 w-[84vw] max-w-[350px]">
+        <div className="breaking-tv-bezel">
+        <div className="breaking-tv-screen relative aspect-[4/3] w-full overflow-hidden">
           {photoUrl ? (
             <img src={photoUrl} alt="" className="h-full w-full object-cover" />
           ) : null}
-          <span className="absolute left-2 top-2 rounded-[3px] bg-white px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.18em] text-black">
-            ● Live
-          </span>
+          <div className="breaking-tv-shade" aria-hidden />
+          <div className="breaking-tv-topline">
+            <time dateTime={clock}>{clock}</time>
+            <span className="breaking-tv-live"><i aria-hidden /> Direct</span>
+          </div>
+          <div className="breaking-tv-channel" aria-label={`Chaîne ${channelLabel?.trim() || "LOVE TV"}`}>
+            <span aria-hidden>♥</span>
+            <b>{channelLabel?.trim() || "LOVE TV"}</b>
+          </div>
+          <div className="breaking-tv-lower-third">
+            <strong>Édition spéciale</strong>
+            <span>{brideName} &amp; {groomName}</span>
+          </div>
         </div>
-        <div className="opening-marquee mt-1.5 rounded-[4px] bg-white/95 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-black">
-          <span>{ticker}</span>
+        {greeting ? <div className="breaking-tv-greeting">{greeting}</div> : null}
+        <div className="breaking-tv-ticker" aria-label={ticker}>
+          <div className="breaking-tv-ticker-track" aria-hidden>
+            <span>{tickerLoop}</span>
+            <span>{tickerLoop}</span>
+          </div>
         </div>
+        </div>
+        <div className="breaking-tv-stand" aria-hidden><span /></div>
       </div>
 
       {showDate && dateLabel ? (
@@ -57,7 +102,7 @@ export function ModelBreakingNews({
         </p>
       ) : null}
 
-      <OpeningHint greeting={greeting} effectLabel={effectLabel} />
+      <OpeningHint effectLabel={effectLabel} />
     </div>
   );
 }

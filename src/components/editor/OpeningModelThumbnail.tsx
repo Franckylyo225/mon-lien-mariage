@@ -104,6 +104,8 @@ export function OpeningModelThumbnail({ model, couple, theme }: Props) {
     effect,
     quote: couple.openingPageConfig?.quote,
     textTone: couple.openingPageConfig?.textTone,
+    tickerText: couple.openingPageConfig?.tickerText,
+    channelLabel: couple.openingPageConfig?.channelLabel,
   };
 
   let visual;

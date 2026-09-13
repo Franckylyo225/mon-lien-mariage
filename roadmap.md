@@ -7,3 +7,4 @@
 - [x] Réorganiser « Mes invités » avec réglages fusionnés, onboarding et états vides distincts.
 - [x] Ajouter le modèle d’ouverture « Date éditoriale » avec contraste adaptatif et citation.
 - [x] Remplacer la sélection des pages d’ouverture par une galerie de miniatures réelles.
+- [x] Renforcer le modèle « Breaking News » avec écran TV, horloge, chaîne et bandeaux animés.

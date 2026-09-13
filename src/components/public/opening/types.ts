@@ -107,6 +107,8 @@ export interface OpeningPageConfig {
   photoUrl?: string | null;
   quote?: string | null;
   textTone?: "auto" | "light" | "dark" | null;
+  tickerText?: string | null;
+  channelLabel?: string | null;
 }
 
 export interface OpeningModelProps {
@@ -127,6 +129,8 @@ export interface OpeningModelProps {
   effect?: OpeningEffect;
   quote?: string | null;
   textTone?: "auto" | "light" | "dark" | null;
+  tickerText?: string | null;
+  channelLabel?: string | null;
 }
 
 export function formatOpeningDate(date?: string | null): string {

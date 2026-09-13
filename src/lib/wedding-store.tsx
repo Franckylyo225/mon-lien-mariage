@@ -297,6 +297,8 @@ export interface Couple {
     photoUrl?: string | null;
     quote?: string | null;
     textTone?: "auto" | "light" | "dark" | null;
+    tickerText?: string | null;
+    channelLabel?: string | null;
   };
 }
 
