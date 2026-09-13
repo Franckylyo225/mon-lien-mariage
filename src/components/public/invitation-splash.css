@@ -7,6 +7,11 @@
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
+.invitation-splash-compact {
+  position: absolute;
+  z-index: 1;
+  cursor: default;
+}
 
 .splash-half {
   position: absolute;

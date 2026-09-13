@@ -148,6 +148,8 @@ interface InvitationSplashProps extends SplashCustomization {
   effect?: "tap" | "swipe_up" | "swipe_down";
   /** « Hello {prénom} » quand l'invité arrive via son lien personnel. */
   greeting?: string | null;
+  /** Rend statique et contenu dans une miniature de la galerie. */
+  compact?: boolean;
 }
 
 export function InvitationSplash({
@@ -166,8 +168,9 @@ export function InvitationSplash({
   showDate = true,
   effect = "tap",
   greeting,
+  compact = false,
 }: InvitationSplashProps) {
-  const [phase, setPhase] = useState<Phase>("enter");
+  const [phase, setPhase] = useState<Phase>(compact ? "ready" : "enter");
   const startYRef = useRef<number | null>(null);
   const useImage = bgMode === "image" && !!bgImageUrl;
   const baseBg =
@@ -180,13 +183,14 @@ export function InvitationSplash({
     : base;
 
   useEffect(() => {
+    if (compact) return;
     const timers = [
       setTimeout(() => setPhase((p) => (p === "enter" ? "names" : p)), 700),
       setTimeout(() => setPhase((p) => (p === "names" ? "expand" : p)), 1600),
       setTimeout(() => setPhase((p) => (p === "expand" ? "ready" : p)), 2300),
     ];
     return () => timers.forEach(clearTimeout);
-  }, []);
+  }, [compact]);
 
   const open = useCallback(() => {
     setPhase((p) => {
@@ -325,11 +329,11 @@ export function InvitationSplash({
 
   return (
     <div
-      className={`invitation-splash${opening ? " opening" : ""}`}
+      className={`invitation-splash${compact ? " invitation-splash-compact" : ""}${opening ? " opening" : ""}`}
       style={{ fontFamily: t.fontBody, color: t.text }}
       role="button"
-      tabIndex={0}
-      {...gesture}
+      tabIndex={compact ? -1 : 0}
+      {...(compact ? {} : gesture)}
       aria-label="Ouvrir l'invitation"
     >
       <div className="splash-half splash-half-left" aria-hidden={opening ? "true" : undefined}>
