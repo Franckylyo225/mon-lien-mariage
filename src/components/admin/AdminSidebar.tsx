@@ -24,7 +24,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
-type Item = { to: string; label: string; Icon: typeof IconUsers; exact?: boolean };
+type Item = { to: string; label: string; Icon: typeof IconUsers; exact?: boolean; badge?: number };
 
 const analytics: Item[] = [
   { to: "/admin", label: "Vue d'ensemble", Icon: IconLayoutDashboard, exact: true },
@@ -36,8 +36,8 @@ const growth: Item[] = [
 ];
 const finance: Item[] = [{ to: "/admin/payments", label: "Paiements", Icon: IconCash }];
 const content: Item[] = [{ to: "/admin/blog", label: "Blog", Icon: IconArticle }];
-const system: Item[] = [
-  { to: "/admin/support", label: "Support", Icon: IconLifebuoy },
+const systemItems = (supportBadge: number): Item[] => [
+  { to: "/admin/support", label: "Support", Icon: IconLifebuoy, badge: supportBadge },
   { to: "/admin/emails", label: "Emails", Icon: IconMail },
   { to: "/admin/settings", label: "Paramètres", Icon: IconSettings },
 ];
@@ -69,6 +69,11 @@ function Section({ label, items, pathname }: { label: string; items: Item[]; pat
                       <it.Icon size={14} />
                     </span>
                     <span className="text-[13px]">{it.label}</span>
+                    {it.badge ? (
+                      <span className="ml-auto grid min-w-[18px] place-items-center rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-semibold leading-none text-primary-foreground group-data-[collapsible=icon]:hidden">
+                        {it.badge > 99 ? "99+" : it.badge}
+                      </span>
+                    ) : null}
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
