@@ -359,6 +359,7 @@ export const adminGetTicket = createServerFn({ method: "GET" })
       .select("email, display_name, user_first_name, user_last_name")
       .eq("id", (ticket as any).user_id)
       .maybeSingle();
+    await markRead(data.ticketId, "admin_read_at");
     return {
       ticket: ticket as SupportTicket,
       messages: (messages ?? []) as SupportMessage[],
