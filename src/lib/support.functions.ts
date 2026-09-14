@@ -30,6 +30,108 @@ async function isAdmin(context: { supabase: any; userId: string }) {
   return Boolean(a.data || o.data);
 }
 
+/** Emails des administrateurs (repli sur l'adresse de l'équipe). */
+async function adminEmails(): Promise<string[]> {
+  try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: roles } = await supabaseAdmin
+      .from("user_roles")
+      .select("user_id")
+      .in("role", ["admin", "owner"]);
+    const ids = Array.from(new Set((roles ?? []).map((r: any) => r.user_id)));
+    if (ids.length) {
+      const { data: profiles } = await supabaseAdmin.from("profiles").select("email").in("id", ids);
+      const emails = (profiles ?? [])
+        .map((p: any) => p.email)
+        .filter((e: string | null): e is string => !!e);
+      if (emails.length) return Array.from(new Set(emails));
+    }
+  } catch (error) {
+    console.error("support: admin lookup failed", error);
+  }
+  return ["franck@nwc-agency.com"];
+}
+
+/** Envoi best-effort : ne jamais casser la conversation à cause d'un email. */
+async function safeSend(
+  templateName: string,
+  to: string,
+  templateData: Record<string, unknown>,
+  idempotencyKey: string,
+) {
+  try {
+    const { sendTemplateEmail } = await import("@/lib/email-templates/send-email");
+    await sendTemplateEmail(templateName, to, { templateData, idempotencyKey });
+  } catch (error) {
+    console.error("support: email send failed", error);
+  }
+}
+
+async function markRead(ticketId: string, column: "user_read_at" | "admin_read_at") {
+  try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await supabaseAdmin
+      .from("support_tickets")
+      .update(
+        column === "admin_read_at"
+          ? { admin_read_at: new Date().toISOString() }
+          : { user_read_at: new Date().toISOString() },
+      )
+      .eq("id", ticketId);
+  } catch (error) {
+    console.error("support: mark read failed", error);
+  }
+}
+
+/** Compte les tickets ayant au moins un message non lu du camp opposé. */
+async function unreadTickets(
+  supabase: any,
+  tickets: { id: string; read_at: string | null }[],
+  authorRole: "user" | "admin",
+) {
+  const ids = tickets.map((t) => t.id);
+  if (!ids.length) return 0;
+  const { data: messages } = await supabase
+    .from("support_messages")
+    .select("ticket_id, created_at")
+    .in("ticket_id", ids)
+    .eq("author_role", authorRole);
+  const latest = new Map<string, string>();
+  for (const m of (messages ?? []) as { ticket_id: string; created_at: string }[]) {
+    const current = latest.get(m.ticket_id);
+    if (!current || m.created_at > current) latest.set(m.ticket_id, m.created_at);
+  }
+  return tickets.filter((t) => {
+    const last = latest.get(t.id);
+    if (!last) return false;
+    return !t.read_at || last > t.read_at;
+  }).length;
+}
+
+export const supportUnreadCount = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data } = await context.supabase
+      .from("support_tickets")
+      .select("id, user_read_at")
+      .eq("user_id", context.userId);
+    const tickets = ((data ?? []) as any[]).map((t) => ({ id: t.id, read_at: t.user_read_at }));
+    return { count: await unreadTickets(context.supabase, tickets, "admin") };
+  });
+
+export const adminSupportUnreadCount = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    if (!(await isAdmin(context))) return { count: 0 };
+    const { data } = await context.supabase
+      .from("support_tickets")
+      .select("id, admin_read_at")
+      .order("last_message_at", { ascending: false })
+      .limit(300);
+    const tickets = ((data ?? []) as any[]).map((t) => ({ id: t.id, read_at: t.admin_read_at }));
+    return { count: await unreadTickets(context.supabase, tickets, "user") };
+  });
+
 export const listMyTickets = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
@@ -59,6 +161,7 @@ export const getTicket = createServerFn({ method: "GET" })
       .eq("ticket_id", data.ticketId)
       .order("created_at", { ascending: true });
     if (mErr) throw new Error(mErr.message);
+    if ((ticket as any).user_id === context.userId) await markRead(data.ticketId, "user_read_at");
     return {
       ticket: ticket as SupportTicket,
       messages: (messages ?? []) as SupportMessage[],
@@ -91,13 +194,40 @@ export const createTicket = createServerFn({ method: "POST" })
       .select("*")
       .single();
     if (error) throw new Error(error.message);
-    const { error: mErr } = await context.supabase.from("support_messages").insert({
-      ticket_id: ticket.id,
-      author_id: context.userId,
-      author_role: "user",
-      body: data.message,
-    });
+    const { data: message, error: mErr } = await context.supabase
+      .from("support_messages")
+      .insert({
+        ticket_id: ticket.id,
+        author_id: context.userId,
+        author_role: "user",
+        body: data.message,
+      })
+      .select("id")
+      .single();
     if (mErr) throw new Error(mErr.message);
+
+    const { data: profile } = await context.supabase
+      .from("profiles")
+      .select("email, display_name")
+      .eq("id", context.userId)
+      .maybeSingle();
+    const recipients = await adminEmails();
+    await Promise.all(
+      recipients.map((to) =>
+        safeSend(
+          "support-admin-message",
+          to,
+          {
+            subject: data.subject,
+            message: data.message,
+            userEmail: (profile as any)?.email ?? "",
+            userName: (profile as any)?.display_name ?? "",
+            isNewTicket: true,
+          },
+          `support-admin-${(message as any)?.id ?? ticket.id}-${to}`,
+        ),
+      ),
+    );
     return { ticket: ticket as SupportTicket };
   });
 
@@ -110,13 +240,69 @@ export const replyToTicket = createServerFn({ method: "POST" })
   })
   .handler(async ({ data, context }) => {
     const admin = await isAdmin(context);
-    const { error } = await context.supabase.from("support_messages").insert({
-      ticket_id: data.ticketId,
-      author_id: context.userId,
-      author_role: admin ? "admin" : "user",
-      body: data.body,
-    });
+    const { data: inserted, error } = await context.supabase
+      .from("support_messages")
+      .insert({
+        ticket_id: data.ticketId,
+        author_id: context.userId,
+        author_role: admin ? "admin" : "user",
+        body: data.body,
+      })
+      .select("id")
+      .single();
     if (error) throw new Error(error.message);
+    await markRead(data.ticketId, admin ? "admin_read_at" : "user_read_at");
+
+    const { data: ticket } = await context.supabase
+      .from("support_tickets")
+      .select("subject, user_id")
+      .eq("id", data.ticketId)
+      .maybeSingle();
+    const msgId = (inserted as any)?.id ?? data.ticketId;
+
+    if (admin) {
+      const { data: profile } = await context.supabase
+        .from("profiles")
+        .select("email, user_first_name, display_name")
+        .eq("id", (ticket as any)?.user_id)
+        .maybeSingle();
+      const to = (profile as any)?.email as string | undefined;
+      if (to) {
+        await safeSend(
+          "support-user-reply",
+          to,
+          {
+            subject: (ticket as any)?.subject ?? "",
+            message: data.body,
+            firstName: (profile as any)?.user_first_name ?? (profile as any)?.display_name ?? "",
+          },
+          `support-user-${msgId}`,
+        );
+      }
+    } else {
+      const { data: profile } = await context.supabase
+        .from("profiles")
+        .select("email, display_name")
+        .eq("id", context.userId)
+        .maybeSingle();
+      const recipients = await adminEmails();
+      await Promise.all(
+        recipients.map((to) =>
+          safeSend(
+            "support-admin-message",
+            to,
+            {
+              subject: (ticket as any)?.subject ?? "",
+              message: data.body,
+              userEmail: (profile as any)?.email ?? "",
+              userName: (profile as any)?.display_name ?? "",
+              isNewTicket: false,
+            },
+            `support-admin-${msgId}-${to}`,
+          ),
+        ),
+      );
+    }
     return { ok: true };
   });
 
@@ -177,6 +363,7 @@ export const adminGetTicket = createServerFn({ method: "GET" })
       .select("email, display_name, user_first_name, user_last_name")
       .eq("id", (ticket as any).user_id)
       .maybeSingle();
+    await markRead(data.ticketId, "admin_read_at");
     return {
       ticket: ticket as SupportTicket,
       messages: (messages ?? []) as SupportMessage[],

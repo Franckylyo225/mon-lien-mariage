@@ -21,6 +21,7 @@ import {
 } from "@tabler/icons-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useWedding } from "@/lib/wedding-store";
+import { useSupportUnread } from "@/hooks/use-support-unread";
 import { getDeferredPrompt, getInstallState, subscribeInstallPrompt } from "@/components/pwa/pwa-install";
 import {
   AlertDialog,
@@ -111,6 +112,7 @@ export function SideDrawer({
   userId,
 }: SideDrawerProps) {
   const { couple, guests, weddings, weddingId } = useWedding();
+  const { count: supportUnread } = useSupportUnread("user", !!userId);
   const [guestbookCount, setGuestbookCount] = useState(0);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [confirmOut, setConfirmOut] = useState(false);
@@ -241,7 +243,7 @@ export function SideDrawer({
 
   const helpItems: Item[] = [
     { label: "FAQ", Icon: IconHelpCircle, to: "/app/help" },
-    { label: "Support", Icon: IconMessageCircle, to: "/app/support" },
+    { label: "Support", Icon: IconMessageCircle, to: "/app/support", badge: supportUnread },
   ];
 
   const isActive = (it: Item) =>
