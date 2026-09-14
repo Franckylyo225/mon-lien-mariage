@@ -62,6 +62,7 @@ function gtag(...args: unknown[]) {
 }
 
 let gaLoaded = false;
+let lastTrackedPath: string | null = null;
 
 function loadAnalytics() {
   if (typeof window === "undefined" || gaLoaded) return;
@@ -71,7 +72,22 @@ function loadAnalytics() {
   s.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
   document.head.appendChild(s);
   gtag("js", new Date());
-  gtag("config", GA_ID, { anonymize_ip: true });
+  // Les vues de pages sont envoyées manuellement (application single-page).
+  gtag("config", GA_ID, { anonymize_ip: true, send_page_view: false });
+  lastTrackedPath = null;
+  trackPageView(window.location.pathname + window.location.search);
+}
+
+/** Envoie une vue de page GA4 (sans doublon pour le même chemin). */
+export function trackPageView(path: string, title?: string) {
+  if (typeof window === "undefined" || !gaLoaded) return;
+  if (lastTrackedPath === path) return;
+  lastTrackedPath = path;
+  gtag("event", "page_view", {
+    page_path: path,
+    page_location: window.location.href,
+    page_title: title ?? document.title,
+  });
 }
 
 function applyConsent(categories: ConsentCategories) {

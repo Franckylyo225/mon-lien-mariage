@@ -16,6 +16,7 @@ import { Toaster } from "../components/ui/sonner";
 import { ConsentProvider } from "../lib/consent";
 import { ConsentManager } from "../components/consent/ConsentManager";
 import { useFacebookPixelPageView } from "../hooks/use-facebook-pixel";
+import { useGaPageView } from "../hooks/use-ga-page-view";
 
 
 
@@ -186,6 +187,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   useFacebookPixelPageView();
+  useGaPageView();
 
   useEffect(() => {
     import("@/integrations/supabase/client").then(({ supabase }) => {
