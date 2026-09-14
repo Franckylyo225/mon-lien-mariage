@@ -837,6 +837,7 @@ export type Database = {
       }
       support_tickets: {
         Row: {
+          admin_read_at: string | null
           category: string
           created_at: string
           id: string
@@ -846,8 +847,10 @@ export type Database = {
           subject: string
           updated_at: string
           user_id: string
+          user_read_at: string | null
         }
         Insert: {
+          admin_read_at?: string | null
           category?: string
           created_at?: string
           id?: string
@@ -857,8 +860,10 @@ export type Database = {
           subject: string
           updated_at?: string
           user_id: string
+          user_read_at?: string | null
         }
         Update: {
+          admin_read_at?: string | null
           category?: string
           created_at?: string
           id?: string
@@ -868,6 +873,7 @@ export type Database = {
           subject?: string
           updated_at?: string
           user_id?: string
+          user_read_at?: string | null
         }
         Relationships: []
       }
