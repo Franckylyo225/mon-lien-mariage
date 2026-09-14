@@ -72,7 +72,11 @@ async function markRead(ticketId: string, column: "user_read_at" | "admin_read_a
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     await supabaseAdmin
       .from("support_tickets")
-      .update({ [column]: new Date().toISOString() })
+      .update(
+        column === "admin_read_at"
+          ? { admin_read_at: new Date().toISOString() }
+          : { user_read_at: new Date().toISOString() },
+      )
       .eq("id", ticketId);
   } catch (error) {
     console.error("support: mark read failed", error);
