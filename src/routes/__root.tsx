@@ -187,6 +187,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   useFacebookPixelPageView();
+  useGaPageView();
 
   useEffect(() => {
     import("@/integrations/supabase/client").then(({ supabase }) => {
