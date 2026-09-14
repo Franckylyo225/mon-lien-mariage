@@ -16,6 +16,7 @@ import { Toaster } from "../components/ui/sonner";
 import { ConsentProvider } from "../lib/consent";
 import { ConsentManager } from "../components/consent/ConsentManager";
 import { useFacebookPixelPageView } from "../hooks/use-facebook-pixel";
+import { useGaPageView } from "../hooks/use-ga-page-view";
 
 
 
