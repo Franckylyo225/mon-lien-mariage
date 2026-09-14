@@ -23,6 +23,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useSupportUnread } from "@/hooks/use-support-unread";
 
 type Item = { to: string; label: string; Icon: typeof IconUsers; exact?: boolean; badge?: number };
 
@@ -87,6 +88,8 @@ function Section({ label, items, pathname }: { label: string; items: Item[]; pat
 
 export function AdminSidebar({ email }: { email?: string | null }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { count: supportUnread } = useSupportUnread("admin");
+  const system = systemItems(supportUnread);
   return (
     <Sidebar collapsible="icon" className="border-r border-border/60">
       <SidebarHeader className="border-b border-border/50">
