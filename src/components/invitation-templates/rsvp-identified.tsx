@@ -33,11 +33,15 @@ export function IdentifiedRsvp({ theme, slug, token, guestName, onConfirmed }: P
         _companions: 0,
       });
       if (err) throw err;
-      if (data !== "ok") throw new Error("Réponse impossible pour le moment.");
+      if (data !== "ok") {
+        throw new Error(
+          rsvpStatusMessage(data) ?? "Réponse impossible pour le moment.",
+        );
+      }
       setStatus(attending ? "confirmé" : "décliné");
       if (attending) onConfirmed?.();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Une erreur s'est produite.");
+      setError(readableError(e));
     } finally {
       setPending(null);
     }

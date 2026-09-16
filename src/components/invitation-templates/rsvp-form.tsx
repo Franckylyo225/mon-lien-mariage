@@ -7,6 +7,7 @@ import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta"
 import { resolveRsvpDesign, type RsvpDesign } from "@/lib/rsvp-design";
 import { RsvpOrnament } from "./rsvp-ornament";
 import { PhoneField } from "@/components/ui/PhoneField";
+import { readableError, rsvpStatusMessage } from "@/lib/rsvp-errors";
 
 /**
  * Public RSVP form.
