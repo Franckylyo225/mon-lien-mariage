@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { ThemeId } from "@/lib/wedding-store";
 import { resolveRsvpDesign } from "@/lib/rsvp-design";
 import { RsvpOrnament } from "./rsvp-ornament";
+import { readableError, rsvpStatusMessage } from "@/lib/rsvp-errors";
 
 interface Props {
   theme?: ThemeId;
