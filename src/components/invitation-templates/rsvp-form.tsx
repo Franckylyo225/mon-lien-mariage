@@ -7,6 +7,7 @@ import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta"
 import { resolveRsvpDesign, type RsvpDesign } from "@/lib/rsvp-design";
 import { RsvpOrnament } from "./rsvp-ornament";
 import { PhoneField } from "@/components/ui/PhoneField";
+import { readableError, rsvpStatusMessage } from "@/lib/rsvp-errors";
 
 /**
  * Public RSVP form.
@@ -106,6 +107,11 @@ export function TemplateRsvpForm({
           onConfirmed?.();
           return true;
         }
+        const known = rsvpStatusMessage(data);
+        if (known) {
+          setError(known);
+          return false;
+        }
       }
       const rows = published.map((c) => ({
         wedding_id: weddingId,
@@ -124,8 +130,7 @@ export function TemplateRsvpForm({
       onConfirmed?.();
       return true;
     } catch (e) {
-      const msg = e instanceof Error ? e.message : "Une erreur s'est produite.";
-      setError(msg);
+      setError(readableError(e));
       return false;
     } finally {
       setSubmitting(false);
