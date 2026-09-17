@@ -81,12 +81,16 @@ export function useAllGuests() {
             : [],
           message: r.message ?? undefined,
         } as Guest);
+        ids.set(`rsvp-${r.id}`, [r.id]);
       }
     }
-    return Array.from(grouped.values());
+    return {
+      publicGuests: Array.from(grouped.values()),
+      rsvpIdsByGuest: Object.fromEntries(ids) as Record<string, string[]>,
+    };
   }, [publicRsvps, guests]);
 
   const allGuests = useMemo(() => [...publicGuests, ...guests], [publicGuests, guests]);
 
-  return { allGuests, publicGuests, publicRsvps, loading };
+  return { allGuests, publicGuests, publicRsvps, rsvpIdsByGuest, loading, refetch };
 }
