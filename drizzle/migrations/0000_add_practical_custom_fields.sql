@@ -1,0 +1,1 @@
+ALTER TABLE public.weddings ADD COLUMN IF NOT EXISTS practical_custom_fields jsonb NOT NULL DEFAULT '[]'::jsonb;

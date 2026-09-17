@@ -1026,6 +1026,7 @@ export type Database = {
           practical_accommodation: string | null
           practical_contact_name: string | null
           practical_contact_phone: string | null
+          practical_custom_fields: Json
           practical_info_enabled: boolean
           practical_parking: string | null
           published_at: string | null
@@ -1129,6 +1130,7 @@ export type Database = {
           practical_accommodation?: string | null
           practical_contact_name?: string | null
           practical_contact_phone?: string | null
+          practical_custom_fields?: Json
           practical_info_enabled?: boolean
           practical_parking?: string | null
           published_at?: string | null
@@ -1232,6 +1234,7 @@ export type Database = {
           practical_accommodation?: string | null
           practical_contact_name?: string | null
           practical_contact_phone?: string | null
+          practical_custom_fields?: Json
           practical_info_enabled?: boolean
           practical_parking?: string | null
           published_at?: string | null
