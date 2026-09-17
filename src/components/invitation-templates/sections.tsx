@@ -348,7 +348,9 @@ export function LocationsSection({
               </span>
               <div className="min-w-0 flex-1">
                 <p className="font-serif text-base italic">{c.label}</p>
-                <p className="mt-0.5 text-sm opacity-80">{ceremonyVenue(c)}</p>
+                {ceremonyVenue(c) ? (
+                  <p className="mt-0.5 text-sm opacity-80">{ceremonyVenue(c)}</p>
+                ) : null}
                 <a
                   href={mapsUrl}
                   target="_blank"
