@@ -34,9 +34,9 @@ export const Route = createFileRoute("/dashboard/guests/")({
 });
 
 function GuestsPage() {
-  const { ceremonies, couple, updateCouple } = useWedding();
+  const { ceremonies, couple, updateCouple, weddingId } = useWedding();
   const isPast = isPastEvent(couple.weddingDate);
-  const { allGuests } = useAllGuests();
+  const { allGuests, publicRsvps, rsvpIdsByGuest, refetch } = useAllGuests();
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<GuestType | "all">("all");
   const [ceremonyFilter, setCeremonyFilter] = useState<string>("all");
