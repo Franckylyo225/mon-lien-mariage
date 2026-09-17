@@ -324,7 +324,9 @@ export function LocationsSection({
   ceremonies: Ceremony[];
   accent?: string;
 }) {
-  const withVenue = ceremonies.filter((c) => ceremonyVenue(c));
+  const withVenue = ceremonies.filter(
+    (c) => ceremonyVenue(c) || (c.program ?? []).some((it) => programItemMapsHref(it)),
+  );
   if (withVenue.length === 0) return null;
 
   return (
