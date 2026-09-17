@@ -88,7 +88,7 @@ function GuestsPage() {
   };
 
   const deleteAllRsvps = async () => {
-    if (!weddingId) return;
+    if (!weddingId) return false;
     const { error } = await supabase.from("rsvps").delete().eq("wedding_id", weddingId);
     if (error) {
       toast.error("Suppression impossible pour le moment.");
