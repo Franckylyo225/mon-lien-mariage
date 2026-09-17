@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useWedding, type Guest, type RSVPStatus } from "@/lib/wedding-store";
 import type { GuestType } from "@/lib/guest-meta";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,6 +27,9 @@ export function useAllGuests() {
   const [publicRsvps, setPublicRsvps] = useState<PublicRsvpRow[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [reloadKey, setReloadKey] = useState(0);
+  const refetch = useCallback(() => setReloadKey((k) => k + 1), []);
+
   useEffect(() => {
     if (!weddingId) return;
     let cancelled = false;
@@ -45,11 +48,12 @@ export function useAllGuests() {
     return () => {
       cancelled = true;
     };
-  }, [weddingId]);
+  }, [weddingId, reloadKey]);
 
-  const publicGuests: Guest[] = useMemo(() => {
+  const { publicGuests, rsvpIdsByGuest } = useMemo(() => {
     const existingNames = new Set(guests.map((g) => g.name.trim().toLowerCase()));
     const grouped = new Map<string, Guest>();
+    const ids = new Map<string, string[]>();
     for (const r of publicRsvps) {
       const key = `${r.guest_name.trim().toLowerCase()}|${(r.guest_phone ?? "").trim()}`;
       if (existingNames.has(r.guest_name.trim().toLowerCase())) continue;
@@ -57,6 +61,7 @@ export function useAllGuests() {
       const status: RSVPStatus = r.attending ? "confirmé" : "décliné";
       const existing = grouped.get(key);
       if (existing) {
+        ids.get(existing.id)?.push(r.id);
         if (r.ceremony_id && !existing.ceremonyIds.includes(r.ceremony_id)) {
           existing.ceremonyIds.push(r.ceremony_id);
           existing.rsvps.push({ ceremonyId: r.ceremony_id, status, plusOnes: r.companions });
@@ -76,12 +81,16 @@ export function useAllGuests() {
             : [],
           message: r.message ?? undefined,
         } as Guest);
+        ids.set(`rsvp-${r.id}`, [r.id]);
       }
     }
-    return Array.from(grouped.values());
+    return {
+      publicGuests: Array.from(grouped.values()),
+      rsvpIdsByGuest: Object.fromEntries(ids) as Record<string, string[]>,
+    };
   }, [publicRsvps, guests]);
 
   const allGuests = useMemo(() => [...publicGuests, ...guests], [publicGuests, guests]);
 
-  return { allGuests, publicGuests, publicRsvps, loading };
+  return { allGuests, publicGuests, publicRsvps, rsvpIdsByGuest, loading, refetch };
 }

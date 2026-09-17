@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Download, Pencil, Settings2 } from "lucide-react";
+import { Download, Pencil, Settings2, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import whatsappIconUrl from "@/assets/whatsapp-phone.png";
 import { useWedding, isPastEvent, type RSVPStatus } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
@@ -32,9 +34,9 @@ export const Route = createFileRoute("/dashboard/guests/")({
 });
 
 function GuestsPage() {
-  const { ceremonies, couple, updateCouple } = useWedding();
+  const { ceremonies, couple, updateCouple, weddingId } = useWedding();
   const isPast = isPastEvent(couple.weddingDate);
-  const { allGuests } = useAllGuests();
+  const { allGuests, publicRsvps, rsvpIdsByGuest, refetch } = useAllGuests();
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<GuestType | "all">("all");
   const [ceremonyFilter, setCeremonyFilter] = useState<string>("all");
@@ -62,6 +64,40 @@ function GuestsPage() {
       }, 0),
     [allGuests],
   );
+
+  const deleteRsvpsForGuest = async (guestId: string, guestName: string) => {
+    const ids = rsvpIdsByGuest[guestId] ?? [];
+    if (!weddingId || ids.length === 0) return;
+    if (
+      !window.confirm(
+        `Supprimer la confirmation de ${guestName} ? Cette action est définitive.`,
+      )
+    )
+      return;
+    const { error } = await supabase
+      .from("rsvps")
+      .delete()
+      .in("id", ids)
+      .eq("wedding_id", weddingId);
+    if (error) {
+      toast.error("Suppression impossible pour le moment.");
+      return;
+    }
+    toast.success("Confirmation supprimée.");
+    refetch();
+  };
+
+  const deleteAllRsvps = async () => {
+    if (!weddingId) return false;
+    const { error } = await supabase.from("rsvps").delete().eq("wedding_id", weddingId);
+    if (error) {
+      toast.error("Suppression impossible pour le moment.");
+      return false;
+    }
+    toast.success("Toutes les confirmations ont été supprimées.");
+    refetch();
+    return true;
+  };
 
   const exportXlsx = async () => {
     const XLSX = await import("xlsx");
@@ -347,13 +383,117 @@ function GuestsPage() {
                     )}
                   </TooltipProvider>
                   ) : null}
+                  {(rsvpIdsByGuest[g.id]?.length ?? 0) > 0 ? (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="text-muted-foreground hover:text-destructive"
+                      aria-label={`Supprimer la confirmation de ${g.name}`}
+                      onClick={() => void deleteRsvpsForGuest(g.id, g.name)}
+                    >
+                      <Trash2 className="size-4" />
+                    </Button>
+                  ) : null}
                 </div>
               </li>
             );
           })
         )}
       </ul>
+
+      <ResetRsvpSection
+        rsvpCount={publicRsvps.length}
+        onExport={() => void exportXlsx()}
+        onConfirm={deleteAllRsvps}
+      />
     </div>
+  );
+}
+
+function ResetRsvpSection({
+  rsvpCount,
+  onExport,
+  onConfirm,
+}: {
+  rsvpCount: number;
+  onExport: () => void;
+  onConfirm: () => Promise<boolean>;
+}) {
+  const [step, setStep] = useState<"idle" | "confirming">("idle");
+  const [confirmText, setConfirmText] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  if (rsvpCount === 0) return null;
+
+  return (
+    <section className="rounded-xl border border-destructive/30 bg-destructive/5 p-4">
+      <p className="text-sm font-semibold text-destructive">Zone sensible</p>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Supprime définitivement toutes les confirmations reçues sur cette invitation.
+        Utile pour repartir de zéro après avoir testé le formulaire.
+      </p>
+
+      {step === "idle" ? (
+        <div className="mt-3 flex flex-wrap gap-2">
+          <Button type="button" variant="outline" size="sm" onClick={onExport}>
+            <Download className="size-4" />
+            Télécharger la liste avant de supprimer
+          </Button>
+          <Button
+            type="button"
+            variant="destructive"
+            size="sm"
+            onClick={() => {
+              setConfirmText("");
+              setStep("confirming");
+            }}
+          >
+            Vider toutes les confirmations
+          </Button>
+        </div>
+      ) : (
+        <div className="mt-3 space-y-2">
+          <label htmlFor="reset-rsvp-confirm" className="block text-xs">
+            Tapez <strong>SUPPRIMER</strong> pour confirmer ({rsvpCount} confirmation
+            {rsvpCount > 1 ? "s" : ""} seront perdues) :
+          </label>
+          <input
+            id="reset-rsvp-confirm"
+            value={confirmText}
+            onChange={(e) => setConfirmText(e.target.value)}
+            className="w-full rounded-lg border border-input bg-card px-3 py-2.5 text-base outline-none focus:ring-2 focus:ring-ring"
+          />
+          <div className="flex flex-wrap gap-2">
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              disabled={confirmText !== "SUPPRIMER" || busy}
+              onClick={async () => {
+                setBusy(true);
+                const ok = await onConfirm();
+                setBusy(false);
+                if (ok) {
+                  setConfirmText("");
+                  setStep("idle");
+                }
+              }}
+            >
+              Confirmer la suppression
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setStep("idle")}
+            >
+              Annuler
+            </Button>
+          </div>
+        </div>
+      )}
+    </section>
   );
 }
 

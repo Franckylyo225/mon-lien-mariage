@@ -109,6 +109,12 @@ function PrivacyPage() {
             <li>Retirer votre consentement.</li>
           </ul>
           <p>
+            Les mariés peuvent également supprimer à tout moment, depuis leur tableau
+            de bord, les données de leurs invités&nbsp;: une confirmation en
+            particulier ou l'ensemble des confirmations reçues. La suppression est
+            immédiate et définitive.
+          </p>
+          <p>
             Pour exercer ces droits, écrivez-nous à{" "}
             <a
               href="mailto:contact@moninvit.com"
