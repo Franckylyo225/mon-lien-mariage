@@ -557,7 +557,10 @@ export function PracticalInfoSection({
   const contactName = couple.practicalContactName?.trim();
   const contactPhone = couple.practicalContactPhone?.trim();
   const hasContact = !!(contactName || contactPhone);
-  if (!parking && !accommodation && !hasContact) return null;
+  const extras = (couple.practicalCustomFields ?? [])
+    .map((f) => ({ label: (f?.label ?? "").trim(), value: (f?.value ?? "").trim() }))
+    .filter((f) => f.label && f.value);
+  if (!parking && !accommodation && !hasContact && extras.length === 0) return null;
 
   return (
     <section className="mt-14">
@@ -627,6 +630,27 @@ export function PracticalInfoSection({
             </div>
           </li>
         ) : null}
+        {extras.map((f, i) => (
+          <li
+            key={`${f.label}-${i}`}
+            className="flex items-start gap-3 rounded-2xl border border-current/10 bg-white/5 p-4"
+          >
+            <span
+              className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full"
+              style={{ backgroundColor: (accent ?? "#999") + "22", color: accent }}
+            >
+              <Sparkles className="size-4" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-60">
+                {f.label}
+              </p>
+              <p className="mt-1 whitespace-pre-line text-sm leading-relaxed opacity-90">
+                {f.value}
+              </p>
+            </div>
+          </li>
+        ))}
       </ul>
     </section>
   );

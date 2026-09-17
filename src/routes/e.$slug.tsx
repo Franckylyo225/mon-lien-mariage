@@ -245,6 +245,12 @@ function PublicInvitationPage() {
       (w as { practical_contact_name?: string | null }).practical_contact_name ?? undefined,
     practicalContactPhone:
       (w as { practical_contact_phone?: string | null }).practical_contact_phone ?? undefined,
+    practicalCustomFields: Array.isArray(
+      (w as { practical_custom_fields?: unknown }).practical_custom_fields,
+    )
+      ? ((w as { practical_custom_fields?: unknown })
+          .practical_custom_fields as unknown as Array<{ label: string; value: string }>)
+      : [],
     registryEnabled:
       (w as { registry_enabled?: boolean | null }).registry_enabled ?? false,
     registryTitle:

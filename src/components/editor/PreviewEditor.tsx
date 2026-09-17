@@ -32,6 +32,8 @@ import {
   Stars,
   Music2,
   Sparkles,
+  Plus,
+  Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -105,6 +107,29 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
   const [practicalContactPhone, setPracticalContactPhone] = useState(
     couple.practicalContactPhone ?? "",
   );
+  const [practicalCustomFields, setPracticalCustomFields] = useState<
+    Array<{ label: string; value: string }>
+  >(couple.practicalCustomFields ?? []);
+  const persistCustomFields = (next: Array<{ label: string; value: string }>) => {
+    const cleaned = next
+      .map((f) => ({ label: (f.label ?? "").trim(), value: (f.value ?? "").trim() }))
+      .filter((f) => f.label.length > 0 && f.value.length > 0);
+    persist({ practicalCustomFields: cleaned });
+  };
+  const updateCustomField = (i: number, patch: Partial<{ label: string; value: string }>) => {
+    const next = practicalCustomFields.map((f, idx) => (idx === i ? { ...f, ...patch } : f));
+    setPracticalCustomFields(next);
+    persistCustomFields(next);
+  };
+  const addCustomField = () => {
+    if (practicalCustomFields.length >= 8) return;
+    setPracticalCustomFields([...practicalCustomFields, { label: "", value: "" }]);
+  };
+  const removeCustomField = (i: number) => {
+    const next = practicalCustomFields.filter((_, idx) => idx !== i);
+    setPracticalCustomFields(next);
+    persistCustomFields(next);
+  };
   const [dressCodeNote, setDressCodeNote] = useState(couple.dressCodeNote ?? "");
   const dressColors = couple.dressCodeColors ?? [];
 
@@ -139,11 +164,15 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
   };
   const registryStoreCount = registryStores.filter((s) => (s.name ?? "").trim().length > 0).length;
   const practicalEnabled = couple.practicalInfoEnabled ?? false;
-  const practicalFilledCount = [
-    practicalParking,
-    practicalAccommodation,
-    practicalContactName || practicalContactPhone,
-  ].filter((v) => v && v.trim().length > 0).length;
+  const practicalFilledCount =
+    [
+      practicalParking,
+      practicalAccommodation,
+      practicalContactName || practicalContactPhone,
+    ].filter((v) => v && v.trim().length > 0).length +
+    practicalCustomFields.filter(
+      (f) => (f.label ?? "").trim().length > 0 && (f.value ?? "").trim().length > 0,
+    ).length;
   const dressCodeEnabled = couple.dressCodeEnabled ?? false;
   const dressPhotoCount = (couple.dressCodeImages ?? []).filter(
     (u) => u && u.trim().length > 0,
@@ -753,6 +782,53 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
                     persist({ practicalContactPhone: v });
                   }}
                 />
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-dashed border-border p-3">
+              <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                Autres informations
+              </p>
+              <div className="space-y-3">
+                {practicalCustomFields.map((f, i) => (
+                  <div key={i} className="rounded-lg border border-border p-3">
+                    <div className="flex items-center gap-2">
+                      <input
+                        value={f.label}
+                        maxLength={40}
+                        placeholder="Titre (ex : Navette, Garderie…)"
+                        onChange={(e) => updateCustomField(i, { label: e.target.value })}
+                        className="min-w-0 flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                      />
+                      <button
+                        type="button"
+                        aria-label="Supprimer cette information"
+                        onClick={() => removeCustomField(i)}
+                        className="shrink-0 rounded-lg border border-border p-2 opacity-70"
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
+                    </div>
+                    <textarea
+                      value={f.value}
+                      rows={2}
+                      maxLength={280}
+                      placeholder="Détail de l'information"
+                      onChange={(e) => updateCustomField(i, { value: e.target.value })}
+                      className="mt-2 w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                    />
+                  </div>
+                ))}
+                {practicalCustomFields.length < 8 ? (
+                  <button
+                    type="button"
+                    onClick={addCustomField}
+                    className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm"
+                  >
+                    <Plus className="size-4" />
+                    Ajouter une information
+                  </button>
+                ) : null}
               </div>
             </div>
 

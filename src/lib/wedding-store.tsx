@@ -249,6 +249,7 @@ export interface Couple {
   practicalAccommodation?: string;
   practicalContactName?: string;
   practicalContactPhone?: string;
+  practicalCustomFields?: Array<{ label: string; value: string }>;
   registryEnabled?: boolean;
   registryTitle?: string;
   registryNote?: string;
@@ -521,6 +522,7 @@ type WeddingRow = {
   practical_accommodation: string | null;
   practical_contact_name: string | null;
   practical_contact_phone: string | null;
+  practical_custom_fields?: Array<{ label: string; value: string }> | null;
   registry_enabled: boolean | null;
   registry_title: string | null;
   registry_note: string | null;
@@ -623,6 +625,9 @@ function rowToCouple(w: WeddingRow): Couple {
     practicalAccommodation: w.practical_accommodation ?? undefined,
     practicalContactName: w.practical_contact_name ?? undefined,
     practicalContactPhone: w.practical_contact_phone ?? undefined,
+    practicalCustomFields: Array.isArray(w.practical_custom_fields)
+      ? w.practical_custom_fields
+      : [],
     registryEnabled: w.registry_enabled ?? false,
     registryTitle: w.registry_title ?? undefined,
     registryNote: w.registry_note ?? undefined,
@@ -732,6 +737,7 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.practicalAccommodation !== undefined) r.practical_accommodation = p.practicalAccommodation || null;
   if (p.practicalContactName !== undefined) r.practical_contact_name = p.practicalContactName || null;
   if (p.practicalContactPhone !== undefined) r.practical_contact_phone = p.practicalContactPhone || null;
+  if (p.practicalCustomFields !== undefined) r.practical_custom_fields = p.practicalCustomFields ?? [];
   if (p.registryEnabled !== undefined) r.registry_enabled = p.registryEnabled;
   if (p.registryTitle !== undefined) r.registry_title = p.registryTitle || null;
   if (p.registryNote !== undefined) r.registry_note = p.registryNote || null;
