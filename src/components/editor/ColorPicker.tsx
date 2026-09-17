@@ -128,7 +128,7 @@ export function ColorPicker({
                 aria-label={`${name}, ${selected ? "sélectionnée" : "non sélectionnée"}`}
                 onClick={() => toggle(hex)}
                 className={cn(
-                  "relative aspect-square size-full min-h-11 min-w-11 rounded-full p-0 shadow-sm ring-1 ring-foreground/10 transition hover:scale-105 hover:bg-transparent active:scale-95 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-32",
+                  "relative aspect-square size-full min-h-11 min-w-11 rounded-full p-0 shadow-sm ring-1 ring-foreground/10 transition hover:scale-105 hover:bg-transparent active:scale-95 disabled:pointer-events-auto disabled:cursor-not-allowed disabled:opacity-32",
                   selected && "ring-[3px] ring-dress-picker-ink ring-offset-2 ring-offset-background",
                 )}
                 style={{ backgroundColor: hex }}
@@ -172,7 +172,7 @@ export function ColorPicker({
           disabled={colors.length === 0}
           aria-disabled={colors.length === 0}
           className={cn(
-            "w-full rounded-xl bg-background",
+            "w-full rounded-xl bg-background disabled:pointer-events-auto",
             colors.length === 0
               ? "cursor-not-allowed border-dress-picker-disabled-border text-dress-picker-disabled-text opacity-100"
               : "border-dress-picker-border text-dress-picker-accent hover:bg-rose-poudre hover:text-dress-picker-accent",
