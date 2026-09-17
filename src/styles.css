@@ -51,6 +51,11 @@
   --editorial-placeholder: #403A3C;
   --editorial-shade: rgb(0 0 0 / 0.48);
   --editorial-text-shadow: rgb(0 0 0 / 0.42);
+  --dress-picker-ink: #17141A;
+  --dress-picker-accent: #C6577A;
+  --dress-picker-border: #EFD7DE;
+  --dress-picker-disabled-border: #EFEBEC;
+  --dress-picker-disabled-text: #C9BFC3;
 }
 
 @theme inline {
@@ -66,6 +71,11 @@
   --color-rose-poudre: var(--rose-poudre);
   --color-brand-border: var(--brand-border);
   --color-whatsapp: var(--whatsapp);
+  --color-dress-picker-ink: var(--dress-picker-ink);
+  --color-dress-picker-accent: var(--dress-picker-accent);
+  --color-dress-picker-border: var(--dress-picker-border);
+  --color-dress-picker-disabled-border: var(--dress-picker-disabled-border);
+  --color-dress-picker-disabled-text: var(--dress-picker-disabled-text);
   --font-brand-serif: "Cormorant Garamond", ui-serif, Georgia, serif;
   --font-brand-ui: "Quicksand", ui-sans-serif, system-ui, sans-serif;
   --font-brand-body: "Nunito Sans", ui-sans-serif, system-ui, sans-serif;

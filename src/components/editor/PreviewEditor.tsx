@@ -1007,7 +1007,7 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
             onChange={(next) => persist({ dressCodeColors: next })}
             max={12}
             label="Palette du dress code"
-            helper="Ajoutez autant de teintes que vous voulez — laissez vide pour masquer la palette."
+            helper="Sélectionnez jusqu'à 12 teintes — laissez vide pour masquer la palette."
           />
         }
       />
