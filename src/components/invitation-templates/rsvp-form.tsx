@@ -93,42 +93,26 @@ export function TemplateRsvpForm({
     }
     setSubmitting(true);
     try {
-      if (slug) {
-        const { data, error: rpcError } = await supabase.rpc("rsvp_public_signup", {
-          _slug: slug,
-          _name: name.trim(),
-          _phone: phone || undefined,
-          _guest_type: guestType || undefined,
-          _companions: plus,
-        });
-        if (rpcError) throw rpcError;
-        if (data === "ok") {
-          setDone(true);
-          onConfirmed?.();
-          return true;
-        }
-        const known = rsvpStatusMessage(data);
-        if (known) {
-          setError(known);
-          return false;
-        }
+      if (!slug) {
+        setError("Cette page d’invitation n’est plus disponible.");
+        return false;
       }
-      const rows = published.map((c) => ({
-        wedding_id: weddingId,
-        ceremony_id: c.id,
-        guest_name: name.trim(),
-        guest_phone: phone || null,
-        guest_type: guestType || null,
-        attending: true,
-        companions: plus,
-        message: null,
-        dietary_notes: null,
-      }));
-      const { error: err } = await supabase.from("rsvps").insert(rows as never);
-      if (err) throw err;
-      setDone(true);
-      onConfirmed?.();
-      return true;
+      const { data, error: rpcError } = await supabase.rpc("rsvp_public_signup", {
+        _slug: slug,
+        _name: name.trim(),
+        _phone: phone || undefined,
+        _guest_type: guestType || undefined,
+        _companions: plus,
+      });
+      if (rpcError) throw rpcError;
+      if (data === "ok") {
+        setDone(true);
+        onConfirmed?.();
+        return true;
+      }
+      const known = rsvpStatusMessage(data);
+      setError(known ?? "La confirmation n’a pas pu être enregistrée.");
+      return false;
     } catch (e) {
       setError(readableError(e));
       return false;

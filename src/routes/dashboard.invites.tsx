@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
   useWedding,
@@ -8,6 +8,9 @@ import {
 } from "@/lib/wedding-store";
 
 export const Route = createFileRoute("/dashboard/invites")({
+  beforeLoad: () => {
+    throw redirect({ to: "/dashboard/guests" });
+  },
   component: GuestsPage,
 });
 

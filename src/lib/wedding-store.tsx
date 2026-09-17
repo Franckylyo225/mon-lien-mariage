@@ -908,6 +908,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
   const loadedSessionUser = useRef<string | null>(null);
   const loadedWeddingId = useRef<string | null>(null);
   const weddingRows = useRef<Map<string, WeddingRow>>(new Map());
+  const coupleSaveQueue = useRef<Promise<void>>(Promise.resolve());
 
   // Auth subscription
   useEffect(() => {
@@ -1090,11 +1091,15 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       setCouple((c) => ({ ...c, ...patch }));
       const row = coupleToRow(patch);
       if (weddingId && Object.keys(row).length > 0) {
-        const { error } = await supabase
-          .from("weddings")
-          .update(row as never)
-          .eq("id", weddingId);
-        if (error) console.error("updateCouple", error);
+        const save = coupleSaveQueue.current.then(async () => {
+          const { error } = await supabase
+            .from("weddings")
+            .update(row as never)
+            .eq("id", weddingId);
+          if (error) console.error("updateCouple", error);
+        });
+        coupleSaveQueue.current = save.catch(() => undefined);
+        await save;
       }
     },
     [weddingId],

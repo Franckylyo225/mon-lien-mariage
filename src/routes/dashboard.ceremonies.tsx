@@ -14,6 +14,16 @@ import {
 } from "@/lib/wedding-store";
 
 export const Route = createFileRoute("/dashboard/ceremonies")({
+  head: () => ({
+    meta: [
+      { title: "Programme — MonInvit.com" },
+      { name: "description", content: "Organisez les étapes et horaires de votre mariage sur MonInvit." },
+      { property: "og:title", content: "Programme — MonInvit.com" },
+      { property: "og:description", content: "Organisez les étapes et horaires de votre mariage sur MonInvit." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: CeremoniesPage,
 });
 
