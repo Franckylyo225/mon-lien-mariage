@@ -14,15 +14,20 @@ export const Route = createFileRoute('/api/public/hooks/email-automations')({
           return Response.json({ error: 'unauthorized' }, { status: 401 })
         }
 
-        // La planification transmet la clé de service (stockée dans le coffre
-        // de la base) car l'hébergeur de production ne l'expose pas en variable
-        // d'environnement.
-        const serviceKey =
-          request.headers.get('x-service-key') ||
-          process.env['SUPABASE_SERVICE_ROLE_KEY'] ||
-          undefined
-
+        // La planification transmet les identifiants (stockés dans le coffre
+        // de la base) car l'hébergeur du domaine principal ne les expose pas en
+        // variables d'environnement.
         try {
+          const { setRuntimeCredentials, getServiceRoleKey } = await import(
+            '@/lib/server-credentials.server'
+          )
+          setRuntimeCredentials({
+            supabaseUrl: request.headers.get('x-supabase-url'),
+            serviceRoleKey: request.headers.get('x-service-key'),
+            resendApiKey: request.headers.get('x-resend-key'),
+          })
+          const serviceKey = getServiceRoleKey()
+
           const { createServiceClient, runEmailAutomations } = await import(
             '@/lib/email-automation.server'
           )
@@ -42,7 +47,14 @@ export const Route = createFileRoute('/api/public/hooks/email-automations')({
           return Response.json({ success: true, ...summary })
         } catch (error) {
           console.error('[automations] run failed', error)
-          return Response.json({ error: 'run_failed' }, { status: 500 })
+          const message = error instanceof Error ? error.message : ''
+          return Response.json(
+            {
+              error: 'run_failed',
+              ...(message.startsWith('server_misconfigured') ? { reason: message } : {}),
+            },
+            { status: 500 },
+          )
         }
       },
     },

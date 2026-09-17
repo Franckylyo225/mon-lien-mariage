@@ -7,6 +7,7 @@
  */
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import { sendResendEmail } from '@/lib/email-resend.server'
+import { getServiceRoleKey, getSupabaseUrl } from '@/lib/server-credentials.server'
 
 const SITE_URL = 'https://moninvit.com'
 const SITE_NAME = 'MonInvit.com'
@@ -42,10 +43,10 @@ export interface Candidate {
 }
 
 export function createServiceClient(keyOverride?: string): SupabaseClient {
-  const url =
-    process.env['SUPABASE_URL'] || (import.meta.env.VITE_SUPABASE_URL as string)
-  const key = keyOverride || process.env['SUPABASE_SERVICE_ROLE_KEY']
-  if (!url || !key) throw new Error('server_misconfigured')
+  const url = getSupabaseUrl()
+  const key = keyOverride || getServiceRoleKey()
+  if (!url) throw new Error('server_misconfigured: missing supabase url')
+  if (!key) throw new Error('server_misconfigured: missing service key')
   return createClient(url, key, { auth: { persistSession: false } })
 }
 
