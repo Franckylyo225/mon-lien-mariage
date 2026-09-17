@@ -7,6 +7,7 @@
  */
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import { sendResendEmail } from '@/lib/email-resend.server'
+import { getServiceRoleKey, getSupabaseUrl } from '@/lib/server-credentials.server'
 
 const SITE_URL = 'https://moninvit.com'
 const SITE_NAME = 'MonInvit.com'
