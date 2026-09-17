@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Check, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -44,7 +45,18 @@ export function ColorPicker({
   label = "Palette du dress code",
   helper = "Choisissez les teintes qui rythmeront la journée.",
 }: Props) {
-  const normalizedColors = colors.map(normalizeHex);
+  const [selectedColors, setSelectedColors] = useState(colors);
+
+  useEffect(() => {
+    setSelectedColors(colors);
+  }, [colors]);
+
+  const commit = (next: string[]) => {
+    setSelectedColors(next);
+    onChange(next);
+  };
+
+  const normalizedColors = selectedColors.map(normalizeHex);
   const atLimit = normalizedColors.length >= max;
   const customColors = normalizedColors
     .filter((hex) => !DRESS_CODE_COLORS.some((color) => color.hex.toLowerCase() === hex))
@@ -55,25 +67,25 @@ export function ColorPicker({
     const normalized = normalizeHex(hex);
     const selectedIndex = normalizedColors.indexOf(normalized);
     if (selectedIndex >= 0) {
-      onChange(colors.filter((_, index) => index !== selectedIndex));
+      commit(selectedColors.filter((_, index) => index !== selectedIndex));
       return;
     }
-    if (!atLimit) onChange([...colors, normalized]);
+    if (!atLimit) commit([...selectedColors, normalized]);
   };
 
   const addCustom = (hex: string) => {
     if (!hex || atLimit || normalizedColors.includes(normalizeHex(hex))) return;
-    onChange([...colors, normalizeHex(hex)]);
+    commit([...selectedColors, normalizeHex(hex)]);
   };
 
   return (
     <div className="space-y-5">
       <div>
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
-          {label} ({colors.length}/{max})
+          {label} ({selectedColors.length}/{max})
         </p>
         <div className="mt-3 flex min-h-11 flex-wrap items-center gap-2">
-          {colors.map((hex, index) => {
+          {selectedColors.map((hex, index) => {
             const name = colorName(hex);
             return (
               <Button
@@ -92,7 +104,7 @@ export function ColorPicker({
               </Button>
             );
           })}
-          {colors.length === 0 ? (
+          {selectedColors.length === 0 ? (
             <span className="text-[11px] text-muted-foreground">Aucune teinte sélectionnée</span>
           ) : null}
         </div>
@@ -168,12 +180,12 @@ export function ColorPicker({
         <Button
           type="button"
           variant="outline"
-          onClick={() => onChange([])}
-          disabled={colors.length === 0}
-          aria-disabled={colors.length === 0}
+          onClick={() => commit([])}
+          disabled={selectedColors.length === 0}
+          aria-disabled={selectedColors.length === 0}
           className={cn(
             "w-full rounded-xl bg-background disabled:pointer-events-auto",
-            colors.length === 0
+            selectedColors.length === 0
               ? "cursor-not-allowed border-dress-picker-disabled-border text-dress-picker-disabled-text opacity-100"
               : "border-dress-picker-border text-dress-picker-accent hover:bg-rose-poudre hover:text-dress-picker-accent",
           )}
