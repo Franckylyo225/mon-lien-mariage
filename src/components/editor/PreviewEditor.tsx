@@ -785,6 +785,53 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
               </div>
             </div>
 
+            <div className="rounded-xl border border-dashed border-border p-3">
+              <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                Autres informations
+              </p>
+              <div className="space-y-3">
+                {practicalCustomFields.map((f, i) => (
+                  <div key={i} className="rounded-lg border border-border p-3">
+                    <div className="flex items-center gap-2">
+                      <input
+                        value={f.label}
+                        maxLength={40}
+                        placeholder="Titre (ex : Navette, Garderie…)"
+                        onChange={(e) => updateCustomField(i, { label: e.target.value })}
+                        className="min-w-0 flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                      />
+                      <button
+                        type="button"
+                        aria-label="Supprimer cette information"
+                        onClick={() => removeCustomField(i)}
+                        className="shrink-0 rounded-lg border border-border p-2 opacity-70"
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
+                    </div>
+                    <textarea
+                      value={f.value}
+                      rows={2}
+                      maxLength={280}
+                      placeholder="Détail de l'information"
+                      onChange={(e) => updateCustomField(i, { value: e.target.value })}
+                      className="mt-2 w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                    />
+                  </div>
+                ))}
+                {practicalCustomFields.length < 8 ? (
+                  <button
+                    type="button"
+                    onClick={addCustomField}
+                    className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm"
+                  >
+                    <Plus className="size-4" />
+                    Ajouter une information
+                  </button>
+                ) : null}
+              </div>
+            </div>
+
             <p className="text-[11px] opacity-60">
               Les champs vides ne s'affichent pas sur la page.
             </p>
