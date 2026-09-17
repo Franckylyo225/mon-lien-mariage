@@ -65,6 +65,40 @@ function GuestsPage() {
     [allGuests],
   );
 
+  const deleteRsvpsForGuest = async (guestId: string, guestName: string) => {
+    const ids = rsvpIdsByGuest[guestId] ?? [];
+    if (!weddingId || ids.length === 0) return;
+    if (
+      !window.confirm(
+        `Supprimer la confirmation de ${guestName} ? Cette action est définitive.`,
+      )
+    )
+      return;
+    const { error } = await supabase
+      .from("rsvps")
+      .delete()
+      .in("id", ids)
+      .eq("wedding_id", weddingId);
+    if (error) {
+      toast.error("Suppression impossible pour le moment.");
+      return;
+    }
+    toast.success("Confirmation supprimée.");
+    refetch();
+  };
+
+  const deleteAllRsvps = async () => {
+    if (!weddingId) return;
+    const { error } = await supabase.from("rsvps").delete().eq("wedding_id", weddingId);
+    if (error) {
+      toast.error("Suppression impossible pour le moment.");
+      return false;
+    }
+    toast.success("Toutes les confirmations ont été supprimées.");
+    refetch();
+    return true;
+  };
+
   const exportXlsx = async () => {
     const XLSX = await import("xlsx");
     const ceremonyLabel = (id: string) => {
