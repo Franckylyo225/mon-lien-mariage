@@ -6,19 +6,19 @@ export interface WeddingFont {
 }
 
 export const TITLE_FONTS = [
-  { id: "cormorant", label: "Cormorant Garamond", family: '"Cormorant Garamond", serif' },
-  { id: "playfair", label: "Playfair Display", family: '"Playfair Display", serif' },
-  { id: "marcellus", label: "Marcellus", family: '"Marcellus", serif' },
+  { id: "cormorant", label: "Cormorant Garamond", family: '"Cormorant Garamond", serif', googleFont: undefined },
+  { id: "playfair", label: "Playfair Display", family: '"Playfair Display", serif', googleFont: undefined },
+  { id: "marcellus", label: "Marcellus", family: '"Marcellus", serif', googleFont: undefined },
   { id: "eb-garamond", label: "EB Garamond", family: '"EB Garamond", serif', googleFont: "EB+Garamond:ital,wght@0,500;1,400" },
   { id: "cinzel", label: "Cinzel", family: '"Cinzel", serif', googleFont: "Cinzel:wght@500" },
   { id: "prata", label: "Prata", family: '"Prata", serif', googleFont: "Prata" },
-  { id: "amiri", label: "Amiri", family: '"Amiri", serif' },
+  { id: "amiri", label: "Amiri", family: '"Amiri", serif', googleFont: undefined },
 ] as const satisfies readonly WeddingFont[];
 
 export const BODY_FONTS = [
-  { id: "nunito", label: "Nunito Sans", family: '"Nunito Sans", sans-serif' },
-  { id: "quicksand", label: "Quicksand", family: '"Quicksand", sans-serif' },
-  { id: "inter", label: "Inter", family: '"Inter", sans-serif' },
+  { id: "nunito", label: "Nunito Sans", family: '"Nunito Sans", sans-serif', googleFont: undefined },
+  { id: "quicksand", label: "Quicksand", family: '"Quicksand", sans-serif', googleFont: undefined },
+  { id: "inter", label: "Inter", family: '"Inter", sans-serif', googleFont: undefined },
   { id: "work-sans", label: "Work Sans", family: '"Work Sans", sans-serif', googleFont: "Work+Sans:wght@400;600" },
   { id: "jost", label: "Jost", family: '"Jost", sans-serif', googleFont: "Jost:wght@400;600" },
   { id: "lato", label: "Lato", family: '"Lato", sans-serif', googleFont: "Lato:wght@400;700" },
