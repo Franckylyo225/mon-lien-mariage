@@ -107,6 +107,29 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
   const [practicalContactPhone, setPracticalContactPhone] = useState(
     couple.practicalContactPhone ?? "",
   );
+  const [practicalCustomFields, setPracticalCustomFields] = useState<
+    Array<{ label: string; value: string }>
+  >(couple.practicalCustomFields ?? []);
+  const persistCustomFields = (next: Array<{ label: string; value: string }>) => {
+    const cleaned = next
+      .map((f) => ({ label: (f.label ?? "").trim(), value: (f.value ?? "").trim() }))
+      .filter((f) => f.label.length > 0 && f.value.length > 0);
+    persist({ practicalCustomFields: cleaned });
+  };
+  const updateCustomField = (i: number, patch: Partial<{ label: string; value: string }>) => {
+    const next = practicalCustomFields.map((f, idx) => (idx === i ? { ...f, ...patch } : f));
+    setPracticalCustomFields(next);
+    persistCustomFields(next);
+  };
+  const addCustomField = () => {
+    if (practicalCustomFields.length >= 8) return;
+    setPracticalCustomFields([...practicalCustomFields, { label: "", value: "" }]);
+  };
+  const removeCustomField = (i: number) => {
+    const next = practicalCustomFields.filter((_, idx) => idx !== i);
+    setPracticalCustomFields(next);
+    persistCustomFields(next);
+  };
   const [dressCodeNote, setDressCodeNote] = useState(couple.dressCodeNote ?? "");
   const dressColors = couple.dressCodeColors ?? [];
 
@@ -141,11 +164,15 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
   };
   const registryStoreCount = registryStores.filter((s) => (s.name ?? "").trim().length > 0).length;
   const practicalEnabled = couple.practicalInfoEnabled ?? false;
-  const practicalFilledCount = [
-    practicalParking,
-    practicalAccommodation,
-    practicalContactName || practicalContactPhone,
-  ].filter((v) => v && v.trim().length > 0).length;
+  const practicalFilledCount =
+    [
+      practicalParking,
+      practicalAccommodation,
+      practicalContactName || practicalContactPhone,
+    ].filter((v) => v && v.trim().length > 0).length +
+    practicalCustomFields.filter(
+      (f) => (f.label ?? "").trim().length > 0 && (f.value ?? "").trim().length > 0,
+    ).length;
   const dressCodeEnabled = couple.dressCodeEnabled ?? false;
   const dressPhotoCount = (couple.dressCodeImages ?? []).filter(
     (u) => u && u.trim().length > 0,
