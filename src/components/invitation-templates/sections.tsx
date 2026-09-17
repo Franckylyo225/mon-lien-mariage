@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { MapPin, Phone, Mail, User, Sparkles, Car, BedDouble, LifeBuoy, X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Ceremony, Couple } from "@/lib/wedding-store";
-import { ceremonyMapsHref, ceremonyVenue } from "@/lib/wedding-store";
+import { ceremonyMapsHref, ceremonyVenue, programItemMapsHref } from "@/lib/wedding-store";
 import { StoryHeader, StoryTimeline } from "@/components/public/StoryTimeline";
 import { ThemeIcon } from "./theme-icon";
 import loveLetterIcon from "@/assets/icons/love-letter.png.asset.json";
@@ -324,7 +324,9 @@ export function LocationsSection({
   ceremonies: Ceremony[];
   accent?: string;
 }) {
-  const withVenue = ceremonies.filter((c) => ceremonyVenue(c));
+  const withVenue = ceremonies.filter(
+    (c) => ceremonyVenue(c) || (c.program ?? []).some((it) => programItemMapsHref(it)),
+  );
   if (withVenue.length === 0) return null;
 
   return (
@@ -346,7 +348,9 @@ export function LocationsSection({
               </span>
               <div className="min-w-0 flex-1">
                 <p className="font-serif text-base italic">{c.label}</p>
-                <p className="mt-0.5 text-sm opacity-80">{ceremonyVenue(c)}</p>
+                {ceremonyVenue(c) ? (
+                  <p className="mt-0.5 text-sm opacity-80">{ceremonyVenue(c)}</p>
+                ) : null}
                 <a
                   href={mapsUrl}
                   target="_blank"
@@ -356,6 +360,37 @@ export function LocationsSection({
                 >
                   Ouvrir dans Maps →
                 </a>
+                {(() => {
+                  const subLocations = (c.program ?? []).filter((it) =>
+                    programItemMapsHref(it),
+                  );
+                  if (subLocations.length === 0) return null;
+                  return (
+                    <ul className="mt-3 space-y-2 border-t border-current/10 pt-3">
+                      {subLocations.map((it) => (
+                        <li key={it.id} className="flex items-start gap-2">
+                          <MapPin className="mt-0.5 size-3 shrink-0 opacity-50" />
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs opacity-80">
+                              {it.time ? `${it.time} · ` : ""}
+                              {it.title}
+                              {it.location ? ` — ${it.location}` : ""}
+                            </p>
+                            <a
+                              href={programItemMapsHref(it)!}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="mt-0.5 inline-block font-mono text-[9px] uppercase tracking-[0.2em] underline underline-offset-4"
+                              style={{ color: accent }}
+                            >
+                              Itinéraire →
+                            </a>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  );
+                })()}
               </div>
             </li>
           );
