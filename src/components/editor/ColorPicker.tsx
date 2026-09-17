@@ -197,11 +197,11 @@ export function ColorPicker({
   );
 }
 
-function normalizeHex(hex: string): string {
+export function normalizeHex(hex: string): string {
   return hex.trim().toLowerCase();
 }
 
-function colorName(hex: string): string {
+export function colorName(hex: string): string {
   const normalized = normalizeHex(hex);
   return (
     DRESS_CODE_COLORS.find((color) => color.hex.toLowerCase() === normalized)?.name ??
@@ -209,7 +209,7 @@ function colorName(hex: string): string {
   );
 }
 
-function hasDarkContrast(hex: string): boolean {
+export function hasDarkContrast(hex: string): boolean {
   const value = normalizeHex(hex).replace("#", "");
   if (!/^[0-9a-f]{6}$/.test(value)) return true;
   const red = Number.parseInt(value.slice(0, 2), 16);

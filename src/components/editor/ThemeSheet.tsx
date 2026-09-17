@@ -3,7 +3,6 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { Couple, ThemeId } from "@/lib/wedding-store";
 import {
-  ACCENTS,
   BACKGROUNDS,
   THEMES,
   THEME_FAMILIES,
@@ -29,7 +28,6 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
   const currentFamily: ThemeFamilyId = THEMES[couple.theme]?.family ?? "classiques";
   const [family, setFamily] = useState<ThemeFamilyId>(currentFamily);
   const [editingBg, setEditingBg] = useState(false);
-  const [editingText, setEditingText] = useState(false);
 
   const resolved = resolveTheme(couple);
 
@@ -38,19 +36,12 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
     onPatch({ theme: slug, accentColor: undefined, backgroundBase: undefined, textColor: undefined });
   };
 
-  const selectAccent = (hex: string) => onPatch({ accentColor: hex });
   const selectBg = (slug: BackgroundSlug) => {
     setEditingBg(false);
     onPatch({ backgroundBase: slug });
   };
-  const selectText = (hex: string) => {
-    setEditingText(false);
-    onPatch({ textColor: hex });
-  };
-
   const restoreDefaults = () => {
     setEditingBg(false);
-    setEditingText(false);
     onPatch({ accentColor: undefined, backgroundBase: undefined, textColor: undefined });
   };
 
@@ -64,17 +55,6 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
   const rawText = couple.textColor;
   const hasCustomText = !!rawText && /^#[0-9A-Fa-f]{6}$/.test(rawText);
   const customTextHex = hasCustomText ? (rawText as string) : resolved.textPrimary;
-
-  // Neutral text presets covering light + dark backgrounds.
-  const TEXT_PRESETS: { name: string; hex: string }[] = [
-    { name: "Noir", hex: "#1A1A1A" },
-    { name: "Gris foncé", hex: "#4B5563" },
-    { name: "Gris doux", hex: "#6B7280" },
-    { name: "Ivoire", hex: "#F5EFE7" },
-    { name: "Blanc", hex: "#FFFFFF" },
-    { name: "Bordeaux", hex: "#993556" },
-  ];
-
 
   return (
     <BottomSheet open={open} onOpenChange={onOpenChange} title="Thème & couleurs">
@@ -169,38 +149,12 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
       ) : (
         <div className="space-y-6">
           <section>
-            <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
-              Couleur d'accent
-            </p>
-            <div className="grid grid-cols-6 gap-3">
-              {ACCENTS.map((a) => {
-                const active = resolved.accent.toLowerCase() === a.hex.toLowerCase();
-                return (
-                  <button
-                    key={a.hex}
-                    type="button"
-                    onClick={() => selectAccent(a.hex)}
-                    className="group flex flex-col items-center gap-1 text-center"
-                    title={a.name}
-                  >
-                    <span
-                      className={cn(
-                        "grid size-11 place-items-center rounded-full transition",
-                        active ? "ring-2 ring-offset-2 ring-offset-background" : "",
-                      )}
-                      style={{ background: a.hex, ["--tw-ring-color" as string]: a.hex }}
-                    >
-                      {active && (
-                        <span className="grid size-5 place-items-center rounded-full bg-white">
-                          <Check className="size-3" style={{ color: a.hex }} />
-                        </span>
-                      )}
-                    </span>
-                    <span className="line-clamp-1 text-[9px] opacity-70">{a.name}</span>
-                  </button>
-                );
-              })}
-            </div>
+            <HexEditor
+              value={resolved.accent}
+              onChange={(hex) => onPatch({ accentColor: hex })}
+              onRemove={couple.accentColor ? () => onPatch({ accentColor: undefined }) : undefined}
+              label="Couleur d'accent"
+            />
           </section>
 
           <section>
@@ -303,84 +257,13 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
           </section>
 
           <section>
-            <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
-              Couleur secondaire (texte)
-            </p>
-            <p className="mb-3 text-[10px] opacity-60">
-              Utile lorsque le fond personnalisé rend le texte peu lisible.
-            </p>
-            <div className="grid grid-cols-6 gap-3">
-              {TEXT_PRESETS.map((t) => {
-                const active = hasCustomText && customTextHex.toLowerCase() === t.hex.toLowerCase();
-                return (
-                  <button
-                    key={t.hex}
-                    type="button"
-                    onClick={() => selectText(t.hex)}
-                    className="group flex flex-col items-center gap-1 text-center"
-                    title={t.name}
-                  >
-                    <span
-                      className={cn(
-                        "grid size-11 place-items-center rounded-full border border-black/10 transition",
-                        active ? "ring-2 ring-offset-2 ring-offset-background" : "",
-                      )}
-                      style={{ background: t.hex, ["--tw-ring-color" as string]: t.hex }}
-                    >
-                      {active && (
-                        <span className="grid size-5 place-items-center rounded-full bg-white">
-                          <Check className="size-3" style={{ color: t.hex }} />
-                        </span>
-                      )}
-                    </span>
-                    <span className="line-clamp-1 text-[9px] opacity-70">{t.name}</span>
-                  </button>
-                );
-              })}
-
-              <button
-                type="button"
-                onClick={() => {
-                  if (!hasCustomText) onPatch({ textColor: customTextHex });
-                  setEditingText((v) => !v);
-                }}
-                className="flex flex-col items-center gap-1 text-center"
-                title="Personnalisé"
-              >
-                <span
-                  className={cn(
-                    "grid size-11 place-items-center rounded-full border-2 border-dashed border-border transition",
-                    hasCustomText && !TEXT_PRESETS.some((p) => p.hex.toLowerCase() === customTextHex.toLowerCase())
-                      ? "border-solid ring-2 ring-offset-2 ring-offset-background"
-                      : "",
-                  )}
-                  style={{
-                    background: hasCustomText ? customTextHex : "transparent",
-                    ["--tw-ring-color" as string]: customTextHex,
-                  }}
-                >
-                  <Plus className="size-4 opacity-60" />
-                </span>
-                <span className="line-clamp-1 text-[9px] opacity-70">Personnalisé</span>
-              </button>
-            </div>
-
-            {editingText && (
-              <HexEditor
-                value={customTextHex}
-                onChange={(v) => onPatch({ textColor: v })}
-                onClose={() => setEditingText(false)}
-                onRemove={
-                  hasCustomText
-                    ? () => {
-                        setEditingText(false);
-                        onPatch({ textColor: undefined });
-                      }
-                    : undefined
-                }
-                removeLabel="Retirer"
-              />
-            )}
+            <HexEditor
+              value={customTextHex}
+              onChange={(hex) => onPatch({ textColor: hex })}
+              onRemove={hasCustomText ? () => onPatch({ textColor: undefined }) : undefined}
+              label="Couleur secondaire (texte)"
+              helper="Utile lorsque le fond personnalisé rend le texte peu lisible."
+            />
           </section>
 
           <button
