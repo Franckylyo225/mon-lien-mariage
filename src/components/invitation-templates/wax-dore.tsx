@@ -28,7 +28,7 @@ export function WaxDoreTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps)
       style={{
         background: "#F5EFE7",
         color: "#3a1f0f",
-        fontFamily: '"Inter", sans-serif',
+        fontFamily: 'var(--wedding-font-body, "Inter", sans-serif)',
       }}
     >
       <article className="mx-auto max-w-lg px-5 pb-24 pt-6 sm:px-8 animate-fade-in">
@@ -43,7 +43,7 @@ export function WaxDoreTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps)
 
         <h1
           className="mt-6 text-center leading-[0.95]"
-          style={{ fontFamily: '"Playfair Display", serif' }}
+          style={{ fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)' }}
         >
           <span className="block text-[3rem] italic">{couple.brideName}</span>
           <span className="my-2 block text-2xl" style={{ color: accent }}>
@@ -55,7 +55,7 @@ export function WaxDoreTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps)
         <p
           className="mt-6 text-center italic"
           style={{
-            fontFamily: '"Playfair Display", serif',
+            fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)',
             color: accent,
           }}
         >
@@ -106,7 +106,7 @@ export function WaxDoreTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps)
         {couple.introMessage ? (
           <p
             className="mt-12 text-center text-lg italic leading-relaxed"
-            style={{ fontFamily: '"Playfair Display", serif' }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)' }}
           >
             {couple.introMessage}
           </p>
@@ -120,7 +120,7 @@ export function WaxDoreTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps)
             <span style={{ color: accent }}>✦ ✦ ✦</span>
             <h2
               className="mt-2 text-2xl italic"
-              style={{ fontFamily: '"Playfair Display", serif' }}
+              style={{ fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)' }}
             >
               {eventTypeMeta[couple.eventType ?? "mariage"].programTitle}
             </h2>

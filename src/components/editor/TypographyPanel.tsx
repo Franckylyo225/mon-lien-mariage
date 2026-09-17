@@ -5,7 +5,6 @@ import { BODY_FONTS, TITLE_FONTS } from "@/lib/fonts";
 import type { Couple } from "@/lib/wedding-store";
 import { THEMES } from "@/lib/wedding-theme";
 import { cn } from "@/lib/utils";
-import { useWeddingFonts } from "@/hooks/use-wedding-fonts";
 
 interface TypographyPanelProps {
   couple: Pick<Couple, "theme" | "customFontTitle" | "customFontBody">;
@@ -15,7 +14,6 @@ interface TypographyPanelProps {
 
 export function TypographyPanel({ couple, onPatch, defaultExpanded = false }: TypographyPanelProps) {
   const [expanded, setExpanded] = useState(defaultExpanded);
-  useWeddingFonts(couple);
   const theme = THEMES[couple.theme] ?? THEMES["rose-elegance"];
   const customized = Boolean(couple.customFontTitle || couple.customFontBody);
 

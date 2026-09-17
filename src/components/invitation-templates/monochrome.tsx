@@ -29,7 +29,7 @@ export function MonochromeTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
       style={{
         background: "#ffffff",
         color: "#000",
-        fontFamily: '"Inter", sans-serif',
+        fontFamily: 'var(--wedding-font-body, "Inter", sans-serif)',
       }}
     >
       <article className="mx-auto max-w-2xl px-5 pb-24 pt-10 sm:px-10 animate-fade-in">
@@ -60,7 +60,7 @@ export function MonochromeTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
 
         <h1
           className="mt-10 leading-[0.85] tracking-tight"
-          style={{ fontFamily: '"Inter", sans-serif', fontWeight: 800 }}
+          style={{ fontFamily: 'var(--wedding-font-body, "Inter", sans-serif)', fontWeight: 800 }}
         >
           <span className="block text-[3.25rem] uppercase sm:text-[5rem]">
             {couple.brideName}

@@ -28,7 +28,7 @@ export function BleuNuitTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
       style={{
         background: "#0f1b2d",
         color: "#eae3d0",
-        fontFamily: '"Inter", sans-serif',
+        fontFamily: 'var(--wedding-font-body, "Inter", sans-serif)',
       }}
     >
       <article className="mx-auto max-w-lg px-5 pb-24 pt-10 sm:px-8 animate-fade-in">
@@ -59,7 +59,7 @@ export function BleuNuitTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
 
         <h1
           className="mt-6 text-center leading-[0.95]"
-          style={{ fontFamily: '"Playfair Display", serif' }}
+          style={{ fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)' }}
         >
           <span className="block text-[3.25rem] italic">{couple.brideName}</span>
           <span
@@ -85,7 +85,7 @@ export function BleuNuitTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
 
         <p
           className="mt-4 text-center italic"
-          style={{ fontFamily: '"Playfair Display", serif', color: "#eae3d0" }}
+          style={{ fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)', color: "#eae3d0" }}
         >
           <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>
         </p>
@@ -123,7 +123,7 @@ export function BleuNuitTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
           <p
             className="mt-12 text-center text-lg italic leading-relaxed"
             style={{
-              fontFamily: '"Playfair Display", serif',
+              fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)',
               color: "#eae3d0cc",
             }}
           >

@@ -44,7 +44,7 @@ function PostalStamp({
         fontSize="6"
         fill={accent}
         opacity="0.75"
-        style={{ fontFamily: '"Special Elite", monospace' }}
+        style={{ fontFamily: 'var(--wedding-font-body, "Special Elite", monospace)' }}
       >
         PAR AVION
       </text>
@@ -56,7 +56,7 @@ function PostalStamp({
         fontSize="4.5"
         fill={accent}
         opacity="0.7"
-        style={{ fontFamily: '"Special Elite", monospace' }}
+        style={{ fontFamily: 'var(--wedding-font-body, "Special Elite", monospace)' }}
       >
         SAVE THE DATE
       </text>
@@ -79,7 +79,7 @@ export function PapierKraftTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
       style={{
         background: kraftBg,
         color: "#3b2617",
-        fontFamily: '"Special Elite", "Courier New", monospace',
+        fontFamily: 'var(--wedding-font-body, "Special Elite", "Courier New", monospace)',
       }}
     >
       <article className="relative mx-auto max-w-lg px-5 pb-24 pt-10 sm:px-8 animate-fade-in">
@@ -115,12 +115,12 @@ export function PapierKraftTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
 
           <h1
             className="mt-4 text-center leading-tight"
-            style={{ fontFamily: '"Cormorant Garamond", serif', color: "#3b2617" }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Cormorant Garamond", serif)', color: "#3b2617" }}
           >
             <span className="block text-5xl italic">{couple.brideName}</span>
             <span
               className="my-2 block text-2xl"
-              style={{ color: accent, fontFamily: '"Special Elite", monospace' }}
+              style={{ color: accent, fontFamily: 'var(--wedding-font-body, "Special Elite", monospace)' }}
             >
               + 
             </span>
@@ -199,7 +199,7 @@ export function PapierKraftTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
           <p
             className="mt-12 text-center text-base leading-relaxed"
             style={{
-              fontFamily: '"Special Elite", "Courier New", monospace',
+              fontFamily: 'var(--wedding-font-body, "Special Elite", "Courier New", monospace)',
               color: "#3b2617",
             }}
           >

@@ -30,7 +30,7 @@ export function KenteRoyalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
       style={{
         background: "#1a0e12",
         color: "#f7ecd6",
-        fontFamily: '"Inter", sans-serif',
+        fontFamily: 'var(--wedding-font-body, "Inter", sans-serif)',
       }}
     >
       <article className="mx-auto max-w-lg px-5 pb-24 pt-6 sm:px-8 animate-fade-in">
@@ -46,7 +46,7 @@ export function KenteRoyalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
 
           <h1
             className="mt-6 leading-[0.95]"
-            style={{ fontFamily: '"Playfair Display", serif' }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)' }}
           >
             <span className="block text-[3rem] italic">{couple.brideName}</span>
             <span
@@ -77,7 +77,7 @@ export function KenteRoyalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
 
           <p
             className="mt-5 italic"
-            style={{ fontFamily: '"Playfair Display", serif' }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)' }}
           >
             <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>
           </p>
@@ -131,7 +131,7 @@ export function KenteRoyalTemplate({ couple, ceremonies, rsvpSlot }: TemplatePro
         {couple.introMessage ? (
           <p
             className="mt-12 text-center text-lg italic leading-relaxed"
-            style={{ fontFamily: '"Playfair Display", serif', color: "#f7ecd6cc" }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)', color: "#f7ecd6cc" }}
           >
             {couple.introMessage}
           </p>

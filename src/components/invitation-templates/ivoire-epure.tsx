@@ -29,7 +29,7 @@ export function IvoireEpureTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
       style={{
         background: "#FAF8F3",
         color: "#1A1A1A",
-        fontFamily: '"Inter", sans-serif',
+        fontFamily: 'var(--wedding-font-body, "Inter", sans-serif)',
       }}
     >
       <article className="mx-auto max-w-2xl px-5 pb-24 pt-16 sm:px-10 animate-fade-in">
@@ -53,7 +53,7 @@ export function IvoireEpureTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
         <div className="mt-14">
           <h1
             className="text-left leading-[0.88] tracking-tight"
-            style={{ fontFamily: '"Cormorant Garamond", serif' }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Cormorant Garamond", serif)' }}
           >
             <span className="block text-[3.75rem] italic sm:text-[6rem]">
               {couple.brideName}
@@ -105,7 +105,7 @@ export function IvoireEpureTemplate({ couple, ceremonies, rsvpSlot }: TemplatePr
         {couple.introMessage ? (
           <p
             className="mt-16 max-w-xl text-lg italic leading-relaxed"
-            style={{ fontFamily: '"Cormorant Garamond", serif' }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Cormorant Garamond", serif)' }}
           >
             {couple.introMessage}
           </p>

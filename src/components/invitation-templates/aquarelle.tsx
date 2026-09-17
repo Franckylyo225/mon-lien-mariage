@@ -60,7 +60,7 @@ export function AquarelleTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
       style={{
         background: "#fdf8f4",
         color: "#4b3a44",
-        fontFamily: '"Cormorant Garamond", serif',
+        fontFamily: 'var(--wedding-font-heading, "Cormorant Garamond", serif)',
       }}
     >
       {/* Watercolor washes */}
@@ -84,7 +84,7 @@ export function AquarelleTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
       <article className="relative mx-auto max-w-lg px-5 pb-24 pt-12 sm:px-8 animate-fade-in">
         <p
           className="text-center text-[11px] uppercase tracking-[0.45em]"
-          style={{ color: accent, fontFamily: '"Inter", sans-serif' }}
+          style={{ color: accent, fontFamily: 'var(--wedding-font-body, "Inter", sans-serif)' }}
         >
           {couple.caption || "peint à la main"}
         </p>
@@ -98,7 +98,7 @@ export function AquarelleTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
           </span>
           <span
             className="my-1 block text-3xl italic"
-            style={{ color: accent, fontFamily: '"Cormorant Garamond", serif' }}
+            style={{ color: accent, fontFamily: 'var(--wedding-font-heading, "Cormorant Garamond", serif)' }}
           >
             &amp;
           </span>
@@ -136,7 +136,7 @@ export function AquarelleTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
         </p>
         <p
           className="mt-1 text-center text-[11px] uppercase tracking-[0.4em]"
-          style={{ color: accent, fontFamily: '"Inter", sans-serif' }}
+          style={{ color: accent, fontFamily: 'var(--wedding-font-body, "Inter", sans-serif)' }}
         >
           ~ {couple.city} ~
         </p>
@@ -176,7 +176,7 @@ export function AquarelleTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
           <div className="mb-6 text-center">
             <p
               className="text-[11px] uppercase tracking-[0.45em]"
-              style={{ color: accent, fontFamily: '"Inter", sans-serif' }}
+              style={{ color: accent, fontFamily: 'var(--wedding-font-body, "Inter", sans-serif)' }}
             >
               ~ {eventTypeMeta[couple.eventType ?? "mariage"].programTitle} ~
             </p>

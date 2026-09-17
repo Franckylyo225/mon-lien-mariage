@@ -14,6 +14,7 @@ import { ThemeThumbnail } from "@/components/editor/ThemeThumbnail";
 import { cn } from "@/lib/utils";
 import { TypographyPanel } from "@/components/editor/TypographyPanel";
 import { ThemeRoot } from "@/components/theme/ThemeRoot";
+import { useWeddingFonts } from "@/hooks/use-wedding-fonts";
 
 export const Route = createFileRoute("/onboarding/theme")({
   head: () => ({ meta: [{ title: "Étape 4 / 4 — Choisissez un thème" }] }),
@@ -29,6 +30,7 @@ function StepTheme() {
     THEMES[initialTheme]?.family ?? "classiques",
   );
   const [previewOpen, setPreviewOpen] = useState(false);
+  useWeddingFonts({ ...couple, theme: selected });
 
   const confirmChoice = async () => {
     await updateCouple({ theme: selected });

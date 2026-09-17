@@ -152,7 +152,7 @@ export function RsvpOrnament({
             fill={color}
             fontSize="7"
             textAnchor="middle"
-            style={{ fontFamily: '"Special Elite", monospace' }}
+            style={{ fontFamily: 'var(--wedding-font-body, "Special Elite", monospace)' }}
           >
             RSVP
           </text>

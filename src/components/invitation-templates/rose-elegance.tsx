@@ -28,7 +28,7 @@ export function RoseEleganceTemplate({ couple, ceremonies, rsvpSlot }: TemplateP
       style={{
         background: "#f7f1ea",
         color: "#3a1f2b",
-        fontFamily: '"Inter", sans-serif',
+        fontFamily: 'var(--wedding-font-body, "Inter", sans-serif)',
       }}
     >
       <article className="mx-auto max-w-lg px-5 pb-24 pt-10 sm:px-8 animate-fade-in">
@@ -44,7 +44,7 @@ export function RoseEleganceTemplate({ couple, ceremonies, rsvpSlot }: TemplateP
 
         <h1
           className="mt-6 text-center leading-[0.95]"
-          style={{ fontFamily: '"Playfair Display", serif' }}
+          style={{ fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)' }}
         >
           <span className="block text-[3rem] italic sm:text-[3.5rem]">
             {couple.brideName}
@@ -70,7 +70,7 @@ export function RoseEleganceTemplate({ couple, ceremonies, rsvpSlot }: TemplateP
 
         <p
           className="mt-5 text-center italic"
-          style={{ fontFamily: '"Playfair Display", serif' }}
+          style={{ fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)' }}
         >
           <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>
         </p>
@@ -121,7 +121,7 @@ export function RoseEleganceTemplate({ couple, ceremonies, rsvpSlot }: TemplateP
         {couple.introMessage ? (
           <p
             className="mt-12 text-pretty text-center italic leading-relaxed"
-            style={{ fontFamily: '"Playfair Display", serif' }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)' }}
           >
             « {couple.introMessage} »
           </p>
@@ -184,7 +184,7 @@ function SectionTitle({
       />
       <h2
         className="text-2xl italic"
-        style={{ fontFamily: '"Playfair Display", serif' }}
+        style={{ fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)' }}
       >
         {children}
       </h2>
