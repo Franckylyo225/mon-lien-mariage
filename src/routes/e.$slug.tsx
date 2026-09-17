@@ -248,8 +248,8 @@ function PublicInvitationPage() {
     practicalCustomFields: Array.isArray(
       (w as { practical_custom_fields?: unknown }).practical_custom_fields,
     )
-      ? ((w as { practical_custom_fields: Array<{ label: string; value: string }> })
-          .practical_custom_fields)
+      ? ((w as { practical_custom_fields?: unknown })
+          .practical_custom_fields as unknown as Array<{ label: string; value: string }>)
       : [],
     registryEnabled:
       (w as { registry_enabled?: boolean | null }).registry_enabled ?? false,
