@@ -47,7 +47,14 @@ export const Route = createFileRoute('/api/public/hooks/email-automations')({
           return Response.json({ success: true, ...summary })
         } catch (error) {
           console.error('[automations] run failed', error)
-          return Response.json({ error: 'run_failed' }, { status: 500 })
+          const message = error instanceof Error ? error.message : ''
+          return Response.json(
+            {
+              error: 'run_failed',
+              ...(message.startsWith('server_misconfigured') ? { reason: message } : {}),
+            },
+            { status: 500 },
+          )
         }
       },
     },
