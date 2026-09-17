@@ -1,25 +1,21 @@
-import { useEffect, useState } from "react";
-import { Check } from "lucide-react";
-
-/**
- * Curated wedding palette — reused across accent and background pickers.
- */
-export const HEX_PRESETS = [
-  "#0b1a2b", "#1f3a5f", "#2b2a4c", "#4a1e3a",
-  "#7a1e3a", "#a8324f", "#c9a96b", "#e6c78a",
-  "#f4e4c1", "#efe7dc", "#e7d9c4", "#c9b79c",
-  "#8b6f4e", "#5c4033", "#2d2a26", "#0a0a0a",
-  "#f5f5f0", "#d6cfc2", "#5a6b57", "#3a5a40",
-  "#1e3a2f", "#264653", "#e76f51", "#b56576",
-];
+import { Check, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import {
+  DRESS_CODE_COLORS,
+  colorName,
+  hasDarkContrast,
+  normalizeHex,
+} from "./ColorPicker";
 
 interface HexEditorProps {
   value: string;
   onChange: (v: string) => void;
-  onClose: () => void;
+  onClose?: () => void;
   onRemove?: () => void;
   removeLabel?: string;
-  presets?: string[];
+  label?: string;
+  helper?: string;
 }
 
 export function HexEditor({
@@ -28,216 +24,93 @@ export function HexEditor({
   onClose,
   onRemove,
   removeLabel = "Retirer",
-  presets = HEX_PRESETS,
+  label = "Choisir une couleur",
+  helper = "Sélectionnez une teinte ou ajoutez une couleur personnalisée.",
 }: HexEditorProps) {
-  const [h, s, l] = hexToHsl(value);
-  const [hex, setHex] = useState(value);
-
-  useEffect(() => setHex(value), [value]);
-
-  const commitHex = (v: string) => {
-    let clean = v.trim().toLowerCase();
-    if (!clean.startsWith("#")) clean = "#" + clean;
-    if (/^#[0-9a-f]{6}$/.test(clean)) onChange(clean);
-    else setHex(value);
-  };
+  const normalizedValue = normalizeHex(value);
+  const isCurated = DRESS_CODE_COLORS.some(
+    (color) => normalizeHex(color.hex) === normalizedValue,
+  );
+  const palette = isCurated
+    ? [...DRESS_CODE_COLORS]
+    : [
+        ...DRESS_CODE_COLORS,
+        { hex: normalizedValue, name: colorName(normalizedValue) },
+      ];
 
   return (
-    <div className="mt-4 space-y-4 rounded-2xl border border-border bg-muted/30 p-4">
-      <div className="flex items-center gap-3">
-        <div
-          className="size-14 shrink-0 rounded-full shadow-inner ring-1 ring-black/10"
-          style={{ backgroundColor: value }}
-        />
-        <div className="flex-1">
-          <label className="mb-1 block font-mono text-[9px] uppercase tracking-[0.2em] opacity-60">
-            Code hexadécimal
-          </label>
-          <input
-            type="text"
-            value={hex}
-            onChange={(e) => setHex(e.target.value)}
-            onBlur={() => commitHex(hex)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                commitHex(hex);
-              }
-            }}
-            className="w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-[12px] uppercase tracking-wider outline-none focus:ring-2 focus:ring-primary/40"
-            spellCheck={false}
-            autoCapitalize="none"
-            autoCorrect="off"
-            maxLength={7}
-          />
-        </div>
-      </div>
-
-      <PremiumSlider
-        label="Teinte"
-        value={h}
-        min={0}
-        max={360}
-        onChange={(nh) => onChange(hslToHex(nh, s, l))}
-        gradient="linear-gradient(to right,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00)"
-      />
-      <PremiumSlider
-        label="Saturation"
-        value={s}
-        min={0}
-        max={100}
-        suffix="%"
-        onChange={(ns) => onChange(hslToHex(h, ns, l))}
-        gradient={`linear-gradient(to right, hsl(${h} 0% ${l}%), hsl(${h} 100% ${l}%))`}
-      />
-      <PremiumSlider
-        label="Luminosité"
-        value={l}
-        min={0}
-        max={100}
-        suffix="%"
-        onChange={(nl) => onChange(hslToHex(h, s, nl))}
-        gradient={`linear-gradient(to right,#000, hsl(${h} ${s}% 50%), #fff)`}
-      />
-
+    <fieldset className="mt-4 space-y-4 rounded-2xl border border-border bg-muted/30 p-4">
       <div>
-        <label className="mb-2 block font-mono text-[9px] uppercase tracking-[0.2em] opacity-60">
-          Teintes suggérées
-        </label>
-        <div className="grid grid-cols-8 gap-1.5">
-          {presets.map((p) => (
-            <button
-              key={p}
-              type="button"
-              onClick={() => onChange(p)}
-              className={
-                "size-7 rounded-full shadow-sm ring-1 ring-black/10 transition active:scale-90 hover:scale-110 " +
-                (p.toLowerCase() === value.toLowerCase()
-                  ? "ring-2 ring-primary ring-offset-1 ring-offset-background"
-                  : "")
-              }
-              style={{ backgroundColor: p }}
-              aria-label={p}
-            />
-          ))}
-        </div>
+        <legend className="text-sm font-semibold text-foreground">{label}</legend>
+        <p className="mt-1 text-[11px] leading-4 text-muted-foreground">{helper}</p>
       </div>
 
-      <div className="flex gap-2 pt-1">
+      <div className="grid grid-cols-5 gap-3">
+        {palette.map(({ hex, name }) => {
+          const selected = normalizeHex(hex) === normalizedValue;
+          return (
+            <Button
+              key={hex}
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-pressed={selected}
+              aria-label={`${name}, ${selected ? "sélectionnée" : "non sélectionnée"}`}
+              onClick={() => onChange(normalizeHex(hex))}
+              className={cn(
+                "relative aspect-square size-full min-h-11 min-w-11 rounded-full p-0 shadow-sm ring-1 ring-foreground/10 transition hover:scale-105 hover:bg-transparent active:scale-95",
+                selected && "ring-[3px] ring-dress-picker-ink ring-offset-2 ring-offset-background",
+              )}
+              style={{ backgroundColor: hex }}
+            >
+              {selected ? (
+                <span className="absolute inset-[3px] grid place-items-center rounded-full border-2 border-background">
+                  <Check
+                    className={cn(
+                      "size-5",
+                      hasDarkContrast(hex) ? "text-background" : "text-dress-picker-ink",
+                    )}
+                    strokeWidth={3}
+                    aria-hidden="true"
+                  />
+                </span>
+              ) : null}
+            </Button>
+          );
+        })}
+
+        <span className="relative grid aspect-square min-h-11 min-w-11 place-items-center rounded-full border-2 border-dashed border-dress-picker-disabled-text text-dress-picker-ink transition">
+          <Plus className="size-5" aria-hidden="true" />
+          <input
+            type="color"
+            value={/^#[0-9a-f]{6}$/i.test(value) ? value : "#c6577a"}
+            onChange={(event) => onChange(normalizeHex(event.target.value))}
+            aria-label="Ajouter une teinte personnalisée"
+            className="absolute inset-0 size-full cursor-pointer rounded-full opacity-0"
+          />
+        </span>
+      </div>
+
+      {onRemove || onClose ? <div className="flex gap-2 border-t border-border pt-4">
         {onRemove && (
-          <button
+          <Button
             type="button"
+            variant="outline"
             onClick={onRemove}
-            className="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-destructive transition active:scale-[0.97]"
+            className="rounded-xl border-dress-picker-border bg-background text-dress-picker-accent hover:bg-rose-poudre hover:text-dress-picker-accent"
           >
             {removeLabel}
-          </button>
+          </Button>
         )}
-        <button
+        {onClose ? <Button
           type="button"
           onClick={onClose}
-          className="ml-auto flex items-center gap-1.5 rounded-xl bg-foreground px-4 py-2 font-mono text-[10px] uppercase tracking-widest text-background transition active:scale-[0.97]"
+          className="ml-auto rounded-xl bg-foreground text-background hover:bg-foreground/90"
         >
           <Check className="size-3.5" />
           Terminé
-        </button>
-      </div>
-    </div>
+        </Button> : null}
+      </div> : null}
+    </fieldset>
   );
-}
-
-function PremiumSlider({
-  label,
-  value,
-  min,
-  max,
-  onChange,
-  gradient,
-  suffix = "",
-}: {
-  label: string;
-  value: number;
-  min: number;
-  max: number;
-  onChange: (v: number) => void;
-  gradient: string;
-  suffix?: string;
-}) {
-  const pct = ((value - min) / (max - min)) * 100;
-  return (
-    <div>
-      <div className="mb-1.5 flex items-center justify-between font-mono text-[9px] uppercase tracking-[0.2em] opacity-60">
-        <span>{label}</span>
-        <span>
-          {Math.round(value)}
-          {suffix}
-        </span>
-      </div>
-      <div
-        className="relative h-3 rounded-full shadow-inner ring-1 ring-black/10"
-        style={{ background: gradient }}
-      >
-        <input
-          type="range"
-          min={min}
-          max={max}
-          step={1}
-          value={value}
-          onChange={(e) => onChange(Number(e.target.value))}
-          className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-          aria-label={label}
-        />
-        <div
-          className="pointer-events-none absolute top-1/2 size-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-white shadow-md ring-1 ring-black/25"
-          style={{ left: `${pct}%` }}
-        />
-      </div>
-    </div>
-  );
-}
-
-// ---------- color utils ----------
-export function hexToHsl(hex: string): [number, number, number] {
-  const m = /^#?([a-f\d]{6})$/i.exec(hex.trim());
-  if (!m) return [40, 40, 60];
-  const int = parseInt(m[1], 16);
-  const r = ((int >> 16) & 255) / 255;
-  const g = ((int >> 8) & 255) / 255;
-  const b = (int & 255) / 255;
-  const max = Math.max(r, g, b);
-  const min = Math.min(r, g, b);
-  const l = (max + min) / 2;
-  let h = 0;
-  let s = 0;
-  if (max !== min) {
-    const d = max - min;
-    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    switch (max) {
-      case r:
-        h = (g - b) / d + (g < b ? 6 : 0);
-        break;
-      case g:
-        h = (b - r) / d + 2;
-        break;
-      case b:
-        h = (r - g) / d + 4;
-        break;
-    }
-    h *= 60;
-  }
-  return [h, s * 100, l * 100];
-}
-
-export function hslToHex(h: number, s: number, l: number): string {
-  s /= 100;
-  l /= 100;
-  const k = (n: number) => (n + h / 30) % 12;
-  const a = s * Math.min(l, 1 - l);
-  const f = (n: number) => {
-    const c = l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
-    return Math.round(c * 255)
-      .toString(16)
-      .padStart(2, "0");
-  };
-  return `#${f(0)}${f(8)}${f(4)}`;
 }
