@@ -9,4 +9,4 @@
 - [x] Remplacer la sélection des pages d’ouverture par une galerie de miniatures réelles.
 - [x] Renforcer le modèle « Breaking News » avec écran TV, horloge, chaîne et bandeaux animés.
 - [x] Harmoniser tous les autres sélecteurs de couleur avec la grille tactile du Dress code.
-- [ ] Ajouter la personnalisation des polices de titres et de texte avec aperçu direct.
+- [x] Ajouter la personnalisation des polices de titres et de texte avec aperçu direct.
