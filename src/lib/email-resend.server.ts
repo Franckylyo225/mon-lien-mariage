@@ -1,6 +1,8 @@
 // Envoi d'emails via Resend (connecteur passerelle Lovable).
 // Server-only : lit LOVABLE_API_KEY et RESEND_API_KEY.
 
+import { getResendApiKey, getServiceRoleKey, getSupabaseUrl } from '@/lib/server-credentials.server'
+
 const GATEWAY_URL = 'https://connector-gateway.lovable.dev/resend'
 
 export interface ResendSendInput {
@@ -40,8 +42,8 @@ async function recordAttempt(
   messageId: string | null,
   errorMessage?: string,
 ) {
-  const url = process.env['SUPABASE_URL']
-  const serviceKey = process.env['SUPABASE_SERVICE_ROLE_KEY']
+  const url = getSupabaseUrl()
+  const serviceKey = getServiceRoleKey()
   if (!url || !serviceKey) return
 
   try {
@@ -78,7 +80,7 @@ export class ResendSendError extends Error {
 export async function sendResendEmail(input: ResendSendInput): Promise<{ id: string }> {
   assertValidInput(input)
   const lovableKey = process.env['LOVABLE_API_KEY']
-  const resendKey = process.env['RESEND_API_KEY']
+  const resendKey = getResendApiKey()
   if (!resendKey) {
     const message = 'RESEND_API_KEY is not configured'
     await recordAttempt(input, 'failed', null, message)
