@@ -29,9 +29,6 @@ export function useWeddingFonts(wedding: FontWedding) {
       .join("&")}&display=swap`;
     if (!link.isConnected) document.head.appendChild(link);
 
-    return () => {
-      if (link.isConnected) link.remove();
-    };
   }, [titleFont?.googleFont, bodyFont?.googleFont]);
 
   return useMemo(() => {

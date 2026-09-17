@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDown, RotateCcw, Type } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BODY_FONTS, TITLE_FONTS } from "@/lib/fonts";
@@ -14,8 +14,24 @@ interface TypographyPanelProps {
 
 export function TypographyPanel({ couple, onPatch, defaultExpanded = false }: TypographyPanelProps) {
   const [expanded, setExpanded] = useState(defaultExpanded);
+  const [fonts, setFonts] = useState({
+    customFontTitle: couple.customFontTitle ?? null,
+    customFontBody: couple.customFontBody ?? null,
+  });
   const theme = THEMES[couple.theme] ?? THEMES["rose-elegance"];
-  const customized = Boolean(couple.customFontTitle || couple.customFontBody);
+  const customized = Boolean(fonts.customFontTitle || fonts.customFontBody);
+
+  useEffect(() => {
+    setFonts({
+      customFontTitle: couple.customFontTitle ?? null,
+      customFontBody: couple.customFontBody ?? null,
+    });
+  }, [couple.customFontTitle, couple.customFontBody]);
+
+  const commit = (next: typeof fonts) => {
+    setFonts(next);
+    onPatch(next);
+  };
 
   return (
     <section className="overflow-hidden rounded-lg border border-border bg-background">
@@ -42,16 +58,16 @@ export function TypographyPanel({ couple, onPatch, defaultExpanded = false }: Ty
           <FontChoices
             label="Police des titres"
             fonts={TITLE_FONTS}
-            selected={couple.customFontTitle}
+            selected={fonts.customFontTitle}
             sample="Aa"
-            onSelect={(id) => onPatch({ customFontTitle: id })}
+            onSelect={(id) => commit({ ...fonts, customFontTitle: id })}
           />
           <FontChoices
             label="Police du texte"
             fonts={BODY_FONTS}
-            selected={couple.customFontBody}
+            selected={fonts.customFontBody}
             sample="Aa Bb Cc"
-            onSelect={(id) => onPatch({ customFontBody: id })}
+            onSelect={(id) => commit({ ...fonts, customFontBody: id })}
           />
 
           {customized ? (
@@ -59,7 +75,7 @@ export function TypographyPanel({ couple, onPatch, defaultExpanded = false }: Ty
               type="button"
               variant="ghost"
               size="sm"
-              onClick={() => onPatch({ customFontTitle: null, customFontBody: null })}
+              onClick={() => commit({ customFontTitle: null, customFontBody: null })}
               className="h-auto px-0 py-1 text-xs text-muted-foreground underline underline-offset-4 hover:bg-transparent"
             >
               <RotateCcw className="size-3.5" />
