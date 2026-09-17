@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useWedding, type Guest, type RSVPStatus } from "@/lib/wedding-store";
 import type { GuestType } from "@/lib/guest-meta";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,6 +27,9 @@ export function useAllGuests() {
   const [publicRsvps, setPublicRsvps] = useState<PublicRsvpRow[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [reloadKey, setReloadKey] = useState(0);
+  const refetch = useCallback(() => setReloadKey((k) => k + 1), []);
+
   useEffect(() => {
     if (!weddingId) return;
     let cancelled = false;
@@ -45,7 +48,7 @@ export function useAllGuests() {
     return () => {
       cancelled = true;
     };
-  }, [weddingId]);
+  }, [weddingId, reloadKey]);
 
   const publicGuests: Guest[] = useMemo(() => {
     const existingNames = new Set(guests.map((g) => g.name.trim().toLowerCase()));
