@@ -79,24 +79,27 @@ export async function sendResendEmail(input: ResendSendInput): Promise<{ id: str
   assertValidInput(input)
   const lovableKey = process.env['LOVABLE_API_KEY']
   const resendKey = process.env['RESEND_API_KEY']
-  if (!lovableKey || !resendKey) {
-    const message = !lovableKey
-      ? 'LOVABLE_API_KEY is not configured'
-      : 'RESEND_API_KEY is not configured'
+  if (!resendKey) {
+    const message = 'RESEND_API_KEY is not configured'
     await recordAttempt(input, 'failed', null, message)
     throw new Error(message)
   }
 
+  // Passerelle Lovable quand la clé est disponible, sinon appel direct à
+  // l'API Resend (cas d'un hébergement externe où seule RESEND_API_KEY existe).
+  const useGateway = Boolean(lovableKey) && !resendKey.startsWith('re_')
+  const endpoint = useGateway ? `${GATEWAY_URL}/emails` : 'https://api.resend.com/emails'
+
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${lovableKey}`,
-    'X-Connection-Api-Key': resendKey,
+    Authorization: `Bearer ${useGateway ? lovableKey : resendKey}`,
   }
+  if (useGateway) headers['X-Connection-Api-Key'] = resendKey
   if (input.idempotencyKey) headers['Idempotency-Key'] = input.idempotencyKey
 
   let response: Response
   try {
-    response = await fetch(`${GATEWAY_URL}/emails`, {
+    response = await fetch(endpoint, {
       method: 'POST',
       headers,
       signal: AbortSignal.timeout(15_000),
@@ -115,6 +118,7 @@ export async function sendResendEmail(input: ResendSendInput): Promise<{ id: str
     await recordAttempt(input, 'failed', null, message)
     throw error
   }
+
 
   if (!response.ok) {
     const body = await response.text()
