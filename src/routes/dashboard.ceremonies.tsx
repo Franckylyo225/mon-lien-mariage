@@ -214,12 +214,6 @@ function CeremonySheet({
             ))}
           </select>
           <input
-            value={label}
-            onChange={(e) => setLabel(e.target.value)}
-            placeholder="Libellé court (ex: Dot)"
-            className="w-full rounded-full border border-input bg-background px-4 py-3 text-sm"
-          />
-          <input
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Nom affiché (ex: Dot chez la famille Diabaté)"
