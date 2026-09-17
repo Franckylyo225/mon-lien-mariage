@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Download, Pencil, Settings2 } from "lucide-react";
+import { Download, Pencil, Settings2, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import whatsappIconUrl from "@/assets/whatsapp-phone.png";
 import { useWedding, isPastEvent, type RSVPStatus } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
