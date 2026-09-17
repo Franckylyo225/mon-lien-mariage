@@ -50,9 +50,10 @@ export function useAllGuests() {
     };
   }, [weddingId, reloadKey]);
 
-  const publicGuests: Guest[] = useMemo(() => {
+  const { publicGuests, rsvpIdsByGuest } = useMemo(() => {
     const existingNames = new Set(guests.map((g) => g.name.trim().toLowerCase()));
     const grouped = new Map<string, Guest>();
+    const ids = new Map<string, string[]>();
     for (const r of publicRsvps) {
       const key = `${r.guest_name.trim().toLowerCase()}|${(r.guest_phone ?? "").trim()}`;
       if (existingNames.has(r.guest_name.trim().toLowerCase())) continue;
