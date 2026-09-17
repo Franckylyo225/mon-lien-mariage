@@ -61,6 +61,7 @@ export function useAllGuests() {
       const status: RSVPStatus = r.attending ? "confirmé" : "décliné";
       const existing = grouped.get(key);
       if (existing) {
+        ids.get(existing.id)?.push(r.id);
         if (r.ceremony_id && !existing.ceremonyIds.includes(r.ceremony_id)) {
           existing.ceremonyIds.push(r.ceremony_id);
           existing.rsvps.push({ ceremonyId: r.ceremony_id, status, plusOnes: r.companions });
