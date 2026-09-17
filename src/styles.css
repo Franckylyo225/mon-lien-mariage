@@ -29,6 +29,15 @@
 @import "@fontsource/jetbrains-mono/400.css";
 @import "@fontsource/jetbrains-mono/500.css";
 
+/* Invitation typography is resolved per wedding through semantic CSS variables. */
+.wedding-typography {
+  font-family: var(--wedding-font-body);
+}
+
+.wedding-typography :is(h1, h2, h3, h4, [data-wedding-title]) {
+  font-family: var(--wedding-font-heading) !important;
+}
+
 /* ── Charte moninvit v1.0 ─────────────────────────────── */
 :root {
   --framboise: #E82050;

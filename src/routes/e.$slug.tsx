@@ -209,6 +209,8 @@ function PublicInvitationPage() {
     accentColor: (w as { accent_color?: string | null }).accent_color ?? undefined,
     backgroundBase: ((w as { background_base?: string | null }).background_base as BackgroundBase | null) ?? undefined,
     textColor: ((w as { text_color?: string | null }).text_color as string | null) ?? undefined,
+    customFontTitle: (w as { custom_font_title?: string | null }).custom_font_title ?? null,
+    customFontBody: (w as { custom_font_body?: string | null }).custom_font_body ?? null,
 
     hashtag: w.hashtag ?? undefined,
     slug: w.slug ?? undefined,

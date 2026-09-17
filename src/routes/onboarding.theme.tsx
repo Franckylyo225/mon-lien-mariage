@@ -12,6 +12,9 @@ import {
 import { componentForTheme } from "@/components/invitation-templates";
 import { ThemeThumbnail } from "@/components/editor/ThemeThumbnail";
 import { cn } from "@/lib/utils";
+import { TypographyPanel } from "@/components/editor/TypographyPanel";
+import { ThemeRoot } from "@/components/theme/ThemeRoot";
+import { useWeddingFonts } from "@/hooks/use-wedding-fonts";
 
 export const Route = createFileRoute("/onboarding/theme")({
   head: () => ({ meta: [{ title: "Étape 4 / 4 — Choisissez un thème" }] }),
@@ -27,6 +30,7 @@ function StepTheme() {
     THEMES[initialTheme]?.family ?? "classiques",
   );
   const [previewOpen, setPreviewOpen] = useState(false);
+  useWeddingFonts({ ...couple, theme: selected });
 
   const confirmChoice = async () => {
     await updateCouple({ theme: selected });
@@ -123,6 +127,11 @@ function StepTheme() {
         })}
       </div>
 
+      <TypographyPanel
+        couple={{ ...couple, theme: selected }}
+        onPatch={(patch) => updateCouple(patch)}
+      />
+
       <button
         onClick={confirmChoice}
         className="w-full rounded-lg bg-primary px-4 py-3.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
@@ -133,6 +142,8 @@ function StepTheme() {
       {previewOpen ? (
         <ThemePreviewOverlay
           themeSlug={selected}
+          customFontTitle={couple.customFontTitle}
+          customFontBody={couple.customFontBody}
           coupleName={{
             brideName: couple.brideName || "Aïcha",
             groomName: couple.groomName || "Loïc",
@@ -153,6 +164,8 @@ function StepTheme() {
 
 function ThemePreviewOverlay({
   themeSlug,
+  customFontTitle,
+  customFontBody,
   coupleName,
   weddingDate,
   city,
@@ -161,6 +174,8 @@ function ThemePreviewOverlay({
   onConfirm,
 }: {
   themeSlug: ThemeId;
+  customFontTitle?: string | null;
+  customFontBody?: string | null;
   coupleName: { brideName: string; groomName: string };
   weddingDate: string;
   city: string;
@@ -189,8 +204,10 @@ function ThemePreviewOverlay({
       weddingDate: weddingDate || "2027-02-14",
       city: city || "Abidjan",
       theme: themeSlug,
+      customFontTitle,
+      customFontBody,
     }),
-    [themeSlug, coupleName.brideName, coupleName.groomName, weddingDate, city],
+    [themeSlug, customFontTitle, customFontBody, coupleName.brideName, coupleName.groomName, weddingDate, city],
   );
 
   const resolved = useMemo(() => resolveTheme(previewCouple), [previewCouple]);
@@ -224,9 +241,9 @@ function ThemePreviewOverlay({
       </div>
 
       <div className="flex-1 overflow-y-auto overscroll-contain animate-in slide-in-from-bottom-4 duration-300">
-        <div style={parseCssText(themeCssString(resolved))}>
+        <ThemeRoot couple={previewCouple} style={parseCssText(themeCssString(resolved))}>
           <Template couple={themedCouple} ceremonies={ceremonies} rsvpSlot={null} />
-        </div>
+        </ThemeRoot>
       </div>
 
       <div className="shrink-0 border-t border-border bg-background/95 px-4 py-3 backdrop-blur [padding-bottom:calc(env(safe-area-inset-bottom)+0.75rem)]">

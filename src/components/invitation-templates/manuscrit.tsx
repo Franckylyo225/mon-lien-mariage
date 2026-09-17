@@ -29,7 +29,7 @@ export function ManuscritTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
       style={{
         background: "#ffffff",
         color: "#111",
-        fontFamily: '"Inter", sans-serif',
+        fontFamily: 'var(--wedding-font-body, "Inter", sans-serif)',
       }}
     >
       <article className="mx-auto max-w-2xl px-5 pb-24 pt-12 sm:px-10 animate-fade-in">
@@ -37,7 +37,7 @@ export function ManuscritTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
 
         <h1
           className="mt-6 leading-[0.85] tracking-tight"
-          style={{ fontFamily: '"Cormorant Garamond", serif' }}
+          style={{ fontFamily: 'var(--wedding-font-heading, "Cormorant Garamond", serif)' }}
         >
           <span className="block text-[4rem] italic sm:text-[6rem]">
             {couple.brideName}
@@ -62,7 +62,7 @@ export function ManuscritTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
             {couple.introMessage ? (
               <p
                 className="mt-3 text-lg leading-relaxed"
-                style={{ fontFamily: '"Cormorant Garamond", serif' }}
+                style={{ fontFamily: 'var(--wedding-font-heading, "Cormorant Garamond", serif)' }}
               >
                 {couple.introMessage}
               </p>

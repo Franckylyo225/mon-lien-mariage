@@ -28,7 +28,7 @@ export function JardinSauvageTemplate({ couple, ceremonies, rsvpSlot }: Template
       style={{
         background: "#FAF8F3",
         color: "#1f2a1c",
-        fontFamily: '"Inter", sans-serif',
+        fontFamily: 'var(--wedding-font-body, "Inter", sans-serif)',
       }}
     >
       {/* Fleurs d'ambiance en fond */}
@@ -69,7 +69,7 @@ export function JardinSauvageTemplate({ couple, ceremonies, rsvpSlot }: Template
 
         <h1
           className="mt-6 text-center leading-[0.95]"
-          style={{ fontFamily: '"Playfair Display", serif' }}
+          style={{ fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)' }}
         >
           <span className="block text-5xl italic">{couple.brideName}</span>
           <span
@@ -85,7 +85,7 @@ export function JardinSauvageTemplate({ couple, ceremonies, rsvpSlot }: Template
           <Sprig accent={accent} />
           <span
             className="text-xs italic"
-            style={{ fontFamily: '"Playfair Display", serif' }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)' }}
           >
             <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span> · {couple.city}
           </span>
@@ -117,7 +117,7 @@ export function JardinSauvageTemplate({ couple, ceremonies, rsvpSlot }: Template
         {couple.introMessage ? (
           <p
             className="mt-12 text-pretty text-center text-lg italic leading-relaxed"
-            style={{ fontFamily: '"Playfair Display", serif' }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)' }}
           >
             {couple.introMessage}
           </p>
@@ -131,7 +131,7 @@ export function JardinSauvageTemplate({ couple, ceremonies, rsvpSlot }: Template
             <Sprig accent={accent} />
             <h2
               className="mt-2 text-2xl italic"
-              style={{ fontFamily: '"Playfair Display", serif' }}
+              style={{ fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)' }}
             >
               {eventTypeMeta[couple.eventType ?? "mariage"].programTitle}
             </h2>

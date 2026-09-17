@@ -28,7 +28,7 @@ export function OrAntiqueTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
       style={{
         background: "#F5EFE7",
         color: "#3A2A15",
-        fontFamily: '"Inter", sans-serif',
+        fontFamily: 'var(--wedding-font-body, "Inter", sans-serif)',
       }}
     >
       <article className="mx-auto max-w-lg px-5 pb-24 pt-10 sm:px-8 animate-fade-in">
@@ -54,7 +54,7 @@ export function OrAntiqueTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
 
           <h1
             className="mt-6 leading-[0.95]"
-            style={{ fontFamily: '"Cormorant Garamond", serif' }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Cormorant Garamond", serif)' }}
           >
             <span className="block text-5xl italic">{couple.brideName}</span>
             <span
@@ -76,7 +76,7 @@ export function OrAntiqueTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
 
           <p
             className="italic"
-            style={{ fontFamily: '"Cormorant Garamond", serif' }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Cormorant Garamond", serif)' }}
           >
             <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>
           </p>
@@ -135,7 +135,7 @@ export function OrAntiqueTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
         {couple.introMessage ? (
           <p
             className="mt-12 text-center text-lg italic leading-relaxed"
-            style={{ fontFamily: '"Cormorant Garamond", serif' }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Cormorant Garamond", serif)' }}
           >
             {couple.introMessage}
           </p>

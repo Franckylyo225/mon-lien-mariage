@@ -66,7 +66,7 @@ export function ConfettiTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
       style={{
         background: "#fffcf5",
         color: "#2f2a2e",
-        fontFamily: '"Inter", sans-serif',
+        fontFamily: 'var(--wedding-font-body, "Inter", sans-serif)',
       }}
     >
       <div className="pointer-events-none absolute inset-x-0 top-0 h-[55vh] opacity-90">

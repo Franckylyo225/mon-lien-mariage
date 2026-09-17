@@ -2,10 +2,11 @@ import React, { useMemo } from "react";
 import type { Couple } from "@/lib/wedding-store";
 import { resolveTheme, themeCssVars, type ResolvedTheme } from "@/lib/wedding-theme";
 import { ThemeBackground } from "@/components/public/ThemeBackground";
+import { useWeddingFonts } from "@/hooks/use-wedding-fonts";
 
 type ThemeCouple = Pick<
   Couple,
-  "theme" | "accentColor" | "backgroundBase" | "accent" | "textColor"
+  "theme" | "accentColor" | "backgroundBase" | "accent" | "textColor" | "customFontTitle" | "customFontBody"
 >;
 
 interface Props {
@@ -36,6 +37,7 @@ export function ThemeRoot({
   children,
   dataAttrs,
 }: Props) {
+  useWeddingFonts(couple);
   const resolved = useResolvedTheme(couple);
   const vars = useMemo(
     () => themeCssVars(resolved) as unknown as React.CSSProperties,
@@ -43,7 +45,7 @@ export function ThemeRoot({
   );
   return (
     <div
-      className={"relative " + (className ?? "")}
+      className={"wedding-typography relative " + (className ?? "")}
       data-theme={resolved.themeSlug}
       data-bg-override={couple.backgroundBase ? "" : undefined}
       data-text-override={couple.textColor ? "" : undefined}
@@ -60,6 +62,6 @@ export function useResolvedTheme(couple: ThemeCouple): ResolvedTheme {
   return useMemo(
     () => resolveTheme(couple),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [couple.theme, couple.accentColor, couple.backgroundBase, couple.accent, couple.textColor],
+    [couple.theme, couple.accentColor, couple.backgroundBase, couple.accent, couple.textColor, couple.customFontTitle, couple.customFontBody],
   );
 }

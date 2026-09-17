@@ -190,6 +190,8 @@ export interface Couple {
   accentColor?: string;
   backgroundBase?: BackgroundBase;
   textColor?: string;
+  customFontTitle?: string | null;
+  customFontBody?: string | null;
 
   hashtag?: string;
   slug?: string;
@@ -497,6 +499,8 @@ type WeddingRow = {
   accent: string | null;
   accent_color: string | null;
   background_base: string | null;
+  custom_font_title?: string | null;
+  custom_font_body?: string | null;
   hashtag: string | null;
   slug: string | null;
   is_published: boolean;
@@ -572,6 +576,8 @@ function rowToCouple(w: WeddingRow): Couple {
     accentColor: w.accent_color ?? undefined,
     backgroundBase: (w.background_base as BackgroundBase | null) ?? undefined,
     textColor: ((w as { text_color?: string | null }).text_color as string | null) ?? undefined,
+    customFontTitle: w.custom_font_title ?? null,
+    customFontBody: w.custom_font_body ?? null,
 
     hashtag: w.hashtag ?? undefined,
     slug: w.slug ?? undefined,
@@ -698,6 +704,8 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.accentColor !== undefined) r.accent_color = p.accentColor || null;
   if (p.backgroundBase !== undefined) r.background_base = p.backgroundBase || null;
   if (p.textColor !== undefined) r.text_color = p.textColor || null;
+  if (p.customFontTitle !== undefined) r.custom_font_title = p.customFontTitle || null;
+  if (p.customFontBody !== undefined) r.custom_font_body = p.customFontBody || null;
 
   if (p.hashtag !== undefined) r.hashtag = p.hashtag;
   if (p.slug !== undefined) r.slug = p.slug;

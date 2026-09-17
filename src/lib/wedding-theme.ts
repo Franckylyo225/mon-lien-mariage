@@ -1,4 +1,5 @@
 import type { Couple, ThemeId, TemplateId } from "./wedding-store";
+import { findBodyFont, findTitleFont } from "./fonts";
 
 export type BackgroundSlug = "ivoire" | "creme" | "blanc" | "gris";
 
@@ -557,7 +558,7 @@ export interface ResolvedTheme {
 }
 
 export function resolveTheme(
-  couple: Pick<Couple, "theme" | "accentColor" | "backgroundBase" | "accent" | "textColor">,
+  couple: Pick<Couple, "theme" | "accentColor" | "backgroundBase" | "accent" | "textColor" | "customFontTitle" | "customFontBody">,
 ): ResolvedTheme {
   const themeSlug: ThemeId = THEMES[couple.theme] ? couple.theme : "rose-elegance";
   const theme = THEMES[themeSlug];
@@ -589,8 +590,8 @@ export function resolveTheme(
     textSecondary: customText ?? theme.muted ?? "#6B6B6B",
     border: "rgba(0,0,0,0.08)",
     surface: "#FFFFFF",
-    fontHeading: theme.fontHeading,
-    fontBody: theme.fontBody,
+    fontHeading: findTitleFont(couple.customFontTitle)?.family ?? theme.fontHeading,
+    fontBody: findBodyFont(couple.customFontBody)?.family ?? theme.fontBody,
     deep: theme.deep ?? customText ?? theme.defaultText ?? "#1A1A1A",
     onDeep: theme.onDeep ?? "#FFFFFF",
   };

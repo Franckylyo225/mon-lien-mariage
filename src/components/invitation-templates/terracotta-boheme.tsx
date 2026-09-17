@@ -33,7 +33,7 @@ export function TerracottaBohemeTemplate({
       style={{
         background: "#F5EFE7",
         color: "#4a2a1a",
-        fontFamily: '"Inter", sans-serif',
+        fontFamily: 'var(--wedding-font-body, "Inter", sans-serif)',
       }}
     >
       {/* Pampas d'ambiance */}
@@ -57,7 +57,7 @@ export function TerracottaBohemeTemplate({
 
         <h1
           className="mt-6 text-center leading-[0.95]"
-          style={{ fontFamily: '"Cormorant Garamond", serif' }}
+          style={{ fontFamily: 'var(--wedding-font-heading, "Cormorant Garamond", serif)' }}
         >
           <span className="block text-5xl italic">{couple.brideName}</span>
           <span
@@ -130,7 +130,7 @@ export function TerracottaBohemeTemplate({
         {couple.introMessage ? (
           <p
             className="mt-12 text-center text-lg italic leading-relaxed"
-            style={{ fontFamily: '"Cormorant Garamond", serif' }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Cormorant Garamond", serif)' }}
           >
             « {couple.introMessage} »
           </p>
@@ -144,7 +144,7 @@ export function TerracottaBohemeTemplate({
             <Pampas accent={accent} small />
             <h2
               className="mt-2 text-2xl italic"
-              style={{ fontFamily: '"Cormorant Garamond", serif' }}
+              style={{ fontFamily: 'var(--wedding-font-heading, "Cormorant Garamond", serif)' }}
             >
               {eventTypeMeta[couple.eventType ?? "mariage"].programTitle}
             </h2>

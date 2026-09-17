@@ -14,6 +14,7 @@ import {
 import { Check, Plus } from "lucide-react";
 import { ThemeThumbnail } from "./ThemeThumbnail";
 import { HexEditor } from "./HexEditor";
+import { TypographyPanel } from "./TypographyPanel";
 
 interface ThemeSheetProps {
   open: boolean;
@@ -23,7 +24,7 @@ interface ThemeSheetProps {
 }
 
 export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetProps) {
-  const [tab, setTab] = useState<"theme" | "colors">("theme");
+  const [tab, setTab] = useState<"theme" | "colors" | "typography">("theme");
 
   const currentFamily: ThemeFamilyId = THEMES[couple.theme]?.family ?? "classiques";
   const [family, setFamily] = useState<ThemeFamilyId>(currentFamily);
@@ -79,6 +80,16 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
           )}
         >
           Couleurs
+        </button>
+        <button
+          type="button"
+          onClick={() => setTab("typography")}
+          className={cn(
+            "rounded-full px-4 py-1.5 font-mono uppercase tracking-widest transition",
+            tab === "typography" ? "bg-foreground text-background" : "opacity-60",
+          )}
+        >
+          Polices
         </button>
       </div>
 
@@ -146,7 +157,7 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
             })}
           </div>
         </div>
-      ) : (
+      ) : tab === "colors" ? (
         <div className="space-y-6">
           <section>
             <HexEditor
@@ -276,6 +287,8 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
           </button>
 
         </div>
+      ) : (
+        <TypographyPanel couple={couple} onPatch={onPatch} defaultExpanded />
       )}
 
       <p className="mt-6 text-center text-[10px] italic opacity-50">

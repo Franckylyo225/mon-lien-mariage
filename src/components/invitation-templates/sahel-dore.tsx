@@ -29,7 +29,7 @@ export function SahelDoreTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
       style={{
         background: "#FAF3E4",
         color: "#3a2a10",
-        fontFamily: '"Inter", sans-serif',
+        fontFamily: 'var(--wedding-font-body, "Inter", sans-serif)',
       }}
     >
       <article className="mx-auto max-w-lg px-5 pb-24 pt-14 sm:px-8 animate-fade-in">
@@ -73,7 +73,7 @@ export function SahelDoreTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
 
         <h1
           className="mt-10 text-center leading-[0.95]"
-          style={{ fontFamily: '"Cormorant Garamond", serif' }}
+          style={{ fontFamily: 'var(--wedding-font-heading, "Cormorant Garamond", serif)' }}
         >
           <span className="block text-[3.5rem] italic">{couple.brideName}</span>
           <span
@@ -93,7 +93,7 @@ export function SahelDoreTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
 
         <p
           className="mt-4 text-center italic"
-          style={{ fontFamily: '"Cormorant Garamond", serif' }}
+          style={{ fontFamily: 'var(--wedding-font-heading, "Cormorant Garamond", serif)' }}
         >
           <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>
         </p>
@@ -126,7 +126,7 @@ export function SahelDoreTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
         {couple.introMessage ? (
           <p
             className="mt-12 text-center text-lg italic leading-relaxed"
-            style={{ fontFamily: '"Cormorant Garamond", serif' }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Cormorant Garamond", serif)' }}
           >
             {couple.introMessage}
           </p>

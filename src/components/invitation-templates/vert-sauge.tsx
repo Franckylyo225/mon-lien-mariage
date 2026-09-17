@@ -28,7 +28,7 @@ export function VertSaugeTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
       style={{
         background: "#FAF8F3",
         color: "#2f3a2c",
-        fontFamily: '"Inter", sans-serif',
+        fontFamily: 'var(--wedding-font-body, "Inter", sans-serif)',
       }}
     >
       <article className="mx-auto max-w-lg px-5 pb-24 pt-12 sm:px-8 animate-fade-in">
@@ -43,7 +43,7 @@ export function VertSaugeTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
           <OliveBranch accent={accent} />
           <h1
             className="text-center leading-[0.95]"
-            style={{ fontFamily: '"Cormorant Garamond", serif' }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Cormorant Garamond", serif)' }}
           >
             <span className="block text-4xl italic">{couple.brideName}</span>
             <span className="my-1 block text-xl italic" style={{ color: accent }}>
@@ -56,7 +56,7 @@ export function VertSaugeTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
 
         <p
           className="mt-6 text-center italic"
-          style={{ fontFamily: '"Cormorant Garamond", serif' }}
+          style={{ fontFamily: 'var(--wedding-font-heading, "Cormorant Garamond", serif)' }}
         >
           <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>
         </p>
@@ -99,7 +99,7 @@ export function VertSaugeTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
         {couple.introMessage ? (
           <p
             className="mt-12 text-center text-lg italic leading-relaxed"
-            style={{ fontFamily: '"Cormorant Garamond", serif' }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Cormorant Garamond", serif)' }}
           >
             {couple.introMessage}
           </p>
@@ -113,7 +113,7 @@ export function VertSaugeTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
             <OliveBranch accent={accent} small />
             <h2
               className="text-2xl italic"
-              style={{ fontFamily: '"Cormorant Garamond", serif' }}
+              style={{ fontFamily: 'var(--wedding-font-heading, "Cormorant Garamond", serif)' }}
             >
               {eventTypeMeta[couple.eventType ?? "mariage"].programTitle}
             </h2>

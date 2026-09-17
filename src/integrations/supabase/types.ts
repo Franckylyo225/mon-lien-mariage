@@ -982,6 +982,8 @@ export type Database = {
           countdown_units: string[]
           couple_story: string | null
           created_at: string
+          custom_font_body: string | null
+          custom_font_title: string | null
           custom_info_body: string | null
           custom_info_title: string | null
           dress_code_colors: string[]
@@ -1086,6 +1088,8 @@ export type Database = {
           countdown_units?: string[]
           couple_story?: string | null
           created_at?: string
+          custom_font_body?: string | null
+          custom_font_title?: string | null
           custom_info_body?: string | null
           custom_info_title?: string | null
           dress_code_colors?: string[]
@@ -1190,6 +1194,8 @@ export type Database = {
           countdown_units?: string[]
           couple_story?: string | null
           created_at?: string
+          custom_font_body?: string | null
+          custom_font_title?: string | null
           custom_info_body?: string | null
           custom_info_title?: string | null
           dress_code_colors?: string[]
