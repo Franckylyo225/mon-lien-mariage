@@ -86,7 +86,7 @@ export function ConfettiTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
 
         <h1
           className="mt-6 text-center leading-[0.9]"
-          style={{ fontFamily: '"Fraunces", serif' }}
+          style={{ fontFamily: 'var(--wedding-font-heading, "Fraunces", serif)' }}
         >
           <span className="block text-[3.5rem] italic">{couple.brideName}</span>
           <span
@@ -127,7 +127,7 @@ export function ConfettiTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
           <span className="text-xl">🎉</span>
           <p
             className="text-base italic"
-            style={{ fontFamily: '"Fraunces", serif', color: "#2f2a2e" }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Fraunces", serif)', color: "#2f2a2e" }}
           >
             <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>
           </p>
@@ -165,7 +165,7 @@ export function ConfettiTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
         {couple.introMessage ? (
           <p
             className="mt-12 text-center text-lg italic leading-relaxed"
-            style={{ fontFamily: '"Fraunces", serif' }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Fraunces", serif)' }}
           >
             {couple.introMessage}
           </p>

@@ -245,6 +245,7 @@ export async function getCandidates(
         .from('profiles')
         .select('id, email, user_first_name, display_name, created_at')
         .is('welcome_email_sent_at', null)
+        .lte('created_at', cutoff)
         .gte('created_at', new Date(Date.now() - 7 * 86400000).toISOString())
         .limit(200)
       return ((data ?? []) as any[])

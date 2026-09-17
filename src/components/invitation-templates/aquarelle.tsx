@@ -92,7 +92,7 @@ export function AquarelleTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
         <h1 className="mt-4 text-center leading-[0.9]">
           <span
             className="block text-6xl"
-            style={{ fontFamily: '"Caveat", cursive', color: "#3b2c34" }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Caveat", cursive)', color: "#3b2c34" }}
           >
             {couple.brideName}
           </span>
@@ -104,7 +104,7 @@ export function AquarelleTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
           </span>
           <span
             className="block text-6xl"
-            style={{ fontFamily: '"Caveat", cursive', color: "#3b2c34" }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Caveat", cursive)', color: "#3b2c34" }}
           >
             {couple.groomName}
           </span>
@@ -197,7 +197,7 @@ export function AquarelleTemplate({ couple, ceremonies, rsvpSlot }: TemplateProp
         <footer className="mt-16 pt-6 text-center">
           <p
             className="text-3xl"
-            style={{ fontFamily: '"Caveat", cursive', color: accent }}
+            style={{ fontFamily: 'var(--wedding-font-heading, "Caveat", cursive)', color: accent }}
           >
             {couple.hashtag ?? `${couple.brideName} & ${couple.groomName}`}
           </p>

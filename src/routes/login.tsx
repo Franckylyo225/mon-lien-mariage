@@ -45,7 +45,10 @@ function LoginPage() {
         return;
       }
       if (weddings.length === 1) {
-        const step = (weddings[0].onboarding_step as number | null) ?? 0;
+        const rawStep = weddings[0].onboarding_step as number | null;
+        const step = Number.isInteger(rawStep) && rawStep !== null && rawStep >= 0 && rawStep <= 4
+          ? rawStep
+          : 0;
         const targets = [
           "/onboarding/prenoms",
           "/onboarding/evenement",

@@ -13,8 +13,8 @@ const FONT_PLAYFAIR = '"Playfair Display", serif';
 const FONT_CORMORANT = '"Cormorant Garamond", serif';
 const FONT_INTER = '"Inter", sans-serif';
 const FONT_TYPEWRITER = '"Special Elite", "Courier New", monospace';
-const FONT_CAVEAT = '"Caveat", cursive';
-const FONT_FRAUNCES = '"Fraunces", serif';
+const FONT_CAVEAT = 'var(--wedding-font-heading, "Caveat", cursive)';
+const FONT_FRAUNCES = 'var(--wedding-font-heading, "Fraunces", serif)';
 
 export type OrnamentKind =
   | "flourish"
