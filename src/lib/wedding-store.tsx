@@ -23,6 +23,7 @@ export type CeremonyType =
   | "civil"
   | "religieux"
   | "traditionnel"
+  | "dejeuner"
   | "diner"
   | "anniversaire"
   | "fiancailles"

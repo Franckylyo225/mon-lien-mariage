@@ -61,6 +61,13 @@ export const ceremonyMeta: Record<
     color: "#a0522d",
     blurb: "Rites de la région, tenues locales, danse et libations.",
   },
+  dejeuner: {
+    label: "Déjeuner",
+    short: "Déjeuner",
+    icon: "☀",
+    color: "#e8a85d",
+    blurb: "Le repas du midi, entre proches, avant la fête.",
+  },
   diner: {
     label: "Dîner / Réception",
     short: "Dîner",

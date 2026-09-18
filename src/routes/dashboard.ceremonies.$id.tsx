@@ -10,7 +10,7 @@ export const Route = createFileRoute("/dashboard/ceremonies/$id")({
 });
 
 const typeOptions: CeremonyType[] = [
-  "dot", "civil", "religieux", "traditionnel", "diner", "anniversaire", "fiancailles", "autre",
+  "dot", "civil", "religieux", "traditionnel", "dejeuner", "diner", "anniversaire", "fiancailles", "autre",
 ];
 
 function EditCeremony() {
