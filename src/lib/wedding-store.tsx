@@ -22,6 +22,7 @@ export type CeremonyType =
   | "dot"
   | "civil"
   | "religieux"
+  | "benediction"
   | "traditionnel"
   | "dejeuner"
   | "diner"
