@@ -54,6 +54,13 @@ export const ceremonyMeta: Record<
     color: "#6b3a2a",
     blurb: "La bénédiction, à l'église, au temple ou à la mosquée.",
   },
+  benediction: {
+    label: "Bénédiction nuptiale",
+    short: "Bénédiction",
+    icon: "✝",
+    color: "#7d6a9c",
+    blurb: "La cérémonie de bénédiction des époux, à l'église ou au temple.",
+  },
   traditionnel: {
     label: "Étape traditionnelle",
     short: "Traditionnel",

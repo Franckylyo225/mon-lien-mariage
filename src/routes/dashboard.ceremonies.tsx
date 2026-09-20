@@ -31,6 +31,7 @@ const typeOptions: { value: CeremonyType; label: string }[] = [
   { value: "dot", label: "Dot traditionnelle" },
   { value: "civil", label: "Mariage civil" },
   { value: "religieux", label: "Mariage religieux" },
+  { value: "benediction", label: "Bénédiction nuptiale" },
   { value: "traditionnel", label: "Étape traditionnelle" },
   { value: "dejeuner", label: "Déjeuner" },
   { value: "diner", label: "Dîner / Réception" },
