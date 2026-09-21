@@ -55,10 +55,20 @@ declare global {
   }
 }
 
+// IMPORTANT : gtag.js n'accepte QUE l'objet `arguments` dans dataLayer.
+// Pousser un tableau (…args) fait silencieusement ignorer tous les hits.
 function gtag(...args: unknown[]) {
   if (typeof window === "undefined") return;
   window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push(args);
+  if (typeof window.gtag === "function") {
+    (window.gtag as (...a: unknown[]) => void)(...args);
+    return;
+  }
+  function push(this: unknown) {
+    // eslint-disable-next-line prefer-rest-params
+    window.dataLayer!.push(arguments);
+  }
+  push(...(args as []));
 }
 
 let gaLoaded = false;
