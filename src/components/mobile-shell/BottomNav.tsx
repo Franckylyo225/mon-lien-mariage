@@ -49,7 +49,7 @@ export function BottomNav({ isPublished }: BottomNavProps) {
                 className="flex h-full min-h-11 flex-col items-center justify-center gap-1 rounded-lg transition active:scale-95"
               >
                 <I
-                  size={22}
+                  size={t.label === "Programme" ? 26 : 22}
                   strokeWidth={active ? 2 : 1.6}
                   className={active ? "text-primary" : "text-muted-foreground"}
                 />
