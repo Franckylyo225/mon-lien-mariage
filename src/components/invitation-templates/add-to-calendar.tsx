@@ -94,7 +94,7 @@ export function AddToCalendarButton({
   );
 
   return (
-    <div ref={wrapRef} className={`relative inline-block ${className}`}>
+    <div ref={wrapRef} className={`relative inline-block ${open ? "z-50" : ""} ${className}`}>
       <button
         type="button"
         aria-haspopup="menu"
@@ -118,7 +118,7 @@ export function AddToCalendarButton({
       {open ? (
         <div
           role="menu"
-          className="absolute left-0 z-20 mt-2 min-w-[14rem] border py-1 shadow-lg"
+          className="absolute left-0 z-50 mt-2 min-w-[14rem] border py-1 shadow-lg"
           style={{ borderColor: palette.border, background: palette.bg }}
         >
           {apple ? [ics, google] : [google, ics]}
