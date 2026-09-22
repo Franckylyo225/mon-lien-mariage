@@ -227,8 +227,38 @@ export function Countdown({
   }, [targetMs]);
 
   if (!targetDate) return null;
-  // Auto-hide when the wedding date is past.
-  if (targetMs && now >= targetMs) return null;
+
+  const endOfDayMs = targetMs ? targetMs + 86_400_000 : 0;
+  // The big day: replace the countdown with a festive welcome card.
+  if (targetMs && now >= targetMs && now < endOfDayMs) {
+    return (
+      <section
+        aria-label="C'est aujourd'hui"
+        className={`${t.cellBg} ${t.cellBorder} rounded-2xl px-5 py-7 text-center`}
+      >
+        <span className="inline-flex items-center gap-2 rounded-full border border-current/20 px-3 py-1 font-mono text-[9px] uppercase tracking-[0.28em] opacity-70">
+          <span
+            className="inline-block size-1.5 animate-pulse rounded-full"
+            style={{ background: "var(--wedding-accent, currentColor)" }}
+          />
+          En direct · Aujourd'hui
+        </span>
+        <p
+          className={`${numberClass.replace(/text-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl)/g, "")} mt-4 text-3xl animate-fade-in`}
+          style={{ fontFamily: "var(--wedding-font-heading)" }}
+        >
+          C'est le grand jour !
+        </p>
+        <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed opacity-70">
+          Bienvenue à notre célébration ! Nous sommes profondément touchés de partager ces instants
+          précieux à vos côtés.
+        </p>
+      </section>
+    );
+  }
+  // Auto-hide once the wedding day is over.
+  if (targetMs && now >= endOfDayMs) return null;
+
 
   const activeUnits = (units && units.length > 0 ? units : DEFAULT_UNITS).filter(
     (u): u is CountdownUnit => u in UNIT_LABELS,
