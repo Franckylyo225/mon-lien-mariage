@@ -4,7 +4,6 @@ import type { Ceremony, Couple } from "@/lib/wedding-store";
 import { ceremonyMapsHref, ceremonyVenue, programItemMapsHref } from "@/lib/wedding-store";
 import { StoryHeader, StoryTimeline } from "@/components/public/StoryTimeline";
 import { ThemeIcon } from "./theme-icon";
-import loveLetterIcon from "@/assets/icons/love-letter.png.asset.json";
 import dressCodeIcon from "@/assets/icons/dress-code.png.asset.json";
 import cityHallIcon from "@/assets/icons/city-hall.png.asset.json";
 
