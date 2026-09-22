@@ -359,6 +359,7 @@ function PublicInvitationPage() {
               slug={slug}
               token={inviteToken}
               guestName={guestPrefill.name}
+              ceremonies={ceremonies}
               onConfirmed={() => {
                 if (coupleTheme.particleTriggerRsvp !== false) setRsvpBurst(true);
               }}
