@@ -7,6 +7,7 @@ import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta"
 import { resolveRsvpDesign, type RsvpDesign } from "@/lib/rsvp-design";
 import { RsvpOrnament } from "./rsvp-ornament";
 import { RsvpHonorCard } from "./rsvp-honor-card";
+import { RsvpCalendarNote } from "./rsvp-calendar-note";
 import { PhoneField } from "@/components/ui/PhoneField";
 import { readableError, rsvpStatusMessage } from "@/lib/rsvp-errors";
 
@@ -162,6 +163,10 @@ export function TemplateRsvpForm({
             {done ? "Modifier ma réponse" : "Je serai présent(e)"}
           </button>
         )}
+
+        {done && !noPublished ? (
+          <RsvpCalendarNote design={design} ceremonies={published} />
+        ) : null}
       </RsvpHonorCard>
 
       {open

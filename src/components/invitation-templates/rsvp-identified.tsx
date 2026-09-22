@@ -113,6 +113,11 @@ export function IdentifiedRsvp({ theme, slug, token, guestName, ceremonies = [],
         </button>
       )}
 
+      {status === "confirmé" ? (
+        <RsvpCalendarNote design={design} ceremonies={ceremonies} />
+      ) : null}
+
+
       {error ? (
         <p className="mt-4 text-xs" style={{ color: design.accent }}>
           {error}
