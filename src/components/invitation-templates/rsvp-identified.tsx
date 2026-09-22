@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import type { ThemeId } from "@/lib/wedding-store";
+import type { Ceremony, ThemeId } from "@/lib/wedding-store";
 import { resolveRsvpDesign } from "@/lib/rsvp-design";
 import { RsvpHonorCard } from "./rsvp-honor-card";
+import { RsvpCalendarNote } from "./rsvp-calendar-note";
 import { readableError, rsvpStatusMessage } from "@/lib/rsvp-errors";
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
   slug: string;
   token: string;
   guestName: string;
+  ceremonies?: Ceremony[];
   onConfirmed?: () => void;
 }
 
@@ -17,7 +19,7 @@ interface Props {
  * RSVP simplifié pour un invité identifié par son lien personnel :
  * deux boutons, pas de formulaire, réponse rattachée à sa fiche existante.
  */
-export function IdentifiedRsvp({ theme, slug, token, guestName, onConfirmed }: Props) {
+export function IdentifiedRsvp({ theme, slug, token, guestName, ceremonies = [], onConfirmed }: Props) {
   const design = resolveRsvpDesign(theme);
   const [status, setStatus] = useState<"idle" | "confirmé" | "décliné">("idle");
   const [pending, setPending] = useState<null | "yes" | "no">(null);

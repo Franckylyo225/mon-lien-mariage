@@ -6,6 +6,7 @@ import {
   ceremonyVenue,
   programItemMapsHref,
 } from "@/lib/wedding-store";
+import { AddToCalendarButton } from "./add-to-calendar";
 
 export type ProgramTabsVariant =
   | "terracotta"
