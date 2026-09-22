@@ -68,7 +68,7 @@ export function PageActionBar({
                 className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-transparent px-3 py-1.5 text-[11px] font-medium text-foreground transition hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:px-4 sm:py-2 sm:text-[13px]"
               >
                 <IconEye size={14} strokeWidth={2} />
-                <span>Vue</span>
+                <span>Aperçu</span>
               </button>
             </div>
           )}

@@ -17,7 +17,7 @@ import type {
 export const Route = createFileRoute("/dashboard/vue")({
   head: () => ({
     meta: [
-      { title: "Vue visiteur — MonInvit.com" },
+      { title: "Aperçu visiteur — MonInvit.com" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -83,7 +83,7 @@ function FullscreenPreview() {
       <button
         type="button"
         onClick={() => navigate({ to: "/dashboard/preview", search: { sheet: undefined } })}
-        aria-label="Fermer la vue visiteur"
+        aria-label="Fermer l'aperçu visiteur"
         className="fixed right-4 top-4 z-[70] inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-black/55 px-3 py-2 text-[11px] font-medium text-white backdrop-blur transition hover:bg-black/75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:text-[12px]"
         style={{ paddingTop: "max(0.5rem, env(safe-area-inset-top))" }}
       >
