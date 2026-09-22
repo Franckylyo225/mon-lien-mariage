@@ -244,7 +244,7 @@ export function Countdown({
           En direct · Aujourd'hui
         </span>
         <p
-          className={`${numberClass.replace(/text-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl)/g, "")} mt-4 text-3xl animate-fade-in`}
+          className="mt-4 animate-fade-in text-3xl"
           style={{ fontFamily: "var(--wedding-font-heading)" }}
         >
           C'est le grand jour !
