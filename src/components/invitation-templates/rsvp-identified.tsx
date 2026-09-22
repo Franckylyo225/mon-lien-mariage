@@ -2,7 +2,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { ThemeId } from "@/lib/wedding-store";
 import { resolveRsvpDesign } from "@/lib/rsvp-design";
-import { RsvpOrnament } from "./rsvp-ornament";
+import { RsvpHonorCard } from "./rsvp-honor-card";
 import { readableError, rsvpStatusMessage } from "@/lib/rsvp-errors";
 
 interface Props {
@@ -51,49 +51,18 @@ export function IdentifiedRsvp({ theme, slug, token, guestName, onConfirmed }: P
   const firstName = guestName.trim().split(/\s+/)[0] || guestName;
 
   return (
-    <section
-      className={
-        "relative mt-12 w-full max-w-full overflow-hidden px-5 py-8 text-center sm:px-8 sm:py-10 " +
-        design.wrapperRadius +
-        " " +
-        design.border1
-      }
-      style={{
-        background: design.bg,
-        color: design.ink,
-        borderColor: design.border,
-        fontFamily: design.bodyFont,
-      }}
-    >
-      <div className="mb-4">
-        <RsvpOrnament kind={design.ornament} color={design.accent} />
-      </div>
-
-      <p
-        className="text-[10px] uppercase tracking-[0.35em]"
-        style={{ color: design.accent, fontFamily: design.eyebrowFont }}
-      >
-        {design.eyebrow}
-      </p>
-
-      <h3
-        className={
-          "mt-3 break-words text-3xl leading-tight sm:text-4xl " +
-          (design.headingItalic ? "italic" : "")
-        }
-        style={{ fontFamily: design.headingFont, color: design.ink }}
-      >
-        {status === "idle" ? `Hello ${firstName}` : `Merci ${firstName} !`}
-      </h3>
-
-      <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed" style={{ color: design.mutedInk }}>
-        {status === "confirmé"
+    <RsvpHonorCard
+      design={design}
+      eyebrow={design.eyebrow}
+      title={status === "idle" ? `Hello ${firstName}` : `Merci ${firstName} !`}
+      description={
+        status === "confirmé"
           ? "Votre présence est confirmée. Nous avons hâte de vous voir !"
           : status === "décliné"
             ? "Votre réponse est enregistrée. Vous nous manquerez."
-            : "Cette invitation vous est personnellement adressée. Un clic suffit pour répondre."}
-      </p>
-
+            : "Cette invitation vous est personnellement adressée. Un clic suffit pour répondre."
+      }
+    >
       {status === "idle" ? (
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <button
@@ -101,14 +70,15 @@ export function IdentifiedRsvp({ theme, slug, token, guestName, onConfirmed }: P
             disabled={pending !== null}
             onClick={() => respond(true)}
             className={
-              "inline-flex w-full max-w-xs items-center justify-center px-6 py-3 text-[11px] uppercase tracking-[0.25em] transition hover:opacity-90 disabled:opacity-60 sm:w-auto " +
+              "inline-flex min-h-12 w-full max-w-xs items-center justify-center border px-7 py-3 text-[11px] uppercase tracking-[0.22em] transition duration-200 hover:-translate-y-0.5 hover:opacity-95 disabled:opacity-60 sm:w-auto " +
               design.fieldRadius
             }
             style={{
               background: design.accent,
               color: design.accentInk,
               fontFamily: design.eyebrowFont,
-              boxShadow: `0 10px 25px -12px ${design.accent}`,
+              borderColor: design.accentInk,
+              boxShadow: `0 0 0 3px ${design.accent}, 0 14px 30px -15px ${design.accent}`,
             }}
           >
             {pending === "yes" ? "Envoi…" : "Confirmer ma présence"}
@@ -146,6 +116,6 @@ export function IdentifiedRsvp({ theme, slug, token, guestName, onConfirmed }: P
           {error}
         </p>
       ) : null}
-    </section>
+    </RsvpHonorCard>
   );
 }

@@ -6,6 +6,7 @@ import { ceremonyTimeStart } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
 import { resolveRsvpDesign, type RsvpDesign } from "@/lib/rsvp-design";
 import { RsvpOrnament } from "./rsvp-ornament";
+import { RsvpHonorCard } from "./rsvp-honor-card";
 import { PhoneField } from "@/components/ui/PhoneField";
 import { readableError, rsvpStatusMessage } from "@/lib/rsvp-errors";
 
@@ -125,54 +126,20 @@ export function TemplateRsvpForm({
 
   return (
     <>
-      <section
-        className={
-          "relative mt-12 w-full max-w-full overflow-hidden px-5 py-8 text-center sm:px-8 sm:py-10 " +
-          design.wrapperRadius +
-          " " +
-          design.border1
-        }
-        style={{
-          background: design.bg,
-          color: design.ink,
-          borderColor: design.border,
-          fontFamily: design.bodyFont,
-        }}
-      >
-        <div className="mb-4">
-          <RsvpOrnament kind={design.ornament} color={design.accent} />
-        </div>
-
-        <p
-          className="text-[10px] uppercase tracking-[0.35em]"
-          style={{ color: design.accent, fontFamily: design.eyebrowFont }}
-        >
-          {design.eyebrow}
-        </p>
-
-        <h3
-          className={
-            "mt-3 break-words text-3xl leading-tight sm:text-4xl " +
-            (design.headingItalic ? "italic" : "")
-          }
-          style={{ fontFamily: design.headingFont, color: design.ink }}
-        >
-          {done ? `Merci ${name.split(" ")[0] || ""} !` : "Confirmez votre venue"}
-        </h3>
-
-        <p
-          className="mx-auto mt-3 max-w-sm text-sm leading-relaxed"
-          style={{ color: design.mutedInk }}
-        >
-          {noPublished
+      <RsvpHonorCard
+        design={design}
+        eyebrow={design.eyebrow}
+        title={done ? `Merci ${name.split(" ")[0] || ""} !` : "Confirmez votre venue"}
+        description={
+          noPublished
             ? "Les détails seront ajoutés bientôt. Repassez pour confirmer."
             : done
               ? weddingId
                 ? "Votre réponse est bien enregistrée."
                 : "Aperçu — la réponse n'a pas été enregistrée."
-              : "Répondez en quelques secondes pour nous aider à préparer cette belle journée."}
-        </p>
-
+              : "Répondez en quelques secondes pour nous aider à préparer cette belle journée."
+        }
+      >
         {!noPublished && (
           <button
             type="button"
@@ -181,20 +148,21 @@ export function TemplateRsvpForm({
               setOpen(true);
             }}
             className={
-              "mt-6 inline-flex max-w-full items-center justify-center gap-2 px-6 py-3 text-[11px] uppercase tracking-[0.25em] transition hover:opacity-90 " +
+              "mt-7 inline-flex min-h-12 max-w-full items-center justify-center gap-2 border px-7 py-3 text-[11px] uppercase tracking-[0.22em] transition duration-200 hover:-translate-y-0.5 hover:opacity-95 " +
               design.fieldRadius
             }
             style={{
               background: design.accent,
               color: design.accentInk,
               fontFamily: design.eyebrowFont,
-              boxShadow: `0 10px 25px -12px ${design.accent}`,
+              borderColor: design.accentInk,
+              boxShadow: `0 0 0 3px ${design.accent}, 0 14px 30px -15px ${design.accent}`,
             }}
           >
             {done ? "Modifier ma réponse" : "Je serai présent(e)"}
           </button>
         )}
-      </section>
+      </RsvpHonorCard>
 
       {open
         ? createPortal(
