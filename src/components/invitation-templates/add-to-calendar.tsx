@@ -42,38 +42,28 @@ export function AddToCalendarButton({
   fileName = "invitation",
   className = "",
 }: Props) {
-  const [open, setOpen] = useState(false);
   const [apple, setApple] = useState(false);
-  const wrapRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setApple(prefersAppleCalendar());
   }, []);
 
-  useEffect(() => {
-    if (!open) return;
-    const onDown = (e: MouseEvent) => {
-      if (!wrapRef.current?.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener("mousedown", onDown);
-    return () => document.removeEventListener("mousedown", onDown);
-  }, [open]);
-
   const gUrl = googleCalendarUrl(event, deviceTimeZone());
   if (!gUrl) return null;
 
+  const base =
+    "inline-flex min-h-11 items-center justify-center gap-2 border px-5 py-2.5 text-[10px] uppercase tracking-[0.18em] transition duration-200 hover:-translate-y-0.5 hover:opacity-90";
+  const style = {
+    color: palette.accent,
+    borderColor: palette.border,
+    fontFamily: palette.font,
+    background: "transparent",
+  };
+
   const google = (
-    <a
-      key="google"
-      href={gUrl}
-      target="_blank"
-      rel="noreferrer"
-      onClick={() => setOpen(false)}
-      className="flex min-h-11 items-center gap-2 px-4 text-[11px] uppercase tracking-[0.16em] transition-opacity hover:opacity-70"
-      style={{ color: palette.muted, fontFamily: palette.font }}
-    >
+    <a key="google" href={gUrl} target="_blank" rel="noreferrer" className={base} style={style}>
       <CalendarIcon className="size-4 shrink-0" />
-      Google Agenda
+      {label} · Google
     </a>
   );
 
@@ -81,52 +71,22 @@ export function AddToCalendarButton({
     <button
       key="ics"
       type="button"
-      onClick={() => {
-        downloadIcs(event, fileName);
-        setOpen(false);
-      }}
-      className="flex min-h-11 w-full items-center gap-2 px-4 text-left text-[11px] uppercase tracking-[0.16em] transition-opacity hover:opacity-70"
-      style={{ color: palette.muted, fontFamily: palette.font }}
+      onClick={() => downloadIcs(event, fileName)}
+      className={base}
+      style={style}
     >
       <AppleIcon className="size-4 shrink-0" />
-      Apple / Autre (.ics)
+      {label} · Apple
     </button>
   );
 
   return (
-    <div ref={wrapRef} className={`relative inline-block ${open ? "z-50" : ""} ${className}`}>
-      <button
-        type="button"
-        aria-haspopup="menu"
-        aria-expanded={open}
-        onClick={() => setOpen((v) => !v)}
-        className="inline-flex min-h-11 items-center gap-2 border px-5 py-2.5 text-[10px] uppercase tracking-[0.2em] transition duration-200 hover:-translate-y-0.5 hover:opacity-90"
-        style={{
-          color: palette.accent,
-          borderColor: palette.border,
-          fontFamily: palette.font,
-          background: "transparent",
-        }}
-      >
-        <CalendarIcon className="size-4" />
-        {label}
-        <svg viewBox="0 0 16 16" className="size-3" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden>
-          <path d={open ? "M3 10l5-5 5 5" : "M3 6l5 5 5-5"} />
-        </svg>
-      </button>
-
-      {open ? (
-        <div
-          role="menu"
-          className="absolute left-0 z-50 mt-2 min-w-[14rem] border py-1 shadow-lg"
-          style={{ borderColor: palette.border, background: palette.bg }}
-        >
-          {apple ? [ics, google] : [google, ics]}
-        </div>
-      ) : null}
+    <div className={`flex flex-wrap items-center gap-3 ${className}`}>
+      {apple ? [ics, google] : [google, ics]}
     </div>
   );
 }
+
 
 function CalendarIcon({ className }: { className?: string }) {
   return (
