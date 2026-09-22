@@ -712,7 +712,7 @@ export function RegistrySection({
             className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full"
             style={{ backgroundColor: (accent ?? "#999") + "22", color: accent }}
           >
-            <ThemeIcon src={loveLetterIcon.url} className="size-4" color={accent} />
+            <Gift className="size-4" />
           </span>
           <div className="min-w-0 flex-1 space-y-3">
             {note ? (
