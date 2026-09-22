@@ -10,3 +10,4 @@
 - [x] Renforcer le modèle « Breaking News » avec écran TV, horloge, chaîne et bandeaux animés.
 - [x] Harmoniser tous les autres sélecteurs de couleur avec la grille tactile du Dress code.
 - [x] Ajouter la personnalisation des polices de titres et de texte avec aperçu direct.
+- [ ] Embellir le Programme et le RSVP sur toutes les invitations.
