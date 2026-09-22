@@ -154,9 +154,42 @@ export function CeremonyProgramTabs({ ceremonies, variant }: Props) {
         {ceremonyHref && !active.program?.some((item) => programItemMapsHref(item)) ? (
           <MapsLink href={ceremonyHref} label="Itinéraire" />
         ) : null}
+
+        {active.date ? (
+          <div className="mt-8 border-t pt-6" style={{ borderColor: "var(--wedding-border)" }}>
+            <p
+              className="mb-3 text-[10px] uppercase tracking-[0.22em]"
+              style={{ color: "var(--wedding-text-secondary)", fontFamily: "var(--wedding-font-body)" }}
+            >
+              Ne manquez rien
+            </p>
+            <AddToCalendarButton
+              event={{
+                title: active.name || active.label,
+                date: active.date,
+                timeStart: ceremonyTimeStart(active) || undefined,
+                timeEnd: active.timeEnd || undefined,
+                location: ceremonyVenue(active) || undefined,
+                description: buildDescription(active),
+              }}
+              fileName={(active.name || active.label || "invitation")
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, "-")
+                .replace(/^-|-$/g, "")}
+            />
+          </div>
+        ) : null}
       </div>
     </div>
   );
+}
+
+function buildDescription(ceremony: Ceremony): string {
+  const steps = (ceremony.program ?? [])
+    .map((item) => [item.time, item.title].filter(Boolean).join(" · "))
+    .filter(Boolean);
+  const url = typeof window !== "undefined" ? window.location.href : "";
+  return [ceremony.label, ...steps, url].filter(Boolean).join("\n");
 }
 
 function MapsLink({ href, label }: { href: string; label: string }) {
