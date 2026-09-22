@@ -52,7 +52,7 @@ export function AddToCalendarButton({
   if (!gUrl) return null;
 
   const base =
-    "inline-flex min-h-11 items-center justify-center gap-2 border px-5 py-2.5 text-[10px] uppercase tracking-[0.18em] transition duration-200 hover:-translate-y-0.5 hover:opacity-90";
+    "inline-flex min-h-10 flex-1 items-center justify-center gap-1.5 border px-2.5 py-2 text-[10px] uppercase tracking-[0.16em] transition duration-200 hover:-translate-y-0.5 hover:opacity-90";
   const style = {
     color: palette.accent,
     borderColor: palette.border,
@@ -62,8 +62,8 @@ export function AddToCalendarButton({
 
   const google = (
     <a key="google" href={gUrl} target="_blank" rel="noreferrer" className={base} style={style}>
-      <CalendarIcon className="size-4 shrink-0" />
-      {label} · Google
+      <CalendarIcon className="size-3.5 shrink-0" />
+      Google Calendar
     </a>
   );
 
@@ -75,13 +75,13 @@ export function AddToCalendarButton({
       className={base}
       style={style}
     >
-      <AppleIcon className="size-4 shrink-0" />
-      {label} · Apple
+      <AppleIcon className="size-3.5 shrink-0" />
+      Calendrier Apple
     </button>
   );
 
   return (
-    <div className={`flex flex-wrap items-center gap-3 ${className}`}>
+    <div className={`flex items-center gap-2 ${className}`}>
       {apple ? [ics, google] : [google, ics]}
     </div>
   );
