@@ -91,6 +91,11 @@ function SupportPage() {
   const [showNew, setShowNew] = useState(false);
   const [form, setForm] = useState({ subject: "", category: "general", message: "" });
   const [creating, setCreating] = useState(false);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUserEmail(data.user?.email ?? null));
+  }, []);
 
   const reload = useCallback(() => {
     setLoading(true);
