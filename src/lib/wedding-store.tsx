@@ -419,8 +419,8 @@ const demoCeremonies = (): Ceremony[] => [
   {
     id: "demo-c1",
     type: "dot",
-    label: "Dot Traditionnelle",
-    name: "Dot chez la famille Diabaté",
+    label: "Mariage traditionnel",
+    name: "Mariage traditionnel chez la famille Diabaté",
     date: "2027-02-13",
     timeStart: "09:00",
     timeEnd: "13:00",

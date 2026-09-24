@@ -28,7 +28,7 @@ export const Route = createFileRoute("/dashboard/ceremonies")({
 });
 
 const typeOptions: { value: CeremonyType; label: string }[] = [
-  { value: "dot", label: "Dot traditionnelle" },
+  { value: "dot", label: "Mariage traditionnel" },
   { value: "civil", label: "Mariage civil" },
   { value: "religieux", label: "Mariage religieux" },
   { value: "benediction", label: "Bénédiction nuptiale" },
@@ -228,7 +228,7 @@ function CeremonySheet({
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Nom affiché (ex: Dot chez la famille Diabaté)"
+            placeholder="Nom affiché (ex : Mariage traditionnel)"
             className="w-full rounded-full border border-input bg-background px-4 py-3 text-sm"
           />
           <input
