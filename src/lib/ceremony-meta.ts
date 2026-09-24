@@ -5,7 +5,7 @@ const EVENT_TYPE_META: Record<
   { label: string; programTitle: string }
 > = {
   mariage: { label: "Mariage", programTitle: "Programme du mariage" },
-  dot: { label: "Dot", programTitle: "Programme de la dot" },
+  dot: { label: "Mariage traditionnel", programTitle: "Programme du mariage traditionnel" },
   traditionnel: {
     label: "Cérémonie traditionnelle",
     programTitle: "Programme de la cérémonie",
@@ -34,8 +34,8 @@ export const ceremonyMeta: Record<
   { label: string; short: string; icon: string; color: string; blurb: string }
 > = {
   dot: {
-    label: "Dot traditionnelle",
-    short: "Dot",
+    label: "Mariage traditionnel",
+    short: "Traditionnel",
     icon: "◈",
     color: "#c17c74",
     blurb: "L'engagement des deux familles, kolas et pagnes à l'appui.",

@@ -32,7 +32,7 @@ export const Route = createFileRoute("/dashboard/events")({
 
 const EVENT_TYPE_LABELS: Record<string, string> = {
   mariage: "Mariage",
-  dot: "Dot",
+  dot: "Mariage traditionnel",
   traditionnel: "Traditionnel",
   coutumier: "Mariage coutumier",
   anniversaire: "Anniversaire",
