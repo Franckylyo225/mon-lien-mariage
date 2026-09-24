@@ -13,14 +13,6 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 
-const WHATSAPP_BUSINESS_NUMBER = "2250718525502";
-
-function whatsappBusinessUrl(userEmail?: string | null) {
-  const message = userEmail
-    ? `Bonjour, je souhaite échanger au sujet du compte MonInvit : ${userEmail}`
-    : "Bonjour, je souhaite échanger avec l'équipe MonInvit.";
-  return `https://wa.me/${WHATSAPP_BUSINESS_NUMBER}?text=${encodeURIComponent(message)}`;
-}
 import { toast } from "sonner";
 import {
   listAllUsers,
