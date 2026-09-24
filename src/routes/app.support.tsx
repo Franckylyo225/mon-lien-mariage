@@ -202,6 +202,24 @@ function SupportPage() {
         </p>
       </div>
 
+      <a
+        href={whatsappSupportUrl(userEmail)}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mb-6 flex items-center gap-3 rounded-2xl border border-[#25D366]/40 bg-[#25D366]/10 p-4 transition hover:bg-[#25D366]/15"
+      >
+        <span className="grid size-11 shrink-0 place-items-center rounded-full bg-[#25D366] text-white">
+          <WhatsAppIcon className="size-5" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[14px] font-medium text-foreground">Discuter sur WhatsApp</span>
+          <span className="block text-[12px] text-muted-foreground">
+            Une question urgente ? Écrivez-nous directement sur notre WhatsApp Business.
+          </span>
+        </span>
+        <Send size={16} className="shrink-0 text-[#25D366]" aria-hidden="true" />
+      </a>
+
       {showNew && (
         <form onSubmit={submitNew} className="mb-6 space-y-3 rounded-2xl border border-border/70 bg-white p-4 shadow-sm">
           <div>
