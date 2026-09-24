@@ -280,7 +280,11 @@
 }
 .invitation-content.revealed {
   opacity: 1;
-  transform: scale(1) translateY(0);
+  /* transform: none (et non scale(1)) : toute transformation, même neutre,
+     crée un bloc conteneur qui piège les boutons fixed (musique, livre d'or)
+     et les fait apparaître tout en bas de la page au lieu du bas d'écran. */
+  transform: none;
+  will-change: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {
