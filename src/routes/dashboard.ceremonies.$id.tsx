@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useWedding, type CeremonyType } from "@/lib/wedding-store";
 import { ceremonyMeta } from "@/lib/ceremony-meta";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Field } from "./signup";
 
 export const Route = createFileRoute("/dashboard/ceremonies/$id")({
@@ -20,6 +21,7 @@ function EditCeremony() {
   const c = ceremonies.find((x) => x.id === id);
 
   const [form, setForm] = useState(() => c ?? null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   if (!c || !form) {
     return (
@@ -92,17 +94,24 @@ function EditCeremony() {
         </div>
         <button
           disabled={couple.isLocked}
-          onClick={() => {
-            if (confirm("Supprimer cette étape ?")) {
-              removeCeremony(c.id);
-              navigate({ to: "/dashboard/ceremonies" });
-            }
-          }}
+          onClick={() => setConfirmDelete(true)}
           className="mx-auto mt-3 block text-xs text-destructive hover:underline disabled:opacity-40"
           title={couple.isLocked ? "Impossible après publication" : undefined}
         >
           Supprimer cette étape
         </button>
+        <ConfirmDialog
+          open={confirmDelete}
+          onOpenChange={setConfirmDelete}
+          title="Supprimer cette étape ?"
+          description="Cette action est définitive."
+          confirmLabel="Supprimer"
+          destructive
+          onConfirm={() => {
+            removeCeremony(c.id);
+            navigate({ to: "/dashboard/ceremonies" });
+          }}
+        />
       </div>
     </div>
   );

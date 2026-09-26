@@ -41,14 +41,13 @@ const TITLES: Record<string, string> = {
   "/dashboard/guests": "Mes invités",
   "/dashboard/preview": "Aperçu de ma page",
   
-  "/dashboard/invites": "Invitations",
   "/dashboard/share": "Liens & Partages",
   "/dashboard/stats": "Statistiques RSVP",
   "/dashboard/billing": "Paiement & facture",
 };
 
 function DashboardLayout() {
-  const { couple, ceremonies, guests, account, loading, signOut } = useWedding();
+  const { couple, ceremonies, account, loading, signOut } = useWedding();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -115,8 +114,8 @@ function DashboardLayout() {
       ? `${couple.brideName} & ${couple.groomName}`
       : couple.brideName || account.email || "Mon compte";
 
-  const { pct } = configProgress({ couple, ceremonies, guests });
-  const hasNotifications = pct < 100;
+  const { pct } = configProgress({ couple, ceremonies });
+  const hasNotifications = pct < 100 || !couple.isPublished;
 
   return (
     <EditModeProvider>

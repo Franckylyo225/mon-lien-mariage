@@ -1554,6 +1554,16 @@ export function nextCeremony(ceremonies: Ceremony[]): Ceremony | undefined {
     )[0];
 }
 
+/** Personnes attendues : chaque invité confirmé + ses accompagnants (le plus élevé sur ses étapes). */
+export function confirmedHeadcount(guests: Guest[]): number {
+  return guests.reduce((sum, g) => {
+    const confirmed = g.rsvps.filter((r) => r.status === "confirmé");
+    if (confirmed.length === 0) return sum;
+    const plus = confirmed.reduce((n, r) => Math.max(n, r.plusOnes ?? 0), 0);
+    return sum + 1 + plus;
+  }, 0);
+}
+
 export function guestStats(guests: Guest[], ceremonyId?: string) {
   const flat = ceremonyId
     ? guests
@@ -1568,24 +1578,18 @@ export function guestStats(guests: Guest[], ceremonyId?: string) {
   return { total, confirmés, en_attente, déclinés };
 }
 
-export function configProgress(state: {
-  couple: Couple;
-  ceremonies: Ceremony[];
-  guests: Guest[];
-}): { pct: number; done: number; total: number; items: { label: string; done: boolean }[] } {
-  const { couple, ceremonies, guests } = state;
-  const items = [
-    {
-      label: "Informations de base",
-      done: !!couple.brideName && !!couple.groomName && !!couple.weddingDate,
-    },
-    { label: "Le programme", done: ceremonies.some((c) => c.date && c.venue) },
-    { label: "Ma page d'invitation", done: !!couple.heroImageUrl },
-    { label: "Activez la liste des invités", done: !!couple.rsvpEnabled },
-    { label: "Publier et partager", done: !!couple.isPublished },
-  ];
-  const done = items.filter((i) => i.done).length;
-  const total = items.length;
+/** Single source of truth for the setup checklist (home progress + header dot). Publishing is tracked separately via couple.isPublished. */
+export function configProgress(state: { couple: Couple; ceremonies: Ceremony[] }) {
+  const { couple, ceremonies } = state;
+  const flags = {
+    infos: !!couple.brideName && !!couple.groomName && !!couple.weddingDate,
+    theme: !!couple.theme,
+    programme: ceremonies.some((c) => !!c.date),
+    page: !!couple.heroImageUrl,
+    invites: !!couple.rsvpEnabled,
+  };
+  const done = Object.values(flags).filter(Boolean).length;
+  const total = Object.keys(flags).length;
   const pct = Math.round((done / total) * 100);
-  return { pct, done, total, items };
+  return { pct, done, total, flags };
 }

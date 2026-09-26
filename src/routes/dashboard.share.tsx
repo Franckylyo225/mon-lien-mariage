@@ -4,6 +4,7 @@ import imageCompression from "browser-image-compression";
 import { useWedding, slugify } from "@/lib/wedding-store";
 import { checkSlugAvailability } from "@/lib/public-wedding.functions";
 import { supabase } from "@/integrations/supabase/client";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const SIGNED_URL_EXPIRY = 60 * 60 * 24 * 365 * 10;
 
@@ -73,9 +74,18 @@ function ShareUnlocked({
   const host = useMemo(() => origin.replace(/^https?:\/\//, ""), [origin]);
 
   const publicUrl = `${origin}/e/${couple.slug ?? ""}`;
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=8&data=${encodeURIComponent(
-    publicUrl,
-  )}`;
+  const [qrUrl, setQrUrl] = useState<string | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    void import("qrcode").then(({ default: QRCode }) =>
+      QRCode.toDataURL(publicUrl, { width: 640, margin: 2 }).then((url) => {
+        if (!cancelled) setQrUrl(url);
+      }),
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [publicUrl]);
 
   const [copied, setCopied] = useState(false);
   const handleCopy = async () => {
@@ -457,18 +467,24 @@ function ShareUnlocked({
         <p className="mt-1 text-xs opacity-70">
           À imprimer sur vos faire-part physiques ou à projeter le jour J.
         </p>
-        <img
-          src={qrUrl}
-          alt={`QR code pour ${publicUrl}`}
-          className="mx-auto mt-4 size-48 rounded-lg ring-1 ring-border"
-        />
-        <a
-          href={qrUrl}
-          download={`qr-${couple.slug ?? "invitation"}.png`}
-          className="mt-4 inline-block rounded-full border border-border px-5 py-2.5 font-mono text-[10px] uppercase tracking-widest transition hover:bg-accent/20"
-        >
-          Télécharger le QR
-        </a>
+        {qrUrl ? (
+          <img
+            src={qrUrl}
+            alt={`QR code pour ${publicUrl}`}
+            className="mx-auto mt-4 size-48 rounded-lg ring-1 ring-border"
+          />
+        ) : (
+          <Skeleton className="mx-auto mt-4 size-48 rounded-lg" />
+        )}
+        {qrUrl ? (
+          <a
+            href={qrUrl}
+            download={`qr-${couple.slug ?? "invitation"}.png`}
+            className="mt-4 inline-block rounded-full border border-border px-5 py-2.5 font-mono text-[10px] uppercase tracking-widest transition hover:bg-accent/20"
+          >
+            Télécharger le QR
+          </a>
+        ) : null}
       </section>
     </div>
   );

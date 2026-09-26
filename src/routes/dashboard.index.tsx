@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, Calendar, Check, ChevronRight, CircleCheck, LayoutTemplate, LayoutList, Lock, Pencil, Share, Users } from "lucide-react";
+import { ArrowRight, Calendar, Check, ChevronRight, CircleCheck, LayoutTemplate, Lock, Pencil, Share, Users } from "lucide-react";
 import {
   useWedding,
-  daysUntil,
-  formatFrenchDate,
+  configProgress,
   isPastEvent,
 } from "@/lib/wedding-store";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { BasicInfoSheet } from "@/components/dashboard/BasicInfoSheet";
 import { PublishReminderBanner } from "@/components/dashboard/PublishReminderBanner";
+import { StatusPanel } from "@/components/dashboard/StatusPanel";
 
 export const Route = createFileRoute("/dashboard/")({
   head: () => ({ meta: [{ title: "Tableau de bord — MonInvit.com" }] }),
@@ -26,7 +26,7 @@ type TodoItem = {
 };
 
 function DashboardHome() {
-  const { couple, ceremonies, weddings, weddingId, duplicateWedding } = useWedding();
+  const { couple, ceremonies, weddingId, duplicateWedding } = useWedding();
   const navigate = useNavigate();
   const [infoSheetOpen, setInfoSheetOpen] = useState(false);
   const [duplicating, setDuplicating] = useState(false);
@@ -47,16 +47,14 @@ function DashboardHome() {
   };
 
   // ---- 5 configuration criteria
-  const infosDone = !!couple.brideName && !!couple.groomName && !!couple.weddingDate;
-  const themeDone = !!couple.theme;
-  const programmeDone = ceremonies.some((c) => !!c.date);
-  const pageDone = !!couple.heroImageUrl;
-  const invitesDone = !!couple.rsvpEnabled;
-
-  const criteria = [infosDone, themeDone, programmeDone, pageDone, invitesDone];
-  const done = criteria.filter(Boolean).length;
-  const total = criteria.length;
-  const pct = Math.round((done / total) * 100);
+  const { flags } = configProgress({ couple, ceremonies });
+  const {
+    infos: infosDone,
+    theme: themeDone,
+    programme: programmeDone,
+    page: pageDone,
+    invites: invitesDone,
+  } = flags;
 
   const canPublish = programmeDone && pageDone && invitesDone;
   const bannerReady = programmeDone && pageDone;
@@ -136,7 +134,6 @@ function DashboardHome() {
   // If infos incomplete, surface a card to open the sheet at the top of todos
   const showInfosCard = !infosDone;
 
-  const days = couple.weddingDate ? daysUntil(couple.weddingDate) : null;
   const brideName = couple.brideName || "Prénom A";
   const groomName = couple.groomName || "Prénom B";
 
@@ -166,42 +163,7 @@ function DashboardHome() {
 
   return (
     <div className="space-y-7 pt-4">
-      {/* Bloc 1 — Identité */}
-      <section className="text-center">
-        <p className="font-serif text-[24px] italic leading-tight">
-          {brideName}
-          <span className="mx-1 text-primary">&amp;</span>
-          {groomName}
-        </p>
-        {couple.weddingDate ? (
-          <p className="mt-2 text-[12px] text-muted-foreground">
-            {formatFrenchDate(couple.weddingDate)}
-            {couple.city ? <> · {couple.city}</> : null}
-            {days !== null ? (
-              <>
-                {" · "}
-                <span className="font-semibold text-primary">{days} jours</span>
-              </>
-            ) : null}
-          </p>
-        ) : (
-          <button
-            onClick={() => setInfoSheetOpen(true)}
-            className="mt-2 inline-block text-[12px] italic text-muted-foreground underline"
-          >
-            Date à définir
-          </button>
-        )}
-        {weddings.length > 1 ? (
-          <Link
-            to="/dashboard/events"
-            className="mt-2 inline-flex items-center gap-1 text-[10px] text-muted-foreground transition hover:text-foreground"
-          >
-            <LayoutList size={11} strokeWidth={1.75} />
-            <span>Mes événements</span>
-          </Link>
-        ) : null}
-      </section>
+      <StatusPanel onEditDate={() => setInfoSheetOpen(true)} />
 
       {/* Bandeau événement passé */}
       {isPast ? (
@@ -237,24 +199,6 @@ function DashboardHome() {
           groomFirstName={couple.groomName || "Prénom B"}
         />
       ) : null}
-
-      {/* Bloc 2 — Progression */}
-      <section>
-        <div className="mb-2 flex items-center justify-between">
-          <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-            Configuration
-          </p>
-          <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-            {done} / {total}
-          </p>
-        </div>
-        <div className="h-[5px] overflow-hidden rounded-full bg-muted">
-          <div
-            className="h-full rounded-full bg-foreground transition-all duration-500 ease-out"
-            style={{ width: pct + "%" }}
-          />
-        </div>
-      </section>
 
       {/* Bloc 3 — Déjà fait */}
       {doneItems.length > 0 ? (

@@ -4,12 +4,13 @@ import { Download, Pencil, Settings2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import whatsappIconUrl from "@/assets/whatsapp-phone.png";
-import { useWedding, isPastEvent, type RSVPStatus } from "@/lib/wedding-store";
+import { useWedding, isPastEvent, confirmedHeadcount, type RSVPStatus } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
 import { useAllGuests } from "@/hooks/use-all-guests";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   DEFAULT_WHATSAPP_INVITE_TEMPLATE,
@@ -55,26 +56,13 @@ function GuestsPage() {
 
   const totalCeremonies = new Set(allGuests.flatMap((g) => g.ceremonyIds)).size;
 
-  const confirmedCount = useMemo(
-    () =>
-      allGuests.reduce((sum, g) => {
-        const confirmed = g.rsvps.filter((r) => r.status === "confirmé");
-        if (confirmed.length === 0) return sum;
-        const plus = confirmed.reduce((n, r) => Math.max(n, r.plusOnes ?? 0), 0);
-        return sum + 1 + plus;
-      }, 0),
-    [allGuests],
-  );
+  const confirmedCount = useMemo(() => confirmedHeadcount(allGuests), [allGuests]);
 
-  const deleteRsvpsForGuest = async (guestId: string, guestName: string) => {
+  const [rsvpToDelete, setRsvpToDelete] = useState<{ id: string; name: string } | null>(null);
+
+  const deleteRsvpsForGuest = async (guestId: string) => {
     const ids = rsvpIdsByGuest[guestId] ?? [];
     if (!weddingId || ids.length === 0) return;
-    if (
-      !window.confirm(
-        `Supprimer la confirmation de ${guestName} ? Cette action est définitive.`,
-      )
-    )
-      return;
     const { error } = await supabase
       .from("rsvps")
       .delete()
@@ -401,7 +389,7 @@ function GuestsPage() {
                       size="icon"
                       className="text-muted-foreground hover:text-destructive"
                       aria-label={`Supprimer la confirmation de ${g.name}`}
-                      onClick={() => void deleteRsvpsForGuest(g.id, g.name)}
+                      onClick={() => setRsvpToDelete({ id: g.id, name: g.name })}
                     >
                       <Trash2 className="size-4" />
                     </Button>
@@ -417,6 +405,20 @@ function GuestsPage() {
         rsvpCount={publicRsvps.length}
         onExport={() => void exportXlsx()}
         onConfirm={deleteAllRsvps}
+      />
+
+      <ConfirmDialog
+        open={rsvpToDelete !== null}
+        onOpenChange={(open) => {
+          if (!open) setRsvpToDelete(null);
+        }}
+        title={`Supprimer la confirmation de ${rsvpToDelete?.name ?? ""} ?`}
+        description="Cette action est définitive."
+        confirmLabel="Supprimer"
+        destructive
+        onConfirm={() => {
+          if (rsvpToDelete) void deleteRsvpsForGuest(rsvpToDelete.id);
+        }}
       />
     </div>
   );

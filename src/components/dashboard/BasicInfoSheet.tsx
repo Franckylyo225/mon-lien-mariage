@@ -3,6 +3,7 @@ import { Drawer } from "vaul";
 import { Lock } from "lucide-react";
 import { useWedding, type EventType } from "@/lib/wedding-store";
 import { cn } from "@/lib/utils";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { useVisualViewport } from "@/hooks/use-visual-viewport";
 
 const EVENT_OPTIONS: { value: EventType; label: string; icon: string }[] = [
@@ -70,10 +71,12 @@ export function BasicInfoSheet({ open, onOpenChange }: Props) {
 
   const canSave = dirty && !rsvpError && !saving;
 
+  const [confirmDiscard, setConfirmDiscard] = useState(false);
+
   const handleClose = (next: boolean) => {
     if (!next && dirty) {
-      const ok = window.confirm("Abandonner les modifications ?");
-      if (!ok) return;
+      setConfirmDiscard(true);
+      return;
     }
     onOpenChange(next);
   };
@@ -100,6 +103,17 @@ export function BasicInfoSheet({ open, onOpenChange }: Props) {
   };
 
   return (
+    <>
+    <ConfirmDialog
+      open={confirmDiscard}
+      onOpenChange={setConfirmDiscard}
+      title="Abandonner les modifications ?"
+      description="Les changements non enregistrés seront perdus."
+      confirmLabel="Abandonner"
+      cancelLabel="Continuer l'édition"
+      destructive
+      onConfirm={() => onOpenChange(false)}
+    />
     <Drawer.Root open={open} onOpenChange={handleClose} repositionInputs={false}>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-50 bg-black/40" />
@@ -241,6 +255,7 @@ export function BasicInfoSheet({ open, onOpenChange }: Props) {
         </Drawer.Content>
       </Drawer.Portal>
     </Drawer.Root>
+    </>
   );
 }
 
