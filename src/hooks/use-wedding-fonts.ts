@@ -5,6 +5,41 @@ import { THEMES } from "@/lib/wedding-theme";
 
 type FontWedding = Pick<Couple, "theme" | "customFontTitle" | "customFontBody">;
 
+/**
+ * Fonts bundled locally via @fontsource but not imported globally in
+ * styles.css (too narrow a use case: a handful of themes / the custom font
+ * picker). Loaded on demand, matched against the resolved family string.
+ */
+const LOCAL_FONT_IMPORTS: Record<string, () => Promise<unknown>> = {
+  Marcellus: () => import("@fontsource/marcellus/400.css"),
+  Amiri: () =>
+    Promise.all([
+      import("@fontsource/amiri/400.css"),
+      import("@fontsource/amiri/400-italic.css"),
+      import("@fontsource/amiri/700.css"),
+    ]),
+  "Nunito Sans": () =>
+    Promise.all([
+      import("@fontsource/nunito-sans/400.css"),
+      import("@fontsource/nunito-sans/600.css"),
+      import("@fontsource/nunito-sans/700.css"),
+      import("@fontsource/nunito-sans/400-italic.css"),
+    ]),
+  Quicksand: () =>
+    Promise.all([
+      import("@fontsource/quicksand/400.css"),
+      import("@fontsource/quicksand/500.css"),
+      import("@fontsource/quicksand/600.css"),
+      import("@fontsource/quicksand/700.css"),
+    ]),
+  "Special Elite": () => import("@fontsource/special-elite/400.css"),
+};
+
+function loadLocalFontIfNeeded(family: string) {
+  const match = Object.keys(LOCAL_FONT_IMPORTS).find((name) => family.includes(name));
+  if (match) void LOCAL_FONT_IMPORTS[match]();
+}
+
 export function useWeddingFonts(wedding: FontWedding) {
   const titleFont = findTitleFont(wedding.customFontTitle);
   const bodyFont = findBodyFont(wedding.customFontBody);
@@ -31,13 +66,19 @@ export function useWeddingFonts(wedding: FontWedding) {
 
   }, [titleFont?.googleFont, bodyFont?.googleFont]);
 
-  return useMemo(() => {
-    const theme = THEMES[wedding.theme] ?? THEMES["rose-elegance"];
-    return {
-      titleFontFamily: titleFont?.family ?? theme.fontHeading,
-      bodyFontFamily: bodyFont?.family ?? theme.fontBody,
-    };
-  }, [wedding.theme, titleFont?.family, bodyFont?.family]);
+  const theme = THEMES[wedding.theme] ?? THEMES["rose-elegance"];
+  const titleFontFamily = titleFont?.family ?? theme.fontHeading;
+  const bodyFontFamily = bodyFont?.family ?? theme.fontBody;
+
+  useEffect(() => {
+    loadLocalFontIfNeeded(titleFontFamily);
+    loadLocalFontIfNeeded(bodyFontFamily);
+  }, [titleFontFamily, bodyFontFamily]);
+
+  return useMemo(
+    () => ({ titleFontFamily, bodyFontFamily }),
+    [titleFontFamily, bodyFontFamily],
+  );
 }
 
 export { TITLE_FONTS, BODY_FONTS };

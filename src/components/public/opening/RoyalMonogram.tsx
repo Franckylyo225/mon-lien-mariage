@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 interface Props {
   first: string;
   second: string;
@@ -10,6 +12,13 @@ interface Props {
  * contour fin, unifiées par une volute intégrée au tracé.
  */
 export function RoyalMonogram({ first, second, className }: Props) {
+  // Pinyon Script isn't needed by any other component, so it isn't part of
+  // the global font bundle — load it on demand the one time this opening
+  // model is actually rendered.
+  useEffect(() => {
+    void import("@fontsource/pinyon-script/400.css");
+  }, []);
+
   const a = (first || "").charAt(0).toUpperCase();
   const b = (second || "").charAt(0).toUpperCase();
 

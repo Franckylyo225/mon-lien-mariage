@@ -5,29 +5,23 @@
 @import "@fontsource/cormorant-garamond/400-italic.css";
 @import "@fontsource/cormorant-garamond/500-italic.css";
 @import "@fontsource/cormorant-garamond/600.css";
+@import "@fontsource/cormorant-garamond/500.css";
 @import "@fontsource/playfair-display/400-italic.css";
 @import "@fontsource/playfair-display/500.css";
 @import "@fontsource/playfair-display/500-italic.css";
 @import "@fontsource/inter/400.css";
 @import "@fontsource/inter/500.css";
 @import "@fontsource/inter/600.css";
-@import "@fontsource/cormorant-garamond/500.css";
-@import "@fontsource/quicksand/400.css";
-@import "@fontsource/quicksand/500.css";
-@import "@fontsource/quicksand/600.css";
-@import "@fontsource/quicksand/700.css";
-@import "@fontsource/nunito-sans/400.css";
-@import "@fontsource/nunito-sans/600.css";
-@import "@fontsource/nunito-sans/700.css";
-@import "@fontsource/nunito-sans/400-italic.css";
-@import "@fontsource/amiri/400.css";
-@import "@fontsource/amiri/400-italic.css";
-@import "@fontsource/amiri/700.css";
-@import "@fontsource/marcellus/400.css";
-@import "@fontsource/pinyon-script/400.css";
-@import "@fontsource/special-elite/400.css";
 @import "@fontsource/jetbrains-mono/400.css";
 @import "@fontsource/jetbrains-mono/500.css";
+/*
+ * Quicksand, Nunito Sans, Amiri, Marcellus, Pinyon Script and Special Elite
+ * are only used by a minority of invitation themes / the custom font picker,
+ * never by the marketing site or dashboard chrome. Loading all their weights
+ * globally added ~60KB of unused @font-face rules to every page (homepage,
+ * login, blog…). They're now loaded on demand — see useWeddingFonts and the
+ * templates that hardcode one of them (papier-kraft, RoyalMonogram).
+ */
 
 /* Invitation typography is resolved per wedding through semantic CSS variables. */
 .wedding-typography {
@@ -825,7 +819,7 @@
   position: relative;
   padding: 48px 20px 20px;
   padding-top: calc(48px + env(safe-area-inset-top));
-  background: linear-gradient(180deg, #FBEAF0 0%, #FAF8F5 100%);
+  background: linear-gradient(180deg, var(--secondary) 0%, #FAF8F5 100%);
   border-bottom: 0.5px solid #EDE8E0;
 }
 .drawer-avatar {
@@ -841,7 +835,7 @@
   font-family: "Playfair Display", serif;
   font-style: italic;
   font-size: 20px;
-  color: #993556;
+  color: var(--primary);
   overflow: hidden;
 }
 .drawer-couple {
@@ -849,7 +843,7 @@
   font-family: "Playfair Display", serif;
   font-style: italic;
   font-size: 16px;
-  color: #1A1A1A;
+  color: var(--foreground);
 }
 .drawer-email { font-size: 11px; color: #9CA3AF; }
 
@@ -892,12 +886,12 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #993556;
+  color: var(--primary);
   transition: background 0.15s;
 }
-.drawer-item-label { flex: 1; font-size: 13px; color: #1A1A1A; font-weight: 400; }
+.drawer-item-label { flex: 1; font-size: 13px; color: var(--foreground); font-weight: 400; }
 .drawer-item-badge {
-  background: #993556;
+  background: var(--primary);
   color: #ffffff;
   border-radius: 999px;
   padding: 1px 7px;
@@ -907,8 +901,8 @@
 .drawer-item-chevron { color: #D1D5DB; flex-shrink: 0; }
 
 .drawer-item.active { background: #F0E8ED; }
-.drawer-item.active .drawer-item-icon { background: #FBEAF0; color: #4B1528; }
-.drawer-item.active .drawer-item-label { font-weight: 600; color: #993556; }
+.drawer-item.active .drawer-item-icon { background: var(--secondary); color: #4B1528; }
+.drawer-item.active .drawer-item-label { font-weight: 600; color: var(--primary); }
 
 .drawer-footer {
   padding: 12px 12px 24px;
