@@ -1,16 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import {
-  IconLayoutDashboard,
-  IconUsers,
-  IconCalendarHeart,
-  IconCash,
-  IconMail,
-  IconActivity,
-  IconSettings,
-  IconArrowLeft,
-  IconLifebuoy,
-  IconArticle,
-} from "@tabler/icons-react";
+import { LayoutDashboard, Users, CalendarHeart, Banknote, Mail, Activity, Settings, ArrowLeft, LifeBuoy, Newspaper } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -25,22 +14,22 @@ import {
 } from "@/components/ui/sidebar";
 import { useSupportUnread } from "@/hooks/use-support-unread";
 
-type Item = { to: string; label: string; Icon: typeof IconUsers; exact?: boolean; badge?: number };
+type Item = { to: string; label: string; Icon: typeof Users; exact?: boolean; badge?: number };
 
 const analytics: Item[] = [
-  { to: "/admin", label: "Vue d'ensemble", Icon: IconLayoutDashboard, exact: true },
-  { to: "/admin/activity", label: "Activité", Icon: IconActivity },
+  { to: "/admin", label: "Vue d'ensemble", Icon: LayoutDashboard, exact: true },
+  { to: "/admin/activity", label: "Activité", Icon: Activity },
 ];
 const growth: Item[] = [
-  { to: "/admin/users", label: "Utilisateurs", Icon: IconUsers },
-  { to: "/admin/weddings", label: "Événements", Icon: IconCalendarHeart },
+  { to: "/admin/users", label: "Utilisateurs", Icon: Users },
+  { to: "/admin/weddings", label: "Événements", Icon: CalendarHeart },
 ];
-const finance: Item[] = [{ to: "/admin/payments", label: "Paiements", Icon: IconCash }];
-const content: Item[] = [{ to: "/admin/blog", label: "Blog", Icon: IconArticle }];
+const finance: Item[] = [{ to: "/admin/payments", label: "Paiements", Icon: Banknote }];
+const content: Item[] = [{ to: "/admin/blog", label: "Blog", Icon: Newspaper }];
 const systemItems = (supportBadge: number): Item[] => [
-  { to: "/admin/support", label: "Support", Icon: IconLifebuoy, badge: supportBadge },
-  { to: "/admin/emails", label: "Emails", Icon: IconMail },
-  { to: "/admin/settings", label: "Paramètres", Icon: IconSettings },
+  { to: "/admin/support", label: "Support", Icon: LifeBuoy, badge: supportBadge },
+  { to: "/admin/emails", label: "Emails", Icon: Mail },
+  { to: "/admin/settings", label: "Paramètres", Icon: Settings },
 ];
 
 function Section({ label, items, pathname }: { label: string; items: Item[]; pathname: string }) {
@@ -120,7 +109,7 @@ export function AdminSidebar({ email }: { email?: string | null }) {
             to="/dashboard"
             className="flex items-center gap-1.5 rounded-md px-2 py-1 hover:bg-secondary"
           >
-            <IconArrowLeft size={12} /> Retour à l'app
+            <ArrowLeft size={12} /> Retour à l'app
           </Link>
         </div>
       </SidebarFooter>

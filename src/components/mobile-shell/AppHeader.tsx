@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { IconBell } from "@tabler/icons-react";
+import { Bell } from "lucide-react";
 import { NotificationBell } from "./NotificationBell";
 
 interface AppHeaderProps {
@@ -55,7 +55,7 @@ export function AppHeader({
             aria-label="Notifications"
             className="relative grid size-9 shrink-0 place-items-center rounded-full text-foreground/70 transition active:scale-95"
           >
-            <IconBell size={20} strokeWidth={1.75} />
+            <Bell size={20} strokeWidth={1.75} />
             {hasNotifications ? (
               <span className="absolute right-2 top-2 size-1.5 rounded-full bg-destructive" />
             ) : null}

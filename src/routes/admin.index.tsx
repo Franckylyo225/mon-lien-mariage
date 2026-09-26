@@ -2,15 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import {
-  IconUsers,
-  IconCalendarHeart,
-  IconWorldWww,
-  IconCash,
-  IconUsersGroup,
-  IconTrendingUp,
-  IconTrendingDown,
-} from "@tabler/icons-react";
+import { Users, CalendarHeart, Globe, Banknote, UsersRound, TrendingUp, TrendingDown } from "lucide-react";
 import { getPlatformStats } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin/")({
@@ -45,7 +37,7 @@ function TrendBadge({ value }: { value: number }) {
   if (value === 0)
     return <span className="text-[11px] text-muted-foreground">—</span>;
   const positive = value > 0;
-  const Icon = positive ? IconTrendingUp : IconTrendingDown;
+  const Icon = positive ? TrendingUp : TrendingDown;
   return (
     <span
       className={
@@ -90,42 +82,42 @@ function AdminOverview() {
       label: "Utilisateurs",
       value: data.users.toLocaleString("fr-FR"),
       trend: data.trends.users,
-      Icon: IconUsers,
+      Icon: Users,
       tint: "bg-blue-50 text-blue-700",
     },
     {
       label: "Événements",
       value: data.weddings.toLocaleString("fr-FR"),
       trend: data.trends.weddings,
-      Icon: IconCalendarHeart,
+      Icon: CalendarHeart,
       tint: "bg-rose-50 text-rose-700",
     },
     {
       label: "Publiés",
       value: data.published.toLocaleString("fr-FR"),
       trend: data.trends.published,
-      Icon: IconWorldWww,
+      Icon: Globe,
       tint: "bg-emerald-50 text-emerald-700",
     },
     {
       label: "Revenu total",
       value: formatXof(data.revenueXof),
       trend: data.trends.revenue,
-      Icon: IconCash,
+      Icon: Banknote,
       tint: "bg-amber-50 text-amber-800",
     },
     {
       label: "RSVP reçus",
       value: data.rsvps.toLocaleString("fr-FR"),
       trend: data.trends.rsvps,
-      Icon: IconUsersGroup,
+      Icon: UsersRound,
       tint: "bg-violet-50 text-violet-700",
     },
     {
       label: "Taux conversion",
       value: `${data.conversionRate}%`,
       trend: 0,
-      Icon: IconTrendingUp,
+      Icon: TrendingUp,
       tint: "bg-slate-100 text-slate-700",
     },
   ];

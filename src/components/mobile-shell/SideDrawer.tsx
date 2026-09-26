@@ -1,24 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
-import {
-  IconHome,
-  IconCalendarEvent,
-  IconUsers,
-  IconEye,
-  IconBook2,
-  IconUser,
-  IconCalendarHeart,
-  IconReceipt,
-  IconHelpCircle,
-  IconMessageCircle,
-  IconLogout,
-  IconX,
-  IconChevronRight,
-  IconDeviceMobileShare,
-  IconShare2,
-  IconPlus,
-  IconCheck,
-} from "@tabler/icons-react";
+import { House, Calendar, Users, Eye, BookOpen, User, CalendarHeart, Receipt, CircleQuestionMark, MessageCircle, LogOut, X, ChevronRight, Download, Share2, Plus, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useWedding } from "@/lib/wedding-store";
 import { useSupportUnread } from "@/hooks/use-support-unread";
@@ -48,7 +30,7 @@ interface SideDrawerProps {
 
 type Item = {
   label: string;
-  Icon: typeof IconUser;
+  Icon: typeof User;
   to?: string;
   href?: string;
   badge?: number;
@@ -73,7 +55,7 @@ function DrawerItem({
       {item.badge && item.badge > 0 ? (
         <span className="drawer-item-badge">{item.badge > 99 ? "99+" : item.badge}</span>
       ) : null}
-      <IconChevronRight size={14} className="drawer-item-chevron" />
+      <ChevronRight size={14} className="drawer-item-chevron" />
     </>
   );
 
@@ -214,15 +196,15 @@ export function SideDrawer({
   }, [open, onOpen, onClose]);
 
   const weddingItems: Item[] = [
-    { label: "Tableau de bord", Icon: IconHome, to: "/dashboard", exact: true },
-    { label: "Programme", Icon: IconCalendarEvent, to: "/dashboard/ceremonies" },
-    { label: "Invités", Icon: IconUsers, to: "/dashboard/guests", badge: guests.length },
-    { label: "Ma page d'invitation", Icon: IconEye, to: "/dashboard/preview" },
+    { label: "Tableau de bord", Icon: House, to: "/dashboard", exact: true },
+    { label: "Programme", Icon: Calendar, to: "/dashboard/ceremonies" },
+    { label: "Invités", Icon: Users, to: "/dashboard/guests", badge: guests.length },
+    { label: "Ma page d'invitation", Icon: Eye, to: "/dashboard/preview" },
     ...(couple.hasGuestbook
       ? [
           {
             label: "Livre d'or",
-            Icon: IconBook2,
+            Icon: BookOpen,
             to: "/app/guestbook",
             badge: guestbookCount,
           } as Item,
@@ -231,19 +213,19 @@ export function SideDrawer({
   ];
 
   const accountItems: Item[] = [
-    { label: "Mon profil", Icon: IconUser, to: "/app/profile" },
+    { label: "Mon profil", Icon: User, to: "/app/profile" },
     {
       label: "Mes événements",
-      Icon: IconCalendarHeart,
+      Icon: CalendarHeart,
       to: "/dashboard/events",
       badge: weddings.length > 1 ? weddings.length : 0,
     },
-    { label: "Paiement & facture", Icon: IconReceipt, to: "/dashboard/billing" },
+    { label: "Paiement & facture", Icon: Receipt, to: "/dashboard/billing" },
   ];
 
   const helpItems: Item[] = [
-    { label: "FAQ", Icon: IconHelpCircle, to: "/app/help" },
-    { label: "Support", Icon: IconMessageCircle, to: "/app/support", badge: supportUnread },
+    { label: "FAQ", Icon: CircleQuestionMark, to: "/app/help" },
+    { label: "Support", Icon: MessageCircle, to: "/app/support", badge: supportUnread },
   ];
 
   const isActive = (it: Item) =>
@@ -277,7 +259,7 @@ export function SideDrawer({
             aria-label="Fermer le menu"
             className="absolute right-3 top-11 grid size-8 place-items-center rounded-full text-muted-foreground transition active:scale-95"
           >
-            <IconX size={18} />
+            <X size={18} />
           </button>
           <span className="drawer-avatar">
             {avatarUrl ? (
@@ -302,24 +284,24 @@ export function SideDrawer({
             >
               <span className="drawer-item-icon">
                 {installState === "installed" ? (
-                  <IconCheck size={16} strokeWidth={1.75} />
+                  <Check size={16} strokeWidth={1.75} />
                 ) : installState === "ios" ? (
-                  <IconShare2 size={16} strokeWidth={1.75} />
+                  <Share2 size={16} strokeWidth={1.75} />
                 ) : (
-                  <IconDeviceMobileShare size={16} strokeWidth={1.75} />
+                  <Download size={16} strokeWidth={1.75} />
                 )}
               </span>
               <span className="drawer-item-label">
                 {installState === "installed" ? "Application installée" : "Installer l'application"}
               </span>
-              <IconChevronRight size={14} className="drawer-item-chevron" />
+              <ChevronRight size={14} className="drawer-item-chevron" />
             </button>
           ) : null}
         </div>
 
         <div className="drawer-footer">
           <button onClick={() => setConfirmOut(true)} className="drawer-signout">
-            <IconLogout size={16} />
+            <LogOut size={16} />
             <span>Se déconnecter</span>
           </button>
         </div>
@@ -356,7 +338,7 @@ export function SideDrawer({
           <ol className="space-y-3 text-left">
             <li className="flex items-start gap-3">
               <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#E82050]/10 text-[#E82050]">
-                <IconShare2 size={18} strokeWidth={1.8} />
+                <Share2 size={18} strokeWidth={1.8} />
               </span>
               <p className="text-[13px] leading-snug text-muted-foreground">
                 <span className="font-medium text-foreground">1.</span> Appuyez sur{" "}
@@ -366,7 +348,7 @@ export function SideDrawer({
             </li>
             <li className="flex items-start gap-3">
               <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#E82050]/10 text-[#E82050]">
-                <IconPlus size={18} strokeWidth={1.8} />
+                <Plus size={18} strokeWidth={1.8} />
               </span>
               <p className="text-[13px] leading-snug text-muted-foreground">
                 <span className="font-medium text-foreground">2.</span> Faites défiler et touchez{" "}
@@ -375,7 +357,7 @@ export function SideDrawer({
             </li>
             <li className="flex items-start gap-3">
               <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#E82050]/10 text-[#E82050]">
-                <IconCheck size={18} strokeWidth={1.8} />
+                <Check size={18} strokeWidth={1.8} />
               </span>
               <p className="text-[13px] leading-snug text-muted-foreground">
                 <span className="font-medium text-foreground">3.</span> Appuyez sur{" "}

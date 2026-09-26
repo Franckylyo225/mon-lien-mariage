@@ -1,19 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import {
-  IconArrowRight,
-  IconCalendarEvent,
-  IconCheck,
-  IconChevronRight,
-  IconCircleCheck,
-  IconLayout,
-  IconLayoutList,
-
-  IconLock,
-  IconPencil,
-  IconShare,
-  IconUsers,
-} from "@tabler/icons-react";
+import { ArrowRight, Calendar, Check, ChevronRight, CircleCheck, LayoutTemplate, LayoutList, Lock, Pencil, Share, Users } from "lucide-react";
 import {
   useWedding,
   daysUntil,
@@ -34,7 +21,7 @@ type TodoItem = {
   key: string;
   label: string;
   description: string;
-  Icon: typeof IconCalendarEvent;
+  Icon: typeof Calendar;
   to: "/dashboard/ceremonies" | "/dashboard/preview" | "/dashboard/guests";
 };
 
@@ -123,7 +110,7 @@ function DashboardHome() {
       key: "programme",
       label: "Le programme",
       description: "Dot, civil, réception…",
-      Icon: IconCalendarEvent,
+      Icon: Calendar,
       to: "/dashboard/ceremonies",
       done: programmeDone,
     },
@@ -131,7 +118,7 @@ function DashboardHome() {
       key: "page",
       label: "Ma page d'invitation",
       description: "Photos, textes, mise en page",
-      Icon: IconLayout,
+      Icon: LayoutTemplate,
       to: "/dashboard/preview",
       done: pageDone,
     },
@@ -139,7 +126,7 @@ function DashboardHome() {
       key: "invites",
       label: "Activez la liste des invités",
       description: "Permettez à vos invités de s'inscrire",
-      Icon: IconUsers,
+      Icon: Users,
       to: "/dashboard/guests",
       done: invitesDone,
     },
@@ -210,7 +197,7 @@ function DashboardHome() {
             to="/dashboard/events"
             className="mt-2 inline-flex items-center gap-1 text-[10px] text-muted-foreground transition hover:text-foreground"
           >
-            <IconLayoutList size={11} strokeWidth={1.75} />
+            <LayoutList size={11} strokeWidth={1.75} />
             <span>Mes événements</span>
           </Link>
         ) : null}
@@ -279,7 +266,7 @@ function DashboardHome() {
             {doneItems.map((i) => (
               <li key={i.key} className="flex items-center gap-3 py-2.5">
                 <span className="grid size-[18px] shrink-0 place-items-center rounded-full bg-foreground text-background">
-                  <IconCheck size={11} strokeWidth={3} />
+                  <Check size={11} strokeWidth={3} />
                 </span>
                 <p className="flex-1 truncate text-[12px] text-muted-foreground line-through">
                   {i.label}
@@ -290,7 +277,7 @@ function DashboardHome() {
                   className="flex items-center gap-1 rounded-md px-1.5 py-1 text-[10px] text-muted-foreground transition active:bg-secondary/60"
                 >
                   <span>Modifier</span>
-                  <IconPencil size={12} strokeWidth={1.75} />
+                  <Pencil size={12} strokeWidth={1.75} />
                 </button>
               </li>
             ))}
@@ -312,14 +299,14 @@ function DashboardHome() {
                   onClick={() => setInfoSheetOpen(true)}
                   className="flex w-full items-center gap-3 rounded-xl border border-border bg-card px-3.5 py-3 text-left transition active:bg-secondary/60"
                 >
-                  <TodoBullet Icon={IconPencil} />
+                  <TodoBullet Icon={Pencil} />
                   <div className="min-w-0 flex-1">
                     <p className="text-[13px] font-medium">Informations de base</p>
                     <p className="truncate text-[11px] text-muted-foreground">
                       Prénoms, type, dates, ville
                     </p>
                   </div>
-                  <IconChevronRight size={16} className="text-muted-foreground" />
+                  <ChevronRight size={16} className="text-muted-foreground" />
                 </button>
               </li>
             ) : null}
@@ -336,7 +323,7 @@ function DashboardHome() {
                       {i.description}
                     </p>
                   </div>
-                  <IconChevronRight size={16} className="text-muted-foreground" />
+                  <ChevronRight size={16} className="text-muted-foreground" />
                 </Link>
               </li>
             ))}
@@ -344,7 +331,7 @@ function DashboardHome() {
         </section>
       ) : (
         <section className="flex flex-col items-center gap-2 py-2">
-          <IconCircleCheck size={24} className="text-emerald-600" strokeWidth={1.75} />
+          <CircleCheck size={24} className="text-emerald-600" strokeWidth={1.75} />
           <p className="text-[13px] text-muted-foreground">
             Tout est prêt · Publiez votre mariage !
           </p>
@@ -355,7 +342,7 @@ function DashboardHome() {
       <section className="mt-2">
         {isPublished ? (
           <div className="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-3.5 py-3">
-            <IconCircleCheck size={22} className="shrink-0 text-emerald-700" strokeWidth={1.75} />
+            <CircleCheck size={22} className="shrink-0 text-emerald-700" strokeWidth={1.75} />
             <div className="min-w-0 flex-1">
               <p className="text-[13px] font-medium text-emerald-800">
                 Votre mariage est en ligne
@@ -369,7 +356,7 @@ function DashboardHome() {
               onClick={handleShare}
               className="flex shrink-0 items-center gap-1 rounded-full bg-background px-3 py-1.5 text-[11px] font-medium text-foreground shadow-sm transition active:scale-95"
             >
-              <IconShare size={12} strokeWidth={1.75} />
+              <Share size={12} strokeWidth={1.75} />
               Partager
             </button>
           </div>
@@ -379,7 +366,7 @@ function DashboardHome() {
             className="flex items-center gap-3 rounded-xl bg-foreground px-3.5 py-3 text-background transition active:scale-[0.99]"
           >
             <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-background/15">
-              <IconArrowRight size={16} strokeWidth={1.75} />
+              <ArrowRight size={16} strokeWidth={1.75} />
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-[13px] font-medium">Publier et partager</p>
@@ -387,7 +374,7 @@ function DashboardHome() {
                 Activez le lien et le QR code
               </p>
             </div>
-            <IconChevronRight size={16} className="text-background/70" />
+            <ChevronRight size={16} className="text-background/70" />
           </Link>
         ) : (
           <div
@@ -395,7 +382,7 @@ function DashboardHome() {
             aria-disabled
           >
             <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-card">
-              <IconLock size={14} className="text-muted-foreground" strokeWidth={1.75} />
+              <Lock size={14} className="text-muted-foreground" strokeWidth={1.75} />
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-[13px] font-medium text-muted-foreground">
@@ -405,7 +392,7 @@ function DashboardHome() {
                 Complétez les étapes ci-dessus
               </p>
             </div>
-            <IconLock size={14} className="shrink-0 text-muted-foreground" strokeWidth={1.75} />
+            <Lock size={14} className="shrink-0 text-muted-foreground" strokeWidth={1.75} />
           </div>
         )}
       </section>
@@ -415,7 +402,7 @@ function DashboardHome() {
   );
 }
 
-function TodoBullet({ Icon }: { Icon: typeof IconCalendarEvent }) {
+function TodoBullet({ Icon }: { Icon: typeof Calendar }) {
   return (
     <span
       className={cn(

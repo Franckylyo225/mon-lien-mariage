@@ -1,5 +1,5 @@
 import { useMemo, useState, type ReactNode } from "react";
-import { IconSearch, IconDownload, IconChevronUp, IconChevronDown } from "@tabler/icons-react";
+import { Search, Download, ChevronUp, ChevronDown } from "lucide-react";
 
 export type Column<T> = {
   key: string;
@@ -110,7 +110,7 @@ export function DataTable<T>({
       <div className="flex flex-wrap items-center gap-2">
         {searchable && (
           <div className="relative">
-            <IconSearch size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
               value={q}
               onChange={(e) => {
@@ -130,7 +130,7 @@ export function DataTable<T>({
             disabled={!sorted.length}
             className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-white px-3 py-1.5 text-[12px] hover:bg-secondary disabled:opacity-50"
           >
-            <IconDownload size={13} /> CSV
+            <Download size={13} /> CSV
           </button>
         </div>
       </div>
@@ -155,7 +155,7 @@ export function DataTable<T>({
                           className="inline-flex items-center gap-1 hover:text-foreground"
                         >
                           {c.label}
-                          {active && (sort!.dir === "asc" ? <IconChevronUp size={12} /> : <IconChevronDown size={12} />)}
+                          {active && (sort!.dir === "asc" ? <ChevronUp size={12} /> : <ChevronDown size={12} />)}
                         </button>
                       ) : (
                         c.label

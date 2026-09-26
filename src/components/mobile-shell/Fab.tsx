@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { IconPlus } from "@tabler/icons-react";
+import { Plus } from "lucide-react";
 
 /**
  * Floating action button — shown only on tabs where an "add" action makes sense.
@@ -16,7 +16,7 @@ export function Fab() {
         className="fixed bottom-20 right-4 z-20 grid size-14 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 transition active:scale-95"
         style={{ marginBottom: "env(safe-area-inset-bottom)" }}
       >
-        <IconPlus size={24} strokeWidth={2} />
+        <Plus size={24} strokeWidth={2} />
       </Link>
     );
   }

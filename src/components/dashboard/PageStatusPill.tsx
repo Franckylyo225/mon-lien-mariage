@@ -1,4 +1,4 @@
-import { IconLoader2 } from "@tabler/icons-react";
+import { LoaderCircle } from "lucide-react";
 
 export type PageStatus = "draft" | "edit" | "live" | "publishing";
 
@@ -54,7 +54,7 @@ export function PageStatusPill({ status }: { status: PageStatus }) {
       style={{ backgroundColor: s.bg, color: s.ink }}
     >
       {s.dotAnim === "spin" ? (
-        <IconLoader2
+        <LoaderCircle
           size={12}
           strokeWidth={2.5}
           className="motion-safe:animate-spin"

@@ -10,6 +10,7 @@ import { EditModeProvider, useEditMode } from "@/lib/edit-mode";
 import { PageChromeProvider, usePageChrome } from "@/lib/page-chrome";
 import { AutosaveProvider } from "@/lib/autosave-context";
 import { registerDashboardServiceWorker } from "@/components/pwa/pwa-install";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const InstallPrompt = lazy(() =>
   import("@/components/pwa/InstallPrompt").then((module) => ({ default: module.InstallPrompt })),
@@ -96,13 +97,7 @@ function DashboardLayout() {
 
 
   if (loading || !account.isAuthenticated) {
-    return (
-      <div className="grid min-h-screen place-items-center bg-background">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-40">
-          Chargement…
-        </p>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   const title =
@@ -220,6 +215,41 @@ function DashboardChrome({
         userId={userId}
       />
 
+    </div>
+  );
+}
+
+function DashboardSkeleton() {
+  return (
+    <div className="min-h-screen bg-background">
+      <header className="sticky top-0 z-30 h-14 border-b border-border/70 bg-background/95">
+        <div className="mx-auto flex h-full max-w-xl items-center justify-between gap-3 px-3 sm:px-5">
+          <Skeleton className="size-9 shrink-0 rounded-full" />
+          <Skeleton className="h-3 w-28" />
+          <Skeleton className="size-9 shrink-0 rounded-full" />
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-xl space-y-7 px-4 pb-24 pt-4">
+        <div className="flex flex-col items-center gap-2">
+          <Skeleton className="h-6 w-40" />
+          <Skeleton className="h-3 w-32" />
+        </div>
+        <Skeleton className="h-[5px] w-full rounded-full" />
+        <div className="space-y-2">
+          <Skeleton className="h-16 w-full rounded-xl" />
+          <Skeleton className="h-16 w-full rounded-xl" />
+          <Skeleton className="h-16 w-full rounded-xl" />
+        </div>
+      </main>
+
+      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-border/70 bg-background/95">
+        <div className="mx-auto flex h-16 max-w-xl items-center justify-around px-1">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="size-6 rounded-full" />
+          ))}
+        </div>
+      </nav>
     </div>
   );
 }

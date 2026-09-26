@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { IconX, IconCheck } from "@tabler/icons-react";
+import { X, Check } from "lucide-react";
 import { useWedding, type ThemeId } from "@/lib/wedding-store";
 import {
   THEMES,
@@ -111,7 +111,7 @@ function StepTheme() {
                       className="grid size-3.5 shrink-0 place-items-center rounded-full text-white"
                       style={{ background: t.defaultAccent }}
                     >
-                      <IconCheck size={8} strokeWidth={3} />
+                      <Check size={8} strokeWidth={3} />
                     </span>
                   )}
                 </div>
@@ -221,7 +221,7 @@ function ThemePreviewOverlay({
           aria-label="Fermer l'aperçu"
           className="grid size-9 shrink-0 place-items-center rounded-full border border-border transition active:bg-secondary/60"
         >
-          <IconX size={18} />
+          <X size={18} />
         </button>
         <div className="min-w-0 flex-1 text-center">
           <p className="text-[9px] font-medium uppercase tracking-[0.25em] text-muted-foreground">
@@ -244,7 +244,7 @@ function ThemePreviewOverlay({
           onClick={onConfirm}
           className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
         >
-          <IconCheck size={16} strokeWidth={2.5} />
+          <Check size={16} strokeWidth={2.5} />
           Choisir ce thème
         </button>
       </div>

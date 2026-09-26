@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { IconX } from "@tabler/icons-react";
+import { X } from "lucide-react";
 import { daysUntil } from "@/lib/wedding-store";
 
 type UrgencyLevel = "neutral" | "encouraging" | "urgent" | "critical";
@@ -117,7 +117,7 @@ export function PublishReminderBanner({
             aria-label="Fermer"
             className={`shrink-0 opacity-60 transition hover:opacity-100 ${config.text}`}
           >
-            <IconX size={16} strokeWidth={2} />
+            <X size={16} strokeWidth={2} />
           </button>
         ) : null}
       </div>

@@ -1,12 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import {
-  IconUserPlus,
-  IconCalendarPlus,
-  IconWorldWww,
-  IconUserCheck,
-} from "@tabler/icons-react";
+import { UserPlus, CalendarPlus, Globe, UserCheck } from "lucide-react";
 import { listActivity } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin/activity")({
@@ -14,10 +9,10 @@ export const Route = createFileRoute("/admin/activity")({
 });
 
 const KIND = {
-  signup: { Icon: IconUserPlus, tint: "bg-blue-50 text-blue-700", label: "Inscription" },
-  wedding_created: { Icon: IconCalendarPlus, tint: "bg-rose-50 text-rose-700", label: "Événement" },
-  wedding_published: { Icon: IconWorldWww, tint: "bg-emerald-50 text-emerald-700", label: "Publication" },
-  rsvp: { Icon: IconUserCheck, tint: "bg-violet-50 text-violet-700", label: "RSVP" },
+  signup: { Icon: UserPlus, tint: "bg-blue-50 text-blue-700", label: "Inscription" },
+  wedding_created: { Icon: CalendarPlus, tint: "bg-rose-50 text-rose-700", label: "Événement" },
+  wedding_published: { Icon: Globe, tint: "bg-emerald-50 text-emerald-700", label: "Publication" },
+  rsvp: { Icon: UserCheck, tint: "bg-violet-50 text-violet-700", label: "RSVP" },
 } as const;
 
 function AdminActivity() {

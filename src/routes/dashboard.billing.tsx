@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { IconReceipt, IconCircleCheck, IconDownload } from "@tabler/icons-react";
+import { Receipt, CircleCheck, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useWedding } from "@/lib/wedding-store";
 import type { InvoiceLine } from "@/lib/invoice-pdf";
@@ -143,7 +143,7 @@ function BillingPage() {
 
   return (
     <div className="space-y-6 py-2">
-      <section className="rounded-[12px] bg-card p-4" style={{ border: "0.5px solid hsl(var(--border))" }}>
+      <section className="rounded-[12px] bg-card p-4" style={{ border: "0.5px solid var(--border)" }}>
         <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
           Total dépensé
         </p>
@@ -158,8 +158,8 @@ function BillingPage() {
       ) : null}
 
       {rows.length === 0 ? (
-        <div className="rounded-[12px] bg-card px-4 py-10 text-center" style={{ border: "0.5px dashed hsl(var(--border))" }}>
-          <IconReceipt size={28} strokeWidth={1.5} className="mx-auto text-muted-foreground" />
+        <div className="rounded-[12px] bg-card px-4 py-10 text-center" style={{ border: "0.5px dashed var(--border)" }}>
+          <Receipt size={28} strokeWidth={1.5} className="mx-auto text-muted-foreground" />
           <p className="mt-3 font-serif text-[14px] italic">Aucun paiement pour le moment</p>
           <p className="mt-1 text-[11px] text-muted-foreground">
             Vos factures apparaîtront ici après la publication d'un événement.
@@ -204,14 +204,14 @@ function BillingPage() {
                 <li key={r.id}>
                   <div
                     className="rounded-[10px] bg-card px-3 py-3"
-                    style={{ border: "0.5px solid hsl(var(--border))" }}
+                    style={{ border: "0.5px solid var(--border)" }}
                   >
                     <div className="flex items-center gap-3">
                       <span
                         className="grid size-9 shrink-0 place-items-center rounded-full"
                         style={{ background: "#ecfdf5", color: "#047857" }}
                       >
-                        <IconCircleCheck size={18} strokeWidth={1.75} />
+                        <CircleCheck size={18} strokeWidth={1.75} />
                       </span>
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-serif text-[13px] italic">{label}</p>
@@ -234,7 +234,7 @@ function BillingPage() {
                         onClick={() => void handleDownload()}
                         className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5 text-[11px] font-medium text-foreground transition active:scale-95"
                       >
-                        <IconDownload size={13} strokeWidth={1.75} />
+                        <Download size={13} strokeWidth={1.75} />
                         Facture PDF
                       </button>
                     </div>

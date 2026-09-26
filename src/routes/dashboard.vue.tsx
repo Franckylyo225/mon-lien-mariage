@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { IconX } from "@tabler/icons-react";
+import { X } from "lucide-react";
 import { useWedding } from "@/lib/wedding-store";
 import { componentForTheme } from "@/components/invitation-templates";
 import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
@@ -87,7 +87,7 @@ function FullscreenPreview() {
         className="fixed right-4 top-4 z-[70] inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-black/55 px-3 py-2 text-[11px] font-medium text-white backdrop-blur transition hover:bg-black/75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:text-[12px]"
         style={{ paddingTop: "max(0.5rem, env(safe-area-inset-top))" }}
       >
-        <IconX size={14} strokeWidth={2.5} />
+        <X size={14} strokeWidth={2.5} />
         <span>Fermer</span>
       </button>
     </ThemeRoot>

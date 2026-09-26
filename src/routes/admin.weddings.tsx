@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { IconExternalLink } from "@tabler/icons-react";
+import { ExternalLink } from "lucide-react";
 import { listAllWeddings } from "@/lib/admin.functions";
 import { DataTable, type Column } from "@/components/admin/DataTable";
 
@@ -88,7 +88,7 @@ function AdminWeddings() {
             rel="noreferrer"
             className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-white px-2 py-1 text-[11px] hover:bg-secondary"
           >
-            <IconExternalLink size={11} /> Voir
+            <ExternalLink size={11} /> Voir
           </a>
         ) : null,
     },

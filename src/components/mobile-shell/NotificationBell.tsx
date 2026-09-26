@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { IconBell, IconCheck, IconInbox } from "@tabler/icons-react";
+import { Bell, Check, Inbox } from "lucide-react";
 import { useNotifications, type AppNotification } from "@/hooks/use-notifications";
 
 interface Props {
@@ -60,7 +60,7 @@ export function NotificationBell({ userId }: Props) {
         aria-label="Notifications"
         className="relative grid size-9 shrink-0 place-items-center rounded-full text-foreground/70 transition active:scale-95"
       >
-        <IconBell size={20} strokeWidth={1.75} />
+        <Bell size={20} strokeWidth={1.75} />
         {unreadCount > 0 ? (
           <span className="absolute right-1 top-1 grid size-4 place-items-center rounded-full bg-destructive text-[9px] font-semibold text-white">
             {unreadCount > 9 ? "9+" : unreadCount}
@@ -78,14 +78,14 @@ export function NotificationBell({ userId }: Props) {
                 onClick={markAllRead}
                 className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wider text-muted-foreground hover:text-foreground"
               >
-                <IconCheck size={12} /> Tout marquer lu
+                <Check size={12} /> Tout marquer lu
               </button>
             ) : null}
           </div>
           <div className="max-h-96 overflow-y-auto">
             {items.length === 0 ? (
               <div className="flex flex-col items-center gap-2 px-4 py-10 text-center text-muted-foreground">
-                <IconInbox size={28} strokeWidth={1.5} />
+                <Inbox size={28} strokeWidth={1.5} />
                 <p className="text-xs">Aucune notification pour le moment.</p>
               </div>
             ) : (

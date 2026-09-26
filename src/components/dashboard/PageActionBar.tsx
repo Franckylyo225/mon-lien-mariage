@@ -1,11 +1,4 @@
-import {
-  IconArrowRight,
-  IconCheck,
-  IconEdit,
-  IconEye,
-  IconLoader2,
-  IconShare,
-} from "@tabler/icons-react";
+import { ArrowRight, Check, Pencil, Eye, LoaderCircle, Share } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { SaveStatus } from "@/hooks/use-autosave";
 
@@ -58,7 +51,7 @@ export function PageActionBar({
                 aria-label="Passer en mode édition"
                 className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-transparent px-3 py-1.5 text-[11px] font-medium text-foreground transition hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:px-4 sm:py-2 sm:text-[13px]"
               >
-                <IconEdit size={14} strokeWidth={2} />
+                <Pencil size={14} strokeWidth={2} />
                 <span>Modifier</span>
               </button>
               <button
@@ -67,7 +60,7 @@ export function PageActionBar({
                 aria-label="Voir la page en plein écran comme un visiteur"
                 className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-transparent px-3 py-1.5 text-[11px] font-medium text-foreground transition hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:px-4 sm:py-2 sm:text-[13px]"
               >
-                <IconEye size={14} strokeWidth={2} />
+                <Eye size={14} strokeWidth={2} />
                 <span>Aperçu</span>
               </button>
             </div>
@@ -83,7 +76,7 @@ export function PageActionBar({
               aria-label="Publication en cours"
               className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-[11px] font-medium text-muted-foreground opacity-70 sm:px-4 sm:py-2 sm:text-[13px]"
             >
-              <IconLoader2 size={14} className="motion-safe:animate-spin" />
+              <LoaderCircle size={14} className="motion-safe:animate-spin" />
               <span>Publication…</span>
             </button>
           ) : editing ? (
@@ -94,7 +87,7 @@ export function PageActionBar({
               className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium transition hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:px-4 sm:py-2 sm:text-[13px]"
               style={{ backgroundColor: "#1A1A1A", color: "#ffffff" }}
             >
-              <IconCheck size={14} strokeWidth={2.5} />
+              <Check size={14} strokeWidth={2.5} />
               <span>Terminer</span>
             </button>
           ) : isPublished ? (
@@ -105,7 +98,7 @@ export function PageActionBar({
               className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium transition hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:px-4 sm:py-2 sm:text-[13px]"
               style={{ backgroundColor: "#4B1528", color: "#FBEAF0" }}
             >
-              <IconShare size={14} strokeWidth={2} />
+              <Share size={14} strokeWidth={2} />
               <span>Partager</span>
             </button>
           ) : (
@@ -117,7 +110,7 @@ export function PageActionBar({
               style={{ backgroundColor: "#4B1528", color: "#FBEAF0" }}
             >
               <span>Publier</span>
-              <IconArrowRight size={14} strokeWidth={2} />
+              <ArrowRight size={14} strokeWidth={2} />
             </button>
           )}
         </div>
@@ -139,23 +132,23 @@ function SaveStatusIndicator({ status }: { status: SaveStatus }) {
       className="inline-flex items-center gap-1.5 text-[11px] font-medium sm:text-[12px]"
       style={{
         color: showAsError
-          ? "hsl(var(--destructive))"
+          ? "var(--destructive)"
           : showAsSaving
             ? "#4B5563"
             : "#059669",
       }}
     >
       {showAsSaving ? (
-        <IconLoader2
+        <LoaderCircle
           size={14}
           strokeWidth={2}
           className="motion-safe:animate-spin"
           aria-hidden
         />
       ) : showAsError ? (
-        <IconCheck size={14} strokeWidth={2.5} aria-hidden />
+        <Check size={14} strokeWidth={2.5} aria-hidden />
       ) : (
-        <IconCheck size={14} strokeWidth={2.5} aria-hidden />
+        <Check size={14} strokeWidth={2.5} aria-hidden />
       )}
       <span>
         {showAsSaving

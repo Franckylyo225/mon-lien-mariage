@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { IconShieldLock, IconArrowLeft } from "@tabler/icons-react";
+import { ShieldCheck, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/admin/login")({
@@ -76,13 +76,13 @@ function AdminLoginPage() {
         to="/"
         className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] text-neutral-300 backdrop-blur hover:bg-white/10"
       >
-        <IconArrowLeft size={14} /> Retour au site
+        <ArrowLeft size={14} /> Retour au site
       </Link>
 
       <div className="relative w-full max-w-sm">
         <div className="mb-6 flex flex-col items-center text-center">
           <div className="mb-4 grid size-14 place-items-center rounded-2xl border border-white/10 bg-gradient-to-br from-white/10 to-white/[0.02] shadow-[0_10px_40px_-10px_rgba(153,53,86,0.5)]">
-            <IconShieldLock size={26} className="text-[#e8a4b1]" />
+            <ShieldCheck size={26} className="text-[#e8a4b1]" />
           </div>
           <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.35em] text-[#e8a4b1]/80">
             Espace administrateur

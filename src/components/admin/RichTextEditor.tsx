@@ -3,20 +3,7 @@ import { EditorContent, useEditor, type Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
-import {
-  IconBold,
-  IconItalic,
-  IconH2,
-  IconH3,
-  IconList,
-  IconListNumbers,
-  IconQuote,
-  IconLink,
-  IconPhoto,
-  IconArrowBackUp,
-  IconArrowForwardUp,
-  IconClearFormatting,
-} from "@tabler/icons-react";
+import { Bold, Italic, Heading2, Heading3, List, ListOrdered, Quote, Link as LinkIcon, Image as ImageIcon, Undo2, Redo2, RemoveFormatting } from "lucide-react";
 import { toast } from "sonner";
 import { uploadBlogImage } from "@/lib/blog-upload";
 
@@ -82,14 +69,14 @@ function Toolbar({ editor }: { editor: Editor }) {
         active={editor.isActive("bold")}
         onClick={() => editor.chain().focus().toggleBold().run()}
       >
-        <IconBold size={16} />
+        <Bold size={16} />
       </Btn>
       <Btn
         title="Italique"
         active={editor.isActive("italic")}
         onClick={() => editor.chain().focus().toggleItalic().run()}
       >
-        <IconItalic size={16} />
+        <Italic size={16} />
       </Btn>
       <span className="mx-1 h-4 w-px bg-border" />
       <Btn
@@ -97,14 +84,14 @@ function Toolbar({ editor }: { editor: Editor }) {
         active={editor.isActive("heading", { level: 2 })}
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
       >
-        <IconH2 size={16} />
+        <Heading2 size={16} />
       </Btn>
       <Btn
         title="Titre 3"
         active={editor.isActive("heading", { level: 3 })}
         onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
       >
-        <IconH3 size={16} />
+        <Heading3 size={16} />
       </Btn>
       <span className="mx-1 h-4 w-px bg-border" />
       <Btn
@@ -112,28 +99,28 @@ function Toolbar({ editor }: { editor: Editor }) {
         active={editor.isActive("bulletList")}
         onClick={() => editor.chain().focus().toggleBulletList().run()}
       >
-        <IconList size={16} />
+        <List size={16} />
       </Btn>
       <Btn
         title="Liste numérotée"
         active={editor.isActive("orderedList")}
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
       >
-        <IconListNumbers size={16} />
+        <ListOrdered size={16} />
       </Btn>
       <Btn
         title="Citation"
         active={editor.isActive("blockquote")}
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
       >
-        <IconQuote size={16} />
+        <Quote size={16} />
       </Btn>
       <span className="mx-1 h-4 w-px bg-border" />
       <Btn title="Lien" active={editor.isActive("link")} onClick={addLink}>
-        <IconLink size={16} />
+        <LinkIcon size={16} />
       </Btn>
       <Btn title="Insérer une image" onClick={() => fileRef.current?.click()}>
-        <IconPhoto size={16} />
+        <ImageIcon size={16} />
       </Btn>
       <input
         ref={fileRef}
@@ -151,14 +138,14 @@ function Toolbar({ editor }: { editor: Editor }) {
         title="Effacer la mise en forme"
         onClick={() => editor.chain().focus().clearNodes().unsetAllMarks().run()}
       >
-        <IconClearFormatting size={16} />
+        <RemoveFormatting size={16} />
       </Btn>
       <div className="ml-auto flex items-center gap-0.5">
         <Btn title="Annuler" onClick={() => editor.chain().focus().undo().run()}>
-          <IconArrowBackUp size={16} />
+          <Undo2 size={16} />
         </Btn>
         <Btn title="Rétablir" onClick={() => editor.chain().focus().redo().run()}>
-          <IconArrowForwardUp size={16} />
+          <Redo2 size={16} />
         </Btn>
       </div>
     </div>

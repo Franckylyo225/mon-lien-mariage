@@ -9,21 +9,8 @@ import {
 import { guestTypeMeta, type GuestType } from "@/lib/guest-meta";
 import { useAllGuests } from "@/hooks/use-all-guests";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  IconChevronRight,
-  IconTrendingUp,
-  IconUsers,
-  IconCheck,
-  IconX,
-  IconClock,
-  IconLink,
-  IconEye,
-
-  IconMessage,
-  IconBook,
-  IconSalad,
-  IconCalendarEvent,
-} from "@tabler/icons-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ChevronRight, TrendingUp, Users, Check, X, Clock, Link as LinkIcon, Eye, MessageSquare, Book, Salad, Calendar } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard/stats")({
   head: () => ({
@@ -244,7 +231,7 @@ function StatsPage() {
 
       {deadlineDays !== null ? (
         <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-3 text-[13px]">
-          <IconCalendarEvent size={16} className="shrink-0 text-muted-foreground" />
+          <Calendar size={16} className="shrink-0 text-muted-foreground" />
           {deadlineDays >= 0 ? (
             <span>
               Date limite de réponse dans{" "}
@@ -260,27 +247,43 @@ function StatsPage() {
       ) : null}
 
       {/* Global metrics */}
-      <section className="grid grid-cols-2 gap-3">
-        <BigMetric
-          label="Invités"
-          value={global.totalInvited}
-          sub={`${global.totalExpected} personnes attendues`}
-          Icon={IconUsers}
-        />
-        <BigMetric
-          label="Taux de réponse"
-          value={`${global.responseRate}%`}
-          sub={`${global.anyConfirmed + global.anyDeclined}/${global.totalInvited} ont répondu`}
-          Icon={IconTrendingUp}
-          progress={global.responseRate}
-        />
-      </section>
+      {loading ? (
+        <>
+          <section className="grid grid-cols-2 gap-3">
+            <MetricSkeleton />
+            <MetricSkeleton />
+          </section>
+          <section className="grid grid-cols-3 gap-2">
+            <MiniStatSkeleton />
+            <MiniStatSkeleton />
+            <MiniStatSkeleton />
+          </section>
+        </>
+      ) : (
+        <>
+          <section className="grid grid-cols-2 gap-3">
+            <BigMetric
+              label="Invités"
+              value={global.totalInvited}
+              sub={`${global.totalExpected} personnes attendues`}
+              Icon={Users}
+            />
+            <BigMetric
+              label="Taux de réponse"
+              value={`${global.responseRate}%`}
+              sub={`${global.anyConfirmed + global.anyDeclined}/${global.totalInvited} ont répondu`}
+              Icon={TrendingUp}
+              progress={global.responseRate}
+            />
+          </section>
 
-      <section className="grid grid-cols-3 gap-2">
-        <MiniStat label="Confirmés" value={global.anyConfirmed} tone="success" Icon={IconCheck} />
-        <MiniStat label="En attente" value={global.anyPending} tone="warning" Icon={IconClock} />
-        <MiniStat label="Déclinés" value={global.anyDeclined} tone="danger" Icon={IconX} />
-      </section>
+          <section className="grid grid-cols-3 gap-2">
+            <MiniStat label="Confirmés" value={global.anyConfirmed} tone="success" Icon={Check} />
+            <MiniStat label="En attente" value={global.anyPending} tone="warning" Icon={Clock} />
+            <MiniStat label="Déclinés" value={global.anyDeclined} tone="danger" Icon={X} />
+          </section>
+        </>
+      )}
 
       {/* Confirmation rate donut */}
       <section className="rounded-2xl border border-border bg-card p-5">
@@ -303,20 +306,20 @@ function StatsPage() {
       {/* Engagement via le lien public */}
       <section className="grid grid-cols-3 gap-2">
         <SmallCard
-          Icon={IconEye}
+          Icon={Eye}
           label="Vues"
           value={viewCount ?? "—"}
           hint="Visites de la page"
         />
         <SmallCard
-          Icon={IconLink}
+          Icon={LinkIcon}
           label="Auto-inscriptions"
           value={publicGuests.length}
           hint="Via le lien public"
         />
-        <SmallCard Icon={IconMessage} label="Messages" value={messages} hint="Dans le formulaire" />
+        <SmallCard Icon={MessageSquare} label="Messages" value={messages} hint="Dans le formulaire" />
         <SmallCard
-          Icon={IconBook}
+          Icon={Book}
           label="Livre d'or"
           value={couple.hasGuestbook ? (guestbookCount ?? "—") : "—"}
           hint={couple.hasGuestbook ? "Messages reçus" : "Non activé"}
@@ -351,7 +354,7 @@ function StatsPage() {
                   aria-label={`Détails ${s.ceremony.label}`}
                   className="grid size-8 place-items-center rounded-full text-muted-foreground transition hover:bg-accent/20"
                 >
-                  <IconChevronRight size={16} />
+                  <ChevronRight size={16} />
                 </Link>
               </div>
 
@@ -417,7 +420,7 @@ function StatsPage() {
       {dietary.length > 0 ? (
         <section>
           <h2 className="mb-3 flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-            <IconSalad size={13} /> Régimes & allergies ({dietary.length})
+            <Salad size={13} /> Régimes & allergies ({dietary.length})
           </h2>
           <ul className="space-y-2 rounded-2xl border border-border bg-card p-4 text-[12px]">
             {dietary.slice(0, 12).map((d) => (
@@ -504,6 +507,31 @@ function BigMetric({
           />
         </div>
       ) : null}
+    </div>
+  );
+}
+
+function MetricSkeleton() {
+  return (
+    <div className="rounded-2xl border border-border bg-card p-4">
+      <div className="flex items-center gap-2">
+        <Skeleton className="size-3.5 rounded-full" />
+        <Skeleton className="h-2.5 w-16" />
+      </div>
+      <Skeleton className="mt-3 h-7 w-14" />
+      <Skeleton className="mt-2 h-2.5 w-24" />
+    </div>
+  );
+}
+
+function MiniStatSkeleton() {
+  return (
+    <div className="rounded-xl border border-border bg-card p-3">
+      <div className="flex items-center gap-1.5">
+        <Skeleton className="size-3 rounded-full" />
+        <Skeleton className="h-2 w-10" />
+      </div>
+      <Skeleton className="mt-2 h-5 w-8" />
     </div>
   );
 }
@@ -616,7 +644,7 @@ function Donut({ value }: { value: number }) {
         cx={size / 2}
         cy={size / 2}
         r={r}
-        stroke="hsl(var(--muted))"
+        stroke="var(--muted)"
         strokeWidth={stroke}
         fill="none"
       />
@@ -624,7 +652,7 @@ function Donut({ value }: { value: number }) {
         cx={size / 2}
         cy={size / 2}
         r={r}
-        stroke="hsl(var(--primary))"
+        stroke="var(--primary)"
         strokeWidth={stroke}
         fill="none"
         strokeLinecap="round"

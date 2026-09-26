@@ -9,6 +9,7 @@ import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta"
 import { useAllGuests } from "@/hooks/use-all-guests";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   DEFAULT_WHATSAPP_INVITE_TEMPLATE,
@@ -36,7 +37,7 @@ export const Route = createFileRoute("/dashboard/guests/")({
 function GuestsPage() {
   const { ceremonies, couple, updateCouple, weddingId } = useWedding();
   const isPast = isPastEvent(couple.weddingDate);
-  const { allGuests, publicRsvps, rsvpIdsByGuest, refetch } = useAllGuests();
+  const { allGuests, publicRsvps, rsvpIdsByGuest, refetch, loading } = useAllGuests();
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<GuestType | "all">("all");
   const [ceremonyFilter, setCeremonyFilter] = useState<string>("all");
@@ -229,7 +230,17 @@ function GuestsPage() {
       </select>
 
       <ul className="divide-y divide-border rounded-xl border border-border bg-card">
-        {allGuests.length === 0 ? (
+        {loading && allGuests.length === 0 ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <li key={i} className="flex items-center gap-3 p-4">
+              <Skeleton className="size-11 shrink-0 rounded-full" />
+              <div className="min-w-0 flex-1 space-y-2">
+                <Skeleton className="h-3.5 w-2/5" />
+                <Skeleton className="h-3 w-1/4" />
+              </div>
+            </li>
+          ))
+        ) : allGuests.length === 0 ? (
           <li className="flex flex-col items-center gap-4 p-8 text-center">
             <p className="text-sm text-muted-foreground">Vous n'avez pas encore d'invité</p>
             {isPast ? null : (

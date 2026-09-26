@@ -1,10 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import {
-  IconChevronRight,
-  IconPlus,
-  IconTrash,
-} from "@tabler/icons-react";
+import { ChevronRight, Plus, Trash } from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -161,7 +157,7 @@ function EventsPage() {
           style={{ borderWidth: "0.5px" }}
         >
           <span className="grid size-9 shrink-0 place-items-center rounded-full bg-secondary text-foreground">
-            <IconPlus size={16} strokeWidth={1.75} />
+            <Plus size={16} strokeWidth={1.75} />
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-[13px] font-medium">
@@ -232,20 +228,20 @@ function EventCard({
     ? `${w.brideName || "…"} & ${w.groomName || "…"}`
     : "Nouvel événement";
   const type = EVENT_TYPE_LABELS[w.eventType] ?? "Événement";
-  const dot = w.isPublished ? "#059669" : "hsl(var(--border))";
+  const dot = w.isPublished ? "#059669" : "var(--border)";
   const badge = past
     ? w.isPublished
-      ? { label: "Terminé", bg: "hsl(var(--muted))", fg: "hsl(var(--muted-foreground))" }
+      ? { label: "Terminé", bg: "var(--muted)", fg: "var(--muted-foreground)" }
       : { label: "Non publié", bg: "#fff7ed", fg: "#b45309" }
     : w.isPublished
       ? { label: "En ligne", bg: "#ecfdf5", fg: "#047857" }
-      : { label: "Brouillon", bg: "hsl(var(--muted))", fg: "hsl(var(--muted-foreground))" };
+      : { label: "Brouillon", bg: "var(--muted)", fg: "var(--muted-foreground)" };
 
   return (
     <div
       className="flex w-full items-center gap-2 rounded-[10px] bg-card pr-1 transition"
       style={{
-        border: "0.5px solid " + (isActive ? "hsl(var(--foreground))" : "hsl(var(--border))"),
+        border: "0.5px solid " + (isActive ? "var(--foreground)" : "var(--border)"),
         opacity: past ? 0.65 : 1,
       }}
     >
@@ -270,7 +266,7 @@ function EventCard({
         >
           {badge.label}
         </span>
-        <IconChevronRight size={14} className="shrink-0 text-muted-foreground" />
+        <ChevronRight size={14} className="shrink-0 text-muted-foreground" />
       </button>
       {onDelete ? (
         <button
@@ -279,7 +275,7 @@ function EventCard({
           aria-label="Supprimer ce brouillon"
           className="grid size-9 shrink-0 place-items-center rounded-full text-muted-foreground transition active:bg-secondary"
         >
-          <IconTrash size={15} strokeWidth={1.75} />
+          <Trash size={15} strokeWidth={1.75} />
         </button>
       ) : null}
     </div>

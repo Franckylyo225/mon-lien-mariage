@@ -1,11 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  IconArrowLeft,
-  IconBell,
-  IconChecks,
-  IconLoader2,
-} from "@tabler/icons-react";
+import { ArrowLeft, Bell, CheckCheck, LoaderCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNotifications } from "@/hooks/use-notifications";
 
@@ -93,7 +88,7 @@ function NotificationsPage() {
             to="/dashboard"
             className="inline-flex items-center gap-1.5 text-[12px] text-muted-foreground hover:text-foreground"
           >
-            <IconArrowLeft size={14} />
+            <ArrowLeft size={14} />
             Tableau de bord
           </Link>
           {unreadCount > 0 ? (
@@ -102,7 +97,7 @@ function NotificationsPage() {
               onClick={markAllRead}
               className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3.5 py-1.5 text-[11px] font-medium text-foreground transition active:scale-95"
             >
-              <IconChecks size={14} />
+              <CheckCheck size={14} />
               Tout marquer comme lu
             </button>
           ) : null}
@@ -112,7 +107,7 @@ function NotificationsPage() {
       <main className="mx-auto max-w-3xl px-4 py-8">
         <div className="mb-5 flex items-center gap-3">
           <span className="grid size-10 place-items-center rounded-full bg-secondary text-primary">
-            <IconBell size={20} strokeWidth={1.5} />
+            <Bell size={20} strokeWidth={1.5} />
           </span>
           <div>
             <h1 className="font-serif text-2xl italic">Notifications</h1>
@@ -144,7 +139,7 @@ function NotificationsPage() {
 
         {!ready || loading ? (
           <div className="grid place-items-center py-16">
-            <IconLoader2 size={20} className="animate-spin opacity-50" />
+            <LoaderCircle size={20} className="animate-spin opacity-50" />
           </div>
         ) : visible.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-border/70 py-16 text-center text-sm text-muted-foreground">

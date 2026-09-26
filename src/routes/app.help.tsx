@@ -6,20 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  IconArrowLeft,
-  IconSearch,
-  IconMessageCircle,
-  IconHelpCircle,
-  IconSparkles,
-  IconShare,
-  IconUsers,
-  IconCreditCard,
-  IconShieldLock,
-  IconPhoto,
-  IconMusic,
-  IconDeviceMobile,
-} from "@tabler/icons-react";
+import { ArrowLeft, Search, MessageCircle, CircleQuestionMark, Sparkles, Share, Users, CreditCard, ShieldCheck, Image, Music, Smartphone } from "lucide-react";
 
 export const Route = createFileRoute("/app/help")({
   head: () => ({
@@ -40,7 +27,7 @@ const CATEGORIES = [
   {
     key: "creation",
     label: "Création & édition",
-    Icon: IconSparkles,
+    Icon: Sparkles,
     faqs: [
       {
         q: "Comment créer mon invitation de mariage ?",
@@ -63,7 +50,7 @@ const CATEGORIES = [
   {
     key: "publication",
     label: "Publication & code promo",
-    Icon: IconPhoto,
+    Icon: Image,
     faqs: [
       {
         q: "Comment publier mon invitation pour la rendre accessible aux invités ?",
@@ -82,7 +69,7 @@ const CATEGORIES = [
   {
     key: "partage",
     label: "Liens & partage",
-    Icon: IconShare,
+    Icon: Share,
     faqs: [
       {
         q: "Comment partager mon invitation avec mes invités ?",
@@ -101,7 +88,7 @@ const CATEGORIES = [
   {
     key: "rsvp",
     label: "Invités & RSVP",
-    Icon: IconUsers,
+    Icon: Users,
     faqs: [
       {
         q: "Comment ajouter des invités à ma liste ?",
@@ -124,7 +111,7 @@ const CATEGORIES = [
   {
     key: "musique",
     label: "Musique & ambiance",
-    Icon: IconMusic,
+    Icon: Music,
     faqs: [
       {
         q: "Comment ajouter une musique d'ambiance à ma page publique ?",
@@ -139,7 +126,7 @@ const CATEGORIES = [
   {
     key: "compte",
     label: "Compte & sécurité",
-    Icon: IconShieldLock,
+    Icon: ShieldCheck,
     faqs: [
       {
         q: "Comment confirmer mon adresse email ?",
@@ -162,7 +149,7 @@ const CATEGORIES = [
   {
     key: "paiement",
     label: "Paiement & facturation",
-    Icon: IconCreditCard,
+    Icon: CreditCard,
     faqs: [
       {
         q: "Quels sont les tarifs de MonInvit ?",
@@ -181,7 +168,7 @@ const CATEGORIES = [
   {
     key: "mobile",
     label: "Mobile & compatibilité",
-    Icon: IconDeviceMobile,
+    Icon: Smartphone,
     faqs: [
       {
         q: "MonInvit fonctionne-t-il sur Android et iPhone ?",
@@ -227,12 +214,12 @@ function HelpPage() {
         to="/dashboard"
         className="mb-5 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground hover:text-foreground"
       >
-        <IconArrowLeft size={14} /> Retour au tableau de bord
+        <ArrowLeft size={14} /> Retour au tableau de bord
       </Link>
 
       <div className="mb-6">
         <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-secondary px-3 py-1 text-[11px] font-medium text-secondary-foreground">
-          <IconHelpCircle size={14} /> Centre d'aide
+          <CircleQuestionMark size={14} /> Centre d'aide
         </div>
         <h1 className="font-serif text-2xl text-foreground">
           Aide & FAQ
@@ -243,7 +230,7 @@ function HelpPage() {
       </div>
 
       <div className="relative mb-6">
-        <IconSearch
+        <Search
           size={18}
           className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
         />
@@ -304,7 +291,7 @@ function HelpPage() {
       <div className="space-y-6">
         {filteredCategories.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-border bg-muted/30 p-8 text-center">
-            <IconHelpCircle
+            <CircleQuestionMark
               size={40}
               strokeWidth={1.5}
               className="mx-auto mb-3 text-muted-foreground"
@@ -319,7 +306,7 @@ function HelpPage() {
               to="/app/support"
               className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground"
             >
-              <IconMessageCircle size={16} />
+              <MessageCircle size={16} />
               Contacter le support
             </Link>
           </div>
@@ -369,7 +356,7 @@ function HelpPage() {
             to="/app/support"
             className="inline-flex items-center justify-center gap-2 rounded-full bg-primary-foreground px-4 py-2 text-[13px] font-medium text-primary"
           >
-            <IconMessageCircle size={16} />
+            <MessageCircle size={16} />
             Ouvrir un ticket
           </Link>
         </div>

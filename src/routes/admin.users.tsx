@@ -2,16 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import {
-  IconBan,
-  IconCheck,
-  IconDotsVertical,
-  IconKey,
-  IconMail,
-  IconShield,
-  IconShieldCheck,
-  IconTrash,
-} from "@tabler/icons-react";
+import { Ban, Check, EllipsisVertical, Key, Mail, Shield, ShieldCheck, Trash } from "lucide-react";
 
 import { toast } from "sonner";
 import {
@@ -172,7 +163,7 @@ function AdminUsers() {
         }
         return u.email_confirmed_at ? (
           <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-1 text-[11px] text-emerald-700">
-            <IconCheck size={12} /> Confirmé
+            <Check size={12} /> Confirmé
           </span>
         ) : (
           <span className="rounded-full bg-amber-50 px-2 py-1 text-[11px] text-amber-700">Non confirmé</span>
@@ -192,7 +183,7 @@ function AdminUsers() {
                 key={r}
                 className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] text-primary"
               >
-                <IconShieldCheck size={11} /> {r}
+                <ShieldCheck size={11} /> {r}
               </span>
             ))}
           </div>
@@ -210,12 +201,12 @@ function AdminUsers() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" aria-label={`Actions pour ${u.email ?? "cet utilisateur"}`}>
-                <IconDotsVertical size={18} />
+                <EllipsisVertical size={18} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuItem onSelect={() => void handleSendReset(u)}>
-                <IconMail /> Envoyer un lien reset
+                <Mail /> Envoyer un lien reset
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={() => {
@@ -223,21 +214,21 @@ function AdminUsers() {
                   setNewPassword("");
                 }}
               >
-                <IconKey /> Définir le mot de passe
+                <Key /> Définir le mot de passe
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onSelect={() => void handleToggleAdmin(u.id, isAdmin)}>
-                <IconShield /> {isAdmin ? "Retirer le rôle admin" : "Promouvoir admin"}
+                <Shield /> {isAdmin ? "Retirer le rôle admin" : "Promouvoir admin"}
               </DropdownMenuItem>
               <DropdownMenuItem onSelect={() => void handleDisabled(u)}>
-                <IconBan /> {u.is_disabled ? "Réactiver le compte" : "Désactiver le compte"}
+                <Ban /> {u.is_disabled ? "Réactiver le compte" : "Désactiver le compte"}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onSelect={() => void handleDelete(u)}
                 className="text-destructive focus:text-destructive"
               >
-                <IconTrash /> Supprimer définitivement
+                <Trash /> Supprimer définitivement
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

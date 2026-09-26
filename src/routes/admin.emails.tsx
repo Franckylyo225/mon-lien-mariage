@@ -2,14 +2,7 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  IconMailCheck,
-  IconMailX,
-  IconClock,
-  IconPlayerPlay,
-  IconSend,
-  IconPencil,
-} from "@tabler/icons-react";
+import { MailCheck, MailX, Clock, Play, Send, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import {
   listEmailLog,
@@ -115,7 +108,7 @@ function AutomationsTab() {
           disabled={runMutation.isPending}
           className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-white px-3 py-1.5 text-[12px] hover:bg-secondary disabled:opacity-50"
         >
-          <IconPlayerPlay size={13} />
+          <Play size={13} />
           {runMutation.isPending ? "Exécution…" : "Exécuter maintenant"}
         </button>
       </div>
@@ -169,13 +162,13 @@ function AutomationsTab() {
 
                       className="inline-flex items-center gap-1 rounded-full border border-border/60 px-3 py-1.5 text-[12px] hover:bg-secondary"
                     >
-                      <IconSend size={13} /> Test
+                      <Send size={13} /> Test
                     </button>
                     <button
                       onClick={() => setEditing(a)}
                       className="inline-flex items-center gap-1 rounded-full border border-border/60 px-3 py-1.5 text-[12px] hover:bg-secondary"
                     >
-                      <IconPencil size={13} /> Modifier
+                      <Pencil size={13} /> Modifier
                     </button>
                     <label className="inline-flex cursor-pointer items-center gap-2 text-[12px]">
                       <input
@@ -418,21 +411,21 @@ function LogTab() {
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <div className="rounded-2xl border border-border/60 bg-white p-4 shadow-sm">
           <div className="mb-1 inline-grid size-8 place-items-center rounded-full bg-emerald-50 text-emerald-700">
-            <IconMailCheck size={16} />
+            <MailCheck size={16} />
           </div>
           <div className="text-xl font-semibold">{totals.sent.toLocaleString("fr-FR")}</div>
           <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Envoyés</div>
         </div>
         <div className="rounded-2xl border border-border/60 bg-white p-4 shadow-sm">
           <div className="mb-1 inline-grid size-8 place-items-center rounded-full bg-rose-50 text-rose-700">
-            <IconMailX size={16} />
+            <MailX size={16} />
           </div>
           <div className="text-xl font-semibold">{totals.failed.toLocaleString("fr-FR")}</div>
           <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Échecs</div>
         </div>
         <div className="rounded-2xl border border-border/60 bg-white p-4 shadow-sm">
           <div className="mb-1 inline-grid size-8 place-items-center rounded-full bg-blue-50 text-blue-700">
-            <IconClock size={16} />
+            <Clock size={16} />
           </div>
           <div className="text-xl font-semibold">{totals.last24.toLocaleString("fr-FR")}</div>
           <div className="text-[11px] uppercase tracking-wider text-muted-foreground">

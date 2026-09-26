@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Drawer } from "vaul";
-import { IconLock } from "@tabler/icons-react";
+import { Lock } from "lucide-react";
 import { useWedding, type EventType } from "@/lib/wedding-store";
 import { cn } from "@/lib/utils";
 import { useVisualViewport } from "@/hooks/use-visual-viewport";
@@ -292,7 +292,7 @@ function LockableInput({
         )}
       />
       {locked ? (
-        <IconLock
+        <Lock
           size={14}
           className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
         />

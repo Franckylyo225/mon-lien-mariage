@@ -1,21 +1,11 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import {
-  IconHome,
-  IconHomeFilled,
-  IconCalendarEvent,
-  IconCalendarFilled,
-  IconUsers,
-  IconUsersGroup,
-  IconEye,
-  IconEyeFilled,
-} from "@tabler/icons-react";
-import type { Icon } from "@tabler/icons-react";
+import { House, Calendar, Users, UsersRound, Eye, type LucideIcon } from "lucide-react";
 
 interface Tab {
   to: string;
   label: string;
-  Icon: Icon;
-  IconActive: Icon;
+  Icon: LucideIcon;
+  IconActive: LucideIcon;
   exact?: boolean;
 }
 
@@ -27,10 +17,10 @@ export function BottomNav({ isPublished }: BottomNavProps) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   const tabs: Tab[] = [
-    { to: "/dashboard", label: "Accueil", Icon: IconHome, IconActive: IconHomeFilled, exact: true },
-    { to: "/dashboard/ceremonies", label: "Programme", Icon: IconCalendarEvent, IconActive: IconCalendarFilled },
-    { to: "/dashboard/guests", label: "Invités", Icon: IconUsers, IconActive: IconUsersGroup },
-    { to: "/dashboard/preview", label: "Ma page", Icon: IconEye, IconActive: IconEyeFilled },
+    { to: "/dashboard", label: "Accueil", Icon: House, IconActive: House, exact: true },
+    { to: "/dashboard/ceremonies", label: "Programme", Icon: Calendar, IconActive: Calendar },
+    { to: "/dashboard/guests", label: "Invités", Icon: Users, IconActive: UsersRound },
+    { to: "/dashboard/preview", label: "Ma page", Icon: Eye, IconActive: Eye },
   ];
 
   return (
@@ -51,6 +41,7 @@ export function BottomNav({ isPublished }: BottomNavProps) {
                 <I
                   size={t.label === "Programme" ? 26 : 22}
                   strokeWidth={active ? 2 : 1.6}
+                  fill={active ? "currentColor" : "none"}
                   className={active ? "text-primary" : "text-muted-foreground"}
                 />
                 <span

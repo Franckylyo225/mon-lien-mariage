@@ -2,17 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import {
-  IconPlus,
-  IconPencil,
-  IconTrash,
-  IconLoader2,
-  IconEye,
-  IconEyeOff,
-  IconStar,
-  IconExternalLink,
-  IconUpload,
-} from "@tabler/icons-react";
+import { Plus, Pencil, Trash, LoaderCircle, Eye, EyeOff, Star, ExternalLink, Upload } from "lucide-react";
 import {
   listBlogPosts,
   upsertBlogPost,
@@ -273,7 +263,7 @@ function AdminBlog() {
           onClick={openNew}
           className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm text-primary-foreground"
         >
-          <IconPlus size={15} /> Nouvel article
+          <Plus size={15} /> Nouvel article
         </button>
       </div>
 
@@ -335,7 +325,7 @@ function AdminBlog() {
                 <tr key={row.id} className="border-b border-border/50 last:border-0">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      {row.is_featured && <IconStar size={14} className="text-primary" />}
+                      {row.is_featured && <Star size={14} className="text-primary" />}
                       <div className="min-w-0">
                         <p className="truncate font-medium">{row.title}</p>
                         <p className="truncate text-[11px] text-muted-foreground">/{row.slug}</p>
@@ -365,7 +355,7 @@ function AdminBlog() {
                           title="Voir l'article"
                           className="rounded-md p-1.5 hover:bg-secondary"
                         >
-                          <IconExternalLink size={15} />
+                          <ExternalLink size={15} />
                         </a>
                       )}
                       <button
@@ -375,11 +365,11 @@ function AdminBlog() {
                         className="rounded-md p-1.5 hover:bg-secondary disabled:opacity-50"
                       >
                         {busyId === row.id ? (
-                          <IconLoader2 size={15} className="animate-spin" />
+                          <LoaderCircle size={15} className="animate-spin" />
                         ) : row.is_published ? (
-                          <IconEyeOff size={15} />
+                          <EyeOff size={15} />
                         ) : (
-                          <IconEye size={15} />
+                          <Eye size={15} />
                         )}
                       </button>
                       <button
@@ -387,7 +377,7 @@ function AdminBlog() {
                         title="Modifier"
                         className="rounded-md p-1.5 hover:bg-secondary"
                       >
-                        <IconPencil size={15} />
+                        <Pencil size={15} />
                       </button>
                       <button
                         onClick={() => handleDelete(row)}
@@ -395,7 +385,7 @@ function AdminBlog() {
                         title="Supprimer"
                         className="rounded-md p-1.5 text-destructive hover:bg-destructive/10 disabled:opacity-50"
                       >
-                        <IconTrash size={15} />
+                        <Trash size={15} />
                       </button>
                     </div>
                   </td>
@@ -505,7 +495,7 @@ function AdminBlog() {
                       className="absolute right-2 top-2 rounded-full bg-white/90 p-1.5 shadow hover:bg-white"
                       title="Retirer l'image"
                     >
-                      <IconTrash size={15} className="text-destructive" />
+                      <Trash size={15} className="text-destructive" />
                     </button>
                   </div>
                 ) : null}
@@ -517,9 +507,9 @@ function AdminBlog() {
                     className="inline-flex items-center gap-1.5 rounded-full border border-border/70 px-3 py-1.5 text-[12px] hover:bg-secondary disabled:opacity-60"
                   >
                     {coverUploading ? (
-                      <IconLoader2 size={14} className="animate-spin" />
+                      <LoaderCircle size={14} className="animate-spin" />
                     ) : (
-                      <IconUpload size={14} />
+                      <Upload size={14} />
                     )}
                     {form.cover_image_url ? "Remplacer l'image" : "Téléverser une image"}
                   </button>
@@ -625,7 +615,7 @@ function AdminBlog() {
                 disabled={saving}
                 className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm text-primary-foreground disabled:opacity-60"
               >
-                {saving && <IconLoader2 size={15} className="animate-spin" />} Enregistrer
+                {saving && <LoaderCircle size={15} className="animate-spin" />} Enregistrer
               </button>
             </div>
           </div>

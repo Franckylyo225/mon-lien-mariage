@@ -2,7 +2,7 @@ import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tan
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import type { User } from "@supabase/supabase-js";
-import { IconArrowLeft, IconLogout } from "@tabler/icons-react";
+import { ArrowLeft, LogOut } from "lucide-react";
 import { checkIsAdmin } from "@/lib/admin.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -99,7 +99,7 @@ function AdminLayout() {
             to="/dashboard"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm text-primary-foreground"
           >
-            <IconArrowLeft size={16} /> Retour au tableau de bord
+            <ArrowLeft size={16} /> Retour au tableau de bord
           </Link>
         </div>
       </div>
@@ -135,7 +135,7 @@ function AdminLayout() {
               title="Se déconnecter"
               className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-white px-3 py-1.5 text-[12px] shadow-sm transition hover:bg-secondary"
             >
-              <IconLogout size={13} /> Sortir
+              <LogOut size={13} /> Sortir
             </button>
           </div>
         </header>

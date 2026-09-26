@@ -2,15 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import {
-  IconTicket,
-  IconInfoCircle,
-  IconMail,
-  IconPlus,
-  IconPencil,
-  IconTrash,
-  IconLoader2,
-} from "@tabler/icons-react";
+import { Ticket, Info, Mail, Plus, Pencil, Trash, LoaderCircle } from "lucide-react";
 import {
   listPromoCodes,
   upsertPromoCode,
@@ -204,7 +196,7 @@ function AdminSettings() {
         <div className="mb-4 flex items-start justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="grid size-8 place-items-center rounded-full bg-amber-50 text-amber-700">
-              <IconTicket size={16} />
+              <Ticket size={16} />
             </span>
             <div>
               <h2 className="font-serif text-lg">Codes promo</h2>
@@ -220,7 +212,7 @@ function AdminSettings() {
               onClick={startCreate}
               className="inline-flex items-center gap-1.5 rounded-full bg-[#4B1528] px-3 py-2 text-[12px] font-medium text-white transition hover:opacity-90"
             >
-              <IconPlus size={14} />
+              <Plus size={14} />
               Nouveau code
             </button>
           ) : null}
@@ -238,7 +230,7 @@ function AdminSettings() {
 
         {loading ? (
           <div className="grid place-items-center py-10 text-sm text-muted-foreground">
-            <IconLoader2 className="animate-spin" size={18} />
+            <LoaderCircle className="animate-spin" size={18} />
           </div>
         ) : rows.length === 0 ? (
           <p className="rounded-xl border border-dashed border-border/60 bg-neutral-50 px-4 py-6 text-center text-sm text-muted-foreground">
@@ -305,14 +297,14 @@ function AdminSettings() {
                             className="grid size-8 place-items-center rounded-full text-muted-foreground transition hover:bg-neutral-100 hover:text-foreground"
                             title="Modifier"
                           >
-                            <IconPencil size={15} />
+                            <Pencil size={15} />
                           </button>
                           <button
                             onClick={() => del(row)}
                             className="grid size-8 place-items-center rounded-full text-red-600 transition hover:bg-red-50"
                             title="Supprimer"
                           >
-                            <IconTrash size={15} />
+                            <Trash size={15} />
                           </button>
                         </div>
                       </td>
@@ -329,7 +321,7 @@ function AdminSettings() {
       <section className="rounded-2xl border border-border/60 bg-white p-5 shadow-sm">
         <div className="mb-3 flex items-center gap-2">
           <span className="grid size-8 place-items-center rounded-full bg-blue-50 text-blue-700">
-            <IconMail size={16} />
+            <Mail size={16} />
           </span>
           <h2 className="font-serif text-lg">Emails transactionnels</h2>
         </div>
@@ -355,7 +347,7 @@ function AdminSettings() {
       <section className="rounded-2xl border border-border/60 bg-white p-5 shadow-sm">
         <div className="mb-3 flex items-center gap-2">
           <span className="grid size-8 place-items-center rounded-full bg-neutral-100 text-neutral-700">
-            <IconInfoCircle size={16} />
+            <Info size={16} />
           </span>
           <h2 className="font-serif text-lg">Tarification</h2>
         </div>
@@ -487,7 +479,7 @@ function PromoForm({
           disabled={busy}
           className="inline-flex items-center gap-1.5 rounded-full bg-[#4B1528] px-4 py-2 text-[12px] font-medium text-white transition hover:opacity-90 disabled:opacity-60"
         >
-          {busy ? <IconLoader2 className="animate-spin" size={14} /> : null}
+          {busy ? <LoaderCircle className="animate-spin" size={14} /> : null}
           {form.id ? "Enregistrer" : "Créer"}
         </button>
       </div>

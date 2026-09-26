@@ -3,22 +3,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  IconArrowLeft,
-  IconUser,
-  IconMail,
-  IconLock,
-  IconDevices,
-  IconBell,
-  IconLanguage,
-  IconLogout,
-  IconTrash,
-  IconChevronRight,
-  IconEye,
-  IconEyeOff,
-  IconBrandGoogle,
-  IconX,
-} from "@tabler/icons-react";
+import { ArrowLeft, User as UserIcon, Mail, Lock, MonitorSmartphone, Bell, Languages, LogOut, Trash, ChevronRight, Eye, EyeOff, LogIn, X } from "lucide-react";
 
 export const Route = createFileRoute("/app/profile")({
   head: () => ({
@@ -138,7 +123,7 @@ function ProfilePage() {
             onClick={() => navigate({ to: "/dashboard" })}
             className="flex items-center gap-1.5 rounded-full px-2 py-1 text-[12px] text-muted-foreground transition active:scale-95"
           >
-            <IconArrowLeft size={16} strokeWidth={1.75} />
+            <ArrowLeft size={16} strokeWidth={1.75} />
             <span>Retour</span>
           </button>
           <h1 className="text-[13px] font-medium tracking-wide text-foreground/80">Mon profil</h1>
@@ -171,7 +156,7 @@ function ProfilePage() {
         <SectionLabel>Informations personnelles</SectionLabel>
         <Card>
           <Row
-            icon={<IconUser size={14} strokeWidth={1.75} />}
+            icon={<UserIcon size={14} strokeWidth={1.75} />}
             label="Prénom"
             value={firstName || "Ajouter"}
             action={
@@ -185,7 +170,7 @@ function ProfilePage() {
           />
           <Divider />
           <Row
-            icon={<IconMail size={14} strokeWidth={1.75} />}
+            icon={<Mail size={14} strokeWidth={1.75} />}
             label="Email"
             value={user?.email ?? "—"}
             action={
@@ -221,14 +206,14 @@ function ProfilePage() {
         <Card>
           {isGoogle ? (
             <Row
-              icon={<IconBrandGoogle size={14} strokeWidth={1.75} />}
+              icon={<LogIn size={14} strokeWidth={1.75} />}
               label="Connexion via Google"
               value={user?.email ?? ""}
             />
           ) : (
             <>
               <Row
-                icon={<IconMail size={14} strokeWidth={1.75} />}
+                icon={<Mail size={14} strokeWidth={1.75} />}
                 label="Email de connexion"
                 value={maskEmail(user?.email)}
                 action={
@@ -242,7 +227,7 @@ function ProfilePage() {
               />
               <Divider />
               <Row
-                icon={<IconLock size={14} strokeWidth={1.75} />}
+                icon={<Lock size={14} strokeWidth={1.75} />}
                 label="Mot de passe"
                 value="••••••••"
                 action={
@@ -258,7 +243,7 @@ function ProfilePage() {
             </>
           )}
           <Row
-            icon={<IconDevices size={14} strokeWidth={1.75} />}
+            icon={<MonitorSmartphone size={14} strokeWidth={1.75} />}
             label="Sessions actives"
             value="Cet appareil"
             action={
@@ -266,7 +251,7 @@ function ProfilePage() {
                 onClick={() => setOpenSheet("sessions")}
                 className="grid size-6 place-items-center text-muted-foreground"
               >
-                <IconChevronRight size={14} />
+                <ChevronRight size={14} />
               </button>
             }
           />
@@ -276,7 +261,7 @@ function ProfilePage() {
         <SectionLabel className="mt-6">Préférences</SectionLabel>
         <Card>
           <Row
-            icon={<IconBell size={14} strokeWidth={1.75} />}
+            icon={<Bell size={14} strokeWidth={1.75} />}
             label="Notifications par email"
             description="Nouvelles confirmations RSVP"
             action={
@@ -294,10 +279,10 @@ function ProfilePage() {
           />
           <Divider />
           <Row
-            icon={<IconLanguage size={14} strokeWidth={1.75} />}
+            icon={<Languages size={14} strokeWidth={1.75} />}
             label="Langue"
             value="Français"
-            action={<IconChevronRight size={14} className="text-muted-foreground" />}
+            action={<ChevronRight size={14} className="text-muted-foreground" />}
           />
         </Card>
 
@@ -305,14 +290,14 @@ function ProfilePage() {
         <SectionLabel className="mt-6">Zone de danger</SectionLabel>
         <div className="overflow-hidden rounded-xl border border-destructive/40">
           <DangerRow
-            icon={<IconLogout size={14} strokeWidth={1.75} />}
+            icon={<LogOut size={14} strokeWidth={1.75} />}
             title="Se déconnecter"
             description="Fermer la session sur cet appareil"
             onClick={() => setOpenSheet("logout")}
           />
           <div className="border-t border-destructive/25" />
           <DangerRow
-            icon={<IconTrash size={14} strokeWidth={1.75} />}
+            icon={<Trash size={14} strokeWidth={1.75} />}
             title="Supprimer mon compte"
             description="Suppression définitive sous 30 jours"
             onClick={() => setOpenSheet("delete")}
@@ -460,7 +445,7 @@ function DangerRow({
         <p className="text-[12px] font-medium text-destructive">{title}</p>
         <p className="text-[10px] text-muted-foreground">{description}</p>
       </div>
-      <IconChevronRight size={14} className="text-destructive/70" />
+      <ChevronRight size={14} className="text-destructive/70" />
     </button>
   );
 }
@@ -534,7 +519,7 @@ function Sheet({
             onClick={onClose}
             className="grid size-8 place-items-center rounded-full text-muted-foreground"
           >
-            <IconX size={18} />
+            <X size={18} />
           </button>
         </div>
         {children}
@@ -598,7 +583,7 @@ function PasswordField({
         onClick={() => setShow((s) => !s)}
         className="absolute right-2 top-1/2 -translate-y-1/2 grid size-8 place-items-center text-muted-foreground"
       >
-        {show ? <IconEyeOff size={16} /> : <IconEye size={16} />}
+        {show ? <EyeOff size={16} /> : <Eye size={16} />}
       </button>
     </div>
   );

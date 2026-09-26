@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { IconX, IconDeviceMobileShare, IconShare2 } from "@tabler/icons-react";
+import { X, Download, Share2 } from "lucide-react";
 import {
   getDeferredPrompt,
   isIos,
@@ -101,9 +101,9 @@ export function InstallPrompt() {
       <div className="relative flex items-start gap-3 rounded-2xl border border-[#C6A15B]/40 bg-background/95 p-3.5 shadow-xl shadow-[#201A1C]/10 backdrop-blur">
         <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-[#E82050]/10 text-[#E82050]">
           {iosMode ? (
-            <IconShare2 size={20} strokeWidth={1.8} />
+            <Share2 size={20} strokeWidth={1.8} />
           ) : (
-            <IconDeviceMobileShare size={20} strokeWidth={1.8} />
+            <Download size={20} strokeWidth={1.8} />
           )}
         </span>
 
@@ -136,7 +136,7 @@ export function InstallPrompt() {
           aria-label="Fermer"
           className="absolute right-2 top-2 grid size-7 place-items-center rounded-full text-foreground/50 transition active:scale-95"
         >
-          <IconX size={15} strokeWidth={1.8} />
+          <X size={15} strokeWidth={1.8} />
         </button>
       </div>
     </div>
