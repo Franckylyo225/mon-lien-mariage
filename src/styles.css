@@ -14,13 +14,21 @@
 @import "@fontsource/inter/600.css";
 @import "@fontsource/jetbrains-mono/400.css";
 @import "@fontsource/jetbrains-mono/500.css";
+@import "@fontsource/quicksand/400.css";
+@import "@fontsource/quicksand/500.css";
+@import "@fontsource/quicksand/600.css";
+@import "@fontsource/quicksand/700.css";
+@import "@fontsource/nunito-sans/400.css";
+@import "@fontsource/nunito-sans/600.css";
+@import "@fontsource/nunito-sans/700.css";
+@import "@fontsource/nunito-sans/400-italic.css";
+@import "@fontsource/playfair-display/700.css";
 /*
- * Quicksand, Nunito Sans, Amiri, Marcellus, Pinyon Script and Special Elite
- * are only used by a minority of invitation themes / the custom font picker,
- * never by the marketing site or dashboard chrome. Loading all their weights
- * globally added ~60KB of unused @font-face rules to every page (homepage,
- * login, blog…). They're now loaded on demand — see useWeddingFonts and the
- * templates that hardcode one of them (papier-kraft, RoyalMonogram).
+ * Amiri, Marcellus, Pinyon Script and Special Elite are only used by a few
+ * invitation themes, never by the marketing site or dashboard chrome: they're
+ * loaded on demand (see useWeddingFonts and RoyalMonogram). Quicksand and
+ * Nunito Sans stay global: the brand utilities (.kicker, .btn-framboise,
+ * --font-brand-ui / --font-brand-body) use them on the marketing site.
  */
 
 /* Invitation typography is resolved per wedding through semantic CSS variables. */
@@ -39,6 +47,8 @@
   --framboise-light: #FBDDE5;
   --champagne: #C6A15B;
   --champagne-light: #F1E3C6;
+  /* Gold dark enough for small text on white (champagne alone is ~2.4:1). */
+  --champagne-deep: color-mix(in oklab, var(--champagne) 68%, black);
   --encre: #201A1C;
   --encre-doux: #5A4F52;
   --encre-leger: #7A6D70;
@@ -67,6 +77,7 @@
   --color-framboise-light: var(--framboise-light);
   --color-champagne: var(--champagne);
   --color-champagne-light: var(--champagne-light);
+  --color-champagne-deep: var(--champagne-deep);
   --color-encre: var(--encre);
   --color-encre-doux: var(--encre-doux);
   --color-encre-leger: var(--encre-leger);
@@ -124,6 +135,48 @@
   transition: border-color 0.2s ease;
   &:hover {
     border-color: var(--framboise);
+  }
+}
+
+/* ---- Organizer space (dashboard) ---- */
+@utility page-title {
+  font-family: var(--font-produit);
+  font-weight: 700;
+  font-style: normal;
+  font-size: 34px;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+@utility page-kicker {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--champagne-deep);
+}
+
+/* Primary call to action: theme accent to a darker shade, soft colored shadow. */
+@utility btn-accent-gradient {
+  background-image: linear-gradient(135deg, var(--primary), color-mix(in oklab, var(--primary) 70%, black));
+  color: var(--primary-foreground);
+  box-shadow:
+    0 6px 16px -6px color-mix(in oklab, var(--primary) 55%, transparent),
+    inset 0 1px 0 rgb(255 255 255 / 0.18);
+  transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  &:hover {
+    filter: brightness(1.07);
+    transform: translateY(-1px);
+  }
+  &:active {
+    transform: translateY(0);
+  }
+  &:disabled {
+    opacity: 0.55;
+    box-shadow: none;
+    transform: none;
+    filter: none;
   }
 }
 
@@ -187,6 +240,9 @@
   --font-display: "Cormorant Garamond", "Playfair Display", ui-serif, Georgia, serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  /* Organizer space: product titles and UI text. */
+  --font-produit: "Playfair Display", ui-serif, Georgia, serif;
+  --font-ui: "Inter", ui-sans-serif, system-ui, sans-serif;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -348,7 +404,7 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: var(--font-sans);
+    font-family: var(--font-ui);
     -webkit-font-smoothing: antialiased;
   }
 

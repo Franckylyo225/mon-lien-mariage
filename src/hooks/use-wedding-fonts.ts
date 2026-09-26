@@ -18,20 +18,6 @@ const LOCAL_FONT_IMPORTS: Record<string, () => Promise<unknown>> = {
       import("@fontsource/amiri/400-italic.css"),
       import("@fontsource/amiri/700.css"),
     ]),
-  "Nunito Sans": () =>
-    Promise.all([
-      import("@fontsource/nunito-sans/400.css"),
-      import("@fontsource/nunito-sans/600.css"),
-      import("@fontsource/nunito-sans/700.css"),
-      import("@fontsource/nunito-sans/400-italic.css"),
-    ]),
-  Quicksand: () =>
-    Promise.all([
-      import("@fontsource/quicksand/400.css"),
-      import("@fontsource/quicksand/500.css"),
-      import("@fontsource/quicksand/600.css"),
-      import("@fontsource/quicksand/700.css"),
-    ]),
   "Special Elite": () => import("@fontsource/special-elite/400.css"),
 };
 
