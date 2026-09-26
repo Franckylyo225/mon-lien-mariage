@@ -18,6 +18,7 @@ export const Route = createFileRoute("/guestbook/print/$id")({
 interface Message {
   id: string;
   author_name: string;
+  author_relation?: string | null;
   message: string;
   created_at: string;
 }
@@ -87,10 +88,8 @@ function PrintPage() {
       </div>
 
       <header className="text-center">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-60">
-          Livre d'or
-        </p>
-        <h1 className="mt-3 font-serif text-3xl italic">{names}</h1>
+        <p className="page-kicker">Livre d'or</p>
+        <h1 className="page-title mt-3 text-[36px]">{names}</h1>
         <div className="mx-auto mt-4 h-px w-16 bg-black/40" />
         <p className="mt-4 text-[11px] opacity-60">
           {messages.length} message{messages.length > 1 ? "s" : ""} reçu
@@ -105,7 +104,14 @@ function PrintPage() {
             className="break-inside-avoid border-b border-black/10 pb-5"
           >
             <div className="flex items-baseline justify-between gap-3">
-              <p className="font-serif text-[16px] italic">{m.author_name}</p>
+              <p className="text-[15px] font-bold">
+                {m.author_name}
+                {m.author_relation?.trim() ? (
+                  <span className="ml-2 text-[12px] font-medium text-champagne-deep">
+                    {m.author_relation.trim()}
+                  </span>
+                ) : null}
+              </p>
               <span className="text-[10px] uppercase tracking-wider opacity-50">
                 {formatDate(m.created_at)}
               </span>
