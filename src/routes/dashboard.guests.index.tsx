@@ -1,9 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { Download, Pencil, Settings2, Trash2 } from "lucide-react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { CircleCheck, Download, MessageCircle, Plus, Upload, Users } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import whatsappIconUrl from "@/assets/whatsapp-phone.png";
 import { useWedding, isPastEvent, confirmedHeadcount, type RSVPStatus } from "@/lib/wedding-store";
 import { guestTypeMeta, guestTypeOrder, type GuestType } from "@/lib/guest-meta";
 import { useAllGuests } from "@/hooks/use-all-guests";
@@ -11,17 +10,16 @@ import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import {
-  DEFAULT_WHATSAPP_INVITE_TEMPLATE,
-  createWhatsAppInviteUrl,
-  firstName,
-  formatEventDate,
-  renderWhatsAppInvite,
-  buildGuestInviteUrl,
-} from "@/lib/whatsapp-invite";
+import { GuestAvatar, StatusBadge, globalRsvp } from "@/components/dashboard/guest-ui";
+import { IconBadge, PageHeader, SettingRow, StatusPill } from "@/components/dashboard/premium";
+import { GuestSheet } from "@/components/dashboard/GuestSheet";
+import { GuestQuickAddSheet } from "@/components/dashboard/GuestQuickAddSheet";
+import { GuestImportSheet } from "@/components/dashboard/GuestImportSheet";
+import { DEFAULT_WHATSAPP_INVITE_TEMPLATE } from "@/lib/whatsapp-invite";
 
 export const Route = createFileRoute("/dashboard/guests/")({
+  validateSearch: (search: Record<string, unknown>): { add?: boolean } =>
+    search.add === true || search.add === "1" || search.add === "true" ? { add: true } : {},
   head: () => ({
     meta: [
       { title: "Mes invités — MonInvit.com" },
@@ -42,6 +40,17 @@ function GuestsPage() {
   const [query, setQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState<GuestType | "all">("all");
   const [ceremonyFilter, setCeremonyFilter] = useState<string>("all");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [sheet, setSheet] = useState<"add" | "import" | null>(null);
+  const navigate = useNavigate();
+  const { add } = Route.useSearch();
+
+  // /dashboard/guests?add=1 (the floating button, old links) opens the quick-add sheet once.
+  useEffect(() => {
+    if (!add) return;
+    if (!isPast) setSheet("add");
+    void navigate({ to: "/dashboard/guests", search: {}, replace: true });
+  }, [add, isPast, navigate]);
 
 
 
@@ -53,6 +62,8 @@ function GuestsPage() {
       return true;
     });
   }, [allGuests, query, typeFilter, ceremonyFilter]);
+
+  const selectedGuest = selectedId ? (allGuests.find((g) => g.id === selectedId) ?? null) : null;
 
   const totalCeremonies = new Set(allGuests.flatMap((g) => g.ceremonyIds)).size;
 
@@ -139,35 +150,46 @@ function GuestsPage() {
 
 
   return (
-    <div className="space-y-4">
-      <header className="flex items-center justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-xs text-muted-foreground">
-            {allGuests.length} invités · {totalCeremonies} étapes couvertes
-          </p>
-          <h1 className="mt-1 font-serif text-3xl italic">Mes invités</h1>
-        </div>
-        <div className="flex shrink-0 items-center gap-2">
-          <button
-            type="button"
-            onClick={() => void exportXlsx()}
-            disabled={filtered.length === 0}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-2.5 text-sm font-medium hover:bg-secondary/40 disabled:cursor-not-allowed disabled:opacity-50"
-            title="Télécharger la liste au format Excel"
-          >
-            <Download className="size-4" />
-            <span className="hidden sm:inline">Excel</span>
-          </button>
-          {isPast ? null : (
-            <Link
-              to="/dashboard/guests/new"
-              className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground hover:opacity-90"
+    <div className="space-y-6 pt-2">
+      <PageHeader
+        title="Mes invités"
+        subtitle={`${allGuests.length} invité${allGuests.length > 1 ? "s" : ""} · ${totalCeremonies} étape${totalCeremonies > 1 ? "s" : ""} couverte${totalCeremonies > 1 ? "s" : ""}`}
+        actions={
+          <>
+            <button
+              type="button"
+              onClick={() => void exportXlsx()}
+              disabled={filtered.length === 0}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3.5 py-2.5 text-sm font-medium transition hover:bg-secondary/40 disabled:cursor-not-allowed disabled:opacity-50"
+              title="Télécharger la liste au format Excel"
             >
-              + Ajouter
-            </Link>
-          )}
-        </div>
-      </header>
+              <Download className="size-4" />
+              Excel
+            </button>
+            {isPast ? null : (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setSheet("import")}
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3.5 py-2.5 text-sm font-medium transition hover:bg-secondary/40"
+                  title="Importer une liste d'invités"
+                >
+                  <Upload className="size-4" />
+                  Importer
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSheet("add")}
+                  className="btn-accent-gradient inline-flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold"
+                >
+                  <Plus className="size-4" />
+                  Ajouter
+                </button>
+              </>
+            )}
+          </>
+        }
+      />
 
       {isPast ? (
         <p className="rounded-xl border border-amber-200 bg-amber-50/70 px-3.5 py-2.5 text-[12px] text-amber-900">
@@ -182,42 +204,45 @@ function GuestsPage() {
           behavior={couple.rsvpQuotaBehavior ?? "message"}
           confirmedCount={confirmedCount}
           template={couple.whatsappInviteTemplate ?? DEFAULT_WHATSAPP_INVITE_TEMPLATE}
+          templateSaved={!!couple.whatsappInviteTemplate?.trim()}
           onSave={(patch) => void updateCouple(patch)}
         />
       )}
 
-      <input
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder="Rechercher un invité…"
-        className="w-full rounded-lg border border-input bg-card px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring"
-      />
+      <div className="space-y-3">
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Rechercher un invité…"
+          className="w-full rounded-xl border border-input bg-card px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-ring"
+        />
 
-      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <FilterChip active={typeFilter === "all"} onClick={() => setTypeFilter("all")}>
-          Tous les types
-        </FilterChip>
-        {guestTypeOrder.map((t) => (
-          <FilterChip key={t} active={typeFilter === t} onClick={() => setTypeFilter(t)}>
-            {guestTypeMeta[t].short}
+        <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <FilterChip active={typeFilter === "all"} onClick={() => setTypeFilter("all")}>
+            Tous les types
           </FilterChip>
-        ))}
+          {guestTypeOrder.map((t) => (
+            <FilterChip key={t} active={typeFilter === t} onClick={() => setTypeFilter(t)}>
+              {guestTypeMeta[t].short}
+            </FilterChip>
+          ))}
+        </div>
+
+        <select
+          value={ceremonyFilter}
+          onChange={(e) => setCeremonyFilter(e.target.value)}
+          className="w-full rounded-lg border border-input bg-card px-4 py-2.5 text-sm"
+        >
+          <option value="all">Toutes les étapes</option>
+          {ceremonies.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name || c.label}
+            </option>
+          ))}
+        </select>
       </div>
 
-      <select
-        value={ceremonyFilter}
-        onChange={(e) => setCeremonyFilter(e.target.value)}
-        className="w-full rounded-lg border border-input bg-card px-4 py-2.5 text-sm"
-      >
-        <option value="all">Toutes les étapes</option>
-        {ceremonies.map((c) => (
-          <option key={c.id} value={c.id}>
-            {c.name || c.label}
-          </option>
-        ))}
-      </select>
-
-      <ul className="divide-y divide-border rounded-xl border border-border bg-card">
+      <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
         {loading && allGuests.length === 0 ? (
           Array.from({ length: 4 }).map((_, i) => (
             <li key={i} className="flex items-center gap-3 p-4">
@@ -229,12 +254,35 @@ function GuestsPage() {
             </li>
           ))
         ) : allGuests.length === 0 ? (
-          <li className="flex flex-col items-center gap-4 p-8 text-center">
-            <p className="text-sm text-muted-foreground">Vous n'avez pas encore d'invité</p>
+          <li className="flex flex-col items-center gap-4 px-6 py-12 text-center">
+            <IconBadge className="size-14">
+              <Users className="size-6" strokeWidth={1.75} />
+            </IconBadge>
+            <div>
+              <p className="font-produit text-lg font-bold">Vous n'avez pas encore d'invité</p>
+              <p className="mx-auto mt-1 max-w-xs text-[13px] text-muted-foreground">
+                Ajoutez vos premiers invités un par un, ou importez toute votre liste d'un coup.
+              </p>
+            </div>
             {isPast ? null : (
-              <Button asChild>
-                <Link to="/dashboard/guests/new">+ Ajouter votre premier invité</Link>
-              </Button>
+              <div className="flex flex-wrap justify-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSheet("add")}
+                  className="btn-accent-gradient inline-flex items-center gap-1.5 rounded-xl px-5 py-2.5 text-sm font-semibold"
+                >
+                  <Plus className="size-4" />
+                  Ajouter votre premier invité
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSheet("import")}
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-4 py-2.5 text-sm font-medium transition hover:bg-secondary/40"
+                >
+                  <Upload className="size-4" />
+                  Importer une liste
+                </button>
+              </div>
             )}
           </li>
         ) : filtered.length === 0 ? (
@@ -243,158 +291,23 @@ function GuestsPage() {
           </li>
         ) : (
           filtered.map((g) => {
-            const meta = guestTypeMeta[g.guestType];
-            const initials = g.name
-              .split(" ")
-              .slice(0, 2)
-              .map((s) => s[0])
-              .join("");
             const global = globalRsvp(g.rsvps.map((r) => r.status));
-            const publicUrl = couple.slug ? buildGuestInviteUrl(couple.slug, g.inviteToken) : "";
-            const message = renderWhatsAppInvite(
-              couple.whatsappInviteTemplate ?? DEFAULT_WHATSAPP_INVITE_TEMPLATE,
-              {
-                prenom: firstName(g.name),
-                noms_maries: `${couple.brideName} & ${couple.groomName}`,
-                date: formatEventDate(couple.weddingDate),
-                lien_rsvp: publicUrl,
-              },
-            );
-            const whatsappUrl = publicUrl ? createWhatsAppInviteUrl(g.phone, message) : null;
-            const selfSignup = g.source === "auto" || g.source === "qr_signup";
-            const showWhatsapp = !selfSignup && global === "en_attente";
-            const unavailableReason = !g.phone
-              ? "Ajoutez un numéro pour activer l’envoi WhatsApp"
-              : !publicUrl
-                ? "Publiez votre page pour activer l’envoi WhatsApp"
-                : "Vérifiez le numéro pour activer l’envoi WhatsApp";
             return (
-              <li key={g.id} className="p-4">
-                <div className="flex items-start gap-3">
-                  <span
-                    className="grid size-11 shrink-0 place-items-center rounded-full font-medium"
-                    style={{ backgroundColor: meta.bg, color: meta.fg }}
-                  >
-                    {initials.toUpperCase()}
+              <li key={g.id}>
+                <button
+                  type="button"
+                  onClick={() => setSelectedId(g.id)}
+                  className="flex w-full items-center gap-3 px-4 py-3.5 text-left transition hover:bg-secondary/30 active:bg-secondary/50"
+                >
+                  <GuestAvatar name={g.name} guestType={g.guestType} />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-medium">{g.name}</span>
+                    <span className="block truncate text-xs text-muted-foreground">
+                      {g.phone || "Pas de numéro"}
+                    </span>
                   </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <p className="truncate font-medium">{g.name}</p>
-                      <span
-                        className={
-                          "size-2 shrink-0 rounded-full " +
-                          (global === "confirmé"
-                            ? "bg-primary"
-                            : global === "décliné"
-                              ? "bg-muted-foreground"
-                              : "bg-amber-500")
-                        }
-                      />
-                    </div>
-                    {g.phone ? (
-                      <p className="text-xs text-muted-foreground">{g.phone}</p>
-                    ) : null}
-                    <div className="mt-2 flex flex-wrap gap-1.5">
-                      <span
-                        className="rounded-full px-2 py-0.5 text-[10px] font-medium"
-                        style={{ backgroundColor: meta.bg, color: meta.fg }}
-                      >
-                        {meta.short}
-                      </span>
-                      <span className="rounded-full border border-border px-2 py-0.5 text-[10px] text-muted-foreground">
-                        {selfSignup ? "Auto-inscrit" : "Ajouté manuellement"}
-                      </span>
-                      <span className="rounded-full border border-border px-2 py-0.5 text-[10px] text-muted-foreground">
-                        {global === "confirmé"
-                          ? "Confirmé"
-                          : global === "décliné"
-                            ? "Décliné"
-                            : "En attente"}
-                      </span>
-                      {g.ceremonyIds.slice(0, 3).map((cid) => {
-                        const c = ceremonies.find((x) => x.id === cid);
-                        if (!c) return null;
-                        return (
-                          <span
-                            key={cid}
-                            className="rounded-full border border-border px-2 py-0.5 text-[10px] text-muted-foreground"
-                          >
-                            {c.label}
-                          </span>
-                        );
-                      })}
-                      {g.ceremonyIds.length > 3 ? (
-                        <span className="text-[10px] text-muted-foreground">
-                          +{g.ceremonyIds.length - 3}
-                        </span>
-                      ) : null}
-                    </div>
-                  </div>
-                  {showWhatsapp ? (
-                  <TooltipProvider delayDuration={200}>
-                    {whatsappUrl ? (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="bg-whatsapp hover:bg-whatsapp/90 border-0 shadow-sm"
-                            asChild
-                          >
-                            <a
-                              href={whatsappUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              aria-label={`Envoyer l'invitation WhatsApp à ${g.name}`}
-                            >
-                              <img
-                                src={whatsappIconUrl}
-                                alt="WhatsApp"
-                                className="h-5 w-5 object-contain"
-                              />
-                            </a>
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Envoyer par WhatsApp</TooltipContent>
-                      </Tooltip>
-                    ) : (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <span className="inline-flex" tabIndex={0}>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              disabled
-                              className="bg-whatsapp/60 border-0"
-                              aria-label={unavailableReason}
-                            >
-                              <img
-                                src={whatsappIconUrl}
-                                alt="WhatsApp"
-                                className="h-5 w-5 object-contain opacity-50"
-                              />
-                            </Button>
-                          </span>
-                        </TooltipTrigger>
-                        <TooltipContent>{unavailableReason}</TooltipContent>
-                      </Tooltip>
-                    )}
-                  </TooltipProvider>
-                  ) : null}
-                  {(rsvpIdsByGuest[g.id]?.length ?? 0) > 0 ? (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="text-muted-foreground hover:text-destructive"
-                      aria-label={`Supprimer la confirmation de ${g.name}`}
-                      onClick={() => setRsvpToDelete({ id: g.id, name: g.name })}
-                    >
-                      <Trash2 className="size-4" />
-                    </Button>
-                  ) : null}
-                </div>
+                  <StatusBadge status={global} />
+                </button>
               </li>
             );
           })
@@ -406,6 +319,30 @@ function GuestsPage() {
         onExport={() => void exportXlsx()}
         onConfirm={deleteAllRsvps}
       />
+
+      {selectedGuest ? (
+        <GuestSheet
+          key={selectedGuest.id}
+          guest={selectedGuest}
+          fromPublicRsvp={selectedGuest.id.startsWith("rsvp-")}
+          readOnly={isPast}
+          onClose={() => setSelectedId(null)}
+          onDeleteRsvps={() => {
+            setSelectedId(null);
+            setRsvpToDelete({ id: selectedGuest.id, name: selectedGuest.name });
+          }}
+        />
+      ) : null}
+      {sheet === "add" ? (
+        <GuestQuickAddSheet
+          existing={allGuests}
+          onClose={() => setSheet(null)}
+          onImport={() => setSheet("import")}
+        />
+      ) : null}
+      {sheet === "import" ? (
+        <GuestImportSheet existing={allGuests} onClose={() => setSheet(null)} />
+      ) : null}
 
       <ConfirmDialog
         open={rsvpToDelete !== null}
@@ -517,6 +454,7 @@ function InvitationSettings({
   behavior,
   confirmedCount,
   template,
+  templateSaved,
   onSave,
 }: {
   enabled: boolean;
@@ -525,6 +463,7 @@ function InvitationSettings({
   behavior: "message" | "hide";
   confirmedCount: number;
   template: string;
+  templateSaved: boolean;
   onSave: (patch: {
     rsvpEnabled?: boolean;
     rsvpEverEnabled?: boolean;
@@ -565,49 +504,48 @@ function InvitationSettings({
     });
     setSheetOpen(false);
   };
-  const rsvpSummary = !enabled
-    ? "RSVP désactivé"
-    : mode === "quota"
-      ? `RSVP actif · ${confirmedCount}/${quota} inscrits`
-      : "RSVP actif · Sans limite";
+  const rsvpDescription = enabled
+    ? mode === "quota"
+      ? `Actif · ${confirmedCount}/${quota} inscrits`
+      : "Actif · sans limite"
+    : everEnabled
+      ? "Désactivé pour le moment"
+      : "À configurer · limite facultative";
+  const allReady = enabled && templateSaved;
 
   return (
-    <section className="rounded-lg border border-border bg-card p-3.5">
-      {everEnabled ? (
-        <button type="button" onClick={openSheet} className="flex w-full items-center gap-3 text-left">
-          <Settings2 className="size-5 shrink-0 text-primary" />
-          <div className="min-w-0 flex-1">
-            <h2 className="text-sm font-medium">Réglages de l'invitation</h2>
-            <p className="truncate text-xs text-muted-foreground">
-              {rsvpSummary} · Message WhatsApp personnalisé
-            </p>
-          </div>
-          <Pencil className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-          <span className="sr-only">Modifier les réglages</span>
-        </button>
-      ) : (
-        <div className="space-y-3">
-          <div>
-            <h2 className="font-medium">Réglages de l'invitation</h2>
-            <p className="mt-0.5 text-xs text-muted-foreground">
-              Activez les confirmations et préparez le message à envoyer à vos invités.
-            </p>
-          </div>
-          <div className="grid gap-2 sm:grid-cols-2">
-            <div className="rounded-lg bg-secondary/30 p-3">
-              <p className="text-sm font-medium">Liste RSVP</p>
-              <p className="mt-0.5 text-xs text-muted-foreground">À configurer · limite facultative</p>
-            </div>
-            <div className="rounded-lg bg-secondary/30 p-3">
-              <p className="text-sm font-medium">Message WhatsApp</p>
-              <p className="mt-0.5 text-xs text-muted-foreground">Modèle personnalisable</p>
-            </div>
-          </div>
-          <Button type="button" className="w-full" onClick={openSheet}>
-            Configurer l'invitation
-          </Button>
-        </div>
-      )}
+    <section className="space-y-3.5">
+      <div>
+        <h2 className="text-[15px] font-semibold">Réglages de l'invitation</h2>
+        <p className="mt-0.5 text-[12px] text-muted-foreground">
+          Activez les confirmations et préparez le message à envoyer à vos invités.
+        </p>
+      </div>
+      <div className="space-y-2.5">
+        <SettingRow
+          icon={<CircleCheck className="size-5" />}
+          title="Liste RSVP"
+          description={rsvpDescription}
+          trailing={<StatusPill ready={enabled} />}
+        />
+        <SettingRow
+          icon={<MessageCircle className="size-5" />}
+          title="Message WhatsApp"
+          description={templateSaved ? "Message personnalisé" : "Modèle par défaut · personnalisable"}
+          trailing={<StatusPill ready={templateSaved} />}
+        />
+      </div>
+      <button
+        type="button"
+        onClick={openSheet}
+        className={
+          allReady
+            ? "w-full rounded-xl border border-border bg-card py-3 text-sm font-semibold transition hover:bg-secondary/40"
+            : "btn-accent-gradient w-full rounded-xl py-3 text-sm font-semibold"
+        }
+      >
+        {allReady ? "Modifier les réglages" : "Configurer l'invitation"}
+      </button>
 
       <BottomSheet open={sheetOpen} onOpenChange={setSheetOpen} title="Réglages de l'invitation" actionLabel="Fermer">
         <div className="space-y-6">
@@ -738,9 +676,3 @@ function FilterChip({
   );
 }
 
-function globalRsvp(all: RSVPStatus[]): RSVPStatus {
-  if (all.length === 0) return "en_attente";
-  if (all.every((s) => s === "confirmé")) return "confirmé";
-  if (all.every((s) => s === "décliné")) return "décliné";
-  return "en_attente";
-}

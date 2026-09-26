@@ -1,25 +1,37 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
+import { CalendarPlus, Copy, ListChecks, MapPin, Plus } from "lucide-react";
+import { toast } from "sonner";
 import {
   useWedding,
-  formatShortDate,
+  formatFrenchDate,
   guestStats,
+  daysUntil,
   ceremonyTimeStart,
   ceremonyVenue,
   isPastEvent,
   type Ceremony,
-  type CeremonyType,
-  type ProgramItem,
-  programItemMapsHref,
 } from "@/lib/wedding-store";
+import { useAllGuests } from "@/hooks/use-all-guests";
+import { CeremonySheet } from "@/components/dashboard/CeremonySheet";
+import { Skeleton } from "@/components/ui/skeleton";
+import { IconBadge, PageHeader } from "@/components/dashboard/premium";
 
 export const Route = createFileRoute("/dashboard/ceremonies")({
+  validateSearch: (search: Record<string, unknown>): { edit?: string } =>
+    typeof search.edit === "string" && search.edit ? { edit: search.edit } : {},
   head: () => ({
     meta: [
       { title: "Programme — MonInvit.com" },
-      { name: "description", content: "Organisez les étapes et horaires de votre mariage sur MonInvit." },
+      {
+        name: "description",
+        content: "Organisez les étapes et horaires de votre mariage sur MonInvit.",
+      },
       { property: "og:title", content: "Programme — MonInvit.com" },
-      { property: "og:description", content: "Organisez les étapes et horaires de votre mariage sur MonInvit." },
+      {
+        property: "og:description",
+        content: "Organisez les étapes et horaires de votre mariage sur MonInvit.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -27,46 +39,82 @@ export const Route = createFileRoute("/dashboard/ceremonies")({
   component: CeremoniesPage,
 });
 
-const typeOptions: { value: CeremonyType; label: string }[] = [
-  { value: "dot", label: "Mariage traditionnel" },
-  { value: "civil", label: "Mariage civil" },
-  { value: "religieux", label: "Mariage religieux" },
-  { value: "benediction", label: "Bénédiction nuptiale" },
-  { value: "traditionnel", label: "Étape traditionnelle" },
-  { value: "dejeuner", label: "Déjeuner" },
-  { value: "diner", label: "Dîner / Réception" },
-  { value: "anniversaire", label: "Anniversaire de mariage" },
-  { value: "autre", label: "Autre" },
-];
-
-
-
+const newId = () => Math.random().toString(36).slice(2, 9);
 
 function CeremoniesPage() {
-  const { ceremonies, addCeremony, updateCeremony, removeCeremony, guests, couple } =
-    useWedding();
+  const { ceremonies, addCeremony, updateCeremony, removeCeremony, couple } = useWedding();
+  const { allGuests, loading: guestsLoading } = useAllGuests();
   const isPast = isPastEvent(couple.weddingDate);
+  const navigate = useNavigate();
+  const { edit } = Route.useSearch();
   const [editing, setEditing] = useState<Ceremony | null>(null);
   const [creating, setCreating] = useState(false);
 
+  // Deep link (/dashboard/ceremonies?edit=<id>): open the sheet once, then clean the URL.
+  useEffect(() => {
+    if (!edit) return;
+    const target = ceremonies.find((c) => c.id === edit);
+    if (target && !isPast) setEditing(target);
+    void navigate({ to: "/dashboard/ceremonies", search: {}, replace: true });
+  }, [edit, ceremonies, isPast, navigate]);
+
+  // The store keeps steps in chronological order; group them by day for the timeline.
+  const days = useMemo(() => {
+    const map = new Map<string, Ceremony[]>();
+    for (const c of ceremonies) {
+      const key = c.date || "";
+      const list = map.get(key);
+      if (list) list.push(c);
+      else map.set(key, [c]);
+    }
+    return Array.from(map.entries());
+  }, [ceremonies]);
+
+  const duplicate = async (c: Ceremony) => {
+    const copy = await addCeremony({
+      type: c.type,
+      label: c.label,
+      name: `${c.name} (copie)`,
+      date: c.date,
+      timeStart: c.timeStart,
+      timeEnd: c.timeEnd,
+      venue: c.venue,
+      mapsUrl: c.mapsUrl,
+      dressCode: c.dressCode,
+      color: c.color,
+      capacity: c.capacity,
+      notes: c.notes,
+      program: c.program?.map((p) => ({ ...p, id: newId() })),
+      status: c.status,
+    });
+    toast.success("Étape dupliquée — ajustez la date et l'heure.");
+    setEditing(copy);
+  };
+
+  const firstDate = ceremonies.find((c) => c.date)?.date;
+  const summary =
+    ceremonies.length === 0
+      ? "Aucune étape"
+      : `${ceremonies.length} étape${ceremonies.length > 1 ? "s" : ""}${firstDate ? ` · dès le ${formatFrenchDate(firstDate).split(" ").slice(1, 3).join(" ")}` : ""}`;
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-end justify-between">
-        <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.25em] opacity-50">
-            {ceremonies.length} étapes
-          </p>
-          <h1 className="mt-1 font-serif text-3xl italic">Vos étapes</h1>
-        </div>
-        {isPast ? null : (
-          <button
-            onClick={() => setCreating(true)}
-            className="rounded-full bg-primary px-4 py-2.5 font-mono text-[10px] uppercase tracking-[0.2em] text-primary-foreground shadow-md shadow-primary/20 transition hover:opacity-90"
-          >
-            + Étape
-          </button>
-        )}
-      </div>
+    <div className="space-y-6 pt-2">
+      <PageHeader
+        title="Vos étapes"
+        subtitle={summary}
+        actions={
+          isPast || ceremonies.length === 0 ? null : (
+            <button
+              type="button"
+              onClick={() => setCreating(true)}
+              className="btn-accent-gradient inline-flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold"
+            >
+              <Plus className="size-4" />
+              Étape
+            </button>
+          )
+        }
+      />
 
       {isPast ? (
         <p className="rounded-xl border border-amber-200 bg-amber-50/70 px-3.5 py-2.5 text-[12px] text-amber-900">
@@ -74,76 +122,74 @@ function CeremoniesPage() {
         </p>
       ) : null}
 
-      <ul className="space-y-3">
-        {ceremonies.map((c) => {
-          const s = guestStats(guests, c.id);
-          return (
-            <li key={c.id} className="rounded-3xl border border-border bg-card p-5">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-                <div className="flex flex-1 items-start gap-3">
-                  <span
-                    className="mt-1.5 size-3 shrink-0 rounded-full"
-                    style={{ backgroundColor: c.color }}
+      {ceremonies.length === 0 ? (
+        <div className="flex flex-col items-center gap-4 rounded-2xl border border-border bg-card px-6 py-12 text-center">
+          <IconBadge className="size-14">
+            <CalendarPlus className="size-6" strokeWidth={1.75} />
+          </IconBadge>
+          <div>
+            <p className="font-produit text-lg font-bold">Construisez votre programme</p>
+            <p className="mx-auto mt-1 max-w-xs text-[13px] text-muted-foreground">
+              Mariage civil, dot, réception… choisissez un type et l'étape est prête en deux taps.
+            </p>
+          </div>
+          {isPast ? null : (
+            <button
+              type="button"
+              onClick={() => setCreating(true)}
+              className="btn-accent-gradient inline-flex items-center gap-1.5 rounded-xl px-5 py-2.5 text-sm font-semibold"
+            >
+              <Plus className="size-4" />
+              Ajouter ma première étape
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {days.map(([date, items]) => (
+            <section key={date || "undated"}>
+              <DayHeading date={date} />
+              <ol className="ml-1.5 border-l border-border">
+                {items.map((c) => (
+                  <CeremonyCard
+                    key={c.id}
+                    ceremony={c}
+                    readOnly={isPast}
+                    stats={guestsLoading ? null : guestStats(allGuests, c.id)}
+                    onEdit={() => setEditing(c)}
+                    onDuplicate={() => void duplicate(c)}
                   />
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="font-serif text-lg">{c.name}</h3>
-                    </div>
-                    <p className="mt-0.5 font-mono text-[10px] uppercase tracking-widest opacity-60">
-                      {c.label} · {formatShortDate(c.date)}
-                      {ceremonyTimeStart(c) ? ` · ${ceremonyTimeStart(c)}` : ""}
-                    </p>
-                    <p className="mt-1 text-xs opacity-70">{ceremonyVenue(c)}</p>
-                    <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[10px] uppercase tracking-widest">
-                      <span>
-                        <span className="text-primary">{s.confirmés}</span> conf.
-                      </span>
-                      <span>
-                        <span className="text-amber-600">{s.en_attente}</span> att.
-                      </span>
-                      <span>
-                        <span className="opacity-60">{s.déclinés}</span> décl.
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                {isPast ? null : (
-                  <div className="flex shrink-0 gap-2 sm:flex-col">
-                    <button
-                      onClick={() => setEditing(c)}
-                      className="flex-1 rounded-full border border-border px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest hover:bg-accent/20 sm:flex-none"
-                    >
-                      Éditer
-                    </button>
-                  </div>
-                )}
-              </div>
-            </li>
-
-          );
-        })}
-      </ul>
+                ))}
+              </ol>
+            </section>
+          ))}
+        </div>
+      )}
 
       {creating ? (
         <CeremonySheet
           onClose={() => setCreating(false)}
           onSave={(c) => {
-            addCeremony(c);
+            void addCeremony(c);
             setCreating(false);
+            toast.success("Étape ajoutée.");
           }}
         />
       ) : null}
       {editing ? (
         <CeremonySheet
+          key={editing.id}
           initial={editing}
           onClose={() => setEditing(null)}
           onSave={(c) => {
-            updateCeremony(editing.id, c);
+            void updateCeremony(editing.id, c);
             setEditing(null);
+            toast.success("Étape enregistrée.");
           }}
           onDelete={() => {
-            removeCeremony(editing.id);
+            void removeCeremony(editing.id);
             setEditing(null);
+            toast.success("Étape supprimée.");
           }}
         />
       ) : null}
@@ -151,256 +197,119 @@ function CeremoniesPage() {
   );
 }
 
-function CeremonySheet({
-  initial,
-  onClose,
-  onSave,
-  onDelete,
+function DayHeading({ date }: { date: string }) {
+  if (!date) {
+    return <p className="mb-2 text-[13px] font-medium text-muted-foreground">Date à définir</p>;
+  }
+  const past = isPastEvent(date);
+  const n = daysUntil(date);
+  const relative = past ? "Passé" : n === 0 ? "Aujourd'hui" : `dans ${n} jour${n > 1 ? "s" : ""}`;
+  const label = formatFrenchDate(date);
+  return (
+    <div className="mb-2 flex items-center justify-between gap-3">
+      <p className="text-[13px] font-medium capitalize">{label}</p>
+      <span
+        className={
+          "shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium " +
+          (past ? "bg-muted text-muted-foreground" : "bg-secondary text-secondary-foreground")
+        }
+      >
+        {relative}
+      </span>
+    </div>
+  );
+}
+
+function CeremonyCard({
+  ceremony: c,
+  readOnly,
+  stats,
+  onEdit,
+  onDuplicate,
 }: {
-  initial?: Ceremony;
-  onClose: () => void;
-  onSave: (c: Omit<Ceremony, "id" | "publicSlug">) => void;
-  onDelete?: () => void;
+  ceremony: Ceremony;
+  readOnly: boolean;
+  stats: ReturnType<typeof guestStats> | null;
+  onEdit: () => void;
+  onDuplicate: () => void;
 }) {
-  const [type, setType] = useState<CeremonyType>(initial?.type ?? "diner");
-  const [label, setLabel] = useState(initial?.label ?? "Dîner");
+  const start = ceremonyTimeStart(c);
+  const venue = ceremonyVenue(c);
+  const steps = c.program?.length ?? 0;
 
-  const [name, setName] = useState(initial?.name ?? "");
-  const [date, setDate] = useState(initial?.date ?? "2027-02-14");
-  const timeStart = initial?.timeStart ?? "";
-  const timeEnd = initial?.timeEnd;
-  const venue = initial?.venue ?? "";
-
-  const color = initial?.color ?? "#d97757";
-  const [program, setProgram] = useState<ProgramItem[]>(initial?.program ?? []);
-
-  const addProgramItem = () =>
-    setProgram((p) => [
-      ...p,
-      { id: Math.random().toString(36).slice(2, 9), time: "", title: "", description: "" },
-    ]);
-  const updateProgramItem = (id: string, patch: Partial<ProgramItem>) =>
-    setProgram((p) => p.map((it) => (it.id === id ? { ...it, ...patch } : it)));
-  const removeProgramItem = (id: string) =>
-    setProgram((p) => p.filter((it) => it.id !== id));
-  const moveProgramItem = (id: string, dir: -1 | 1) =>
-    setProgram((p) => {
-      const i = p.findIndex((it) => it.id === id);
-      if (i < 0) return p;
-      const j = i + dir;
-      if (j < 0 || j >= p.length) return p;
-      const next = [...p];
-      [next[i], next[j]] = [next[j], next[i]];
-      return next;
-    });
+  const body = (
+    <>
+      <div className="flex items-baseline gap-2">
+        <p className="text-[13px] font-semibold tabular-nums text-primary">
+          {start ? (c.timeEnd ? `${start} – ${c.timeEnd}` : start) : "Heure à définir"}
+        </p>
+        <span className="truncate rounded-full bg-secondary px-2 py-0.5 text-[11px] font-medium text-primary">
+          {c.label}
+        </span>
+      </div>
+      <p className="mt-0.5 truncate font-serif text-lg leading-snug">{c.name}</p>
+      <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-muted-foreground">
+        {venue ? (
+          <span className="flex min-w-0 items-center gap-1">
+            <MapPin className="size-3.5 shrink-0" />
+            <span className="truncate">{venue}</span>
+          </span>
+        ) : null}
+        {steps > 0 ? (
+          <span className="flex items-center gap-1">
+            <ListChecks className="size-3.5 shrink-0" />
+            {steps} temps fort{steps > 1 ? "s" : ""}
+          </span>
+        ) : null}
+      </div>
+      <div className="mt-2 text-[12px] text-muted-foreground">
+        {stats === null ? (
+          <Skeleton className="h-3.5 w-40" />
+        ) : stats.total === 0 ? (
+          "Aucun invité pour cette étape"
+        ) : (
+          <>
+            <span className="font-medium text-foreground">{stats.confirmés}</span> confirmé
+            {stats.confirmés > 1 ? "s" : ""} · {stats.en_attente} en attente · {stats.déclinés}{" "}
+            décliné{stats.déclinés > 1 ? "s" : ""}
+          </>
+        )}
+      </div>
+    </>
+  );
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 sm:items-center sm:p-6"
-      onClick={onClose}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="max-h-[90vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-background p-6 sm:rounded-3xl"
-      >
-        <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border sm:hidden" />
-        <h3 className="font-serif text-xl italic">
-          {initial ? "Éditer l'étape" : "Nouvelle étape"}
-        </h3>
-
-        <div className="mt-4 space-y-3">
-          <select
-            value={type}
-            onChange={(e) => {
-              const v = e.target.value as CeremonyType;
-              setType(v);
-              const preset = typeOptions.find((x) => x.value === v);
-              if (preset && !initial) setLabel(preset.label);
-            }}
-            className="w-full rounded-full border border-input bg-background px-4 py-3 text-sm"
-          >
-            {typeOptions.map((o) => (
-              <option key={o.value} value={o.value}>
-                {o.label}
-              </option>
-            ))}
-          </select>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Nom affiché (ex : Mariage traditionnel)"
-            className="w-full rounded-full border border-input bg-background px-4 py-3 text-sm"
-          />
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="w-full rounded-full border border-input bg-background px-4 py-3 text-sm"
-          />
-
-
-          <div className="rounded-2xl border border-border bg-muted/30 p-4">
-            <div className="mb-3 flex items-center justify-between">
-              <div>
-                <p className="font-mono text-[10px] uppercase tracking-widest opacity-60">
-                  PROGRAMME DE L'ÉTAPE
-                </p>
-                <p className="mt-0.5 text-[11px] opacity-60">
-                  Les étapes affichées aux invités.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={addProgramItem}
-                className="shrink-0 rounded-full border border-border bg-background px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest hover:bg-accent/20"
-              >
-                + Étape
-              </button>
-            </div>
-            {program.length === 0 ? (
-              <p className="rounded-xl border border-dashed border-border bg-background/50 p-4 text-center text-[11px] opacity-60">
-                Aucune étape. Ajoutez le déroulé (accueil, discours, dîner…).
-              </p>
-            ) : (
-              <ul className="space-y-2">
-                {program.map((it, idx) => (
-                  <li
-                    key={it.id}
-                    className="rounded-xl border border-border bg-background p-3"
-                  >
-                    <div className="flex gap-2">
-                      <div className="flex w-24 shrink-0 flex-col gap-1">
-                        <label className="text-[10px] opacity-60">Heure</label>
-                        <input
-                          type="time"
-                          value={it.time}
-                          onChange={(e) => updateProgramItem(it.id, { time: e.target.value })}
-                          placeholder="--:--"
-                          aria-label="Heure"
-                          className="rounded-lg border border-input bg-background px-2 py-2 text-xs"
-                        />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <label className="block text-[10px] opacity-60">Titre</label>
-                        <input
-                          value={it.title}
-                          onChange={(e) => updateProgramItem(it.id, { title: e.target.value })}
-                          placeholder="Titre de l'étape"
-                          className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
-                        />
-                      </div>
-                    </div>
-                    <textarea
-                      value={it.description ?? ""}
-                      onChange={(e) =>
-                        updateProgramItem(it.id, { description: e.target.value })
-                      }
-                      rows={2}
-                      placeholder="Description (optionnelle)"
-                      className="mt-2 w-full rounded-lg border border-input bg-background px-3 py-2 text-xs"
-                    />
-                    <input
-                      value={it.location ?? ""}
-                      onChange={(e) => updateProgramItem(it.id, { location: e.target.value })}
-                      placeholder="Lieu de l'étape (ex: Église Saint-Paul, Plateau)"
-                      className="mt-2 w-full rounded-lg border border-input bg-background px-3 py-2 text-xs"
-                    />
-                    <input
-                      value={it.mapsUrl ?? ""}
-                      onChange={(e) => updateProgramItem(it.id, { mapsUrl: e.target.value })}
-                      placeholder="Lien Google Maps (optionnel)"
-                      className="mt-2 w-full rounded-lg border border-input bg-background px-3 py-2 text-xs"
-                    />
-                    {programItemMapsHref(it) ? (
-                      <a
-                        href={programItemMapsHref(it)!}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="mt-1 inline-block font-mono text-[9px] uppercase tracking-widest text-primary underline"
-                      >
-                        Tester le lien
-                      </a>
-                    ) : null}
-                    <div className="mt-2 flex justify-end gap-1">
-                      <button
-                        type="button"
-                        onClick={() => moveProgramItem(it.id, -1)}
-                        disabled={idx === 0}
-                        className="rounded-full border border-border px-2 py-1 font-mono text-[9px] uppercase tracking-widest disabled:opacity-30 hover:bg-accent/20"
-                      >
-                        ↑
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => moveProgramItem(it.id, 1)}
-                        disabled={idx === program.length - 1}
-                        className="rounded-full border border-border px-2 py-1 font-mono text-[9px] uppercase tracking-widest disabled:opacity-30 hover:bg-accent/20"
-                      >
-                        ↓
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => removeProgramItem(it.id)}
-                        className="rounded-full border border-destructive/30 px-2 py-1 font-mono text-[9px] uppercase tracking-widest text-destructive hover:bg-destructive/10"
-                      >
-                        Suppr.
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </div>
-
-
-        <div className="mt-6 flex gap-2">
-          {onDelete ? (
+    <li className="relative pb-3 pl-5">
+      <span
+        aria-hidden
+        className="absolute -left-[5px] top-4 size-2.5 rounded-full ring-2 ring-background"
+        style={{ backgroundColor: c.color }}
+      />
+      <div className="flex items-stretch rounded-2xl border border-border bg-card">
+        {readOnly ? (
+          <div className="min-w-0 flex-1 p-4">{body}</div>
+        ) : (
+          <>
             <button
-              onClick={onDelete}
-              className="rounded-full border border-destructive/30 px-4 py-3 font-mono text-[10px] uppercase tracking-widest text-destructive hover:bg-destructive/10"
+              type="button"
+              onClick={onEdit}
+              aria-label={`Modifier ${c.name}`}
+              className="min-w-0 flex-1 rounded-l-2xl p-4 text-left transition hover:bg-secondary/30"
             >
-              Supprimer
+              {body}
             </button>
-          ) : null}
-          <button
-            onClick={onClose}
-            className="flex-1 rounded-full border border-border py-3 font-mono text-[10px] uppercase tracking-widest hover:bg-accent/20"
-          >
-            Annuler
-          </button>
-          <button
-            disabled={!name.trim()}
-            onClick={() =>
-              onSave({
-                type,
-                label,
-                name: name.trim(),
-                date,
-                timeStart,
-                timeEnd: timeEnd || undefined,
-                venue,
-
-                dressCode: initial?.dressCode,
-                color,
-                capacity: initial?.capacity,
-                notes: initial?.notes,
-                program: program
-                  .map((it) => ({
-                    ...it,
-                    title: it.title.trim(),
-                    description: it.description?.trim() || undefined,
-                  }))
-                  .filter((it) => it.title.length > 0),
-                status: "publiée",
-              })
-            }
-            className="flex-1 rounded-full bg-primary py-3 font-mono text-[10px] uppercase tracking-widest text-primary-foreground disabled:opacity-40"
-          >
-            Enregistrer
-          </button>
-        </div>
+            <button
+              type="button"
+              onClick={onDuplicate}
+              aria-label={`Dupliquer ${c.name}`}
+              title="Dupliquer"
+              className="grid w-12 shrink-0 place-items-center rounded-r-2xl border-l border-border text-muted-foreground transition hover:bg-secondary/30 hover:text-foreground"
+            >
+              <Copy className="size-4" />
+            </button>
+          </>
+        )}
       </div>
-    </div>
+    </li>
   );
 }

@@ -349,8 +349,8 @@ function StatsPage() {
                   </p>
                 </div>
                 <Link
-                  to="/dashboard/ceremonies/$id"
-                  params={{ id: s.ceremony.id }}
+                  to="/dashboard/ceremonies"
+                  search={{ edit: s.ceremony.id }}
                   aria-label={`Détails ${s.ceremony.label}`}
                   className="grid size-8 place-items-center rounded-full text-muted-foreground transition hover:bg-accent/20"
                 >
@@ -465,7 +465,7 @@ function StatsPage() {
           Aucun invité pour le moment. Ajoutez vos invités ou partagez votre lien public pour
           recevoir les premières réponses.
           <div className="mt-3 flex justify-center gap-3">
-            <Link to="/dashboard/guests/new" className="text-primary underline text-[13px]">
+            <Link to="/dashboard/guests" search={{ add: true }} className="text-primary underline text-[13px]">
               Ajouter un invité
             </Link>
             <Link to="/dashboard/share" className="text-primary underline text-[13px]">

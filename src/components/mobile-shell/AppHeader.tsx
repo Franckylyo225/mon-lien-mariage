@@ -1,10 +1,12 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Bell } from "lucide-react";
 import { NotificationBell } from "./NotificationBell";
 
 interface AppHeaderProps {
   title?: string;
   initial: string;
+  /** Profile photo (e.g. from Google sign-in). Falls back to the initial when absent or broken. */
+  avatarUrl?: string | null;
   onOpenDrawer: () => void;
   hasNotifications?: boolean;
   /**
@@ -24,20 +26,32 @@ interface AppHeaderProps {
 export function AppHeader({
   title,
   initial,
+  avatarUrl,
   onOpenDrawer,
   hasNotifications,
   userId,
   centerContent,
 }: AppHeaderProps) {
+  const [photoFailed, setPhotoFailed] = useState(false);
   return (
     <header className="sticky top-0 z-30 h-14 border-b border-border/70 bg-background/95 backdrop-blur">
       <div className="mx-auto flex h-full max-w-xl items-center justify-between gap-3 px-3 sm:px-5">
         <button
           onClick={onOpenDrawer}
           aria-label="Ouvrir le menu"
-          className="grid size-9 shrink-0 place-items-center rounded-full bg-secondary transition active:scale-95"
+          className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-secondary to-card p-0.5 shadow-[0_0_0_4px] shadow-primary/10 ring-1 ring-primary/30 transition active:scale-95"
         >
-          <span className="font-serif text-base italic text-primary">{initial}</span>
+          {avatarUrl && !photoFailed ? (
+            <img
+              src={avatarUrl}
+              alt=""
+              referrerPolicy="no-referrer"
+              onError={() => setPhotoFailed(true)}
+              className="size-full rounded-full object-cover"
+            />
+          ) : (
+            <span className="font-produit text-[15px] font-bold text-primary">{initial}</span>
+          )}
         </button>
 
         <div className="flex min-w-0 flex-1 items-center justify-center">

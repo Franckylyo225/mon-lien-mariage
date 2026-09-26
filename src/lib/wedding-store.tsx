@@ -129,6 +129,17 @@ export function ceremonyVenue(c: Ceremony): string {
   return it?.location?.trim() ?? "";
 }
 
+/** Chronological order (date, then start time); undated / untimed steps go last. Array.sort is stable, so ties keep creation order. */
+export function compareCeremonies(a: Ceremony, b: Ceremony): number {
+  const da = a.date || "9999-12-31";
+  const db = b.date || "9999-12-31";
+  if (da !== db) return da < db ? -1 : 1;
+  const ta = ceremonyTimeStart(a) || "99:99";
+  const tb = ceremonyTimeStart(b) || "99:99";
+  if (ta !== tb) return ta < tb ? -1 : 1;
+  return 0;
+}
+
 /** Heure de début affichée : celle de la première sous-étape horodatée. */
 export function ceremonyTimeStart(c: Ceremony): string {
   if (c.timeStart?.trim()) return c.timeStart.trim();
@@ -344,6 +355,8 @@ interface WeddingState {
   updateCeremony: (id: string, patch: Partial<Ceremony>) => Promise<void>;
   removeCeremony: (id: string) => Promise<void>;
   addGuest: (g: Omit<Guest, "id" | "rsvps"> & { rsvps?: RSVP[] }) => Promise<Guest>;
+  /** Bulk insert (one request per 100 guests). Resolves to the number of guests saved. */
+  addGuests: (list: Omit<Guest, "id" | "rsvps">[]) => Promise<number>;
   updateGuest: (id: string, patch: Partial<Guest>) => Promise<void>;
   removeGuest: (id: string) => Promise<void>;
   setRsvp: (guestId: string, ceremonyId: string, status: RSVPStatus, plusOnes?: number) => Promise<void>;
@@ -1061,7 +1074,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
           photoUrl: row.photo_url as string | null,
         })),
       }));
-      setCeremonies((cs ?? []).map((c) => rowToCeremony(c as CeremonyRow)));
+      setCeremonies((cs ?? []).map((c) => rowToCeremony(c as CeremonyRow)).sort(compareCeremonies));
       setGuests((gs ?? []).map((g) => rowToGuest(g as GuestRow)));
       setLoading(false);
     })();
@@ -1112,7 +1125,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       const id = uid();
       const publicSlug = slugify(c.name) || id.slice(0, 6);
       const created: Ceremony = { ...c, id, publicSlug };
-      setCeremonies((prev) => [...prev, created]);
+      setCeremonies((prev) => [...prev, created].sort(compareCeremonies));
       if (weddingId) {
         const row = {
           id,
@@ -1130,7 +1143,9 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
 
   const updateCeremony = useCallback<WeddingState["updateCeremony"]>(
     async (id, patch) => {
-      setCeremonies((prev) => prev.map((c) => (c.id === id ? { ...c, ...patch } : c)));
+      setCeremonies((prev) =>
+        prev.map((c) => (c.id === id ? { ...c, ...patch } : c)).sort(compareCeremonies),
+      );
       if (weddingId) {
         const { error } = await supabase
           .from("ceremonies")
@@ -1183,6 +1198,51 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
         }
       }
       return created;
+    },
+    [weddingId],
+  );
+
+  const addGuests = useCallback<WeddingState["addGuests"]>(
+    async (list) => {
+      if (list.length === 0) return 0;
+      const created: Guest[] = list.map((g) => ({
+        ...g,
+        id: uid(),
+        rsvps: g.ceremonyIds.map((cid) => ({
+          ceremonyId: cid,
+          status: "en_attente" as RSVPStatus,
+          plusOnes: 0,
+        })),
+      }));
+      setGuests((prev) => [...created, ...prev]);
+      if (!weddingId) return created.length;
+
+      let saved = 0;
+      for (let i = 0; i < created.length; i += 100) {
+        const chunk = created.slice(i, i + 100);
+        const rows = chunk.map((g) => ({ id: g.id, wedding_id: weddingId, ...guestToRow(g) }));
+        const { data, error } = await supabase
+          .from("guests")
+          .insert(rows as never)
+          .select("id, invite_token");
+        if (error) {
+          console.error("addGuests", error);
+          const failed = new Set(chunk.map((g) => g.id));
+          setGuests((prev) => prev.filter((g) => !failed.has(g.id)));
+          continue;
+        }
+        saved += chunk.length;
+        const tokens = new Map(
+          ((data ?? []) as { id: string; invite_token: string | null }[]).map((r) => [
+            r.id,
+            r.invite_token,
+          ]),
+        );
+        setGuests((prev) =>
+          prev.map((g) => (tokens.get(g.id) ? { ...g, inviteToken: tokens.get(g.id)! } : g)),
+        );
+      }
+      return saved;
     },
     [weddingId],
   );
@@ -1461,6 +1521,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       updateCeremony,
       removeCeremony,
       addGuest,
+      addGuests,
       updateGuest,
 
       removeGuest,
@@ -1488,6 +1549,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       updateCeremony,
       removeCeremony,
       addGuest,
+      addGuests,
       updateGuest,
       removeGuest,
       setRsvp,

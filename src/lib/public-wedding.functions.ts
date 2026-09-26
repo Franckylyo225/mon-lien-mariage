@@ -62,9 +62,19 @@ export const getPublicWedding = createServerFn({ method: "GET" })
       rsvpCount = typeof countData === "number" ? countData : 0;
     }
 
+    // Chronological, matching the dashboard timeline (Array.sort is stable: ties keep sort_order).
+    const orderedCeremonies = (ceremonies ?? []).slice().sort((a, b) => {
+      const da = a.date || "9999-12-31";
+      const db = b.date || "9999-12-31";
+      if (da !== db) return da < db ? -1 : 1;
+      const ta = a.time_start || "99:99";
+      const tb = b.time_start || "99:99";
+      return ta < tb ? -1 : ta > tb ? 1 : 0;
+    });
+
     return {
       wedding,
-      ceremonies: ceremonies ?? [],
+      ceremonies: orderedCeremonies,
       storySteps: storySteps ?? [],
       rsvpCount,
     };

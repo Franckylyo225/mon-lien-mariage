@@ -11,7 +11,8 @@ export function Fab() {
   if (pathname === "/dashboard/guests") {
     return (
       <Link
-        to="/dashboard/guests/new"
+        to="/dashboard/guests"
+        search={{ add: true }}
         aria-label="Ajouter un invité"
         className="fixed bottom-20 right-4 z-20 grid size-14 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 transition active:scale-95"
         style={{ marginBottom: "env(safe-area-inset-bottom)" }}

@@ -52,6 +52,7 @@ function DashboardLayout() {
   const navigate = useNavigate();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
 
   useEffect(() => {
@@ -78,11 +79,17 @@ function DashboardLayout() {
   useEffect(() => {
     if (!account.isAuthenticated) {
       setUserId(null);
+      setAvatarUrl(null);
       return;
     }
     let cancelled = false;
     supabase.auth.getSession().then(({ data }) => {
-      if (!cancelled) setUserId(data.session?.user.id ?? null);
+      if (cancelled) return;
+      setUserId(data.session?.user.id ?? null);
+      const meta = data.session?.user.user_metadata as
+        | { avatar_url?: string; picture?: string }
+        | undefined;
+      setAvatarUrl(meta?.avatar_url ?? meta?.picture ?? null);
     });
     return () => {
       cancelled = true;
@@ -128,6 +135,7 @@ function DashboardLayout() {
             coupleLabel={coupleLabel}
             email={account.email}
             userId={userId}
+            avatarUrl={avatarUrl}
             hasNotifications={hasNotifications}
             isPublished={couple.isPublished}
             drawerOpen={drawerOpen}
@@ -154,6 +162,7 @@ function DashboardChrome({
   coupleLabel,
   email,
   userId,
+  avatarUrl,
   hasNotifications,
   isPublished,
   drawerOpen,
@@ -167,6 +176,7 @@ function DashboardChrome({
   coupleLabel: string;
   email: string | null;
   userId: string | null;
+  avatarUrl: string | null;
   hasNotifications: boolean;
   isPublished: boolean;
   drawerOpen: boolean;
@@ -187,12 +197,13 @@ function DashboardChrome({
         onOpenDrawer={() => setDrawerOpen(true)}
         hasNotifications={hasNotifications}
         userId={userId}
+        avatarUrl={avatarUrl}
         centerContent={centerNode}
       />
 
       {actionBarNode}
 
-      <main className={`mx-auto max-w-xl px-4 pt-4 ${editing ? "pb-4" : "pb-24"}`}>
+      <main className={`mx-auto max-w-xl px-4 pt-6 ${editing ? "pb-4" : "pb-24"}`}>
         <Outlet />
       </main>
 
