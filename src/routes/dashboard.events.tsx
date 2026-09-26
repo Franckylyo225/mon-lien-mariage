@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ChevronRight, Plus, Trash } from "lucide-react";
+import { CalendarHeart, ChevronRight, Plus, Trash } from "lucide-react";
+import { IconBadge, PageHeader } from "@/components/dashboard/premium";
+import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -13,13 +15,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-
-import {
-  useWedding,
-  formatShortDate,
-  isPastEvent,
-  type WeddingSummary,
-} from "@/lib/wedding-store";
+import { useWedding, formatShortDate, isPastEvent, type WeddingSummary } from "@/lib/wedding-store";
 
 export const Route = createFileRoute("/dashboard/events")({
   head: () => ({ meta: [{ title: "Mes événements — MonInvit.com" }] }),
@@ -57,11 +53,8 @@ function EventsPage() {
     const ok = await deleteWedding(pendingDelete.id);
     setDeleting(false);
     setPendingDelete(null);
-    toast[ok ? "success" : "error"](
-      ok ? "Brouillon supprimé." : "Suppression impossible.",
-    );
+    toast[ok ? "success" : "error"](ok ? "Brouillon supprimé." : "Suppression impossible.");
   };
-
 
   const { upcoming, past } = useMemo(() => {
     const up: WeddingSummary[] = [];
@@ -78,10 +71,10 @@ function EventsPage() {
 
   if (loading || !account.isAuthenticated) {
     return (
-      <div className="grid min-h-screen place-items-center bg-background">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-40">
-          Chargement…
-        </p>
+      <div className="space-y-6 pt-2">
+        <PageHeader title="Mes événements" />
+        <Skeleton className="h-20 w-full rounded-2xl" />
+        <Skeleton className="h-20 w-full rounded-2xl" />
       </div>
     );
   }
@@ -99,113 +92,109 @@ function EventsPage() {
     if (id) navigate({ to: "/onboarding/prenoms" });
   };
 
-
   return (
-    <div className="space-y-6 py-2">
+    <div className="space-y-6 pt-2">
+      <PageHeader
+        title="Mes événements"
+        subtitle={`${weddings.length} événement${weddings.length > 1 ? "s" : ""}`}
+        actions={
+          <button
+            type="button"
+            onClick={handleCreate}
+            disabled={creating}
+            className="btn-accent-gradient inline-flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold"
+          >
+            <Plus size={16} strokeWidth={2} />
+            {creating ? "Création…" : "Nouvel événement"}
+          </button>
+        }
+      />
 
-        {upcoming.length > 0 ? (
-          <Section title="En cours">
-            {upcoming.map((w) => (
-              <EventCard
-                key={w.id}
-                w={w}
-                isActive={w.id === activeWeddingId}
-                onOpen={() => handleOpen(w.id)}
-                onDelete={w.isPublished ? undefined : () => setPendingDelete(w)}
-              />
+      {upcoming.length > 0 ? (
+        <Section title="En cours">
+          {upcoming.map((w) => (
+            <EventCard
+              key={w.id}
+              w={w}
+              isActive={w.id === activeWeddingId}
+              onOpen={() => handleOpen(w.id)}
+              onDelete={w.isPublished ? undefined : () => setPendingDelete(w)}
+            />
+          ))}
+        </Section>
+      ) : null}
+
+      {past.length > 0 ? (
+        <section>
+          <h2 className="mb-3 text-[15px] font-semibold">Passés</h2>
+          <ul className="space-y-2.5">
+            {visiblePast.map((w) => (
+              <li key={w.id}>
+                <EventCard
+                  w={w}
+                  past
+                  isActive={w.id === activeWeddingId}
+                  onOpen={() => handleOpen(w.id)}
+                  onDelete={w.isPublished ? undefined : () => setPendingDelete(w)}
+                />
+              </li>
             ))}
-          </Section>
-        ) : null}
+          </ul>
+          {past.length > 5 ? (
+            <button
+              type="button"
+              onClick={() => setShowAllPast((v) => !v)}
+              className="mt-3 w-full rounded-xl border border-dashed border-border px-3 py-2.5 text-[13px] text-muted-foreground transition hover:bg-secondary/40"
+            >
+              {showAllPast ? "Réduire" : `Voir tous les événements passés (${past.length})`}
+            </button>
+          ) : null}
+        </section>
+      ) : null}
 
-        {past.length > 0 ? (
-          <section>
-            <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
-              Passés
-            </p>
-            <ul className="space-y-2">
-              {visiblePast.map((w) => (
-                <li key={w.id}>
-                  <EventCard
-                    w={w}
-                    past
-                    isActive={w.id === activeWeddingId}
-                    onOpen={() => handleOpen(w.id)}
-                    onDelete={w.isPublished ? undefined : () => setPendingDelete(w)}
-                  />
-                </li>
-              ))}
-            </ul>
-            {past.length > 5 ? (
-              <button
-                type="button"
-                onClick={() => setShowAllPast((v) => !v)}
-                className="mt-2 w-full rounded-[10px] border border-dashed border-border px-3 py-2 text-[11px] text-muted-foreground transition active:bg-secondary/60"
-                style={{ borderWidth: "0.5px" }}
-              >
-                {showAllPast
-                  ? "Réduire"
-                  : `Voir tous les événements passés (${past.length})`}
-              </button>
-            ) : null}
-          </section>
-        ) : null}
-
-        <button
-          onClick={handleCreate}
-          disabled={creating}
-          className="flex w-full items-center gap-3 rounded-[10px] border border-dashed border-border px-3 py-3 text-left transition active:bg-secondary/60"
-          style={{ borderWidth: "0.5px" }}
-        >
-          <span className="grid size-9 shrink-0 place-items-center rounded-full bg-secondary text-foreground">
-            <Plus size={16} strokeWidth={1.75} />
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="text-[13px] font-medium">
-              {creating ? "Création…" : "Nouvel événement"}
-            </p>
-          </div>
-        </button>
-
-        <AlertDialog
-          open={pendingDelete !== null}
-          onOpenChange={(o) => { if (!o && !deleting) setPendingDelete(null); }}
-        >
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Supprimer ce brouillon ?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Toutes les informations de cet événement (programme, invités,
-                messages) seront définitivement effacées. Cette action est
-                irréversible.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel disabled={deleting}>Annuler</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={(e) => { e.preventDefault(); void handleDelete(); }}
-                disabled={deleting}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              >
-                {deleting ? "Suppression…" : "Supprimer"}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+      <AlertDialog
+        open={pendingDelete !== null}
+        onOpenChange={(o) => {
+          if (!o && !deleting) setPendingDelete(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Supprimer ce brouillon ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Toutes les informations de cet événement (programme, invités, messages) seront
+              définitivement effacées. Cette action est irréversible.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting}>Annuler</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                void handleDelete();
+              }}
+              disabled={deleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {deleting ? "Suppression…" : "Supprimer"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
-
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section>
-      <p className="mb-2 text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground">
-        {title}
-      </p>
-      <ul className="space-y-2">
-        {Array.isArray(children)
-          ? (children as React.ReactNode[]).map((c, i) => <li key={i}>{c}</li>)
-          : <li>{children}</li>}
+      <h2 className="mb-3 text-[15px] font-semibold">{title}</h2>
+      <ul className="space-y-2.5">
+        {Array.isArray(children) ? (
+          (children as React.ReactNode[]).map((c, i) => <li key={i}>{c}</li>)
+        ) : (
+          <li>{children}</li>
+        )}
       </ul>
     </section>
   );
@@ -224,47 +213,45 @@ function EventCard({
   onOpen: () => void;
   onDelete?: () => void;
 }) {
-  const label = w.brideName || w.groomName
-    ? `${w.brideName || "…"} & ${w.groomName || "…"}`
-    : "Nouvel événement";
+  const label =
+    w.brideName || w.groomName
+      ? `${w.brideName || "…"} & ${w.groomName || "…"}`
+      : "Nouvel événement";
   const type = EVENT_TYPE_LABELS[w.eventType] ?? "Événement";
-  const dot = w.isPublished ? "#059669" : "var(--border)";
-  const badge = past
+  const status = past
     ? w.isPublished
-      ? { label: "Terminé", bg: "var(--muted)", fg: "var(--muted-foreground)" }
-      : { label: "Non publié", bg: "#fff7ed", fg: "#b45309" }
+      ? { label: "Terminé", cls: "bg-muted text-muted-foreground" }
+      : { label: "Non publié", cls: "bg-amber-50 text-amber-700" }
     : w.isPublished
-      ? { label: "En ligne", bg: "#ecfdf5", fg: "#047857" }
-      : { label: "Brouillon", bg: "var(--muted)", fg: "var(--muted-foreground)" };
+      ? { label: "En ligne", cls: "bg-champagne-light text-champagne-deep" }
+      : { label: "Brouillon", cls: "bg-secondary text-primary" };
 
   return (
     <div
-      className="flex w-full items-center gap-2 rounded-[10px] bg-card pr-1 transition"
-      style={{
-        border: "0.5px solid " + (isActive ? "var(--foreground)" : "var(--border)"),
-        opacity: past ? 0.65 : 1,
-      }}
+      className={
+        "flex w-full items-center gap-2 rounded-2xl border bg-card pr-1.5 transition " +
+        (isActive ? "border-primary/50 ring-1 ring-primary/20" : "border-border") +
+        (past ? " opacity-70" : "")
+      }
     >
       <button
         onClick={onOpen}
-        className="flex min-w-0 flex-1 items-center gap-3 px-3 py-2.5 text-left transition active:bg-secondary/60"
+        className="flex min-w-0 flex-1 items-center gap-3 rounded-2xl p-3.5 text-left transition hover:bg-secondary/30"
       >
-        <span
-          className="mt-1 inline-block size-2 shrink-0 rounded-full"
-          style={{ background: dot }}
-        />
+        <IconBadge>
+          <CalendarHeart className="size-[18px]" strokeWidth={1.75} />
+        </IconBadge>
         <div className="min-w-0 flex-1">
-          <p className="truncate font-serif text-[13px] italic">{label}</p>
-          <p className="truncate text-[10px] text-muted-foreground">
+          <p className="truncate text-[14px] font-semibold">{label}</p>
+          <p className="truncate text-[12px] text-muted-foreground">
             {type}
             {w.weddingDate ? ` · ${formatShortDate(w.weddingDate)}` : ""}
           </p>
         </div>
         <span
-          className="shrink-0 rounded-full px-2 py-0.5 text-[9px] font-medium uppercase tracking-wide"
-          style={{ background: badge.bg, color: badge.fg }}
+          className={"shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold " + status.cls}
         >
-          {badge.label}
+          {status.label}
         </span>
         <ChevronRight size={14} className="shrink-0 text-muted-foreground" />
       </button>
@@ -273,7 +260,7 @@ function EventCard({
           type="button"
           onClick={onDelete}
           aria-label="Supprimer ce brouillon"
-          className="grid size-9 shrink-0 place-items-center rounded-full text-muted-foreground transition active:bg-secondary"
+          className="grid size-9 shrink-0 place-items-center rounded-full text-muted-foreground transition hover:bg-destructive/10 hover:text-destructive"
         >
           <Trash size={15} strokeWidth={1.75} />
         </button>
@@ -281,4 +268,3 @@ function EventCard({
     </div>
   );
 }
-

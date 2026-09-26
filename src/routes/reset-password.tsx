@@ -225,7 +225,7 @@ function ResetPasswordPage() {
             <button
               type="submit"
               disabled={otpLoading}
-              className="w-full rounded-full bg-[#201A1C] px-4 py-3.5 text-sm font-medium tracking-wide text-[#FBF8F8] transition hover:-translate-y-0.5 disabled:opacity-50"
+              className="btn-brand-gradient w-full rounded-xl px-4 py-3.5 text-sm font-semibold"
             >
               {otpLoading ? "Vérification…" : "Valider le code"}
             </button>
@@ -278,7 +278,7 @@ function ResetPasswordPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-full bg-[#201A1C] px-4 py-3.5 text-sm font-medium tracking-wide text-[#FBF8F8] shadow-lg shadow-[#E82050]/20 transition hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
+            className="btn-brand-gradient w-full rounded-xl px-4 py-3.5 text-sm font-semibold"
           >
             {loading ? "Mise à jour…" : "Mettre à jour"}
           </button>

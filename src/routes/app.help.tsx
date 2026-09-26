@@ -1,3 +1,4 @@
+import { IconBadge, PageHeader } from "@/components/dashboard/premium";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import {
@@ -6,7 +7,20 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ArrowLeft, Search, MessageCircle, CircleQuestionMark, Sparkles, Share, Users, CreditCard, ShieldCheck, Image, Music, Smartphone } from "lucide-react";
+import {
+  ArrowLeft,
+  Search,
+  MessageCircle,
+  CircleQuestionMark,
+  Sparkles,
+  Share,
+  Users,
+  CreditCard,
+  ShieldCheck,
+  Image,
+  Music,
+  Smartphone,
+} from "lucide-react";
 
 export const Route = createFileRoute("/app/help")({
   head: () => ({
@@ -197,9 +211,7 @@ function HelpPage() {
           faq.a.toLowerCase().includes(normalizedQuery),
       ),
     })).filter(
-      (cat) =>
-        cat.faqs.length > 0 &&
-        (activeCategory === null || activeCategory === cat.key),
+      (cat) => cat.faqs.length > 0 && (activeCategory === null || activeCategory === cat.key),
     );
   }, [normalizedQuery, activeCategory]);
 
@@ -218,15 +230,11 @@ function HelpPage() {
       </Link>
 
       <div className="mb-6">
-        <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-secondary px-3 py-1 text-[11px] font-medium text-secondary-foreground">
-          <CircleQuestionMark size={14} /> Centre d'aide
-        </div>
-        <h1 className="font-serif text-2xl text-foreground">
-          Aide & FAQ
-        </h1>
-        <p className="mt-1 text-[13px] text-muted-foreground">
-          Retrouvez les réponses aux questions les plus fréquentes sur MonInvit.
-        </p>
+        <PageHeader
+          kicker="Centre d'aide"
+          title="Aide & FAQ"
+          subtitle="Retrouvez les réponses aux questions les plus fréquentes sur MonInvit."
+        />
       </div>
 
       <div className="relative mb-6">
@@ -239,7 +247,7 @@ function HelpPage() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Rechercher une question (ex. : publication, mot de passe, RSVP)…"
-          className="w-full rounded-2xl border border-border bg-background py-3 pl-10 pr-4 text-[14px] shadow-sm transition focus-visible:border-primary focus-visible:outline-none"
+          className="w-full rounded-xl border border-border bg-card py-3 pl-10 pr-4 text-[14px] shadow-sm transition focus-visible:border-primary focus-visible:outline-none"
         />
         {query && (
           <button
@@ -254,10 +262,10 @@ function HelpPage() {
       <div className="mb-6 flex flex-wrap gap-2">
         <button
           onClick={() => setActiveCategory(null)}
-          className={`rounded-full px-3.5 py-1.5 text-[12px] font-medium transition ${
+          className={`rounded-full px-4 py-2 text-[13px] font-medium transition ${
             activeCategory === null
-              ? "bg-primary text-primary-foreground"
-              : "border border-border bg-background text-foreground hover:bg-secondary"
+              ? "btn-accent-gradient"
+              : "border border-border bg-card text-foreground hover:bg-secondary/40"
           }`}
         >
           Tout
@@ -265,15 +273,11 @@ function HelpPage() {
         {CATEGORIES.map((cat) => (
           <button
             key={cat.key}
-            onClick={() =>
-              setActiveCategory((prev) =>
-                prev === cat.key ? null : cat.key,
-              )
-            }
-            className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[12px] font-medium transition ${
+            onClick={() => setActiveCategory((prev) => (prev === cat.key ? null : cat.key))}
+            className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-medium transition ${
               activeCategory === cat.key
-                ? "bg-primary text-primary-foreground"
-                : "border border-border bg-background text-foreground hover:bg-secondary"
+                ? "btn-accent-gradient"
+                : "border border-border bg-card text-foreground hover:bg-secondary/40"
             }`}
           >
             <cat.Icon size={14} strokeWidth={1.75} />
@@ -290,21 +294,21 @@ function HelpPage() {
 
       <div className="space-y-6">
         {filteredCategories.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-border bg-muted/30 p-8 text-center">
-            <CircleQuestionMark
-              size={40}
-              strokeWidth={1.5}
-              className="mx-auto mb-3 text-muted-foreground"
-            />
-            <h2 className="mb-1 font-serif text-lg text-foreground">
-              Aucune réponse trouvée
-            </h2>
-            <p className="mb-5 text-[13px] text-muted-foreground">
-              Reformulez votre recherche ou contactez directement le support.
-            </p>
+          <div className="flex flex-col items-center gap-4 rounded-2xl border border-border bg-card px-6 py-12 text-center">
+            <IconBadge className="size-14">
+              <CircleQuestionMark className="size-6" strokeWidth={1.75} />
+            </IconBadge>
+            <div>
+              <h2 className="font-produit text-lg font-bold text-foreground">
+                Aucune réponse trouvée
+              </h2>
+              <p className="mt-1 text-[13px] text-muted-foreground">
+                Reformulez votre recherche ou contactez directement le support.
+              </p>
+            </div>
             <Link
               to="/app/support"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground"
+              className="btn-accent-gradient inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold"
             >
               <MessageCircle size={16} />
               Contacter le support
@@ -314,22 +318,17 @@ function HelpPage() {
           filteredCategories.map((cat) => (
             <section
               key={cat.key}
-              className="rounded-2xl border border-border bg-background p-4 shadow-sm"
+              className="rounded-2xl border border-border bg-card p-4 shadow-sm"
             >
-              <div className="mb-3 flex items-center gap-2">
-                <span className="grid size-8 place-items-center rounded-full bg-secondary text-secondary-foreground">
+              <div className="mb-3 flex items-center gap-3">
+                <IconBadge>
                   <cat.Icon size={18} strokeWidth={1.75} />
-                </span>
-                <h2 className="font-serif text-base text-foreground">
-                  {cat.label}
-                </h2>
+                </IconBadge>
+                <h2 className="text-[15px] font-semibold text-foreground">{cat.label}</h2>
               </div>
               <Accordion type="multiple" className="w-full">
                 {cat.faqs.map((faq, index) => (
-                  <AccordionItem
-                    key={`${cat.key}-${index}`}
-                    value={`${cat.key}-${index}`}
-                  >
+                  <AccordionItem key={`${cat.key}-${index}`} value={`${cat.key}-${index}`}>
                     <AccordionTrigger className="text-[14px] font-medium text-foreground">
                       {faq.q}
                     </AccordionTrigger>
@@ -344,17 +343,17 @@ function HelpPage() {
         )}
       </div>
 
-      <div className="mt-8 rounded-2xl bg-primary p-5 text-primary-foreground">
+      <div className="mt-8 rounded-2xl bg-gradient-to-br from-primary to-[color-mix(in_oklab,var(--primary)_70%,black)] p-5 text-primary-foreground shadow-lg shadow-primary/20">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className="font-serif text-base">Vous ne trouvez pas de réponse ?</h3>
+            <h3 className="font-produit text-lg font-bold">Vous ne trouvez pas de réponse ?</h3>
             <p className="mt-1 text-[13px] opacity-90">
               Notre équipe vous répond sous 24h ouvrées.
             </p>
           </div>
           <Link
             to="/app/support"
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-primary-foreground px-4 py-2 text-[13px] font-medium text-primary"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-foreground px-4 py-2.5 text-[13px] font-semibold text-primary transition hover:opacity-90"
           >
             <MessageCircle size={16} />
             Ouvrir un ticket

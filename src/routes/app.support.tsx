@@ -1,3 +1,4 @@
+import { IconBadge, PageHeader } from "@/components/dashboard/premium";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
@@ -135,7 +136,10 @@ function SupportPage() {
     [getFn],
   );
 
-  const selected = useMemo(() => tickets.find((t) => t.id === selectedId) ?? null, [tickets, selectedId]);
+  const selected = useMemo(
+    () => tickets.find((t) => t.id === selectedId) ?? null,
+    [tickets, selectedId],
+  );
 
   async function submitNew(e: React.FormEvent) {
     e.preventDefault();
@@ -164,7 +168,6 @@ function SupportPage() {
     }
   }
 
-
   async function submitReply(e: React.FormEvent) {
     e.preventDefault();
     if (!selectedId || !reply.trim()) return;
@@ -183,47 +186,58 @@ function SupportPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-6 pb-24">
-      <div className="mb-5 flex items-center justify-between gap-3">
-        <Link to="/dashboard" className="inline-flex items-center gap-1.5 text-[13px] text-muted-foreground hover:text-foreground">
-          <ArrowLeft size={14} /> Retour
-        </Link>
-        <button
-          onClick={() => setShowNew((v) => !v)}
-          className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground"
-        >
-          <Plus size={14} /> Nouveau ticket
-        </button>
-      </div>
+      <Link
+        to="/dashboard"
+        className="mb-5 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground hover:text-foreground"
+      >
+        <ArrowLeft size={16} /> Retour
+      </Link>
 
       <div className="mb-6">
-        <h1 className="font-serif text-2xl">Contacter le support</h1>
-        <p className="mt-1 text-[13px] text-muted-foreground">
-          Notre équipe vous répond en général sous 24h ouvrées.
-        </p>
+        <PageHeader
+          kicker="Support"
+          title="Contacter le support"
+          subtitle="Notre équipe vous répond en général sous 24h ouvrées."
+          actions={
+            <button
+              onClick={() => setShowNew((v) => !v)}
+              className="btn-accent-gradient inline-flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold"
+            >
+              <Plus size={16} /> Nouveau ticket
+            </button>
+          }
+        />
       </div>
 
       <a
         href={whatsappSupportUrl(userEmail)}
         target="_blank"
         rel="noopener noreferrer"
-        className="mb-6 flex items-center gap-3 rounded-2xl border border-[#25D366]/40 bg-[#25D366]/10 p-4 transition hover:bg-[#25D366]/15"
+        className="mb-6 flex items-center gap-3 rounded-2xl border border-whatsapp/40 bg-whatsapp/10 p-4 transition hover:bg-whatsapp/15"
       >
-        <span className="grid size-11 shrink-0 place-items-center rounded-full bg-[#25D366] text-white">
+        <span className="grid size-11 shrink-0 place-items-center rounded-full bg-whatsapp text-white">
           <WhatsAppIcon className="size-5" />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-[14px] font-medium text-foreground">Discuter sur WhatsApp</span>
+          <span className="block text-[14px] font-semibold text-foreground">
+            Discuter sur WhatsApp
+          </span>
           <span className="block text-[12px] text-muted-foreground">
             Une question urgente ? Écrivez-nous directement sur notre WhatsApp Business.
           </span>
         </span>
-        <Send size={16} className="shrink-0 text-[#25D366]" aria-hidden="true" />
+        <Send size={16} className="shrink-0 text-whatsapp" aria-hidden="true" />
       </a>
 
       {showNew && (
-        <form onSubmit={submitNew} className="mb-6 space-y-3 rounded-2xl border border-border/70 bg-white p-4 shadow-sm">
+        <form
+          onSubmit={submitNew}
+          className="mb-6 space-y-4 rounded-2xl border border-border bg-card p-5 shadow-sm"
+        >
           <div>
-            <label className="mb-1 block text-[11px] uppercase tracking-widest text-muted-foreground">Sujet</label>
+            <label className="mb-1.5 block text-[12px] font-medium text-muted-foreground">
+              Sujet
+            </label>
             <input
               value={form.subject}
               onChange={(e) => setForm({ ...form, subject: e.target.value })}
@@ -231,24 +245,30 @@ function SupportPage() {
               maxLength={140}
               required
 
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[14px]"
+              className="w-full rounded-xl border border-input bg-background px-3.5 py-2.5 text-[14px] outline-none focus:ring-2 focus:ring-ring"
               placeholder="Décrivez votre problème en quelques mots"
             />
           </div>
           <div>
-            <label className="mb-1 block text-[11px] uppercase tracking-widest text-muted-foreground">Catégorie</label>
+            <label className="mb-1.5 block text-[12px] font-medium text-muted-foreground">
+              Catégorie
+            </label>
             <select
               value={form.category}
               onChange={(e) => setForm({ ...form, category: e.target.value })}
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[14px]"
+              className="w-full rounded-xl border border-input bg-background px-3.5 py-2.5 text-[14px] outline-none focus:ring-2 focus:ring-ring"
             >
               {CATEGORIES.map((c) => (
-                <option key={c.value} value={c.value}>{c.label}</option>
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
               ))}
             </select>
           </div>
           <div>
-            <label className="mb-1 block text-[11px] uppercase tracking-widest text-muted-foreground">Message</label>
+            <label className="mb-1.5 block text-[12px] font-medium text-muted-foreground">
+              Message
+            </label>
             <textarea
               value={form.message}
               onChange={(e) => setForm({ ...form, message: e.target.value })}
@@ -257,20 +277,25 @@ function SupportPage() {
               maxLength={5000}
               required
 
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[14px]"
+              className="w-full rounded-xl border border-input bg-background px-3.5 py-2.5 text-[14px] outline-none focus:ring-2 focus:ring-ring"
               placeholder="Décrivez précisément votre besoin, les étapes déjà tentées, l'appareil utilisé…"
             />
           </div>
           <div className="flex justify-end gap-2">
-            <button type="button" onClick={() => setShowNew(false)} className="rounded-full border border-border bg-white px-4 py-2 text-[13px]">
+            <button
+              type="button"
+              onClick={() => setShowNew(false)}
+              className="rounded-xl border border-border bg-card px-4 py-2.5 text-[13px] font-medium transition hover:bg-secondary/40"
+            >
               Annuler
             </button>
             <button
               type="submit"
               disabled={creating}
-              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-[13px] font-medium text-primary-foreground disabled:opacity-50"
+              className="btn-accent-gradient inline-flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-[13px] font-semibold"
             >
-              {creating ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />} Envoyer
+              {creating ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}{" "}
+              Envoyer
             </button>
           </div>
         </form>
@@ -278,12 +303,14 @@ function SupportPage() {
 
       <div className="grid gap-4 md:grid-cols-[320px_1fr]">
         <div className="space-y-2">
-          <h2 className="mb-2 text-[11px] uppercase tracking-widest text-muted-foreground">Mes tickets</h2>
+          <h2 className="mb-2 text-[15px] font-semibold">Mes tickets</h2>
           {loading ? (
             <p className="text-[13px] text-muted-foreground">Chargement…</p>
           ) : tickets.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-border p-6 text-center">
-              <MessageCircle size={22} className="mx-auto mb-2 text-muted-foreground" />
+            <div className="flex flex-col items-center gap-3 rounded-2xl border border-border bg-card px-6 py-8 text-center">
+              <IconBadge className="size-12">
+                <MessageCircle size={22} strokeWidth={1.75} />
+              </IconBadge>
               <p className="text-[13px] text-muted-foreground">Aucun ticket pour l'instant.</p>
             </div>
           ) : (
@@ -292,13 +319,20 @@ function SupportPage() {
                 key={t.id}
                 onClick={() => openTicket(t.id)}
                 className={
-                  "w-full rounded-xl border p-3 text-left transition " +
-                  (selectedId === t.id ? "border-primary bg-primary/5" : "border-border bg-white hover:bg-secondary/40")
+                  "w-full rounded-2xl border p-3.5 text-left transition " +
+                  (selectedId === t.id
+                    ? "border-primary/50 bg-secondary/40 ring-1 ring-primary/20"
+                    : "border-border bg-card hover:bg-secondary/30")
                 }
               >
                 <div className="flex items-center justify-between gap-2">
-                  <p className="line-clamp-1 text-[13px] font-medium">{t.subject}</p>
-                  <span className={"shrink-0 rounded-full px-2 py-0.5 text-[10px] " + (STATUS_COLOR[t.status] ?? "")}>
+                  <p className="line-clamp-1 text-[13px] font-semibold">{t.subject}</p>
+                  <span
+                    className={
+                      "shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-medium " +
+                      (STATUS_COLOR[t.status] ?? "")
+                    }
+                  >
                     {STATUS_LABEL[t.status] ?? t.status}
                   </span>
                 </div>
@@ -308,16 +342,16 @@ function SupportPage() {
           )}
         </div>
 
-        <div className="rounded-2xl border border-border/70 bg-white">
+        <div className="rounded-2xl border border-border bg-card">
           {!selected ? (
             <div className="grid h-full min-h-[240px] place-items-center p-6 text-center text-[13px] text-muted-foreground">
               Sélectionnez un ticket ou créez-en un nouveau.
             </div>
           ) : (
             <div className="flex flex-col">
-              <div className="border-b border-border/70 p-4">
-                <p className="font-serif text-lg">{selected.subject}</p>
-                <p className="mt-0.5 text-[11px] uppercase tracking-widest text-muted-foreground">
+              <div className="border-b border-border p-4">
+                <p className="font-produit text-lg font-bold">{selected.subject}</p>
+                <p className="mt-0.5 text-[12px] text-muted-foreground">
                   {STATUS_LABEL[selected.status]} · {selected.category}
                 </p>
               </div>
@@ -335,8 +369,9 @@ function SupportPage() {
                           : "ml-auto bg-secondary text-foreground")
                       }
                     >
-                      <p className="mb-0.5 text-[10px] uppercase tracking-widest opacity-60">
-                        {m.author_role === "admin" ? "Support MonInvit" : "Vous"} · {fmt(m.created_at)}
+                      <p className="mb-0.5 text-[11px] opacity-60">
+                        {m.author_role === "admin" ? "Support MonInvit" : "Vous"} ·{" "}
+                        {fmt(m.created_at)}
                       </p>
                       <p className="whitespace-pre-wrap">{m.body}</p>
                     </div>
@@ -344,19 +379,22 @@ function SupportPage() {
                 )}
               </div>
               {selected.status !== "closed" && (
-                <form onSubmit={submitReply} className="flex items-end gap-2 border-t border-border/70 p-3">
+                <form
+                  onSubmit={submitReply}
+                  className="flex items-end gap-2 border-t border-border p-3"
+                >
                   <textarea
                     value={reply}
                     onChange={(e) => setReply(e.target.value)}
                     rows={2}
                     maxLength={5000}
                     placeholder="Votre message…"
-                    className="flex-1 resize-none rounded-lg border border-border bg-background px-3 py-2 text-[13px]"
+                    className="flex-1 resize-none rounded-xl border border-input bg-background px-3 py-2 text-[13px] outline-none focus:ring-2 focus:ring-ring"
                   />
                   <button
                     type="submit"
                     disabled={sending || !reply.trim()}
-                    className="inline-flex h-10 items-center gap-1.5 rounded-full bg-primary px-4 text-[13px] font-medium text-primary-foreground disabled:opacity-50"
+                    className="btn-accent-gradient inline-flex h-10 items-center gap-1.5 rounded-xl px-4 text-[13px] font-semibold"
                   >
                     {sending ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
                   </button>

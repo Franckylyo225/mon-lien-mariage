@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Bell, CheckCheck, LoaderCircle } from "lucide-react";
+import { ArrowLeft, Bell, CheckCheck } from "lucide-react";
+import { IconBadge, PageHeader } from "@/components/dashboard/premium";
+import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { useNotifications } from "@/hooks/use-notifications";
 
@@ -72,8 +74,7 @@ function NotificationsPage() {
     };
   }, []);
 
-  const { items, unreadCount, loading, markAllRead, markOneRead } =
-    useNotifications(userId);
+  const { items, unreadCount, loading, markAllRead, markOneRead } = useNotifications(userId);
 
   const visible = useMemo(
     () => (filter === "unread" ? items.filter((n) => !n.read_at) : items),
@@ -86,50 +87,47 @@ function NotificationsPage() {
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3">
           <Link
             to="/dashboard"
-            className="inline-flex items-center gap-1.5 text-[12px] text-muted-foreground hover:text-foreground"
+            className="inline-flex items-center gap-1.5 text-[13px] text-muted-foreground hover:text-foreground"
           >
-            <ArrowLeft size={14} />
+            <ArrowLeft size={16} />
             Tableau de bord
           </Link>
-          {unreadCount > 0 ? (
-            <button
-              type="button"
-              onClick={markAllRead}
-              className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3.5 py-1.5 text-[11px] font-medium text-foreground transition active:scale-95"
-            >
-              <CheckCheck size={14} />
-              Tout marquer comme lu
-            </button>
-          ) : null}
         </div>
       </header>
 
-      <main className="mx-auto max-w-3xl px-4 py-8">
-        <div className="mb-5 flex items-center gap-3">
-          <span className="grid size-10 place-items-center rounded-full bg-secondary text-primary">
-            <Bell size={20} strokeWidth={1.5} />
-          </span>
-          <div>
-            <h1 className="font-serif text-2xl italic">Notifications</h1>
-            <p className="text-[12px] text-muted-foreground">
-              {unreadCount > 0
-                ? `${unreadCount} non lue${unreadCount > 1 ? "s" : ""}`
-                : "Tout est à jour"}
-            </p>
-          </div>
-        </div>
+      <main className="mx-auto max-w-3xl space-y-6 px-4 py-8">
+        <PageHeader
+          title="Notifications"
+          subtitle={
+            unreadCount > 0
+              ? `${unreadCount} non lue${unreadCount > 1 ? "s" : ""}`
+              : "Tout est à jour"
+          }
+          actions={
+            unreadCount > 0 ? (
+              <button
+                type="button"
+                onClick={markAllRead}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card px-3.5 py-2.5 text-sm font-medium transition hover:bg-secondary/40"
+              >
+                <CheckCheck size={16} />
+                Tout marquer comme lu
+              </button>
+            ) : null
+          }
+        />
 
-        <div className="mb-4 flex items-center gap-2">
+        <div className="flex items-center gap-2">
           {(["all", "unread"] as Filter[]).map((f) => (
             <button
               key={f}
               type="button"
               onClick={() => setFilter(f)}
               className={
-                "rounded-full px-3.5 py-1.5 text-[11px] font-medium transition active:scale-95 " +
+                "rounded-full px-4 py-2 text-[13px] font-medium transition active:scale-95 " +
                 (filter === f
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-secondary text-muted-foreground")
+                  ? "btn-accent-gradient"
+                  : "border border-border bg-card text-muted-foreground hover:bg-secondary/40")
               }
             >
               {f === "all" ? "Toutes" : "Non lues"}
@@ -138,43 +136,61 @@ function NotificationsPage() {
         </div>
 
         {!ready || loading ? (
-          <div className="grid place-items-center py-16">
-            <LoaderCircle size={20} className="animate-spin opacity-50" />
-          </div>
+          <ul className="space-y-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <li key={i} className="rounded-2xl border border-border bg-card p-4">
+                <div className="flex items-start gap-3">
+                  <Skeleton className="size-10 shrink-0 rounded-full" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-3.5 w-1/2" />
+                    <Skeleton className="h-3 w-4/5" />
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
         ) : visible.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-border/70 py-16 text-center text-sm text-muted-foreground">
-            {filter === "unread"
-              ? "Aucune notification non lue."
-              : "Aucune notification pour le moment."}
+          <div className="flex flex-col items-center gap-4 rounded-2xl border border-border bg-card px-6 py-14 text-center">
+            <IconBadge className="size-14">
+              <Bell className="size-6" strokeWidth={1.75} />
+            </IconBadge>
+            <div>
+              <p className="font-produit text-lg font-bold">
+                {filter === "unread"
+                  ? "Aucune notification non lue"
+                  : "Aucune notification pour l'instant"}
+              </p>
+              <p className="mx-auto mt-1 max-w-xs text-[13px] text-muted-foreground">
+                Les nouvelles réponses et messages de vos invités apparaîtront ici.
+              </p>
+            </div>
           </div>
         ) : (
-          <ul className="space-y-2">
+          <ul className="space-y-3">
             {visible.map((n) => {
               const unread = !n.read_at;
               return (
                 <li key={n.id}>
                   <div
                     className={
-                      "rounded-xl border p-4 transition " +
-                      (unread
-                        ? "border-primary/30 bg-secondary/40"
-                        : "border-border/60 bg-card")
+                      "rounded-2xl border p-4 shadow-sm transition " +
+                      (unread ? "border-primary/30 bg-secondary/40" : "border-border bg-card")
                     }
                   >
                     <div className="flex items-start gap-3">
-                      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-background text-[15px]">
+                      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-background text-[16px] ring-1 ring-border">
                         {iconFor(n.type)}
                       </span>
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="rounded-full bg-secondary px-2 py-0.5 text-[9px] uppercase tracking-wider text-muted-foreground">
+                          <span className="rounded-full bg-secondary px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground">
                             {labelFor(n.type)}
                           </span>
                           <span
                             className={
-                              "rounded-full px-2 py-0.5 text-[9px] uppercase tracking-wider " +
+                              "rounded-full px-2.5 py-0.5 text-[11px] font-semibold " +
                               (unread
-                                ? "bg-primary text-primary-foreground"
+                                ? "bg-champagne-light text-champagne-deep"
                                 : "bg-secondary text-muted-foreground")
                             }
                           >
@@ -187,7 +203,7 @@ function NotificationsPage() {
                             {n.body}
                           </p>
                         ) : null}
-                        <p className="mt-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+                        <p className="mt-2 text-[12px] text-muted-foreground">
                           {formatDate(n.created_at)}
                         </p>
                       </div>
@@ -195,7 +211,7 @@ function NotificationsPage() {
                         <button
                           type="button"
                           onClick={() => markOneRead(n.id)}
-                          className="shrink-0 text-[11px] text-primary hover:underline"
+                          className="shrink-0 text-[12px] font-medium text-primary hover:underline"
                         >
                           Marquer lu
                         </button>

@@ -205,7 +205,7 @@ function SignupPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-full bg-[#201A1C] px-4 py-3.5 text-sm font-medium tracking-wide text-[#FBF8F8] shadow-lg shadow-[#E82050]/20 transition hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
+          className="btn-brand-gradient w-full rounded-xl px-4 py-3.5 text-sm font-semibold"
         >
           {loading ? "Création…" : "Créer mon compte"}
         </button>
@@ -263,11 +263,9 @@ export function AuthLayout({
 
           <div className="mx-auto mt-10 flex w-full max-w-md flex-1 flex-col justify-center sm:mt-16">
             {eyebrow ? (
-              <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-[#E82050]">
-                {eyebrow}
-              </p>
+              <p className="page-kicker">{eyebrow}</p>
             ) : null}
-            <h1 className="mt-4 font-serif text-4xl italic leading-[1.05] sm:text-5xl">
+            <h1 className="font-produit mt-3 text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl [&_em]:not-italic">
               {title}
             </h1>
             {subtitle ? (
@@ -310,7 +308,7 @@ export function AuthLayout({
 export function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block font-mono text-[10px] uppercase tracking-[0.25em] text-[#5A4F52]">
+      <span className="mb-1.5 block text-[12px] font-medium text-[#5A4F52]">
         {label}
       </span>
       {children}

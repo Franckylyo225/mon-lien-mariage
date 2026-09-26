@@ -1,16 +1,30 @@
+import { PageHeader } from "@/components/dashboard/premium";
+import { Skeleton } from "@/components/ui/skeleton";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, User as UserIcon, Mail, Lock, MonitorSmartphone, Bell, Languages, LogOut, Trash, ChevronRight, Eye, EyeOff, LogIn, X } from "lucide-react";
+import {
+  ArrowLeft,
+  User as UserIcon,
+  Mail,
+  Lock,
+  MonitorSmartphone,
+  Bell,
+  Languages,
+  LogOut,
+  Trash,
+  ChevronRight,
+  Eye,
+  EyeOff,
+  LogIn,
+  X,
+} from "lucide-react";
 
 export const Route = createFileRoute("/app/profile")({
   head: () => ({
-    meta: [
-      { title: "Mon profil — MonInvit.com" },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "Mon profil — MonInvit.com" }, { name: "robots", content: "noindex" }],
   }),
   component: ProfilePage,
 });
@@ -40,13 +54,7 @@ function ProfilePage() {
   const [avatarBroken, setAvatarBroken] = useState(false);
 
   const [openSheet, setOpenSheet] = useState<
-    | null
-    | "firstName"
-    | "email"
-    | "password"
-    | "sessions"
-    | "logout"
-    | "delete"
+    null | "firstName" | "email" | "password" | "sessions" | "logout" | "delete"
   >(null);
 
   useEffect(() => {
@@ -83,7 +91,9 @@ function ProfilePage() {
   const firstName =
     profile?.user_first_name ||
     profile?.display_name ||
-    (user?.user_metadata as { full_name?: string; name?: string } | undefined)?.full_name?.split(" ")[0] ||
+    (user?.user_metadata as { full_name?: string; name?: string } | undefined)?.full_name?.split(
+      " ",
+    )[0] ||
     (user?.email ? user.email.split("@")[0] : "");
 
   const initial = (firstName || user?.email || "?").trim()[0]?.toUpperCase() ?? "?";
@@ -108,8 +118,10 @@ function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="grid min-h-screen place-items-center bg-background">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-40">Chargement…</p>
+      <div className="mx-auto max-w-xl space-y-6 px-4 py-10">
+        <Skeleton className="h-10 w-48" />
+        <Skeleton className="h-32 w-full rounded-2xl" />
+        <Skeleton className="h-40 w-full rounded-2xl" />
       </div>
     );
   }
@@ -118,38 +130,45 @@ function ProfilePage() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="sticky top-0 z-30 h-14 border-b border-border/70 bg-background/95 backdrop-blur">
-        <div className="mx-auto flex h-full max-w-xl items-center justify-between gap-3 px-3 sm:px-5">
+        <div className="mx-auto flex h-full max-w-xl items-center gap-3 px-3 sm:px-5">
           <button
             onClick={() => navigate({ to: "/dashboard" })}
-            className="flex items-center gap-1.5 rounded-full px-2 py-1 text-[12px] text-muted-foreground transition active:scale-95"
+            className="flex items-center gap-1.5 rounded-full px-2 py-1 text-[13px] text-muted-foreground transition hover:text-foreground active:scale-95"
           >
             <ArrowLeft size={16} strokeWidth={1.75} />
             <span>Retour</span>
           </button>
-          <h1 className="text-[13px] font-medium tracking-wide text-foreground/80">Mon profil</h1>
-          <div className="w-16" />
         </div>
       </header>
 
-      <main className="mx-auto max-w-xl px-4 pb-10">
+      <main className="mx-auto max-w-xl px-4 pb-10 pt-6">
+        <PageHeader title="Mon profil" />
+
         {/* Avatar + identity */}
-        <section className="mb-5 flex flex-col items-center gap-2 px-2 pt-6">
-          <div className="grid size-16 place-items-center overflow-hidden rounded-full border-[1.5px] border-[#ED93B1] bg-[#FBEAF0]">
+        <section className="mb-7 mt-6 flex items-center gap-4 rounded-2xl border border-border bg-gradient-to-b from-secondary/50 to-card p-4">
+          <div className="grid size-16 shrink-0 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-secondary to-card p-0.5 shadow-[0_0_0_4px] shadow-primary/10 ring-1 ring-primary/30">
             {googleAvatar && !avatarBroken ? (
               <img
                 src={googleAvatar}
                 alt=""
-                className="size-full object-cover"
+                referrerPolicy="no-referrer"
+                className="size-full rounded-full object-cover"
                 onError={() => setAvatarBroken(true)}
               />
             ) : (
-              <span className="font-serif text-2xl italic text-[#993556]">{initial}</span>
+              <span className="font-produit text-2xl font-bold text-primary">{initial}</span>
             )}
           </div>
-          <p className="font-serif text-lg italic text-foreground">{firstName || "—"}</p>
-          {memberSince ? (
-            <p className="text-[10px] text-muted-foreground">Membre depuis {memberSince}</p>
-          ) : null}
+          <div className="min-w-0">
+            <p className="truncate font-produit text-xl font-bold text-foreground">
+              {firstName || "—"}
+            </p>
+            {memberSince ? (
+              <p className="mt-0.5 text-[12px] text-muted-foreground">
+                Membre depuis {memberSince}
+              </p>
+            ) : null}
+          </div>
         </section>
 
         {/* Personal info */}
@@ -162,7 +181,7 @@ function ProfilePage() {
             action={
               <button
                 onClick={() => setOpenSheet("firstName")}
-                className="text-[11px] font-medium text-[#993556]"
+                className="text-[13px] font-medium text-primary hover:underline"
               >
                 Modifier
               </button>
@@ -191,7 +210,7 @@ function ProfilePage() {
                       if (error) toast.error(error.message);
                       else toast.success("Email de vérification renvoyé");
                     }}
-                    className="text-[11px] font-medium text-[#993556]"
+                    className="text-[13px] font-medium text-primary hover:underline"
                   >
                     Renvoyer
                   </button>
@@ -219,7 +238,7 @@ function ProfilePage() {
                 action={
                   <button
                     onClick={() => setOpenSheet("email")}
-                    className="text-[11px] font-medium text-[#993556]"
+                    className="text-[13px] font-medium text-primary hover:underline"
                   >
                     Modifier
                   </button>
@@ -233,7 +252,7 @@ function ProfilePage() {
                 action={
                   <button
                     onClick={() => setOpenSheet("password")}
-                    className="text-[11px] font-medium text-[#993556]"
+                    className="text-[13px] font-medium text-primary hover:underline"
                   >
                     Modifier
                   </button>
@@ -324,9 +343,7 @@ function ProfilePage() {
       {openSheet === "email" && user && (
         <EmailSheet onClose={() => setOpenSheet(null)} currentEmail={user.email ?? ""} />
       )}
-      {openSheet === "password" && (
-        <PasswordSheet onClose={() => setOpenSheet(null)} />
-      )}
+      {openSheet === "password" && <PasswordSheet onClose={() => setOpenSheet(null)} />}
       {openSheet === "sessions" && (
         <SessionsSheet
           onClose={() => setOpenSheet(null)}
@@ -373,23 +390,15 @@ function ProfilePage() {
 /* ---------- primitives ---------- */
 
 function SectionLabel({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return (
-    <p
-      className={`mb-2 px-1 text-[9px] font-medium uppercase tracking-[0.08em] text-muted-foreground ${className}`}
-    >
-      {children}
-    </p>
-  );
+  return <p className={`mb-2.5 px-1 text-[15px] font-semibold ${className}`}>{children}</p>;
 }
 
 function Card({ children }: { children: ReactNode }) {
-  return (
-    <div className="overflow-hidden rounded-xl border border-border bg-card">{children}</div>
-  );
+  return <div className="overflow-hidden rounded-2xl border border-border bg-card">{children}</div>;
 }
 
 function Divider() {
-  return <div className="mx-3 border-t border-border/60" />;
+  return <div className="mx-4 border-t border-border/60" />;
 }
 
 function Row({
@@ -406,16 +415,14 @@ function Row({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex items-center gap-3 px-3 py-3">
-      <span className="grid size-7 shrink-0 place-items-center rounded-md bg-secondary text-muted-foreground">
+    <div className="flex items-center gap-3 px-4 py-3.5">
+      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-secondary text-primary">
         {icon}
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-[10px] text-muted-foreground">{label}</p>
-        {value ? <p className="truncate text-[13px] text-foreground">{value}</p> : null}
-        {description ? (
-          <p className="text-[10px] text-muted-foreground">{description}</p>
-        ) : null}
+        <p className="text-[12px] text-muted-foreground">{label}</p>
+        {value ? <p className="truncate text-[14px] font-medium text-foreground">{value}</p> : null}
+        {description ? <p className="text-[12px] text-muted-foreground">{description}</p> : null}
       </div>
       {action ? <div className="shrink-0">{action}</div> : null}
     </div>
@@ -436,14 +443,14 @@ function DangerRow({
   return (
     <button
       onClick={onClick}
-      className="flex w-full items-center gap-3 px-3 py-3 text-left transition active:bg-destructive/5"
+      className="flex w-full items-center gap-3 px-4 py-3.5 text-left transition hover:bg-destructive/5"
     >
-      <span className="grid size-7 shrink-0 place-items-center rounded-md bg-destructive/10 text-destructive">
+      <span className="grid size-9 shrink-0 place-items-center rounded-full bg-destructive/10 text-destructive">
         {icon}
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-[12px] font-medium text-destructive">{title}</p>
-        <p className="text-[10px] text-muted-foreground">{description}</p>
+        <p className="text-[14px] font-semibold text-destructive">{title}</p>
+        <p className="text-[12px] text-muted-foreground">{description}</p>
       </div>
       <ChevronRight size={14} className="text-destructive/70" />
     </button>
@@ -458,12 +465,12 @@ function Badge({
   children: ReactNode;
 }) {
   const styles: Record<string, string> = {
-    success: "bg-emerald-100 text-emerald-800",
+    success: "bg-champagne-light text-champagne-deep",
     warning: "bg-amber-100 text-amber-800",
     neutral: "bg-secondary text-muted-foreground",
   };
   return (
-    <span className={`rounded-full px-2 py-0.5 text-[9px] font-medium ${styles[tone]}`}>
+    <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${styles[tone]}`}>
       {children}
     </span>
   );
@@ -475,9 +482,7 @@ function Toggle({ on, onChange }: { on: boolean; onChange: (v: boolean) => void 
       role="switch"
       aria-checked={on}
       onClick={() => onChange(!on)}
-      className={`relative h-6 w-10 rounded-full transition ${
-        on ? "bg-[#993556]" : "bg-border"
-      }`}
+      className={`relative h-6 w-10 rounded-full transition ${on ? "bg-primary" : "bg-border"}`}
     >
       <span
         className={`absolute top-0.5 size-5 rounded-full bg-white shadow transition ${
@@ -512,9 +517,9 @@ function Sheet({
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center">
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
-      <div className="relative w-full max-w-xl rounded-t-2xl bg-background p-5 pb-8 shadow-2xl">
+      <div className="relative w-full max-w-xl rounded-t-3xl bg-background p-5 pb-8 shadow-2xl">
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="font-serif text-base italic">{title}</h2>
+          <h2 className="font-produit text-lg font-bold">{title}</h2>
           <button
             onClick={onClose}
             className="grid size-8 place-items-center rounded-full text-muted-foreground"
@@ -550,7 +555,7 @@ function PrimaryButton({
     <button
       {...rest}
       disabled={disabled}
-      className="w-full rounded-full bg-[#2b1a14] px-4 py-3 text-sm font-medium text-[#fdf7f3] transition disabled:opacity-50"
+      className="w-full btn-accent-gradient rounded-xl px-4 py-3 text-sm font-semibold"
     >
       {children}
     </button>
@@ -675,10 +680,7 @@ function EmailSheet({ onClose, currentEmail }: { onClose: () => void; currentEma
             <Label>Mot de passe actuel</Label>
             <PasswordField value={pw} onChange={setPw} placeholder="Votre mot de passe" />
           </div>
-          <PrimaryButton
-            disabled={saving || !newEmail.trim() || !pw}
-            onClick={submit}
-          >
+          <PrimaryButton disabled={saving || !newEmail.trim() || !pw} onClick={submit}>
             {saving ? "Enregistrement…" : "Enregistrer"}
           </PrimaryButton>
         </div>
@@ -693,8 +695,7 @@ function passwordStrength(pw: string): { score: 0 | 1 | 2 | 3 | 4; label: string
   const hasDigit = /\d/.test(pw);
   const hasSymbol = /[^A-Za-z0-9]/.test(pw);
   if (pw.length < 8) return { score: 1, label: "Faible" };
-  if (pw.length >= 12 && hasUpper && hasDigit && hasSymbol)
-    return { score: 4, label: "Très fort" };
+  if (pw.length >= 12 && hasUpper && hasDigit && hasSymbol) return { score: 4, label: "Très fort" };
   if (hasUpper && hasDigit) return { score: 3, label: "Fort" };
   if (hasUpper || hasDigit) return { score: 2, label: "Moyen" };
   return { score: 1, label: "Faible" };
@@ -800,7 +801,7 @@ function SessionsSheet({
         </p>
         <button
           onClick={onSignOutOthers}
-          className="w-full rounded-full border border-border px-4 py-3 text-sm font-medium text-foreground transition active:bg-secondary"
+          className="w-full rounded-xl border border-border px-4 py-3 text-sm font-medium text-foreground transition active:bg-secondary"
         >
           Déconnecter tous les autres appareils
         </button>
@@ -826,7 +827,7 @@ function ConfirmSheet({
       <div className="flex gap-3">
         <button
           onClick={onClose}
-          className="flex-1 rounded-full border border-border px-4 py-3 text-sm font-medium"
+          className="flex-1 rounded-xl border border-border px-4 py-3 text-sm font-medium"
         >
           Annuler
         </button>
@@ -836,7 +837,7 @@ function ConfirmSheet({
             setBusy(true);
             await onConfirm();
           }}
-          className="flex-1 rounded-full bg-destructive px-4 py-3 text-sm font-medium text-destructive-foreground disabled:opacity-50"
+          className="flex-1 rounded-xl bg-destructive px-4 py-3 text-sm font-medium text-destructive-foreground disabled:opacity-50"
         >
           {confirmLabel}
         </button>
@@ -882,13 +883,13 @@ function DeleteAccountSheet({
           <div className="flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 rounded-full border border-border px-4 py-3 text-sm font-medium"
+              className="flex-1 rounded-xl border border-border px-4 py-3 text-sm font-medium"
             >
               Annuler
             </button>
             <button
               onClick={() => setStep(2)}
-              className="flex-1 rounded-full bg-destructive px-4 py-3 text-sm font-medium text-destructive-foreground"
+              className="flex-1 rounded-xl bg-destructive px-4 py-3 text-sm font-medium text-destructive-foreground"
             >
               Continuer
             </button>
@@ -907,7 +908,7 @@ function DeleteAccountSheet({
                   setBusy(true);
                   await onConfirmed();
                 }}
-                className="w-full rounded-full bg-destructive px-4 py-3 text-sm font-medium text-destructive-foreground disabled:opacity-50"
+                className="w-full rounded-xl bg-destructive px-4 py-3 text-sm font-medium text-destructive-foreground disabled:opacity-50"
               >
                 Confirmer avec Google
               </button>

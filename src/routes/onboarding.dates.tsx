@@ -47,7 +47,7 @@ function StepDates() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-serif text-4xl italic">Les dates clés</h1>
+        <h1 className="page-title">Les dates clés</h1>
         <p className="mt-3 text-sm text-muted-foreground">
           Ces deux dates guident toute la planification.
         </p>
@@ -91,7 +91,7 @@ function StepDates() {
       <div>
         <button
           onClick={() => goNext(false)}
-          className="w-full rounded-lg bg-primary px-4 py-3.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+          className="w-full btn-accent-gradient rounded-xl px-4 py-3.5 text-sm font-semibold"
         >
           Continuer
         </button>

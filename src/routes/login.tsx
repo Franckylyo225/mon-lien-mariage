@@ -111,7 +111,7 @@ function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-full bg-[#201A1C] px-4 py-3.5 text-sm font-medium tracking-wide text-[#FBF8F8] shadow-lg shadow-[#E82050]/20 transition hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0"
+          className="btn-brand-gradient w-full rounded-xl px-4 py-3.5 text-sm font-semibold"
         >
           {loading ? "Connexion…" : "Se connecter"}
         </button>

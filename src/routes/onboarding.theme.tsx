@@ -50,7 +50,7 @@ function StepTheme() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="font-serif text-4xl italic">Choisissez un thème</h1>
+        <h1 className="page-title">Choisissez un thème</h1>
         <p className="mt-3 text-sm text-muted-foreground">
           Touchez un thème pour le sélectionner, touchez à nouveau pour
           l'agrandir. Vous pourrez en changer à tout moment.
@@ -68,7 +68,7 @@ function StepTheme() {
                 type="button"
                 onClick={() => setFamily(f.id)}
                 className={cn(
-                  "shrink-0 rounded-full border px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest transition",
+                  "shrink-0 rounded-full border px-3.5 py-2 text-[13px] font-medium transition",
                   active
                     ? "border-foreground bg-foreground text-background"
                     : "border-border bg-background opacity-70",
@@ -126,7 +126,7 @@ function StepTheme() {
 
       <button
         onClick={confirmChoice}
-        className="w-full rounded-lg bg-primary px-4 py-3.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+        className="w-full btn-accent-gradient rounded-xl px-4 py-3.5 text-sm font-semibold"
       >
         Voir mon tableau de bord
       </button>
@@ -242,7 +242,7 @@ function ThemePreviewOverlay({
         <button
           type="button"
           onClick={onConfirm}
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-3.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+          className="flex w-full items-center justify-center gap-2 btn-accent-gradient rounded-xl px-4 py-3.5 text-sm font-semibold"
         >
           <Check size={16} strokeWidth={2.5} />
           Choisir ce thème

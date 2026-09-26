@@ -1,16 +1,25 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import {
-  useWedding,
-  type RSVPStatus,
-  type Guest,
-  type Ceremony,
-} from "@/lib/wedding-store";
+import { useWedding, type RSVPStatus, type Guest, type Ceremony } from "@/lib/wedding-store";
 import { guestTypeMeta, type GuestType } from "@/lib/guest-meta";
 import { useAllGuests } from "@/hooks/use-all-guests";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ChevronRight, TrendingUp, Users, Check, X, Clock, Link as LinkIcon, Eye, MessageSquare, Book, Salad, Calendar } from "lucide-react";
+import { IconBadge, PageHeader } from "@/components/dashboard/premium";
+import {
+  ChevronRight,
+  TrendingUp,
+  Users,
+  Check,
+  X,
+  Clock,
+  Link as LinkIcon,
+  Eye,
+  MessageSquare,
+  Book,
+  Salad,
+  Calendar,
+} from "lucide-react";
 
 export const Route = createFileRoute("/dashboard/stats")({
   head: () => ({
@@ -115,7 +124,6 @@ function StatsPage() {
     };
   }, [weddingId]);
 
-
   const perCeremony = useMemo(
     () => ceremonies.map((c) => computeCeremonyStats(allGuests, c)),
     [allGuests, ceremonies],
@@ -143,8 +151,7 @@ function StatsPage() {
     }
     const responded = anyConfirmed + anyDeclined;
     const responseRate = totalInvited ? Math.round((responded / totalInvited) * 100) : 0;
-    const confirmationRate =
-      responded > 0 ? Math.round((anyConfirmed / responded) * 100) : 0;
+    const confirmationRate = responded > 0 ? Math.round((anyConfirmed / responded) * 100) : 0;
     return {
       totalInvited,
       anyConfirmed,
@@ -206,28 +213,35 @@ function StatsPage() {
 
   if (ceremonies.length === 0) {
     return (
-      <div className="space-y-4">
-        <h1 className="font-serif text-3xl italic">Statistiques RSVP</h1>
-        <div className="rounded-2xl border border-dashed border-border p-8 text-center text-sm opacity-70">
-          Ajoutez d'abord des étapes pour visualiser les statistiques.
-          <div className="mt-3">
-            <Link to="/dashboard/ceremonies" className="text-primary underline text-[13px]">
-              Créer une étape
-            </Link>
+      <div className="space-y-6 pt-2">
+        <PageHeader title="Statistiques RSVP" />
+        <div className="flex flex-col items-center gap-4 rounded-2xl border border-border bg-card px-6 py-12 text-center">
+          <IconBadge className="size-14">
+            <Calendar className="size-6" strokeWidth={1.75} />
+          </IconBadge>
+          <div>
+            <p className="font-produit text-lg font-bold">Ajoutez d'abord des étapes</p>
+            <p className="mx-auto mt-1 max-w-xs text-[13px] text-muted-foreground">
+              Les statistiques se calculent à partir des étapes de votre programme.
+            </p>
           </div>
+          <Link
+            to="/dashboard/ceremonies"
+            className="btn-accent-gradient inline-flex rounded-xl px-5 py-2.5 text-sm font-semibold"
+          >
+            Créer une étape
+          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 pb-4">
-      <header>
-        <p className="text-xs text-muted-foreground">
-          {loading ? "Chargement des réponses…" : "Mise à jour en temps réel"}
-        </p>
-        <h1 className="mt-1 font-serif text-3xl italic">Statistiques RSVP</h1>
-      </header>
+    <div className="space-y-6 pb-4 pt-2">
+      <PageHeader
+        title="Statistiques RSVP"
+        subtitle={loading ? "Chargement des réponses…" : "Mise à jour en temps réel"}
+      />
 
       {deadlineDays !== null ? (
         <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-3 text-[13px]">
@@ -235,7 +249,9 @@ function StatsPage() {
           {deadlineDays >= 0 ? (
             <span>
               Date limite de réponse dans{" "}
-              <span className="font-semibold">{deadlineDays} jour{deadlineDays > 1 ? "s" : ""}</span>
+              <span className="font-semibold">
+                {deadlineDays} jour{deadlineDays > 1 ? "s" : ""}
+              </span>
             </span>
           ) : (
             <span className="text-muted-foreground">
@@ -289,12 +305,8 @@ function StatsPage() {
       <section className="rounded-2xl border border-border bg-card p-5">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-              Taux de confirmation
-            </p>
-            <p className="mt-1 text-3xl font-semibold tabular-nums">
-              {global.confirmationRate}%
-            </p>
+            <p className="text-[12px] font-medium text-muted-foreground">Taux de confirmation</p>
+            <p className="mt-1 text-3xl font-semibold tabular-nums">{global.confirmationRate}%</p>
             <p className="mt-1 text-[11px] text-muted-foreground">
               Parmi les invités ayant répondu
             </p>
@@ -305,19 +317,19 @@ function StatsPage() {
 
       {/* Engagement via le lien public */}
       <section className="grid grid-cols-3 gap-2">
-        <SmallCard
-          Icon={Eye}
-          label="Vues"
-          value={viewCount ?? "—"}
-          hint="Visites de la page"
-        />
+        <SmallCard Icon={Eye} label="Vues" value={viewCount ?? "—"} hint="Visites de la page" />
         <SmallCard
           Icon={LinkIcon}
           label="Auto-inscriptions"
           value={publicGuests.length}
           hint="Via le lien public"
         />
-        <SmallCard Icon={MessageSquare} label="Messages" value={messages} hint="Dans le formulaire" />
+        <SmallCard
+          Icon={MessageSquare}
+          label="Messages"
+          value={messages}
+          hint="Dans le formulaire"
+        />
         <SmallCard
           Icon={Book}
           label="Livre d'or"
@@ -326,12 +338,9 @@ function StatsPage() {
         />
       </section>
 
-
       {/* Per ceremony */}
       <section>
-        <h2 className="mb-3 text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-          Par étape
-        </h2>
+        <h2 className="mb-3 text-[15px] font-semibold">Par étape</h2>
         <ul className="space-y-3">
           {perCeremony.map((s) => (
             <li key={s.ceremony.id} className="rounded-2xl border border-border bg-card p-4">
@@ -392,9 +401,7 @@ function StatsPage() {
       {/* Repartition by guest type */}
       {byType.length > 0 ? (
         <section>
-          <h2 className="mb-3 text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-            Par type d'invité
-          </h2>
+          <h2 className="mb-3 text-[15px] font-semibold">Par type d'invité</h2>
           <ul className="grid grid-cols-2 gap-2">
             {byType.map((t) => {
               const meta = guestTypeMeta[t.type] ?? guestTypeMeta.autre;
@@ -419,7 +426,7 @@ function StatsPage() {
       {/* Dietary notes */}
       {dietary.length > 0 ? (
         <section>
-          <h2 className="mb-3 flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+          <h2 className="mb-3 flex items-center gap-1.5 text-[15px] font-semibold">
             <Salad size={13} /> Régimes & allergies ({dietary.length})
           </h2>
           <ul className="space-y-2 rounded-2xl border border-border bg-card p-4 text-[12px]">
@@ -436,9 +443,7 @@ function StatsPage() {
       {/* Repartition by group */}
       {byGroup.length > 0 ? (
         <section>
-          <h2 className="mb-3 text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-            Répartition par groupe
-          </h2>
+          <h2 className="mb-3 text-[15px] font-semibold">Répartition par groupe</h2>
           <ul className="space-y-2 rounded-2xl border border-border bg-card p-4">
             {byGroup.map((g) => (
               <li key={g.label}>
@@ -461,14 +466,29 @@ function StatsPage() {
       ) : null}
 
       {global.totalInvited === 0 && !loading ? (
-        <div className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
-          Aucun invité pour le moment. Ajoutez vos invités ou partagez votre lien public pour
-          recevoir les premières réponses.
-          <div className="mt-3 flex justify-center gap-3">
-            <Link to="/dashboard/guests" search={{ add: true }} className="text-primary underline text-[13px]">
+        <div className="flex flex-col items-center gap-4 rounded-2xl border border-border bg-card px-6 py-10 text-center">
+          <IconBadge className="size-14">
+            <Users className="size-6" strokeWidth={1.75} />
+          </IconBadge>
+          <div>
+            <p className="font-produit text-lg font-bold">Aucun invité pour le moment</p>
+            <p className="mx-auto mt-1 max-w-xs text-[13px] text-muted-foreground">
+              Ajoutez vos invités ou partagez votre lien public pour recevoir les premières
+              réponses.
+            </p>
+          </div>
+          <div className="flex flex-wrap justify-center gap-2">
+            <Link
+              to="/dashboard/guests"
+              search={{ add: true }}
+              className="btn-accent-gradient inline-flex rounded-xl px-5 py-2.5 text-sm font-semibold"
+            >
               Ajouter un invité
             </Link>
-            <Link to="/dashboard/share" className="text-primary underline text-[13px]">
+            <Link
+              to="/dashboard/share"
+              className="inline-flex rounded-xl border border-border bg-card px-4 py-2.5 text-sm font-medium transition hover:bg-secondary/40"
+            >
               Partager le lien
             </Link>
           </div>
@@ -495,7 +515,7 @@ function BigMetric({
     <div className="rounded-2xl border border-border bg-card p-4">
       <div className="flex items-center gap-2 text-muted-foreground">
         <Icon size={14} strokeWidth={1.75} />
-        <span className="text-[11px] uppercase tracking-[0.14em]">{label}</span>
+        <span className="text-[12px] font-medium">{label}</span>
       </div>
       <p className="mt-2 text-3xl font-semibold tabular-nums leading-none">{value}</p>
       {sub ? <p className="mt-1 text-[11px] text-muted-foreground">{sub}</p> : null}
@@ -560,7 +580,7 @@ function MiniStat({
     >
       <div className="flex items-center gap-1.5">
         <Icon size={12} />
-        <span className="text-[10px] uppercase tracking-wider">{label}</span>
+        <span className="text-[11px] font-medium">{label}</span>
       </div>
       <p className="mt-1 text-xl font-semibold tabular-nums leading-none">{value}</p>
     </div>
@@ -582,7 +602,7 @@ function SmallCard({
     <div className="rounded-xl border border-border bg-card p-3">
       <div className="flex items-center gap-1.5 text-muted-foreground">
         <Icon size={12} />
-        <span className="truncate text-[10px] uppercase tracking-wider">{label}</span>
+        <span className="truncate text-[11px] font-medium">{label}</span>
       </div>
       <p className="mt-1 text-xl font-semibold tabular-nums leading-none">{value}</p>
       {hint ? <p className="mt-1 truncate text-[10px] text-muted-foreground">{hint}</p> : null}

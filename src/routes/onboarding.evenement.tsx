@@ -26,7 +26,7 @@ function StepEvenement() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-serif text-4xl italic">Votre événement</h1>
+        <h1 className="page-title">Votre événement</h1>
         <p className="mt-3 text-sm text-muted-foreground">
           Choisissez le type de célébration.
         </p>
@@ -74,7 +74,7 @@ function StepEvenement() {
           await setOnboardingStep(2);
           navigate({ to: "/onboarding/dates" });
         }}
-        className="w-full rounded-lg bg-primary px-4 py-3.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
+        className="w-full btn-accent-gradient rounded-xl px-4 py-3.5 text-sm font-semibold"
       >
         Continuer
       </button>

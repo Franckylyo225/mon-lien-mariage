@@ -32,7 +32,7 @@ function StepPrenoms() {
       className="space-y-6"
     >
       <div>
-        <h1 className="font-serif text-4xl italic">Vos prénoms</h1>
+        <h1 className="page-title">Vos prénoms</h1>
         <p className="mt-3 text-sm text-muted-foreground">
           Ils apparaîtront en grand sur votre page d'invitation.
         </p>
@@ -62,7 +62,7 @@ function StepPrenoms() {
       <button
         type="submit"
         disabled={!valid}
-        className="w-full rounded-lg bg-primary px-4 py-3.5 text-sm font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-40"
+        className="w-full btn-accent-gradient rounded-xl px-4 py-3.5 text-sm font-semibold disabled:opacity-40"
       >
         Continuer
       </button>

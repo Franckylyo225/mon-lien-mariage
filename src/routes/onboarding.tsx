@@ -55,7 +55,7 @@ function OnboardingLayout() {
               ← Retour
             </span>
           )}
-          <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+          <p className="page-kicker">
             Étape {stepNum} / 4
           </p>
         </header>
