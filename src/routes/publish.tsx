@@ -50,7 +50,7 @@ function formatFrenchDate(iso: string): string | null {
 }
 
 function PublishPage() {
-  const { couple, ceremonies, weddingId, loading, updateCouple } = useWedding();
+  const { couple, ceremonies, weddingId, loading, updateCouple, applyPublication } = useWedding();
   const validatePromo = useServerFn(validatePromoCode);
   const publishFn = useServerFn(publishWithPromo);
   const checkSlug = useServerFn(checkSlugAvailability);
@@ -253,7 +253,8 @@ function PublishPage() {
         await publishFn({
           data: { weddingId, slug, code: appliedPromo.code, includeGuestbook },
         });
-        await updateCouple({
+        // The server already published; only mirror it in local state (paid flags can't be written from the browser).
+        applyPublication({
           slug,
           isPublished: true,
           isLocked: true,

@@ -16,20 +16,17 @@ export function normalizePromoCode(code: string): string {
 }
 
 /**
- * Load a usable promo code using the caller's authenticated Supabase client.
- * No service-role key required — relies on the "users read promo_codes" RLS policy.
+ * Look up a promo code the user typed, through the validate_promo RPC (the
+ * promo_codes table itself is not readable by regular users), then check that
+ * it is usable.
  */
 export async function loadUsablePromo(
   code: string,
   supabase: SupabaseClient,
 ): Promise<PromoRow> {
-  const { data, error } = await supabase
-    .from("promo_codes")
-    .select("id, code, discount_percent, max_uses, uses, valid_from, valid_until, is_active")
-    .eq("code", code)
-    .maybeSingle();
+  const { data, error } = await supabase.rpc("validate_promo" as never, { _code: code } as never);
   if (error) throw new Error("Vérification du code impossible.");
-  const row = data as PromoRow | null;
+  const row = ((data as PromoRow[] | null) ?? [])[0] ?? null;
   if (!row) throw new Error("Code promo invalide.");
   if (!row.is_active) throw new Error("Ce code promo est désactivé.");
   const now = Date.now();

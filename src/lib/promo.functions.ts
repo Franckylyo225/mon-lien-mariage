@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireAuth as requireSupabaseAuth } from "@/lib/auth-middleware";
-import { loadUsablePromo, normalizePromoCode, type PromoRow } from "./promo.server";
+import { loadUsablePromo, normalizePromoCode } from "./promo.server";
 
 interface ValidateInput {
   code: string;
@@ -23,12 +23,23 @@ interface PublishInput {
   includeGuestbook?: boolean;
 }
 
-const SLUG_RE = /^[a-z0-9][a-z0-9-]{1,59}$/;
+const PUBLISH_ERRORS: Record<string, string> = {
+  unauthorized: "Session expirée, reconnectez-vous.",
+  not_found: "Événement introuvable.",
+  invalid_slug: "Lien public invalide.",
+  slug_taken: "Ce lien est déjà pris.",
+  invalid_code: "Code promo invalide.",
+  inactive: "Ce code promo est désactivé.",
+  not_started: "Ce code promo n'est pas encore actif.",
+  expired: "Ce code promo est expiré.",
+  exhausted: "Ce code promo a atteint sa limite d'utilisation.",
+  not_free: "Ce code ne couvre pas la totalité du paiement.",
+};
 
 /**
- * Free publication with a 100 % promo code. A valid, fully-discounted code is
- * mandatory: without it the only way to publish is the paid flow, which is
- * activated by the Paystack webhook.
+ * Free publication with a 100 % promo code. Everything (code checks, redemption,
+ * publication) happens atomically in the publish_with_promo database function, which
+ * is the only way to publish without paying: the paid flags can't be set from the client.
  */
 export const publishWithPromo = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -36,42 +47,19 @@ export const publishWithPromo = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const raw = normalizePromoCode(data.code ?? "");
     if (!raw) throw new Error("Un code promo valide est nécessaire pour publier sans paiement.");
-    const row: PromoRow = await loadUsablePromo(raw, context.supabase);
-    if (row.discount_percent < 100) {
-      throw new Error("Ce code ne couvre pas la totalité du paiement.");
-    }
-    if (typeof data.slug !== "string" || !SLUG_RE.test(data.slug)) {
-      throw new Error("Lien public invalide.");
-    }
 
-    // Record the redemption before publishing so a code can't be used without leaving a trace.
-    const { error: redeemError } = await context.supabase.from("promo_code_redemptions").insert({
-      promo_code_id: row.id,
-      code: row.code,
-      wedding_id: data.weddingId,
-      user_id: context.userId,
-    } as never);
-    if (redeemError) throw new Error("Impossible d'enregistrer l'utilisation du code.");
-    const { error: rpcError } = await context.supabase.rpc(
-      "increment_promo_uses" as never,
-      { p_code_id: row.id } as never,
+    const { data: result, error } = await context.supabase.rpc(
+      "publish_with_promo" as never,
+      {
+        _wedding_id: data.weddingId,
+        _slug: data.slug,
+        _code: raw,
+        _include_guestbook: data.includeGuestbook === true,
+      } as never,
     );
-    if (rpcError) throw new Error("Impossible d'enregistrer l'utilisation du code.");
-
-    const update: Record<string, unknown> = {
-      is_published: true,
-      is_locked: true,
-      published_at: new Date().toISOString(),
-      slug: data.slug,
-      has_envelope_animation: false,
-    };
-    if (data.includeGuestbook) update.has_guestbook = true;
-
-    const { error } = await context.supabase
-      .from("weddings")
-      .update(update as never)
-      .eq("id", data.weddingId);
-    if (error) throw new Error(`Publication échouée: ${error.message}`);
-
+    if (error) throw new Error("Publication échouée. Réessayez.");
+    if (result !== "ok") {
+      throw new Error(PUBLISH_ERRORS[String(result)] ?? "Publication impossible.");
+    }
     return { published: true as const };
   });

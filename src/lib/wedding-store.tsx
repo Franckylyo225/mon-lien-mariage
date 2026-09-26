@@ -360,7 +360,8 @@ interface WeddingState {
   updateGuest: (id: string, patch: Partial<Guest>) => Promise<void>;
   removeGuest: (id: string) => Promise<void>;
   setRsvp: (guestId: string, ceremonyId: string, status: RSVPStatus, plusOnes?: number) => Promise<void>;
-  publish: (opts?: { slug?: string; envelopeAnimation?: boolean }) => Promise<void>;
+  /** Reflects a publication that the server already performed (paid or free): updates local state only, no database write. */
+  applyPublication: (patch: Partial<Couple>) => void;
   unpublish: () => Promise<void>;
 }
 
@@ -1308,25 +1309,9 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
     [weddingId],
   );
 
-  const publish = useCallback<WeddingState["publish"]>(
-    async (opts) => {
-      const baseSlug =
-        opts?.slug || couple.slug || slugify(`${couple.brideName}-et-${couple.groomName}`) || uid();
-      const patch: Partial<Couple> = {
-        slug: baseSlug,
-        isPublished: true,
-        isLocked: true,
-        publishedAt: new Date().toISOString(),
-        hasEnvelopeAnimation: opts?.envelopeAnimation ?? couple.hasEnvelopeAnimation ?? false,
-      };
-      setCouple((c) => ({ ...c, ...patch }));
-      if (weddingId) {
-        const { error } = await supabase.from("weddings").update(coupleToRow(patch) as never).eq("id", weddingId);
-        if (error) console.error("publish", error);
-      }
-    },
-    [weddingId, couple.slug, couple.brideName, couple.groomName, couple.hasEnvelopeAnimation],
-  );
+  const applyPublication = useCallback<WeddingState["applyPublication"]>((patch) => {
+    setCouple((c) => ({ ...c, ...patch }));
+  }, []);
 
   const unpublish = useCallback<WeddingState["unpublish"]>(async () => {
     const patch: Partial<Couple> = { isPublished: false, isLocked: false };
@@ -1428,6 +1413,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       copy["owner_id"] = userId;
       copy["is_published"] = false;
       copy["is_locked"] = false;
+      copy["has_guestbook"] = false;
       copy["wedding_date"] = null;
       copy["onboarding_step"] = 4;
 
@@ -1541,7 +1527,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
 
       removeGuest,
       setRsvp,
-      publish,
+      applyPublication,
       unpublish,
     }),
     [
@@ -1568,7 +1554,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       updateGuest,
       removeGuest,
       setRsvp,
-      publish,
+      applyPublication,
       unpublish,
     ],
 
