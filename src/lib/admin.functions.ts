@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireAuth as requireSupabaseAuth } from "@/lib/auth-middleware";
+import { BASE_PRICE_XOF } from "@/lib/pricing";
 
-const BASE_PRICE_XOF = 24900;
 const DAY_MS = 24 * 3600 * 1000;
 
 async function assertAdmin(context: { supabase: any; userId: string }) {

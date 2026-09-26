@@ -1,3 +1,4 @@
+import { sanitizeBlogHtml } from "@/lib/sanitize-blog-html";
 import { useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
@@ -76,10 +77,7 @@ export const Route = createFileRoute("/blog/$slug")({
 function renderMarkdown(content: string) {
   // Content authored with the WYSIWYG admin editor is stored as HTML.
   if (/^\s*<(p|h[1-6]|ul|ol|blockquote|figure|img|div)\b/i.test(content)) {
-    const safe = content
-      .replace(/<script[\s\S]*?<\/script>/gi, "")
-      .replace(/\son\w+="[^"]*"/gi, "")
-      .replace(/javascript:/gi, "");
+    const safe = sanitizeBlogHtml(content);
     return (
       <div
         className="blog-html text-[16px] leading-[1.75] text-[#5A4F52]"

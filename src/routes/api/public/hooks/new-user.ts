@@ -1,6 +1,14 @@
+import { timingSafeEqual } from 'crypto'
 import { createClient } from '@supabase/supabase-js'
 import { createFileRoute } from '@tanstack/react-router'
 import { sendTemplateEmail } from '@/lib/email-templates/send-email'
+
+function safeEqual(a: string, b: string) {
+  const x = Buffer.from(a)
+  const y = Buffer.from(b)
+  return x.length === y.length && timingSafeEqual(x, y)
+}
+
 
 // Internal webhook called by the on_profile_created Postgres trigger via pg_net.
 // Authenticated with the service-role key.
@@ -17,7 +25,7 @@ export const Route = createFileRoute('/api/public/hooks/new-user')({
         }
 
         const auth = request.headers.get('Authorization') || ''
-        if (!auth.startsWith('Bearer ') || auth.slice(7) !== serviceKey) {
+        if (!auth.startsWith('Bearer ') || !safeEqual(auth.slice(7), serviceKey)) {
           return Response.json({ error: 'unauthorized' }, { status: 401 })
         }
 

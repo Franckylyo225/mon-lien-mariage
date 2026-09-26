@@ -3,8 +3,9 @@ import { requireAuth as requireSupabaseAuth } from "@/lib/auth-middleware";
 
 export type PaystackPaymentType = "publication" | "addon_guestbook";
 
-export const BASE_PRICE_XOF = 24900;
-export const GUESTBOOK_ADDON_XOF = 1990;
+import { BASE_PRICE_XOF, GUESTBOOK_ADDON_XOF } from "@/lib/pricing";
+
+export { BASE_PRICE_XOF, GUESTBOOK_ADDON_XOF };
 
 interface InitInput {
   weddingId: string;
@@ -34,6 +35,23 @@ export const initializePaystackPayment = createServerFn({ method: "POST" })
 
     if (data.paymentType !== "publication" && data.paymentType !== "addon_guestbook") {
       throw new Error("Type de paiement invalide.");
+    }
+
+    // The return URL must be our own callback page on the origin that made the request.
+    let callbackUrl: URL;
+    try {
+      callbackUrl = new URL(data.callbackUrl);
+    } catch {
+      throw new Error("URL de retour invalide.");
+    }
+    const { getRequest } = await import("@tanstack/react-start/server");
+    const requestOrigin = getRequest()?.headers.get("origin");
+    if (
+      !/^https?:$/.test(callbackUrl.protocol) ||
+      callbackUrl.pathname !== "/payment/callback" ||
+      (requestOrigin && callbackUrl.origin !== requestOrigin)
+    ) {
+      throw new Error("URL de retour invalide.");
     }
 
     // Montant calculé côté serveur (le client ne peut pas l'imposer)
@@ -116,7 +134,7 @@ export const initializePaystackPayment = createServerFn({ method: "POST" })
         currency: "XOF",
         reference,
         metadata,
-        callback_url: data.callbackUrl,
+        callback_url: callbackUrl.toString(),
         channels: ["card", "mobile_money", "ussd"],
       }),
     });

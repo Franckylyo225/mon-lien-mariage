@@ -67,7 +67,7 @@ export function renderAutomationEmail(
         )}</a></td></tr></table>`
       : ''
 
-  const inner = substitute(automation.body_html, { ...vars, cta: ctaBlock })
+  const inner = substituteHtml(automation.body_html, { ...vars, cta: ctaBlock })
 
   return `<!doctype html>
 <html lang="fr"><head><meta charset="utf-8"/>
@@ -96,6 +96,14 @@ export function renderAutomationEmail(
 
 function substitute(html: string, vars: Record<string, string>) {
   return html.replace(/\{(\w+)\}/g, (_m, key: string) => vars[key] ?? '')
+}
+
+/** Same as substitute for HTML bodies: values are escaped, except the pre-rendered button block. */
+function substituteHtml(html: string, vars: Record<string, string>) {
+  return html.replace(/\{(\w+)\}/g, (_m, key: string) => {
+    const value = vars[key] ?? ''
+    return key === 'cta' ? value : escapeHtml(value)
+  })
 }
 
 function htmlToText(html: string) {

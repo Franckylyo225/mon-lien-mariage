@@ -1,5 +1,13 @@
+import { timingSafeEqual } from 'crypto'
 import { createFileRoute } from '@tanstack/react-router'
 import { sendTemplateEmail } from '@/lib/email-templates/send-email'
+
+function safeEqual(a: string, b: string) {
+  const x = Buffer.from(a)
+  const y = Buffer.from(b)
+  return x.length === y.length && timingSafeEqual(x, y)
+}
+
 
 // Internal webhook called by the on_rsvp_confirmed Postgres trigger via pg_net.
 // Authenticated with the service-role key.
@@ -13,7 +21,7 @@ export const Route = createFileRoute('/api/public/hooks/rsvp-milestone')({
           return Response.json({ error: 'server_misconfigured' }, { status: 500 })
         }
 
-        if (!auth.startsWith('Bearer ') || auth.slice(7) !== serviceKey) {
+        if (!auth.startsWith('Bearer ') || !safeEqual(auth.slice(7), serviceKey)) {
           return Response.json({ error: 'unauthorized' }, { status: 401 })
         }
 

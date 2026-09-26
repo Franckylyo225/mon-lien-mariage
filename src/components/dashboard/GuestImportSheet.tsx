@@ -17,6 +17,8 @@ import {
 import { useVisualViewport } from "@/hooks/use-visual-viewport";
 import { cn } from "@/lib/utils";
 
+const MAX_FILE_BYTES = 5 * 1024 * 1024;
+
 type Stage = "source" | "paste" | "review";
 
 const STATUS_NOTE: Record<ReviewStatus, { text: string; cls: string } | null> = {
@@ -59,6 +61,10 @@ export function GuestImportSheet({
   };
 
   const onFile = async (file: File) => {
+    if (file.size > MAX_FILE_BYTES) {
+      setError("Ce fichier est trop volumineux (5 Mo maximum).");
+      return;
+    }
     setBusy(true);
     setError(null);
     try {
