@@ -180,6 +180,14 @@ function CeremoniesPage() {
         <CeremonySheet
           key={editing.id}
           initial={editing}
+          answeredCount={
+            allGuests.filter((g) =>
+              g.rsvps.some(
+                (r) =>
+                  r.ceremonyId === editing.id && (r.status === "confirmé" || r.status === "décliné"),
+              ),
+            ).length
+          }
           onClose={() => setEditing(null)}
           onSave={(c) => {
             void updateCeremony(editing.id, c);

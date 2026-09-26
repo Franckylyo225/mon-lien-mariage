@@ -16,12 +16,13 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { redirectToCheckout } from "@/lib/checkout-redirect";
-import { useWedding, slugify } from "@/lib/wedding-store";
+import { useWedding, slugify, configProgress } from "@/lib/wedding-store";
 import { validatePromoCode, publishWithPromo } from "@/lib/promo.functions";
 import { initializePaystackPayment, markPaywallReached } from "@/lib/paystack.functions";
 import { checkSlugAvailability } from "@/lib/public-wedding.functions";
 import { useNavigate } from "@tanstack/react-router";
 import { fbq } from "@/lib/facebook-pixel";
+import { BASE_PRICE_XOF, GUESTBOOK_ADDON_XOF } from "@/lib/pricing";
 
 
 
@@ -35,8 +36,6 @@ export const Route = createFileRoute("/publish")({
   component: PublishPage,
 });
 
-const BASE_PRICE_XOF = 24900;
-const GUESTBOOK_ADDON_XOF = 1990;
 
 function formatFrenchDate(iso: string): string | null {
   if (!iso) return null;
@@ -51,7 +50,7 @@ function formatFrenchDate(iso: string): string | null {
 }
 
 function PublishPage() {
-  const { couple, weddingId, loading, updateCouple } = useWedding();
+  const { couple, ceremonies, weddingId, loading, updateCouple } = useWedding();
   const validatePromo = useServerFn(validatePromoCode);
   const publishFn = useServerFn(publishWithPromo);
   const checkSlug = useServerFn(checkSlugAvailability);
@@ -67,6 +66,13 @@ function PublishPage() {
   const [publishing, setPublishing] = useState(false);
   const [payError, setPayError] = useState<string | null>(null);
   const [includeGuestbook, setIncludeGuestbook] = useState(false);
+  const [namesConfirmed, setNamesConfirmed] = useState(false);
+  const { flags } = configProgress({ couple, ceremonies });
+  const missing = [
+    !flags.programme && { label: "Une étape avec sa date", to: "/dashboard/ceremonies" as const },
+    !flags.page && { label: "Une photo de couverture", to: "/dashboard/preview" as const },
+    !flags.invites && { label: "La liste des invités (RSVP)", to: "/dashboard/guests" as const },
+  ].filter((m): m is { label: string; to: "/dashboard/ceremonies" | "/dashboard/preview" | "/dashboard/guests" } => !!m);
 
   const baseSlug = useMemo(
     () =>
@@ -196,7 +202,7 @@ function PublishPage() {
   const total = Math.max(0, Math.round(gross * (1 - discount / 100)));
   const alreadyPublished = couple.isPublished === true;
   const slugOk = slugStatus === "available";
-  const canPublish = slugOk;
+  const canPublish = slugOk && namesConfirmed && flags.infos;
 
 
   const handlePromo = async () => {
@@ -227,6 +233,10 @@ function PublishPage() {
     if (!weddingId) {
       setPayError("Aucun événement actif. Rechargez la page.");
       toast.error("Aucun événement actif. Rechargez la page.");
+      return;
+    }
+    if (!namesConfirmed) {
+      setPayError("Confirmez l'orthographe des prénoms pour continuer.");
       return;
     }
     if (!slugOk) {
@@ -334,10 +344,10 @@ function PublishPage() {
           >
             <Check className="size-6" strokeWidth={2} />
           </span>
-          <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.1em] text-primary">
+          <p className="mt-5 page-kicker">
             Événement en ligne
           </p>
-          <h1 className="mt-2 font-serif text-[24px] italic leading-tight">
+          <h1 className="mt-2 font-produit text-[26px] font-bold leading-tight tracking-tight">
             Cet événement est déjà publié
           </h1>
           <p className="mt-3 text-[12px] leading-[1.6] text-muted-foreground">
@@ -397,7 +407,7 @@ function PublishPage() {
       <main className="mx-auto max-w-xl px-[14px] pb-16 pt-10">
         {/* 2. Hero */}
         <section className="mb-6 text-center">
-          <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-primary">
+          <p className="page-kicker">
             Dernière étape
           </p>
           <div className="mt-4 flex flex-col items-center leading-tight">
@@ -421,9 +431,11 @@ function PublishPage() {
             style={{ opacity: 0.4 }}
           />
           <p className="text-[12px] leading-[1.5] text-muted-foreground">
-            Votre page est prête.
+            {missing.length === 0 ? "Votre page est prête." : "Votre page est en ligne dès la publication."}
             <br />
-            Publiez-la pour la partager avec vos invités.
+            {missing.length === 0
+              ? "Publiez-la pour la partager avec vos invités."
+              : "Vous pourrez la compléter à tout moment ensuite."}
           </p>
         </section>
 
@@ -704,6 +716,50 @@ function PublishPage() {
           )}
         </div>
 
+        {/* 4b. Avant de publier : prénoms + éléments manquants */}
+        <section className="mb-4 rounded-2xl border border-border bg-card p-4">
+          <h2 className="text-[14px] font-semibold">Avant de publier</h2>
+          <label className="mt-3 flex cursor-pointer items-start gap-3 text-[13px] leading-snug">
+            <input
+              type="checkbox"
+              checked={namesConfirmed}
+              onChange={(e) => setNamesConfirmed(e.target.checked)}
+              className="mt-0.5 size-4 shrink-0 accent-[var(--primary)]"
+            />
+            <span>
+              Les prénoms{" "}
+              <strong className="font-semibold">
+                {couple.brideName || "—"} &amp; {couple.groomName || "—"}
+              </strong>{" "}
+              sont corrects. Ils ne pourront plus être modifiés après la publication.
+            </span>
+          </label>
+
+          {!flags.infos ? (
+            <p className="mt-3 rounded-xl bg-amber-50 px-3 py-2 text-[12px] text-amber-800">
+              Renseignez d'abord les prénoms et la date depuis le tableau de bord.
+            </p>
+          ) : null}
+
+          {missing.length > 0 ? (
+            <div className="mt-3 rounded-xl bg-muted/60 p-3">
+              <p className="text-[12px] font-medium">
+                Encore à compléter — vous pourrez le faire après la publication :
+              </p>
+              <ul className="mt-1.5 space-y-1">
+                {missing.map((m) => (
+                  <li key={m.to} className="flex items-center justify-between gap-3 text-[12px]">
+                    <span className="text-muted-foreground">{m.label}</span>
+                    <Link to={m.to} className="shrink-0 font-medium text-primary hover:underline">
+                      Ajouter
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+        </section>
+
         {/* 5. Bouton — Publier (activé après code promo) */}
         <div className="mb-2.5">
           <button
@@ -712,8 +768,7 @@ function PublishPage() {
             disabled={!canPublish || publishing || !weddingId}
             aria-disabled={!canPublish || publishing || !weddingId}
             title="Publier votre invitation"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-[14px] px-4 py-4 text-[15px] font-medium transition disabled:opacity-60"
-            style={{ background: "#4B1528", color: "#FBEAF0" }}
+            className="btn-accent-gradient inline-flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-4 text-[15px] font-semibold"
           >
             {publishing ? (
               <Loader2 className="size-4 animate-spin" strokeWidth={2} />

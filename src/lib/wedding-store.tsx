@@ -1159,6 +1159,9 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
 
   const removeCeremony = useCallback<WeddingState["removeCeremony"]>(
     async (id) => {
+      const affected = guests.filter(
+        (g) => g.ceremonyIds.includes(id) || g.rsvps.some((r) => r.ceremonyId === id),
+      );
       setCeremonies((prev) => prev.filter((c) => c.id !== id));
       setGuests((prev) =>
         prev.map((g) => ({
@@ -1170,9 +1173,21 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       if (weddingId) {
         const { error } = await supabase.from("ceremonies").delete().eq("id", id);
         if (error) console.error("removeCeremony", error);
+        // Keep the guests table in sync so a deleted step doesn't come back after a reload.
+        await Promise.all(
+          affected.map((g) =>
+            supabase
+              .from("guests")
+              .update({
+                ceremony_ids: g.ceremonyIds.filter((cid) => cid !== id),
+                rsvps: g.rsvps.filter((r) => r.ceremonyId !== id) as unknown as never,
+              } as never)
+              .eq("id", g.id),
+          ),
+        );
       }
     },
-    [weddingId],
+    [weddingId, guests],
   );
 
   const addGuest = useCallback<WeddingState["addGuest"]>(

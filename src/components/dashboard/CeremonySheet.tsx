@@ -49,12 +49,14 @@ interface Props {
   onClose: () => void;
   onSave: (c: Omit<Ceremony, "id" | "publicSlug">) => void;
   onDelete?: () => void;
+  /** Guests who already answered (confirmed or declined) for this step: shown before deleting it. */
+  answeredCount?: number;
 }
 
 const newItemId = () => Math.random().toString(36).slice(2, 9);
 const hasDetails = (it: ProgramItem) => !!(it.description || it.location || it.mapsUrl);
 
-export function CeremonySheet({ initial, onClose, onSave, onDelete }: Props) {
+export function CeremonySheet({ initial, onClose, onSave, onDelete, answeredCount = 0 }: Props) {
   const { couple } = useWedding();
   const vv = useVisualViewport();
 
@@ -175,8 +177,6 @@ export function CeremonySheet({ initial, onClose, onSave, onDelete }: Props) {
       return next;
     });
 
-  const locked = couple.isLocked;
-
   return (
     <>
       <ConfirmDialog
@@ -193,7 +193,13 @@ export function CeremonySheet({ initial, onClose, onSave, onDelete }: Props) {
         open={confirmDelete}
         onOpenChange={setConfirmDelete}
         title="Supprimer cette étape ?"
-        description="Les réponses des invités pour cette étape seront aussi supprimées. Cette action est définitive."
+        description={
+          (couple.isPublished ? "Elle disparaîtra aussi de votre page publique. " : "") +
+          (answeredCount > 0
+            ? `${answeredCount} invité${answeredCount > 1 ? "s ont" : " a"} déjà répondu pour cette étape : ${answeredCount > 1 ? "leurs réponses ne seront" : "sa réponse ne sera"} plus comptée${answeredCount > 1 ? "s" : ""}. `
+            : "") +
+          "Cette action est définitive."
+        }
         confirmLabel="Supprimer"
         destructive
         onConfirm={() => onDelete?.()}
@@ -382,17 +388,11 @@ export function CeremonySheet({ initial, onClose, onSave, onDelete }: Props) {
                 <div className="border-t border-border pt-4 text-center">
                   <button
                     type="button"
-                    disabled={locked}
                     onClick={() => setConfirmDelete(true)}
-                    className="text-[13px] text-destructive hover:underline disabled:no-underline disabled:opacity-40"
+                    className="text-[13px] text-destructive hover:underline"
                   >
                     Supprimer cette étape
                   </button>
-                  {locked ? (
-                    <p className="mt-1 text-[12px] text-muted-foreground">
-                      Impossible après la publication de la page.
-                    </p>
-                  ) : null}
                 </div>
               ) : null}
             </div>
