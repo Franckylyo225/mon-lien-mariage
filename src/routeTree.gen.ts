@@ -66,6 +66,7 @@ import { Route as GuestbookPrintIdRouteImport } from './routes/guestbook.print.$
 import { Route as DashboardGuestsNewRouteImport } from './routes/dashboard.guests.new'
 import { Route as DashboardCeremoniesIdRouteImport } from './routes/dashboard.ceremonies.$id'
 import { Route as ApiPublicHealthRouteImport } from './routes/api/public/health'
+import { Route as ApiPublicAdminAuthRouteImport } from './routes/api/public/admin-auth'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
@@ -362,6 +363,11 @@ const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
   path: '/api/public/health',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicAdminAuthRoute = ApiPublicAdminAuthRouteImport.update({
+  id: '/api/public/admin-auth',
+  path: '/api/public/admin-auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LovableEmailTransactionalPreviewRoute =
   LovableEmailTransactionalPreviewRouteImport.update({
     id: '/lovable/email/transactional/preview',
@@ -460,6 +466,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/api/public/admin-auth': typeof ApiPublicAdminAuthRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
@@ -525,6 +532,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/api/public/admin-auth': typeof ApiPublicAdminAuthRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
@@ -593,6 +601,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/api/public/admin-auth': typeof ApiPublicAdminAuthRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/dashboard/ceremonies/$id': typeof DashboardCeremoniesIdRoute
   '/dashboard/guests/new': typeof DashboardGuestsNewRoute
@@ -662,6 +671,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/blog/'
     | '/dashboard/'
+    | '/api/public/admin-auth'
     | '/api/public/health'
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
@@ -727,6 +737,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/blog'
     | '/dashboard'
+    | '/api/public/admin-auth'
     | '/api/public/health'
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
@@ -794,6 +805,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/blog/'
     | '/dashboard/'
+    | '/api/public/admin-auth'
     | '/api/public/health'
     | '/dashboard/ceremonies/$id'
     | '/dashboard/guests/new'
@@ -838,6 +850,7 @@ export interface RootRouteChildren {
   PaymentCallbackRoute: typeof PaymentCallbackRoute
   ThemeThumbSlugRoute: typeof ThemeThumbSlugRoute
   BlogIndexRoute: typeof BlogIndexRoute
+  ApiPublicAdminAuthRoute: typeof ApiPublicAdminAuthRoute
   ApiPublicHealthRoute: typeof ApiPublicHealthRoute
   GuestbookPrintIdRoute: typeof GuestbookPrintIdRoute
   ApiPublicBlogImageSplatRoute: typeof ApiPublicBlogImageSplatRoute
@@ -1251,6 +1264,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/admin-auth': {
+      id: '/api/public/admin-auth'
+      path: '/api/public/admin-auth'
+      fullPath: '/api/public/admin-auth'
+      preLoaderRoute: typeof ApiPublicAdminAuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/transactional/preview': {
       id: '/lovable/email/transactional/preview'
       path: '/lovable/email/transactional/preview'
@@ -1430,6 +1450,7 @@ const rootRouteChildren: RootRouteChildren = {
   PaymentCallbackRoute: PaymentCallbackRoute,
   ThemeThumbSlugRoute: ThemeThumbSlugRoute,
   BlogIndexRoute: BlogIndexRoute,
+  ApiPublicAdminAuthRoute: ApiPublicAdminAuthRoute,
   ApiPublicHealthRoute: ApiPublicHealthRoute,
   GuestbookPrintIdRoute: GuestbookPrintIdRoute,
   ApiPublicBlogImageSplatRoute: ApiPublicBlogImageSplatRoute,

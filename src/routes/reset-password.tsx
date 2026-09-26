@@ -155,14 +155,14 @@ function ResetPasswordPage() {
   const submitCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setOtpError(null);
-    if (otpCode.length !== 6) {
-      setOtpError("Le code doit contenir 6 chiffres.");
+    if (otpCode.length < 6) {
+      setOtpError("Le code doit contenir au moins 6 chiffres.");
       return;
     }
     setOtpLoading(true);
     const { error: err } = await supabase.auth.verifyOtp({
       type: "recovery",
-      email: otpEmail.trim(),
+      email: otpEmail.trim().toLowerCase(),
       token: otpCode,
     });
     setOtpLoading(false);
@@ -212,7 +212,7 @@ function ResetPasswordPage() {
                 required
                 value={otpCode}
                 onChange={(e) =>
-                  setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6))
+                  setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 10))
                 }
                 className={inputClass}
                 placeholder="123456"
