@@ -767,11 +767,8 @@ export const sendPasswordResetEmail = createServerFn({ method: "POST" })
     const email = (data.email || "").trim().toLowerCase();
     if (!email.includes("@")) throw new Error("Adresse email invalide");
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.auth.resetPasswordForEmail(email, {
-      redirectTo: "https://moninvit.com/reset-password",
-    });
-    if (error) throw new Error(error.message);
+    const { runAdminAuthAction } = await import("@/lib/admin-auth-actions.server");
+    await runAdminAuthAction({ action: "reset_email", email });
     return { ok: true };
   });
 
@@ -786,11 +783,8 @@ export const adminSetUserPassword = createServerFn({ method: "POST" })
         "Mot de passe trop faible : 8 caractères minimum, une majuscule, une minuscule et un chiffre.",
       );
     }
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, {
-      password: pw,
-    });
-    if (error) throw new Error(error.message);
+    const { runAdminAuthAction } = await import("@/lib/admin-auth-actions.server");
+    await runAdminAuthAction({ action: "set_password", userId: data.userId, password: pw });
     return { ok: true };
   });
 
@@ -802,11 +796,8 @@ export const adminSetUserDisabled = createServerFn({ method: "POST" })
     if (data.userId === context.userId) {
       throw new Error("Vous ne pouvez pas désactiver votre propre compte.");
     }
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.auth.admin.updateUserById(data.userId, {
-      ban_duration: data.disabled ? "876000h" : "none",
-    });
-    if (error) throw new Error(error.message);
+    const { runAdminAuthAction } = await import("@/lib/admin-auth-actions.server");
+    await runAdminAuthAction({ action: "set_disabled", userId: data.userId, disabled: data.disabled });
     return { ok: true };
   });
 
@@ -818,9 +809,8 @@ export const adminDeleteUser = createServerFn({ method: "POST" })
     if (data.userId === context.userId) {
       throw new Error("Vous ne pouvez pas supprimer votre propre compte.");
     }
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.auth.admin.deleteUser(data.userId);
-    if (error) throw new Error(error.message);
+    const { runAdminAuthAction } = await import("@/lib/admin-auth-actions.server");
+    await runAdminAuthAction({ action: "delete_user", userId: data.userId });
     return { ok: true };
   });
 
