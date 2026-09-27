@@ -444,13 +444,15 @@ const DESIGNS: Partial<Record<ThemeId, RsvpDesign>> = {
 };
 
 /**
- * Themes added in the africain/oriental families derive their RSVP design
- * directly from their palette in the theme registry, so a new theme never
- * needs a hand-written entry above.
+ * The 10 themes with a richer palette (deep/onDeep/muted/defaultBgHex — see
+ * ThemeDef) derive their RSVP design directly from those tokens, so a new
+ * theme never needs a hand-written entry above. Gated on the tokens
+ * themselves, not the theme's family label, so relabeling a family here
+ * never silently changes which themes get a derived design.
  */
 function derivedDesign(theme: ThemeId): RsvpDesign | null {
   const t = THEMES[theme];
-  if (!t || (t.family !== "africain" && t.family !== "oriental")) return null;
+  if (!t || t.deep === undefined || t.defaultBgHex === undefined) return null;
   const ink = t.defaultText ?? "#1A1A1A";
   const bg = t.defaultBgHex ?? "#F5EFE7";
   return {
@@ -478,6 +480,13 @@ function derivedDesign(theme: ThemeId): RsvpDesign | null {
     eyebrow: "R S V P",
   };
 }
+
+// Reuse the parent theme's RSVP design exactly, matching the template component they reuse.
+DESIGNS["mangrove-emeraude"] = DESIGNS["vert-sauge"];
+DESIGNS["frangipanier-blush"] = DESIGNS["jardin-sauvage"];
+DESIGNS["bougainvillier"] = DESIGNS["terracotta-boheme"];
+DESIGNS["encre-aquarelle"] = DESIGNS["aquarelle"];
+DESIGNS["carnaval-dore"] = DESIGNS["confetti"];
 
 export function resolveRsvpDesign(theme: ThemeId | undefined | null): RsvpDesign {
   if (theme && DESIGNS[theme]) return DESIGNS[theme]!;

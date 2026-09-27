@@ -33,18 +33,32 @@ export function BleuNuitTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
     >
       <article className="mx-auto max-w-lg px-5 pb-24 pt-10 sm:px-8 animate-fade-in">
         {couple.heroImageUrl ? (
-          <figure className="overflow-hidden rounded-2xl">
+          <figure
+            className="mx-auto overflow-hidden"
+            style={{
+              width: "min(100%, 22rem)",
+              aspectRatio: "3 / 4",
+              borderRadius: "9999px 9999px 1.5rem 1.5rem",
+              border: `1.5px solid ${accent}99`,
+              boxShadow: `0 0 0 6px #0f1b2d, 0 0 0 7px ${accent}40`,
+            }}
+          >
             <img
               src={couple.heroImageUrl}
               alt=""
-              className="aspect-[3/4] w-full object-cover"
+              className="h-full w-full object-cover"
               style={{ filter: "saturate(0.9) brightness(0.92)" }}
             />
           </figure>
         ) : (
           <div
-            className="aspect-[3/4] w-full rounded-2xl"
+            className="mx-auto"
             style={{
+              width: "min(100%, 22rem)",
+              aspectRatio: "3 / 4",
+              borderRadius: "9999px 9999px 1.5rem 1.5rem",
+              border: `1.5px solid ${accent}99`,
+              boxShadow: `0 0 0 6px #0f1b2d, 0 0 0 7px ${accent}40`,
               background: `linear-gradient(180deg, #1c2f4b, ${accent}22)`,
             }}
           />
@@ -62,32 +76,30 @@ export function BleuNuitTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
           style={{ fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)' }}
         >
           <span className="block text-[3.25rem] italic">{couple.brideName}</span>
-          <span
-            className="my-2 block text-2xl italic"
-            style={{ color: accent }}
-          >
+          <span className="my-2 block text-2xl italic" style={{ color: accent }}>
             &amp;
           </span>
           <span className="block text-[3.25rem] italic">{couple.groomName}</span>
         </h1>
 
         <div className="mx-auto mt-6 flex items-center justify-center gap-3">
-          <span
-            className="h-px w-16"
-            style={{ background: accent + "cc" }}
-          />
-          <span className="text-xs" style={{ color: accent }}>◆</span>
-          <span
-            className="h-px w-16"
-            style={{ background: accent + "cc" }}
-          />
+          <span className="h-px w-16" style={{ background: accent + "cc" }} />
+          <span className="text-xs" style={{ color: accent }}>
+            ◆
+          </span>
+          <span className="h-px w-16" style={{ background: accent + "cc" }} />
         </div>
 
         <p
           className="mt-4 text-center italic"
-          style={{ fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)', color: "#eae3d0" }}
+          style={{
+            fontFamily: 'var(--wedding-font-heading, "Playfair Display", serif)',
+            color: "#eae3d0",
+          }}
         >
-          <span style={{ color: "var(--wedding-accent)" }}>{formatFrenchDate(couple.weddingDate)}</span>
+          <span style={{ color: "var(--wedding-accent)" }}>
+            {formatFrenchDate(couple.weddingDate)}
+          </span>
         </p>
         <p
           className="mt-1 text-center text-[10px] uppercase tracking-[0.4em]"
@@ -107,10 +119,8 @@ export function BleuNuitTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
               tone={{
                 cellBg: "bg-white/5",
                 cellBorder: "border border-white/15",
-                numberClass:
-                  'text-3xl italic',
-                labelClass:
-                  "text-[9px] uppercase tracking-[0.3em] text-[#eae3d0]/60",
+                numberClass: "text-3xl italic",
+                labelClass: "text-[9px] uppercase tracking-[0.3em] text-[#eae3d0]/60",
               }}
             />
           </div>
@@ -133,14 +143,15 @@ export function BleuNuitTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
 
         <section className="mt-16">
           <div className="text-center">
-            <ThemeIcon src={cityHallIcon.url} color={couple.accent ?? "#c9a84c"} className="mx-auto mb-3 size-8" />
+            <ThemeIcon
+              src={cityHallIcon.url}
+              color={couple.accent ?? "#c9a84c"}
+              className="mx-auto mb-3 size-8"
+            />
           </div>
           <div className="mb-6 flex items-center justify-center gap-3">
             <span className="h-px w-10" style={{ background: accent + "80" }} />
-            <p
-              className="text-[10px] uppercase tracking-[0.5em]"
-              style={{ color: accent }}
-            >
+            <p className="text-[10px] uppercase tracking-[0.5em]" style={{ color: accent }}>
               {eventTypeMeta[couple.eventType ?? "mariage"].programTitle}
             </p>
             <span className="h-px w-10" style={{ background: accent + "80" }} />
@@ -152,19 +163,11 @@ export function BleuNuitTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps
 
         <GallerySection couple={couple} accent={accent} layout="mosaic" />
 
-        <TemplateBottomSections
-          couple={couple}
-          ceremonies={published}
-          accent={accent}
-        />
+        <TemplateBottomSections couple={couple} ceremonies={published} accent={accent} />
 
         <footer className="mt-16 border-t border-white/10 pt-6 text-center">
-          <p
-            className="text-[10px] uppercase tracking-[0.5em]"
-            style={{ color: accent + "cc" }}
-          >
-            {couple.hashtag ??
-              `${couple.brideName} & ${couple.groomName}`}
+          <p className="text-[10px] uppercase tracking-[0.5em]" style={{ color: accent + "cc" }}>
+            {couple.hashtag ?? `${couple.brideName} & ${couple.groomName}`}
           </p>
         </footer>
       </article>

@@ -1,11 +1,63 @@
 import { useEffect, useState, useCallback } from "react";
-import { MapPin, Phone, Mail, User, Sparkles, Car, BedDouble, LifeBuoy, X, ChevronLeft, ChevronRight, Gift } from "lucide-react";
-import type { Ceremony, Couple } from "@/lib/wedding-store";
+import {
+  MapPin,
+  Phone,
+  Mail,
+  User,
+  Sparkles,
+  Car,
+  BedDouble,
+  LifeBuoy,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Gift,
+} from "lucide-react";
+import type { Ceremony, Couple, ThemeId } from "@/lib/wedding-store";
 import { ceremonyMapsHref, ceremonyVenue, programItemMapsHref } from "@/lib/wedding-store";
+import { THEMES, type ThemeFamilyId } from "@/lib/wedding-theme";
 import { StoryHeader, StoryTimeline } from "@/components/public/StoryTimeline";
 import { ThemeIcon } from "./theme-icon";
 import dressCodeIcon from "@/assets/icons/dress-code.png.asset.json";
 import cityHallIcon from "@/assets/icons/city-hall.png.asset.json";
+
+/**
+ * Info-card shape (Locations/Dress code/Registry/Practical/Contact) by theme
+ * family, so the bottom third of the invitation doesn't render the exact same
+ * card across all 25 themes — see TemplateBottomSections.
+ */
+interface InfoCardStyle {
+  /** Outer card: replaces "rounded-2xl border border-current/10". */
+  card: string;
+  /** Icon badge: replaces "rounded-full". */
+  badge: string;
+}
+
+const INFO_CARD_STYLE: Record<ThemeFamilyId, InfoCardStyle> = {
+  // Rose Élégance, Ivoire Épuré, Or Antique, Zellige Émeraude, Arabesque Bordeaux, Nacre & Girih —
+  // soft and formal, unchanged from the original look.
+  classique: { card: "rounded-2xl border border-current/10", badge: "rounded-full" },
+  // Wax Doré, Kenté Royal, Indigo Adinkra, Kenté Souverain, Bogolan Bordeaux, Wax Ivoire —
+  // bold geometric, hexagon badge evoking a woven/wax motif.
+  traditionnel: {
+    card: "rounded-2xl border-2 border-current/25",
+    badge: "rounded-none [clip-path:polygon(25%_0%,75%_0%,100%_50%,75%_100%,25%_100%,0%_50%)]",
+  },
+  // Bleu Nuit, Monochrome, Manuscrit, Nuit d'Ébène, Sahel Doré, Calligraphie Nuit —
+  // editorial: sharp corners, a pull-quote accent bar.
+  moderne: { card: "rounded-none border border-current/20 border-l-[3px]", badge: "rounded-none" },
+  // Vert Sauge, Jardin Sauvage, Terracotta Bohème + 3 nouveaux — organic, slightly irregular corners.
+  botanique: {
+    card: "rounded-[1.75rem_0.75rem_1.75rem_0.75rem] border border-current/15",
+    badge: "rounded-full",
+  },
+  // Aquarelle, Confetti, Papier Kraft, Mashrabiya Sable + 2 nouveaux — hand-painted/postal, dashed border.
+  illustre: { card: "rounded-2xl border border-dashed border-current/30", badge: "rounded-full" },
+};
+
+function infoCardStyle(theme: ThemeId): InfoCardStyle {
+  return INFO_CARD_STYLE[THEMES[theme]?.family] ?? INFO_CARD_STYLE.classique;
+}
 
 function ImageLightbox({
   images,
@@ -106,7 +158,6 @@ function ImageLightbox({
   );
 }
 
-
 // ---------- Countdown (D / H / M / S) ----------
 
 function computeDelta(target: number) {
@@ -172,8 +223,10 @@ function colorPresetTone(preset: CountdownStyle["color"]): CountdownTone | null 
   }
 }
 
-
-const SIZE_CLASSES: Record<NonNullable<CountdownStyle["size"]>, { number: string; label: string; pad: string }> = {
+const SIZE_CLASSES: Record<
+  NonNullable<CountdownStyle["size"]>,
+  { number: string; label: string; pad: string }
+> = {
   sm: { number: "text-xl", label: "text-[8px]", pad: "px-2 py-2.5" },
   md: { number: "text-3xl", label: "text-[9px]", pad: "px-2 py-4" },
   lg: { number: "text-5xl", label: "text-[10px]", pad: "px-2 py-5" },
@@ -258,7 +311,6 @@ export function Countdown({
   // Auto-hide once the wedding day is over.
   if (targetMs && now >= endOfDayMs) return null;
 
-
   const activeUnits = (units && units.length > 0 ? units : DEFAULT_UNITS).filter(
     (u): u is CountdownUnit => u in UNIT_LABELS,
   );
@@ -314,8 +366,6 @@ export function Countdown({
   );
 }
 
-
-
 // ---------- Section wrapper ----------
 
 export function SectionTitle({
@@ -332,10 +382,7 @@ export function SectionTitle({
   return (
     <div className={`text-center ${className}`}>
       {eyebrow ? (
-        <p
-          className="font-mono text-[10px] uppercase tracking-[0.4em]"
-          style={{ color: accent }}
-        >
+        <p className="font-mono text-[10px] uppercase tracking-[0.4em]" style={{ color: accent }}>
           {eyebrow}
         </p>
       ) : null}
@@ -349,10 +396,13 @@ export function SectionTitle({
 export function LocationsSection({
   ceremonies,
   accent,
+  cardStyle,
 }: {
   ceremonies: Ceremony[];
   accent?: string;
+  cardStyle?: InfoCardStyle;
 }) {
+  const style = cardStyle ?? INFO_CARD_STYLE.classique;
   const withVenue = ceremonies.filter(
     (c) => ceremonyVenue(c) || (c.program ?? []).some((it) => programItemMapsHref(it)),
   );
@@ -365,12 +415,9 @@ export function LocationsSection({
         {withVenue.map((c) => {
           const mapsUrl = ceremonyMapsHref(c) ?? "#";
           return (
-            <li
-              key={c.id}
-              className="flex items-start gap-3 rounded-2xl border border-current/10 bg-white/5 p-4"
-            >
+            <li key={c.id} className={`flex items-start gap-3 ${style.card} bg-white/5 p-4`}>
               <span
-                className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full"
+                className={`mt-0.5 flex size-9 shrink-0 items-center justify-center ${style.badge}`}
                 style={{ backgroundColor: (accent ?? "#999") + "22", color: accent }}
               >
                 <MapPin className="size-4" />
@@ -390,9 +437,7 @@ export function LocationsSection({
                   Ouvrir dans Maps →
                 </a>
                 {(() => {
-                  const subLocations = (c.program ?? []).filter((it) =>
-                    programItemMapsHref(it),
-                  );
+                  const subLocations = (c.program ?? []).filter((it) => programItemMapsHref(it));
                   if (subLocations.length === 0) return null;
                   return (
                     <ul className="mt-3 space-y-2 border-t border-current/10 pt-3">
@@ -434,17 +479,20 @@ export function LocationsSection({
 export function ContactSection({
   couple,
   accent,
+  cardStyle,
 }: {
   couple: Couple;
   accent?: string;
+  cardStyle?: InfoCardStyle;
 }) {
+  const style = cardStyle ?? INFO_CARD_STYLE.classique;
   const { contactName, contactPhone, contactEmail } = couple;
   if (!contactName && !contactPhone && !contactEmail) return null;
 
   return (
     <section className="mt-14">
       <SectionTitle eyebrow="Besoin d'aide ?" title="Pour plus d'informations" accent={accent} />
-      <div className="mt-6 rounded-2xl border border-current/10 bg-white/5 p-5 text-center">
+      <div className={`mt-6 ${style.card} bg-white/5 p-5 text-center`}>
         {contactName ? (
           <p className="flex items-center justify-center gap-2 font-serif text-lg italic">
             <User className="size-4 opacity-60" />
@@ -487,6 +535,7 @@ export function DressCodeSection({
   colors,
   images,
   accent,
+  cardStyle,
 }: {
   enabled?: boolean;
   title?: string;
@@ -494,7 +543,9 @@ export function DressCodeSection({
   colors?: string[];
   images?: string[];
   accent?: string;
+  cardStyle?: InfoCardStyle;
 }) {
+  const style = cardStyle ?? INFO_CARD_STYLE.classique;
   if (enabled === false) return null;
   const swatches = (colors ?? []).filter((c) => c && c.trim().length > 0).slice(0, 6);
   const photos = (images ?? []).filter((u) => u && u.trim().length > 0).slice(0, 6);
@@ -504,7 +555,7 @@ export function DressCodeSection({
   return (
     <section className="mt-14">
       <SectionTitle eyebrow="Tenue" title={heading} accent={accent} />
-      <div className="mt-6 space-y-4 rounded-2xl border border-current/10 bg-white/5 p-5">
+      <div className={`mt-6 space-y-4 ${style.card} bg-white/5 p-5`}>
         <div className="flex items-start gap-3">
           <ThemeIcon src={dressCodeIcon.url} color={accent} className="mt-0.5 size-5" />
           <div className="min-w-0 flex-1">
@@ -550,20 +601,19 @@ export function CustomInfoSection({
   title,
   body,
   accent,
+  cardStyle,
 }: {
   title?: string;
   body?: string;
   accent?: string;
+  cardStyle?: InfoCardStyle;
 }) {
+  const style = cardStyle ?? INFO_CARD_STYLE.classique;
   if (!body) return null;
   return (
     <section className="mt-14">
-      <SectionTitle
-        eyebrow="À noter"
-        title={title || "Information"}
-        accent={accent}
-      />
-      <div className="mt-6 flex items-start gap-3 rounded-2xl border border-current/10 bg-white/5 p-5">
+      <SectionTitle eyebrow="À noter" title={title || "Information"} accent={accent} />
+      <div className={`mt-6 flex items-start gap-3 ${style.card} bg-white/5 p-5`}>
         <Sparkles className="mt-0.5 size-5 shrink-0" style={{ color: accent }} />
         <p className="whitespace-pre-line text-sm leading-relaxed opacity-90">{body}</p>
       </div>
@@ -576,10 +626,13 @@ export function CustomInfoSection({
 export function PracticalInfoSection({
   couple,
   accent,
+  cardStyle,
 }: {
   couple: Couple;
   accent?: string;
+  cardStyle?: InfoCardStyle;
 }) {
+  const style = cardStyle ?? INFO_CARD_STYLE.classique;
   if (!couple.practicalInfoEnabled) return null;
   const parking = couple.practicalParking?.trim();
   const accommodation = couple.practicalAccommodation?.trim();
@@ -596,9 +649,9 @@ export function PracticalInfoSection({
       <SectionTitle eyebrow="Bon à savoir" title="Infos pratiques" accent={accent} />
       <ul className="mt-6 space-y-3">
         {parking ? (
-          <li className="flex items-start gap-3 rounded-2xl border border-current/10 bg-white/5 p-4">
+          <li className={`flex items-start gap-3 ${style.card} bg-white/5 p-4`}>
             <span
-              className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full"
+              className={`mt-0.5 flex size-9 shrink-0 items-center justify-center ${style.badge}`}
               style={{ backgroundColor: (accent ?? "#999") + "22", color: accent }}
             >
               <Car className="size-4" />
@@ -614,9 +667,9 @@ export function PracticalInfoSection({
           </li>
         ) : null}
         {accommodation ? (
-          <li className="flex items-start gap-3 rounded-2xl border border-current/10 bg-white/5 p-4">
+          <li className={`flex items-start gap-3 ${style.card} bg-white/5 p-4`}>
             <span
-              className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full"
+              className={`mt-0.5 flex size-9 shrink-0 items-center justify-center ${style.badge}`}
               style={{ backgroundColor: (accent ?? "#999") + "22", color: accent }}
             >
               <BedDouble className="size-4" />
@@ -632,9 +685,9 @@ export function PracticalInfoSection({
           </li>
         ) : null}
         {hasContact ? (
-          <li className="flex items-start gap-3 rounded-2xl border border-current/10 bg-white/5 p-4">
+          <li className={`flex items-start gap-3 ${style.card} bg-white/5 p-4`}>
             <span
-              className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full"
+              className={`mt-0.5 flex size-9 shrink-0 items-center justify-center ${style.badge}`}
               style={{ backgroundColor: (accent ?? "#999") + "22", color: accent }}
             >
               <LifeBuoy className="size-4" />
@@ -662,10 +715,10 @@ export function PracticalInfoSection({
         {extras.map((f, i) => (
           <li
             key={`${f.label}-${i}`}
-            className="flex items-start gap-3 rounded-2xl border border-current/10 bg-white/5 p-4"
+            className={`flex items-start gap-3 ${style.card} bg-white/5 p-4`}
           >
             <span
-              className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full"
+              className={`mt-0.5 flex size-9 shrink-0 items-center justify-center ${style.badge}`}
               style={{ backgroundColor: (accent ?? "#999") + "22", color: accent }}
             >
               <Sparkles className="size-4" />
@@ -690,10 +743,13 @@ export function PracticalInfoSection({
 export function RegistrySection({
   couple,
   accent,
+  cardStyle,
 }: {
   couple: Couple;
   accent?: string;
+  cardStyle?: InfoCardStyle;
 }) {
+  const style = cardStyle ?? INFO_CARD_STYLE.classique;
   if (!couple.registryEnabled) return null;
   const stores = (couple.registryStores ?? []).filter(
     (s) => s && s.name && s.name.trim().length > 0,
@@ -705,10 +761,10 @@ export function RegistrySection({
   return (
     <section className="mt-14">
       <SectionTitle eyebrow="Vos cadeaux" title={title} accent={accent} />
-      <div className="mt-6 rounded-2xl border border-current/10 bg-white/5 p-5">
+      <div className={`mt-6 ${style.card} bg-white/5 p-5`}>
         <div className="flex items-start gap-3">
           <span
-            className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full"
+            className={`mt-0.5 flex size-9 shrink-0 items-center justify-center ${style.badge}`}
             style={{ backgroundColor: (accent ?? "#999") + "22", color: accent }}
           >
             <Gift className="size-4" />
@@ -763,9 +819,10 @@ export function TemplateBottomSections({
   ceremonies: Ceremony[];
   accent?: string;
 }) {
+  const cardStyle = infoCardStyle(couple.theme);
   return (
     <>
-      <LocationsSection ceremonies={ceremonies} accent={accent} />
+      <LocationsSection ceremonies={ceremonies} accent={accent} cardStyle={cardStyle} />
       <DressCodeSection
         enabled={couple.dressCodeEnabled}
         title={couple.dressCodeTitle}
@@ -773,26 +830,22 @@ export function TemplateBottomSections({
         colors={couple.dressCodeColors}
         images={couple.dressCodeImages}
         accent={accent}
+        cardStyle={cardStyle}
       />
-      <RegistrySection couple={couple} accent={accent} />
-      <PracticalInfoSection couple={couple} accent={accent} />
-      <ContactSection couple={couple} accent={accent} />
+      <RegistrySection couple={couple} accent={accent} cardStyle={cardStyle} />
+      <PracticalInfoSection couple={couple} accent={accent} cardStyle={cardStyle} />
+      <ContactSection couple={couple} accent={accent} cardStyle={cardStyle} />
       <CustomInfoSection
         title={couple.customInfoTitle}
         body={couple.customInfoBody}
         accent={accent}
+        cardStyle={cardStyle}
       />
     </>
   );
 }
 
-export function OurStorySection({
-  couple,
-  accent,
-}: {
-  couple: Couple;
-  accent?: string;
-}) {
+export function OurStorySection({ couple, accent }: { couple: Couple; accent?: string }) {
   if (couple.storyEnabled === false) return null;
   const title = couple.storyTitle?.trim() || "Notre Histoire";
   const steps = (couple.storySteps ?? []).filter(
@@ -824,13 +877,7 @@ export function OurStorySection({
 
 // ---------- Thème du mariage (bloc de contenu libre) ----------
 
-export function ThemeBlockSection({
-  couple,
-  accent,
-}: {
-  couple: Couple;
-  accent?: string;
-}) {
+export function ThemeBlockSection({ couple, accent }: { couple: Couple; accent?: string }) {
   if (!couple.themeBlockEnabled) return null;
 
   const title = couple.themeBlockTitle?.trim() || "Thème du mariage";
@@ -918,10 +965,7 @@ export function GallerySection({
   return (
     <section className="mt-14">
       <div className="mb-6 text-center">
-        <span
-          className="mx-auto mb-3 block h-px w-10"
-          style={{ backgroundColor: accentSoft }}
-        />
+        <span className="mx-auto mb-3 block h-px w-10" style={{ backgroundColor: accentSoft }} />
         <h2 className="font-serif text-2xl italic">{title}</h2>
       </div>
 
@@ -958,13 +1002,7 @@ function galleryButton(extra = "") {
   );
 }
 
-function GridLayout({
-  images,
-  onOpen,
-}: {
-  images: string[];
-  onOpen: (i: number) => void;
-}) {
+function GridLayout({ images, onOpen }: { images: string[]; onOpen: (i: number) => void }) {
   return (
     <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
       {images.map((src, i) => (
@@ -987,13 +1025,7 @@ function GridLayout({
   );
 }
 
-function MarqueeLayout({
-  images,
-  onOpen,
-}: {
-  images: string[];
-  onOpen: (i: number) => void;
-}) {
+function MarqueeLayout({ images, onOpen }: { images: string[]; onOpen: (i: number) => void }) {
   // Split into two rows. The second row scrolls in the opposite direction.
   // Each row is duplicated so translateX(-50%) loops seamlessly.
   const mid = Math.ceil(images.length / 2);
@@ -1003,11 +1035,7 @@ function MarqueeLayout({
   return (
     <div className="-mx-4 space-y-3 overflow-hidden sm:-mx-6">
       <MarqueeRow images={rowA} direction="left" onOpen={(i) => onOpen(i)} />
-      <MarqueeRow
-        images={rowB}
-        direction="right"
-        onOpen={(i) => onOpen(i + mid)}
-      />
+      <MarqueeRow images={rowB} direction="right" onOpen={(i) => onOpen(i + mid)} />
     </div>
   );
 }
@@ -1024,15 +1052,10 @@ function MarqueeRow({
   if (images.length === 0) return null;
   // Duplicate the row so translateX(-50%) creates a seamless loop.
   const track = [...images, ...images];
-  const animClass =
-    direction === "left" ? "animate-marquee-left" : "animate-marquee-right";
+  const animClass = direction === "left" ? "animate-marquee-left" : "animate-marquee-right";
   return (
     <div className="group relative">
-      <div
-        className={
-          "flex w-max shrink-0 gap-3 will-change-transform " + animClass
-        }
-      >
+      <div className={"flex w-max shrink-0 gap-3 will-change-transform " + animClass}>
         {track.map((src, i) => (
           <button
             key={i}
@@ -1055,14 +1078,7 @@ function MarqueeRow({
   );
 }
 
-
-function MasonryLayout({
-  images,
-  onOpen,
-}: {
-  images: string[];
-  onOpen: (i: number) => void;
-}) {
+function MasonryLayout({ images, onOpen }: { images: string[]; onOpen: (i: number) => void }) {
   // Varied heights via a repeating pattern for a natural, hand-composed feel.
   const spans = ["aspect-[3/4]", "aspect-square", "aspect-[4/5]", "aspect-[3/5]"];
   return (
@@ -1082,8 +1098,7 @@ function MasonryLayout({
             alt=""
             loading="lazy"
             className={
-              "w-full object-cover transition group-hover:brightness-95 " +
-              spans[i % spans.length]
+              "w-full object-cover transition group-hover:brightness-95 " + spans[i % spans.length]
             }
           />
         </button>
@@ -1108,9 +1123,7 @@ function MosaicLayout({
         type="button"
         onClick={() => onOpen(0)}
         aria-label="Agrandir l'image 1"
-        className={galleryButton(
-          "rounded-2xl shadow-md ring-1 ring-black/10",
-        )}
+        className={galleryButton("rounded-2xl shadow-md ring-1 ring-black/10")}
         style={{ boxShadow: `0 10px 30px -18px ${(accent ?? "#000") + "55"}` }}
       >
         <img
@@ -1170,12 +1183,7 @@ function PolaroidLayout({
           )}
           style={{ boxShadow: `0 10px 24px -14px ${(accent ?? "#000") + "66"}` }}
         >
-          <img
-            src={src}
-            alt=""
-            loading="lazy"
-            className="aspect-square w-full object-cover"
-          />
+          <img src={src} alt="" loading="lazy" className="aspect-square w-full object-cover" />
         </button>
       ))}
     </div>
@@ -1217,7 +1225,3 @@ function FramesLayout({
     </div>
   );
 }
-
-
-
-

@@ -12,11 +12,7 @@ import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import type { GuestType } from "./guest-meta";
 import { normalizeEventType } from "./ceremony-meta";
-import type {
-  StoryLayout,
-  StoryPhotoShape,
-  StoryStep,
-} from "@/components/public/StoryTimeline";
+import type { StoryLayout, StoryPhotoShape, StoryStep } from "@/components/public/StoryTimeline";
 
 export type CeremonyType =
   | "dot"
@@ -30,12 +26,7 @@ export type CeremonyType =
   | "fiancailles"
   | "autre";
 
-export type TemplateId =
-  | "terracotta"
-  | "noir-minimal"
-  | "botanique-dore"
-  | "tropical"
-  | "art-deco";
+export type TemplateId = "terracotta" | "noir-minimal" | "botanique-dore" | "tropical" | "art-deco";
 
 export type ThemeId =
   // Classiques élégants
@@ -69,15 +60,19 @@ export type ThemeId =
   | "mashrabiya-sable"
   | "arabesque-bordeaux"
   | "nacre-girih"
-  | "calligraphie-nuit";
-
+  | "calligraphie-nuit"
+  // Botanique / Illustré (nouveaux)
+  | "mangrove-emeraude"
+  | "frangipanier-blush"
+  | "bougainvillier"
+  | "encre-aquarelle"
+  | "carnaval-dore";
 
 export type BackgroundBaseSlug = "ivoire" | "creme" | "blanc" | "gris";
 // Either one of the 4 preset slugs, or a free hex color like "#RRGGBB".
 export type BackgroundBase = BackgroundBaseSlug | string;
 
 export type EventType = "mariage" | "dot" | "traditionnel" | "coutumier" | "anniversaire" | "autre";
-
 
 export type RSVPStatus = "confirmé" | "en_attente" | "décliné" | "sans_reponse";
 
@@ -157,8 +152,6 @@ export function ceremonyMapsHref(c: Ceremony): string | null {
   return v ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v)}` : null;
 }
 
-
-
 export interface RSVP {
   ceremonyId: string;
   status: RSVPStatus;
@@ -233,14 +226,7 @@ export interface Couple {
   dressCodeNote?: string;
   dressCodeColors?: string[];
   dressCodeImages?: string[];
-  particleEffectSlug?:
-    | "glitter"
-    | "flowers"
-    | "hearts"
-    | "petals"
-    | "bubbles"
-    | "stars"
-    | null;
+  particleEffectSlug?: "glitter" | "flowers" | "hearts" | "petals" | "bubbles" | "stars" | null;
   particleIntensity?: "soft" | "normal" | "festive";
   particleSpeed?: number;
   particleSize?: "small" | "normal" | "large";
@@ -318,7 +304,6 @@ export interface Couple {
   };
 }
 
-
 export interface Account {
   email: string | null;
   isAuthenticated: boolean;
@@ -359,11 +344,15 @@ interface WeddingState {
   addGuests: (list: Omit<Guest, "id" | "rsvps">[]) => Promise<number>;
   updateGuest: (id: string, patch: Partial<Guest>) => Promise<void>;
   removeGuest: (id: string) => Promise<void>;
-  setRsvp: (guestId: string, ceremonyId: string, status: RSVPStatus, plusOnes?: number) => Promise<void>;
+  setRsvp: (
+    guestId: string,
+    ceremonyId: string,
+    status: RSVPStatus,
+    plusOnes?: number,
+  ) => Promise<void>;
   publish: (opts?: { slug?: string; envelopeAnimation?: boolean }) => Promise<void>;
   unpublish: () => Promise<void>;
 }
-
 
 const WeddingContext = createContext<WeddingState | null>(null);
 
@@ -405,7 +394,6 @@ const defaultCouple = (): Couple => ({
   countdownEnabled: true,
   countdownUnits: ["days", "hours", "minutes", "seconds"],
 });
-
 
 const defaultAccount = (): Account => ({
   email: null,
@@ -567,7 +555,6 @@ type WeddingRow = {
   share_image_url: string | null;
 };
 
-
 function rowToCouple(w: WeddingRow): Couple {
   return {
     brideName: w.bride_name ?? "",
@@ -577,7 +564,7 @@ function rowToCouple(w: WeddingRow): Couple {
     rsvpEnabled: w.rsvp_enabled ?? false,
     rsvpEverEnabled: w.rsvp_ever_enabled ?? false,
     rsvpQuota: w.rsvp_quota ?? null,
-    rsvpQuotaBehavior: ((w.rsvp_quota_behavior as Couple["rsvpQuotaBehavior"]) ?? "message"),
+    rsvpQuotaBehavior: (w.rsvp_quota_behavior as Couple["rsvpQuotaBehavior"]) ?? "message",
     whatsappInviteTemplate: w.whatsapp_invite_template ?? undefined,
     city: w.city ?? "Abidjan",
     introMessage: w.intro_message ?? "",
@@ -602,10 +589,12 @@ function rowToCouple(w: WeddingRow): Couple {
     hasEnvelopeAnimation: !!w.has_envelope_animation,
     hasGuestbook: !!(w as { has_guestbook?: boolean | null }).has_guestbook,
     guestbookTitle: (w as { guestbook_title?: string | null }).guestbook_title ?? undefined,
-    guestbookSubtitle: (w as { guestbook_subtitle?: string | null }).guestbook_subtitle ?? undefined,
+    guestbookSubtitle:
+      (w as { guestbook_subtitle?: string | null }).guestbook_subtitle ?? undefined,
     hasOpeningEffect: !!(w as { has_opening_effect?: boolean | null }).has_opening_effect,
     openingEffectSlug:
-      ((w as { opening_effect_slug?: string | null }).opening_effect_slug as Couple["openingEffectSlug"]) ?? undefined,
+      ((w as { opening_effect_slug?: string | null })
+        .opening_effect_slug as Couple["openingEffectSlug"]) ?? undefined,
     contactName: w.contact_name ?? undefined,
     contactPhone: w.contact_phone ?? undefined,
     contactEmail: w.contact_email ?? undefined,
@@ -613,17 +602,21 @@ function rowToCouple(w: WeddingRow): Couple {
     dressCodeTitle: (w as { dress_code_title?: string | null }).dress_code_title ?? undefined,
     dressCodeNote: w.dress_code_note ?? undefined,
     dressCodeColors: w.dress_code_colors ?? [],
-    dressCodeImages: ((w as { dress_code_images?: string[] | null }).dress_code_images as string[] | null) ?? [],
+    dressCodeImages:
+      ((w as { dress_code_images?: string[] | null }).dress_code_images as string[] | null) ?? [],
     particleEffectSlug:
-      ((w as { particle_effect_slug?: string | null }).particle_effect_slug as Couple["particleEffectSlug"]) ?? null,
+      ((w as { particle_effect_slug?: string | null })
+        .particle_effect_slug as Couple["particleEffectSlug"]) ?? null,
     particleIntensity:
-      ((w as { particle_intensity?: string | null }).particle_intensity as Couple["particleIntensity"]) ?? "normal",
-    particleSpeed:
-      (w as { particle_speed?: number | null }).particle_speed ?? 1,
+      ((w as { particle_intensity?: string | null })
+        .particle_intensity as Couple["particleIntensity"]) ?? "normal",
+    particleSpeed: (w as { particle_speed?: number | null }).particle_speed ?? 1,
     particleSize:
-      ((w as { particle_size?: string | null }).particle_size as Couple["particleSize"]) ?? "normal",
+      ((w as { particle_size?: string | null }).particle_size as Couple["particleSize"]) ??
+      "normal",
     particleColorMode:
-      ((w as { particle_color_mode?: string | null }).particle_color_mode as Couple["particleColorMode"]) ?? "auto",
+      ((w as { particle_color_mode?: string | null })
+        .particle_color_mode as Couple["particleColorMode"]) ?? "auto",
     particleTriggerOpen:
       (w as { particle_trigger_open?: boolean | null }).particle_trigger_open ?? true,
     particleTriggerLoop:
@@ -658,8 +651,8 @@ function rowToCouple(w: WeddingRow): Couple {
     storyBody: w.story_body ?? undefined,
     storyImages: w.story_images ?? [],
     storyStyle: (w.story_style as Couple["storyStyle"]) ?? {},
-    storyLayout: ((w.story_layout as StoryLayout | null) ?? "left"),
-    storyPhotoShape: ((w.story_photo_shape as StoryPhotoShape | null) ?? "rounded"),
+    storyLayout: (w.story_layout as StoryLayout | null) ?? "left",
+    storyPhotoShape: (w.story_photo_shape as StoryPhotoShape | null) ?? "rounded",
     themeBlockEnabled: w.theme_block_enabled ?? false,
     themeBlockTitle: w.theme_block_title ?? undefined,
     themeBlockBody: w.theme_block_body ?? undefined,
@@ -669,7 +662,8 @@ function rowToCouple(w: WeddingRow): Couple {
     galleryTitle: w.gallery_title ?? undefined,
     galleryImages: w.gallery_images ?? [],
     galleryDisplay:
-      (((w as { gallery_display?: string | null }).gallery_display as Couple["galleryDisplay"]) ?? "grid"),
+      ((w as { gallery_display?: string | null }).gallery_display as Couple["galleryDisplay"]) ??
+      "grid",
     shareTitle: w.share_title ?? undefined,
     shareDescription: w.share_description ?? undefined,
     shareImageUrl: w.share_image_url ?? undefined,
@@ -677,7 +671,8 @@ function rowToCouple(w: WeddingRow): Couple {
     musicSlug: ((w as { music_slug?: string | null }).music_slug as string | null) ?? null,
     splashEnabled: (w as { splash_enabled?: boolean | null }).splash_enabled ?? true,
     splashBgMode:
-      (((w as { splash_bg_mode?: string | null }).splash_bg_mode as Couple["splashBgMode"]) ?? "theme"),
+      ((w as { splash_bg_mode?: string | null }).splash_bg_mode as Couple["splashBgMode"]) ??
+      "theme",
     splashBgColor: (w as { splash_bg_color?: string | null }).splash_bg_color ?? null,
     splashBgImageUrl: (w as { splash_bg_image_url?: string | null }).splash_bg_image_url ?? null,
     splashKicker: (w as { splash_kicker?: string | null }).splash_kicker ?? null,
@@ -685,12 +680,10 @@ function rowToCouple(w: WeddingRow): Couple {
     splashShowDate: (w as { splash_show_date?: boolean | null }).splash_show_date ?? true,
     openingPageModel:
       (w as { opening_page_model?: string | null }).opening_page_model ?? "classique",
-    openingPageEffect:
-      (w as { opening_page_effect?: string | null }).opening_page_effect ?? "tap",
+    openingPageEffect: (w as { opening_page_effect?: string | null }).opening_page_effect ?? "tap",
     openingPageConfig:
       ((w as { opening_page_config?: Record<string, unknown> | null }).opening_page_config as
-        | Couple["openingPageConfig"]
-        | null) ?? {},
+        Couple["openingPageConfig"] | null) ?? {},
   };
 }
 
@@ -757,10 +750,14 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.countdownStyle !== undefined) r.countdown_style = p.countdownStyle ?? {};
   if (p.practicalInfoEnabled !== undefined) r.practical_info_enabled = p.practicalInfoEnabled;
   if (p.practicalParking !== undefined) r.practical_parking = p.practicalParking || null;
-  if (p.practicalAccommodation !== undefined) r.practical_accommodation = p.practicalAccommodation || null;
-  if (p.practicalContactName !== undefined) r.practical_contact_name = p.practicalContactName || null;
-  if (p.practicalContactPhone !== undefined) r.practical_contact_phone = p.practicalContactPhone || null;
-  if (p.practicalCustomFields !== undefined) r.practical_custom_fields = p.practicalCustomFields ?? [];
+  if (p.practicalAccommodation !== undefined)
+    r.practical_accommodation = p.practicalAccommodation || null;
+  if (p.practicalContactName !== undefined)
+    r.practical_contact_name = p.practicalContactName || null;
+  if (p.practicalContactPhone !== undefined)
+    r.practical_contact_phone = p.practicalContactPhone || null;
+  if (p.practicalCustomFields !== undefined)
+    r.practical_custom_fields = p.practicalCustomFields ?? [];
   if (p.registryEnabled !== undefined) r.registry_enabled = p.registryEnabled;
   if (p.registryTitle !== undefined) r.registry_title = p.registryTitle || null;
   if (p.registryNote !== undefined) r.registry_note = p.registryNote || null;
@@ -976,11 +973,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       const userId = session.user.id;
 
       const [{ data: profile }, { data: list }] = await Promise.all([
-        supabase
-          .from("profiles")
-          .select("active_wedding_id")
-          .eq("id", userId)
-          .maybeSingle(),
+        supabase.from("profiles").select("active_wedding_id").eq("id", userId).maybeSingle(),
         supabase
           .from("weddings")
           .select("*")
@@ -1012,9 +1005,8 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
 
       const profileActive =
         (profile as { active_wedding_id?: string | null } | null)?.active_wedding_id ?? null;
-      let active = profileActive && rows.some((r) => r.id === profileActive)
-        ? profileActive
-        : rows[0].id;
+      const active =
+        profileActive && rows.some((r) => r.id === profileActive) ? profileActive : rows[0].id;
 
       if (active !== profileActive) {
         await supabase
@@ -1036,11 +1028,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       const cachedWedding = weddingRows.current.get(activeWeddingId);
       const { data: fetchedWedding } = cachedWedding
         ? { data: cachedWedding }
-        : await supabase
-            .from("weddings")
-            .select("*")
-            .eq("id", activeWeddingId)
-            .maybeSingle();
+        : await supabase.from("weddings").select("*").eq("id", activeWeddingId).maybeSingle();
       const w = fetchedWedding;
       if (!w) {
         setLoading(false);
@@ -1080,7 +1068,6 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
     })();
   }, [session, activeWeddingId]);
 
-
   // Apply data-theme
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -1095,7 +1082,10 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
     async (n) => {
       setAccount((a) => ({ ...a, onboardingStep: n }));
       if (weddingId) {
-        await supabase.from("weddings").update({ onboarding_step: n } as never).eq("id", weddingId);
+        await supabase
+          .from("weddings")
+          .update({ onboarding_step: n } as never)
+          .eq("id", weddingId);
       }
     },
     [weddingId],
@@ -1195,7 +1185,11 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       const id = uid();
       const rsvps =
         g.rsvps ??
-        g.ceremonyIds.map((cid) => ({ ceremonyId: cid, status: "en_attente" as RSVPStatus, plusOnes: 0 }));
+        g.ceremonyIds.map((cid) => ({
+          ceremonyId: cid,
+          status: "en_attente" as RSVPStatus,
+          plusOnes: 0,
+        }));
       const created: Guest = { ...g, id, rsvps };
       setGuests((prev) => [created, ...prev]);
       if (weddingId) {
@@ -1266,7 +1260,10 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
     async (id, patch) => {
       setGuests((prev) => prev.map((g) => (g.id === id ? { ...g, ...patch } : g)));
       if (weddingId) {
-        const { error } = await supabase.from("guests").update(guestToRow(patch) as never).eq("id", id);
+        const { error } = await supabase
+          .from("guests")
+          .update(guestToRow(patch) as never)
+          .eq("id", id);
         if (error) console.error("updateGuest", error);
       }
     },
@@ -1302,7 +1299,10 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
         }),
       );
       if (weddingId) {
-        await supabase.from("guests").update({ rsvps: nextRsvps as unknown as never } as never).eq("id", guestId);
+        await supabase
+          .from("guests")
+          .update({ rsvps: nextRsvps as unknown as never } as never)
+          .eq("id", guestId);
       }
     },
     [weddingId],
@@ -1321,7 +1321,10 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       };
       setCouple((c) => ({ ...c, ...patch }));
       if (weddingId) {
-        const { error } = await supabase.from("weddings").update(coupleToRow(patch) as never).eq("id", weddingId);
+        const { error } = await supabase
+          .from("weddings")
+          .update(coupleToRow(patch) as never)
+          .eq("id", weddingId);
         if (error) console.error("publish", error);
       }
     },
@@ -1332,7 +1335,10 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
     const patch: Partial<Couple> = { isPublished: false, isLocked: false };
     setCouple((c) => ({ ...c, ...patch }));
     if (weddingId) {
-      await supabase.from("weddings").update(coupleToRow(patch) as never).eq("id", weddingId);
+      await supabase
+        .from("weddings")
+        .update(coupleToRow(patch) as never)
+        .eq("id", weddingId);
     }
   }, [weddingId]);
 
@@ -1404,11 +1410,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
     async (id) => {
       if (!session) return null;
       const userId = session.user.id;
-      const { data: src } = await supabase
-        .from("weddings")
-        .select("*")
-        .eq("id", id)
-        .maybeSingle();
+      const { data: src } = await supabase.from("weddings").select("*").eq("id", id).maybeSingle();
       if (!src) return null;
       const source = src as Record<string, unknown>;
       const copy: Record<string, unknown> = { ...source };
@@ -1444,11 +1446,7 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
 
       const [{ data: srcCeremonies }, { data: srcStory }] = await Promise.all([
         supabase.from("ceremonies").select("*").eq("wedding_id", id).order("sort_order"),
-        supabase
-          .from("wedding_story_steps")
-          .select("*")
-          .eq("wedding_id", id)
-          .order("sort_order"),
+        supabase.from("wedding_story_steps").select("*").eq("wedding_id", id).order("sort_order"),
       ]);
 
       if (srcCeremonies?.length) {
@@ -1514,7 +1512,6 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
     couple.slug,
   ]);
 
-
   const value = useMemo<WeddingState>(
     () => ({
       weddingId,
@@ -1571,7 +1568,6 @@ export function WeddingProvider({ children }: { children: ReactNode }) {
       publish,
       unpublish,
     ],
-
   );
 
   return <WeddingContext.Provider value={value}>{children}</WeddingContext.Provider>;
@@ -1624,7 +1620,9 @@ export function formatShortDate(dateISO: string): string {
 export function nextCeremony(ceremonies: Ceremony[]): Ceremony | undefined {
   const now = Date.now();
   return [...ceremonies]
-    .filter((c) => c.date && new Date(c.date + "T" + (ceremonyTimeStart(c) || "00:00")).getTime() >= now)
+    .filter(
+      (c) => c.date && new Date(c.date + "T" + (ceremonyTimeStart(c) || "00:00")).getTime() >= now,
+    )
     .sort(
       (a, b) =>
         a.date.localeCompare(b.date) || ceremonyTimeStart(a).localeCompare(ceremonyTimeStart(b)),

@@ -1,9 +1,5 @@
 import type { ThemeId } from "./wedding-store";
-import type {
-  CornerKey,
-  DividerKey,
-  HeroShape,
-} from "@/components/invitation-templates/ornaments";
+import type { CornerKey, DividerKey, HeroShape } from "@/components/invitation-templates/ornaments";
 
 export type HeroLayout =
   /** Photo plein cadre, noms superposés en bas. */
@@ -88,7 +84,7 @@ const DECOR: Partial<Record<ThemeId, ThemeDecor>> = {
   },
   "nuit-ebene": {
     heroLayout: "overlay",
-    heroShape: "oval",
+    heroShape: "arch",
     divider: "diamond",
     dividerAlt: "diamond",
     corner: "diamond",
@@ -155,7 +151,7 @@ const DECOR: Partial<Record<ThemeId, ThemeDecor>> = {
   },
   "calligraphie-nuit": {
     heroLayout: "overlay",
-    heroShape: "oval",
+    heroShape: "circle",
     divider: "swash",
     dividerAlt: "swash",
     corner: "none",

@@ -3,14 +3,7 @@ import { findBodyFont, findTitleFont } from "./fonts";
 
 export type BackgroundSlug = "ivoire" | "creme" | "blanc" | "gris";
 
-export type ThemeFamilyId =
-  | "classiques"
-  | "botaniques"
-  | "heritage"
-  | "modernes"
-  | "illustres"
-  | "africain"
-  | "oriental";
+export type ThemeFamilyId = "classique" | "traditionnel" | "moderne" | "botanique" | "illustre";
 
 export interface ThemeDef {
   slug: ThemeId;
@@ -52,7 +45,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   "rose-elegance": {
     slug: "rose-elegance",
     name: "Rose Élégance",
-    family: "classiques",
+    family: "classique",
     mood: "Classique · Formel",
     fontHeading: FONT_PLAYFAIR,
     fontBody: FONT_INTER,
@@ -62,7 +55,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   "ivoire-epure": {
     slug: "ivoire-epure",
     name: "Ivoire Épuré",
-    family: "classiques",
+    family: "classique",
     mood: "Minimaliste · Éditorial",
     fontHeading: FONT_CORMORANT,
     fontBody: FONT_INTER,
@@ -72,7 +65,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   "or-antique": {
     slug: "or-antique",
     name: "Or Antique",
-    family: "classiques",
+    family: "classique",
     mood: "Luxe · Vintage",
     fontHeading: FONT_CORMORANT,
     fontBody: FONT_INTER,
@@ -84,7 +77,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   "vert-sauge": {
     slug: "vert-sauge",
     name: "Vert Sauge",
-    family: "botaniques",
+    family: "botanique",
     mood: "Botanique · Méditerranéen",
     fontHeading: FONT_CORMORANT,
     fontBody: FONT_INTER,
@@ -94,7 +87,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   "jardin-sauvage": {
     slug: "jardin-sauvage",
     name: "Jardin Sauvage",
-    family: "botaniques",
+    family: "botanique",
     mood: "Bohème · Champêtre",
     fontHeading: FONT_PLAYFAIR,
     fontBody: FONT_INTER,
@@ -104,7 +97,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   "terracotta-boheme": {
     slug: "terracotta-boheme",
     name: "Terracotta Bohème",
-    family: "botaniques",
+    family: "botanique",
     mood: "Bohème · Terreux",
     fontHeading: FONT_CORMORANT,
     fontBody: FONT_INTER,
@@ -116,7 +109,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   "wax-dore": {
     slug: "wax-dore",
     name: "Wax Doré",
-    family: "heritage",
+    family: "traditionnel",
     mood: "Culturel · Ivoirien",
     fontHeading: FONT_PLAYFAIR,
     fontBody: FONT_INTER,
@@ -126,7 +119,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   "kente-royal": {
     slug: "kente-royal",
     name: "Kente Royal",
-    family: "heritage",
+    family: "traditionnel",
     mood: "Royal · Cérémoniel",
     fontHeading: FONT_PLAYFAIR,
     fontBody: FONT_INTER,
@@ -136,7 +129,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   "sahel-dore": {
     slug: "sahel-dore",
     name: "Sahel Doré",
-    family: "heritage",
+    family: "moderne",
     mood: "Afro-contemporain · Épuré",
     fontHeading: FONT_CORMORANT,
     fontBody: FONT_INTER,
@@ -148,7 +141,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   "bleu-nuit": {
     slug: "bleu-nuit",
     name: "Bleu Nuit",
-    family: "modernes",
+    family: "moderne",
     mood: "Éditorial · Soirée",
     fontHeading: FONT_PLAYFAIR,
     fontBody: FONT_INTER,
@@ -158,7 +151,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   manuscrit: {
     slug: "manuscrit",
     name: "Manuscrit",
-    family: "modernes",
+    family: "moderne",
     mood: "Magazine · Mode",
     fontHeading: FONT_CORMORANT,
     fontBody: FONT_INTER,
@@ -168,7 +161,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   monochrome: {
     slug: "monochrome",
     name: "Monochrome",
-    family: "modernes",
+    family: "moderne",
     mood: "Brutaliste · Architectural",
     fontHeading: FONT_INTER,
     fontBody: FONT_INTER,
@@ -180,7 +173,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   aquarelle: {
     slug: "aquarelle",
     name: "Aquarelle",
-    family: "illustres",
+    family: "illustre",
     mood: "Peint · Romantique",
     fontHeading: FONT_CORMORANT,
     fontBody: FONT_INTER,
@@ -190,7 +183,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   confetti: {
     slug: "confetti",
     name: "Confetti",
-    family: "illustres",
+    family: "illustre",
     mood: "Festif · Décomplexé",
     fontHeading: FONT_PLAYFAIR,
     fontBody: FONT_INTER,
@@ -200,7 +193,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   "papier-kraft": {
     slug: "papier-kraft",
     name: "Papier Kraft",
-    family: "illustres",
+    family: "illustre",
     mood: "Vintage · Postal",
     fontHeading: FONT_PLAYFAIR,
     fontBody: FONT_TYPEWRITER,
@@ -212,10 +205,9 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   "indigo-adinkra": {
     slug: "indigo-adinkra",
     name: "Indigo Adinkra",
-    family: "africain",
+    family: "traditionnel",
     mood: "Ancestral · Solennel",
-    description:
-      "Fond ivoire chaud, accents or, motif adinkra en profond indigo.",
+    description: "Fond ivoire chaud, accents or, motif adinkra en profond indigo.",
     dressLabel: "Indigo, or et blanc cassé",
     fontHeading: FONT_CORMORANT,
     fontBody: FONT_INTER,
@@ -230,7 +222,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   "kente-souverain": {
     slug: "kente-souverain",
     name: "Kente Souverain",
-    family: "africain",
+    family: "traditionnel",
     mood: "Festif · Majestueux",
     description: "Bande kente colorée, fond blanc naturel, accent or.",
     dressLabel: "Pagne, or et émeraude",
@@ -243,13 +235,12 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
     deep: "#0a3d25",
     onDeep: "#faf6ee",
     muted: "rgba(20,16,14,0.6)",
-    bandCss:
-      "repeating-linear-gradient(90deg, #d4a017 0 8px, #0f5132 8px 16px, #14100e 16px 20px)",
+    bandCss: "repeating-linear-gradient(90deg, #d4a017 0 8px, #0f5132 8px 16px, #14100e 16px 20px)",
   },
   "bogolan-bordeaux": {
     slug: "bogolan-bordeaux",
     name: "Bogolan Bordeaux",
-    family: "africain",
+    family: "traditionnel",
     mood: "Terreux · Chaleureux",
     description: "Fond lin crème, accent ocre doré, profondeur bordeaux.",
     dressLabel: "Terre cuite, ocre et crème",
@@ -267,7 +258,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   "wax-ivoire": {
     slug: "wax-ivoire",
     name: "Wax Ivoire",
-    family: "africain",
+    family: "traditionnel",
     mood: "Wax épuré · Élégant",
     description: "Fond ivoire, accent bronze, motif médaillon concentrique.",
     dressLabel: "Ivoire, camel et brun",
@@ -284,7 +275,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   "nuit-ebene": {
     slug: "nuit-ebene",
     name: "Nuit d'Ébène",
-    family: "africain",
+    family: "moderne",
     mood: "Luxe · Nocturne",
     description: "Fond ivoire, profondeur charbon intense, accent or lumineux.",
     dressLabel: "Noir, or et blanc cassé",
@@ -303,7 +294,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   "zellige-emeraude": {
     slug: "zellige-emeraude",
     name: "Zellige Émeraude",
-    family: "oriental",
+    family: "classique",
     mood: "Zellige · Andalou",
     description: "Fond ivoire doux, émeraude forêt, accent champagne doré.",
     dressLabel: "Vert émeraude, ivoire et or",
@@ -320,7 +311,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   "mashrabiya-sable": {
     slug: "mashrabiya-sable",
     name: "Mashrabiya Sable",
-    family: "oriental",
+    family: "illustre",
     mood: "Oriental · Épuré",
     description: "Fond sable chaud, accent terracotta doré, treillis ajouré.",
     dressLabel: "Sable, caramel et bronze",
@@ -337,7 +328,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   "arabesque-bordeaux": {
     slug: "arabesque-bordeaux",
     name: "Arabesque Bordeaux",
-    family: "oriental",
+    family: "classique",
     mood: "Arabesque · Classique",
     description: "Fond lin, profondeur prune intense, accent or antique.",
     dressLabel: "Bordeaux, ivoire et or",
@@ -354,7 +345,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   "nacre-girih": {
     slug: "nacre-girih",
     name: "Nacre & Girih",
-    family: "oriental",
+    family: "classique",
     mood: "Géométrie · Élégance",
     description: "Fond écru, profondeur brun nuit, accent or doux.",
     dressLabel: "Nacre, or et brun profond",
@@ -371,7 +362,7 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
   "calligraphie-nuit": {
     slug: "calligraphie-nuit",
     name: "Calligraphie Nuit",
-    family: "oriental",
+    family: "moderne",
     mood: "Calligraphique · Pur",
     description: "Fond ivoire, profondeur noir absolu, accent champagne.",
     dressLabel: "Noir, champagne et ivoire",
@@ -385,16 +376,93 @@ export const THEMES: Record<ThemeId, ThemeDef> = {
     onDeep: "#f7f4ee",
     muted: "rgba(26,26,26,0.6)",
   },
+
+  // ---------- Botanique (nouveaux) ----------
+  "mangrove-emeraude": {
+    slug: "mangrove-emeraude",
+    name: "Mangrove Émeraude",
+    family: "botanique",
+    mood: "Botanique · Profond",
+    fontHeading: FONT_CORMORANT,
+    fontBody: FONT_INTER,
+    defaultAccent: "#1F5C4A",
+    defaultBg: "creme",
+  },
+  "frangipanier-blush": {
+    slug: "frangipanier-blush",
+    name: "Frangipanier Blush",
+    family: "botanique",
+    mood: "Floral · Tropical",
+    fontHeading: FONT_PLAYFAIR,
+    fontBody: FONT_INTER,
+    defaultAccent: "#E0836B",
+    defaultBg: "ivoire",
+  },
+  bougainvillier: {
+    slug: "bougainvillier",
+    name: "Bougainvillier",
+    family: "botanique",
+    mood: "Bohème · Vibrant",
+    fontHeading: FONT_CORMORANT,
+    fontBody: FONT_INTER,
+    defaultAccent: "#B8336A",
+    defaultBg: "ivoire",
+  },
+
+  // ---------- Illustré (nouveaux) ----------
+  "encre-aquarelle": {
+    slug: "encre-aquarelle",
+    name: "Encre Aquarelle",
+    family: "illustre",
+    mood: "Peint · Contrasté",
+    fontHeading: FONT_CORMORANT,
+    fontBody: FONT_INTER,
+    defaultAccent: "#3B4C7A",
+    defaultBg: "creme",
+  },
+  "carnaval-dore": {
+    slug: "carnaval-dore",
+    name: "Carnaval Doré",
+    family: "illustre",
+    mood: "Festif · Précieux",
+    fontHeading: FONT_PLAYFAIR,
+    fontBody: FONT_INTER,
+    defaultAccent: "#7B4B94",
+    defaultBg: "blanc",
+  },
 };
 
 export const THEME_ORDER: ThemeId[] = [
-  "rose-elegance", "ivoire-epure", "or-antique",
-  "vert-sauge", "jardin-sauvage", "terracotta-boheme",
-  "wax-dore", "kente-royal", "sahel-dore",
-  "bleu-nuit", "manuscrit", "monochrome",
-  "aquarelle", "confetti", "papier-kraft",
-  "indigo-adinkra", "kente-souverain", "bogolan-bordeaux", "wax-ivoire", "nuit-ebene",
-  "zellige-emeraude", "mashrabiya-sable", "arabesque-bordeaux", "nacre-girih", "calligraphie-nuit",
+  "rose-elegance",
+  "ivoire-epure",
+  "or-antique",
+  "vert-sauge",
+  "jardin-sauvage",
+  "terracotta-boheme",
+  "wax-dore",
+  "kente-royal",
+  "sahel-dore",
+  "bleu-nuit",
+  "manuscrit",
+  "monochrome",
+  "aquarelle",
+  "confetti",
+  "papier-kraft",
+  "indigo-adinkra",
+  "kente-souverain",
+  "bogolan-bordeaux",
+  "wax-ivoire",
+  "nuit-ebene",
+  "zellige-emeraude",
+  "mashrabiya-sable",
+  "arabesque-bordeaux",
+  "nacre-girih",
+  "calligraphie-nuit",
+  "mangrove-emeraude",
+  "frangipanier-blush",
+  "bougainvillier",
+  "encre-aquarelle",
+  "carnaval-dore",
 ];
 
 export interface ThemeFamilyDef {
@@ -404,27 +472,66 @@ export interface ThemeFamilyDef {
 }
 
 export const THEME_FAMILIES: ThemeFamilyDef[] = [
-  { id: "classiques", label: "Classiques", themes: ["rose-elegance", "ivoire-epure", "or-antique"] },
-  { id: "botaniques", label: "Botaniques", themes: ["vert-sauge", "jardin-sauvage", "terracotta-boheme"] },
-  { id: "heritage", label: "Héritage", themes: ["wax-dore", "kente-royal", "sahel-dore"] },
   {
-    id: "africain",
-    label: "🌍 Africain",
-    themes: ["indigo-adinkra", "kente-souverain", "bogolan-bordeaux", "wax-ivoire", "nuit-ebene"],
-  },
-  {
-    id: "oriental",
-    label: "✦ Oriental",
+    id: "classique",
+    label: "Classique",
     themes: [
+      "rose-elegance",
+      "ivoire-epure",
+      "or-antique",
       "zellige-emeraude",
-      "mashrabiya-sable",
       "arabesque-bordeaux",
       "nacre-girih",
+    ],
+  },
+  {
+    id: "traditionnel",
+    label: "🌍 Traditionnel",
+    themes: [
+      "wax-dore",
+      "kente-royal",
+      "indigo-adinkra",
+      "kente-souverain",
+      "bogolan-bordeaux",
+      "wax-ivoire",
+    ],
+  },
+  {
+    id: "moderne",
+    label: "Moderne",
+    themes: [
+      "bleu-nuit",
+      "monochrome",
+      "manuscrit",
+      "nuit-ebene",
+      "sahel-dore",
       "calligraphie-nuit",
     ],
   },
-  { id: "modernes", label: "Modernes", themes: ["bleu-nuit", "manuscrit", "monochrome"] },
-  { id: "illustres", label: "Illustrés", themes: ["aquarelle", "confetti", "papier-kraft"] },
+  {
+    id: "botanique",
+    label: "Botanique",
+    themes: [
+      "vert-sauge",
+      "jardin-sauvage",
+      "terracotta-boheme",
+      "mangrove-emeraude",
+      "frangipanier-blush",
+      "bougainvillier",
+    ],
+  },
+  {
+    id: "illustre",
+    label: "Illustré",
+    themes: [
+      "aquarelle",
+      "confetti",
+      "papier-kraft",
+      "mashrabiya-sable",
+      "encre-aquarelle",
+      "carnaval-dore",
+    ],
+  },
 ];
 
 // ---- Mapping theme → template component (Phase 2) ----
@@ -453,36 +560,36 @@ export const THEME_FAMILIES: ThemeFamilyDef[] = [
 //                        typo, fond) jusqu'à leur design dédié en Phase 3.
 export const THEME_TO_TEMPLATE: Record<ThemeId, TemplateId> = {
   // Classiques
-  "rose-elegance": "terracotta",     // warm-classic
-  "ivoire-epure": "noir-minimal",    // editorial-dark (minimal éditorial)
-  "or-antique": "art-deco",          // ornamental (luxe vintage doré)
+  "rose-elegance": "terracotta", // warm-classic
+  "ivoire-epure": "noir-minimal", // editorial-dark (minimal éditorial)
+  "or-antique": "art-deco", // ornamental (luxe vintage doré)
 
   // Botaniques
-  "vert-sauge": "botanique-dore",    // botanical
-  "jardin-sauvage": "botanique-dore",// botanical
+  "vert-sauge": "botanique-dore", // botanical
+  "jardin-sauvage": "botanique-dore", // botanical
   "terracotta-boheme": "terracotta", // warm-classic
 
   // Héritage africain
-  "wax-dore": "art-deco",            // ornamental (motifs wax, or)
-  "kente-royal": "art-deco",         // ornamental (royal, géométrique)
-  "sahel-dore": "botanique-dore",    // botanical (afro-contemporain épuré)
+  "wax-dore": "art-deco", // ornamental (motifs wax, or)
+  "kente-royal": "art-deco", // ornamental (royal, géométrique)
+  "sahel-dore": "botanique-dore", // botanical (afro-contemporain épuré)
 
   // Modernes éditoriaux
-  "bleu-nuit": "noir-minimal",       // editorial-dark
-  manuscrit: "noir-minimal",         // editorial-dark (magazine)
-  monochrome: "noir-minimal",        // editorial-dark (brutaliste)
+  "bleu-nuit": "noir-minimal", // editorial-dark
+  manuscrit: "noir-minimal", // editorial-dark (magazine)
+  monochrome: "noir-minimal", // editorial-dark (brutaliste)
 
   // Illustrés
-  aquarelle: "tropical",             // painted (peint, romantique)
-  confetti: "tropical",              // painted (festif, illustré)
-  "papier-kraft": "terracotta",      // warm-classic (vintage postal chaleureux)
+  aquarelle: "tropical", // painted (peint, romantique)
+  confetti: "tropical", // painted (festif, illustré)
+  "papier-kraft": "terracotta", // warm-classic (vintage postal chaleureux)
 
   // Africains (Phase 4)
-  "indigo-adinkra": "art-deco",      // ornamental
-  "kente-souverain": "art-deco",     // ornamental
-  "bogolan-bordeaux": "terracotta",  // warm-classic
-  "wax-ivoire": "art-deco",          // ornamental
-  "nuit-ebene": "noir-minimal",      // editorial-dark
+  "indigo-adinkra": "art-deco", // ornamental
+  "kente-souverain": "art-deco", // ornamental
+  "bogolan-bordeaux": "terracotta", // warm-classic
+  "wax-ivoire": "art-deco", // ornamental
+  "nuit-ebene": "noir-minimal", // editorial-dark
 
   // Orientaux (Phase 4)
   "zellige-emeraude": "art-deco",
@@ -490,6 +597,13 @@ export const THEME_TO_TEMPLATE: Record<ThemeId, TemplateId> = {
   "arabesque-bordeaux": "art-deco",
   "nacre-girih": "art-deco",
   "calligraphie-nuit": "noir-minimal",
+
+  // Botanique / Illustré (nouveaux, Phase 3 directe — jamais atteints via ce repli)
+  "mangrove-emeraude": "botanique-dore",
+  "frangipanier-blush": "botanique-dore",
+  bougainvillier: "terracotta",
+  "encre-aquarelle": "tropical",
+  "carnaval-dore": "tropical",
 };
 
 // Répartition résultante (15 thèmes / 5 templates) :
@@ -558,7 +672,16 @@ export interface ResolvedTheme {
 }
 
 export function resolveTheme(
-  couple: Pick<Couple, "theme" | "accentColor" | "backgroundBase" | "accent" | "textColor" | "customFontTitle" | "customFontBody">,
+  couple: Pick<
+    Couple,
+    | "theme"
+    | "accentColor"
+    | "backgroundBase"
+    | "accent"
+    | "textColor"
+    | "customFontTitle"
+    | "customFontBody"
+  >,
 ): ResolvedTheme {
   const themeSlug: ThemeId = THEMES[couple.theme] ? couple.theme : "rose-elegance";
   const theme = THEMES[themeSlug];
@@ -578,9 +701,7 @@ export function resolveTheme(
         ? couple.accent
         : theme.defaultAccent;
   const customText =
-    couple.textColor && /^#[0-9A-Fa-f]{6}$/.test(couple.textColor)
-      ? couple.textColor
-      : null;
+    couple.textColor && /^#[0-9A-Fa-f]{6}$/.test(couple.textColor) ? couple.textColor : null;
 
   return {
     themeSlug,
@@ -623,7 +744,9 @@ export function applyThemeVars(root: HTMLElement, r: ResolvedTheme) {
 
 export function themeCssString(r: ResolvedTheme): string {
   const vars = themeCssVars(r);
-  return Object.entries(vars).map(([k, v]) => `${k}:${v}`).join(";");
+  return Object.entries(vars)
+    .map(([k, v]) => `${k}:${v}`)
+    .join(";");
 }
 
 export function isValidAccentHex(hex: string | null | undefined): boolean {

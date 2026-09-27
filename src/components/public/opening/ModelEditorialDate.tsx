@@ -1,8 +1,12 @@
 import { useState } from "react";
+import { sampleLuminance, toneFromLuminance, type PhotoTone } from "@/lib/photo-tone";
 import { OpeningHint } from "./OpeningHint";
 import type { OpeningModelProps } from "./types";
 
-type ResolvedTone = "light" | "dark";
+type ResolvedTone = PhotoTone;
+
+// Narrow vertical strip behind the stacked day/month/year numerals (right half of the photo).
+const NUMERALS_REGION = { x: 0.5, y: 1 / 6, width: 0.5, height: 2 / 3 };
 
 export function ModelEditorialDate({
   brideName,
@@ -22,28 +26,19 @@ export function ModelEditorialDate({
 
   const detectTone = (image: HTMLImageElement) => {
     if (textTone !== "auto" && textTone) return;
-    try {
-      const canvas = document.createElement("canvas");
-      canvas.width = 12;
-      canvas.height = 24;
-      const context = canvas.getContext("2d", { willReadFrequently: true });
-      if (!context) return;
-      context.drawImage(image, 0, 0, canvas.width, canvas.height);
-      const pixels = context.getImageData(6, 4, 6, 16).data;
-      let luminance = 0;
-      let samples = 0;
-      for (let index = 0; index < pixels.length; index += 16) {
-        luminance += pixels[index] * 0.2126 + pixels[index + 1] * 0.7152 + pixels[index + 2] * 0.0722;
-        samples += 1;
-      }
-      setAutomaticTone(samples > 0 && luminance / samples > 156 ? "dark" : "light");
-    } catch {
-      setAutomaticTone("light");
-    }
+    const luminance = sampleLuminance(image, NUMERALS_REGION);
+    // toneFromLuminance's "light"/"dark" names the *photo*, but this template's own
+    // tone classes are named after the *text* — so a light photo needs "dark" text and vice versa.
+    setAutomaticTone(
+      luminance === null ? "light" : toneFromLuminance(luminance) === "light" ? "dark" : "light",
+    );
   };
 
   return (
-    <div className={`editorial-date editorial-date-${resolvedTone}`} style={{ fontFamily: fontBody }}>
+    <div
+      className={`editorial-date editorial-date-${resolvedTone}`}
+      style={{ fontFamily: fontBody }}
+    >
       {photoUrl ? (
         <img
           src={photoUrl}
@@ -63,7 +58,9 @@ export function ModelEditorialDate({
       </div>
       <div className="editorial-date-footer">
         {quote ? <p className="editorial-date-quote">“{quote}”</p> : null}
-        <p className="editorial-date-names">{brideName} &amp; {groomName}</p>
+        <p className="editorial-date-names">
+          {brideName} &amp; {groomName}
+        </p>
       </div>
       <OpeningHint greeting={greeting?.toUpperCase()} effectLabel={effectLabel} effect={effect} />
     </div>

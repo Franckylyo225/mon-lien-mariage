@@ -24,9 +24,7 @@ function StepTheme() {
   const navigate = useNavigate();
   const initialTheme: ThemeId = (couple.theme as ThemeId) ?? "rose-elegance";
   const [selected, setSelected] = useState<ThemeId>(initialTheme);
-  const [family, setFamily] = useState<ThemeFamilyId>(
-    THEMES[initialTheme]?.family ?? "classiques",
-  );
+  const [family, setFamily] = useState<ThemeFamilyId>(THEMES[initialTheme]?.family ?? "classique");
   const [previewOpen, setPreviewOpen] = useState(false);
 
   const confirmChoice = async () => {
@@ -35,8 +33,7 @@ function StepTheme() {
     navigate({ to: "/dashboard" });
   };
 
-  const familyDef =
-    THEME_FAMILIES.find((f) => f.id === family) ?? THEME_FAMILIES[0];
+  const familyDef = THEME_FAMILIES.find((f) => f.id === family) ?? THEME_FAMILIES[0];
 
   const onThemeTap = (slug: ThemeId) => {
     if (slug === selected) {
@@ -52,8 +49,8 @@ function StepTheme() {
       <div>
         <h1 className="page-title">Choisissez un thème</h1>
         <p className="mt-3 text-sm text-muted-foreground">
-          Touchez un thème pour le sélectionner, touchez à nouveau pour
-          l'agrandir. Vous pourrez en changer à tout moment.
+          Touchez un thème pour le sélectionner, touchez à nouveau pour l'agrandir. Vous pourrez en
+          changer à tout moment.
         </p>
       </div>
 
@@ -94,18 +91,14 @@ function StepTheme() {
               aria-pressed={active}
               className={cn(
                 "group relative flex flex-col overflow-hidden rounded-2xl border-2 text-left transition",
-                active
-                  ? "shadow-md"
-                  : "border-border hover:border-foreground/30",
+                active ? "shadow-md" : "border-border hover:border-foreground/30",
               )}
               style={active ? { borderColor: t.defaultAccent } : undefined}
             >
               <ThemeThumbnail theme={slug} />
               <div className="flex flex-col gap-0.5 border-t border-border bg-background px-2 py-1.5">
                 <div className="flex items-center justify-between gap-1">
-                  <span className="truncate text-[10px] font-medium">
-                    {t.name}
-                  </span>
+                  <span className="truncate text-[10px] font-medium">{t.name}</span>
                   {active && (
                     <span
                       className="grid size-3.5 shrink-0 place-items-center rounded-full text-white"
@@ -199,7 +192,15 @@ function ThemePreviewOverlay({
       customFontTitle,
       customFontBody,
     }),
-    [themeSlug, customFontTitle, customFontBody, coupleName.brideName, coupleName.groomName, weddingDate, city],
+    [
+      themeSlug,
+      customFontTitle,
+      customFontBody,
+      coupleName.brideName,
+      coupleName.groomName,
+      weddingDate,
+      city,
+    ],
   );
 
   const resolved = useMemo(() => resolveTheme(previewCouple), [previewCouple]);

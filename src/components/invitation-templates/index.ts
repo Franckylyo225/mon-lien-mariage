@@ -32,16 +32,14 @@ export const templateComponents: Record<TemplateId, ComponentType<TemplateProps>
   "art-deco": ArtDecoTemplate,
 };
 
-export const templateRsvpTone: Record<
-  TemplateId,
-  "warm" | "dark" | "gold" | "tropical" | "deco"
-> = {
-  terracotta: "warm",
-  "noir-minimal": "dark",
-  "botanique-dore": "gold",
-  tropical: "tropical",
-  "art-deco": "deco",
-};
+export const templateRsvpTone: Record<TemplateId, "warm" | "dark" | "gold" | "tropical" | "deco"> =
+  {
+    terracotta: "warm",
+    "noir-minimal": "dark",
+    "botanique-dore": "gold",
+    tropical: "tropical",
+    "art-deco": "deco",
+  };
 
 /**
  * Phase 3: some themes have dedicated designs and bypass the template
@@ -76,11 +74,16 @@ const themeComponents: Partial<Record<ThemeId, ComponentType<TemplateProps>>> = 
   "arabesque-bordeaux": OrnateTemplate,
   "nacre-girih": OrnateTemplate,
   "calligraphie-nuit": OrnateTemplate,
+  // Botanique / Illustré (nouveaux) : réutilisent un gabarit existant avec une nouvelle palette,
+  // comme le fait déjà le gabarit ornemental pour les 10 thèmes africain/oriental ci-dessus.
+  "mangrove-emeraude": VertSaugeTemplate,
+  "frangipanier-blush": JardinSauvageTemplate,
+  bougainvillier: TerracottaBohemeTemplate,
+  "encre-aquarelle": AquarelleTemplate,
+  "carnaval-dore": ConfettiTemplate,
 };
 
-const themeRsvpTone: Partial<
-  Record<ThemeId, "warm" | "dark" | "gold" | "tropical" | "deco">
-> = {
+const themeRsvpTone: Partial<Record<ThemeId, "warm" | "dark" | "gold" | "tropical" | "deco">> = {
   "rose-elegance": "warm",
   "ivoire-epure": "dark",
   "or-antique": "deco",
@@ -106,14 +109,18 @@ const themeRsvpTone: Partial<
   "arabesque-bordeaux": "deco",
   "nacre-girih": "gold",
   "calligraphie-nuit": "dark",
+  // Same tone as the template they reuse.
+  "mangrove-emeraude": "gold",
+  "frangipanier-blush": "gold",
+  bougainvillier: "warm",
+  "encre-aquarelle": "warm",
+  "carnaval-dore": "tropical",
 };
 
 export function componentForTheme(theme: ThemeId): ComponentType<TemplateProps> {
   return themeComponents[theme] ?? templateComponents[templateForTheme(theme)];
 }
 
-export function rsvpToneForTheme(
-  theme: ThemeId,
-): "warm" | "dark" | "gold" | "tropical" | "deco" {
+export function rsvpToneForTheme(theme: ThemeId): "warm" | "dark" | "gold" | "tropical" | "deco" {
   return themeRsvpTone[theme] ?? templateRsvpTone[templateForTheme(theme)];
 }

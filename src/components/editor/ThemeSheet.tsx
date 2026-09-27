@@ -26,7 +26,7 @@ interface ThemeSheetProps {
 export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetProps) {
   const [tab, setTab] = useState<"theme" | "colors" | "typography">("theme");
 
-  const currentFamily: ThemeFamilyId = THEMES[couple.theme]?.family ?? "classiques";
+  const currentFamily: ThemeFamilyId = THEMES[couple.theme]?.family ?? "classique";
   const [family, setFamily] = useState<ThemeFamilyId>(currentFamily);
   const [editingBg, setEditingBg] = useState(false);
 
@@ -34,7 +34,12 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
 
   const selectTheme = (slug: ThemeId) => {
     // Applying a theme resets custom accent/background so the theme defaults kick in.
-    onPatch({ theme: slug, accentColor: undefined, backgroundBase: undefined, textColor: undefined });
+    onPatch({
+      theme: slug,
+      accentColor: undefined,
+      backgroundBase: undefined,
+      textColor: undefined,
+    });
   };
 
   const selectBg = (slug: BackgroundSlug) => {
@@ -169,9 +174,7 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
           </section>
 
           <section>
-            <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
-              Fond
-            </p>
+            <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">Fond</p>
             <div className="grid grid-cols-2 gap-3">
               {BACKGROUNDS.map((b) => {
                 const activeSlug = isValidBgSlug(rawBg) ? rawBg : undefined;
@@ -194,7 +197,7 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
                       <span
                         className="text-2xl italic"
                         style={{
-                          fontFamily: 'Playfair Display, serif',
+                          fontFamily: "Playfair Display, serif",
                           color: "#1A1A1A",
                         }}
                       >
@@ -233,7 +236,7 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
                     <span
                       className="text-2xl italic"
                       style={{
-                        fontFamily: 'Playfair Display, serif',
+                        fontFamily: "Playfair Display, serif",
                         color: "#1A1A1A",
                       }}
                     >
@@ -285,7 +288,6 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
           >
             Restaurer les valeurs du thème
           </button>
-
         </div>
       ) : (
         <TypographyPanel couple={couple} onPatch={onPatch} defaultExpanded />
@@ -297,4 +299,3 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
     </BottomSheet>
   );
 }
-

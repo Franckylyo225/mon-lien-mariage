@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { formatFrenchDate } from "@/lib/wedding-store";
 import { eventTypeMeta } from "@/lib/ceremony-meta";
 import { resolveTheme, THEMES } from "@/lib/wedding-theme";
 import { decorForTheme } from "@/lib/theme-decor";
+import { sampleLuminance, toneFromLuminance } from "@/lib/photo-tone";
 import type { TemplateProps } from "./types";
 import { CeremonyProgramTabs } from "./program-tabs";
 import {
@@ -12,12 +14,7 @@ import {
   TemplateBottomSections,
 } from "./sections";
 import { ScrollIndicator } from "./scroll-indicator";
-import {
-  CornerOrnaments,
-  Divider,
-  HeroFrame,
-  OrnamentBand,
-} from "./ornaments";
+import { CornerOrnaments, Divider, HeroFrame, OrnamentBand, type HeroShape } from "./ornaments";
 import { ThemeIcon } from "./theme-icon";
 import cityHallIcon from "@/assets/icons/city-hall.png.asset.json";
 
@@ -28,9 +25,26 @@ import cityHallIcon from "@/assets/icons/city-hall.png.asset.json";
  * d'angle, sa composition de hero et sa palette — pour que deux thèmes
  * d'une même famille ne se ressemblent jamais.
  */
+// Where the caption sits in the "overlay" hero layout (bottom band of the photo).
+const OVERLAY_TEXT_REGION = { x: 0, y: 0.6, width: 1, height: 0.4 };
+
+// Same radius values as HeroFrame (ornaments.tsx), so the "overlay" layout's photo reads as the
+// same arch/circle shape the other two hero layouts get via HeroFrame, instead of a plain rounded
+// rectangle regardless of the theme's heroShape token.
+const OVERLAY_RADIUS: Partial<Record<HeroShape, string>> = {
+  arch: "999px 999px 12px 12px",
+  scallop: "50% 50% 14px 14px / 34% 34% 8px 8px",
+  oval: "50%",
+  circle: "9999px",
+  square: "2px",
+};
+
 export function OrnateTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) {
   const published = ceremonies.filter((c) => c.status === "publiée");
   const def = THEMES[couple.theme];
+  // The gradient scrim under the caption is normally enough to guarantee contrast against
+  // `onDeep`; this only reinforces it further for photos that read unusually bright there.
+  const [scrimBoost, setScrimBoost] = useState(0);
   const decor = decorForTheme(couple.theme);
   const r = resolveTheme(couple);
 
@@ -52,10 +66,7 @@ export function OrnateTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) 
   });
 
   const names = (
-    <h1
-      className="leading-[1.02]"
-      style={{ fontFamily: heading, color: text }}
-    >
+    <h1 className="leading-[1.02]" style={{ fontFamily: heading, color: text }}>
       <span
         className={
           "block " +
@@ -102,12 +113,7 @@ export function OrnateTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) 
   );
 
   const photo = (
-    <HeroFrame
-      src={couple.heroImageUrl}
-      shape={decor.heroShape}
-      accent={accent}
-      deep={deep}
-    />
+    <HeroFrame src={couple.heroImageUrl} shape={decor.heroShape} accent={accent} deep={deep} />
   );
 
   return (
@@ -117,10 +123,7 @@ export function OrnateTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) 
     >
       {/* Bandeau d'en-tête : plein `deep` ou simple filet textile */}
       {decor.headerFill === "deep" ? (
-        <header
-          className="px-6 pb-7 pt-8 text-center"
-          style={{ background: deep, color: onDeep }}
-        >
+        <header className="px-6 pb-7 pt-8 text-center" style={{ background: deep, color: onDeep }}>
           <p style={eyebrow(accent)}>
             {couple.caption || eventTypeMeta[couple.eventType ?? "mariage"].programTitle}
           </p>
@@ -133,7 +136,10 @@ export function OrnateTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) 
         </header>
       ) : (
         <>
-          <OrnamentBand css={def.bandCss ?? `linear-gradient(90deg, ${accent}, ${deep})`} height={8} />
+          <OrnamentBand
+            css={def.bandCss ?? `linear-gradient(90deg, ${accent}, ${deep})`}
+            height={8}
+          />
           <header className="px-6 pt-8 text-center">
             <p style={eyebrow()}>
               {couple.caption || eventTypeMeta[couple.eventType ?? "mariage"].programTitle}
@@ -147,28 +153,53 @@ export function OrnateTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) 
 
         {/* -------- HERO -------- */}
         {decor.heroLayout === "overlay" && couple.heroImageUrl ? (
-          <section className="relative overflow-hidden" style={{ borderRadius: 14 }}>
+          <section
+            className={
+              "relative overflow-hidden " +
+              (decor.heroShape === "circle" ? "aspect-square" : "aspect-[3/4]")
+            }
+            style={{ borderRadius: OVERLAY_RADIUS[decor.heroShape] ?? 14 }}
+          >
             <img
               src={couple.heroImageUrl}
               alt=""
-              className="aspect-[3/4] w-full object-cover"
+              crossOrigin="anonymous"
+              onLoad={(event) => {
+                const luminance = sampleLuminance(event.currentTarget, OVERLAY_TEXT_REGION);
+                setScrimBoost(
+                  luminance !== null && toneFromLuminance(luminance) === "light" ? 1 : 0,
+                );
+              }}
+              className="h-full w-full object-cover"
             />
             <div
               className="absolute inset-0"
               style={{
-                background: `linear-gradient(180deg, ${deep}22 0%, ${deep}dd 78%)`,
+                background: `linear-gradient(180deg, ${deep}22 0%, ${deep}${scrimBoost ? "f2" : "dd"} 78%)`,
               }}
             />
             <div className="absolute inset-x-0 bottom-0 p-6 text-center" style={{ color: onDeep }}>
               <div style={{ color: onDeep }}>
                 <h1 className="leading-[1.05]" style={{ fontFamily: heading }}>
-                  <span className={decor.namesCase === "upper" ? "block text-[2.1rem] uppercase tracking-[0.08em]" : "block text-[2.6rem] italic"}>
+                  <span
+                    className={
+                      decor.namesCase === "upper"
+                        ? "block text-[2.1rem] uppercase tracking-[0.08em]"
+                        : "block text-[2.6rem] italic"
+                    }
+                  >
                     {couple.brideName}
                   </span>
                   <span className="my-1 block text-lg" style={{ color: accent }}>
                     {decor.ampersand}
                   </span>
-                  <span className={decor.namesCase === "upper" ? "block text-[2.1rem] uppercase tracking-[0.08em]" : "block text-[2.6rem] italic"}>
+                  <span
+                    className={
+                      decor.namesCase === "upper"
+                        ? "block text-[2.1rem] uppercase tracking-[0.08em]"
+                        : "block text-[2.6rem] italic"
+                    }
+                  >
                     {couple.groomName}
                   </span>
                 </h1>
@@ -255,12 +286,14 @@ export function OrnateTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) 
 
         <section className="mt-14">
           <div className="text-center">
-            <ThemeIcon src={cityHallIcon.url} color={couple.accent ?? "#c9a84c"} className="mx-auto mb-3 size-8" />
+            <ThemeIcon
+              src={cityHallIcon.url}
+              color={couple.accent ?? "#c9a84c"}
+              className="mx-auto mb-3 size-8"
+            />
           </div>
           <div className="mb-5 text-center">
-            <p style={eyebrow()}>
-              {eventTypeMeta[couple.eventType ?? "mariage"].programTitle}
-            </p>
+            <p style={eyebrow()}>{eventTypeMeta[couple.eventType ?? "mariage"].programTitle}</p>
             <Divider
               kind={decor.dividerAlt}
               accent={accent}
@@ -275,11 +308,7 @@ export function OrnateTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) 
 
         <GallerySection couple={couple} accent={accent} layout={decor.gallery} />
 
-        <TemplateBottomSections
-          couple={couple}
-          ceremonies={published}
-          accent={accent}
-        />
+        <TemplateBottomSections couple={couple} ceremonies={published} accent={accent} />
 
         <Divider
           kind={decor.divider}
@@ -294,10 +323,7 @@ export function OrnateTemplate({ couple, ceremonies, rsvpSlot }: TemplateProps) 
         </footer>
       </article>
 
-      <OrnamentBand
-        css={def.bandCss ?? `linear-gradient(90deg, ${deep}, ${accent})`}
-        height={8}
-      />
+      <OrnamentBand css={def.bandCss ?? `linear-gradient(90deg, ${deep}, ${accent})`} height={8} />
     </main>
   );
 }
