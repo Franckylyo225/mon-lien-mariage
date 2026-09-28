@@ -43,7 +43,7 @@ const INFO_CARD_STYLE: Record<ThemeFamilyId, InfoCardStyle> = {
     card: "rounded-2xl border-2 border-current/25",
     badge: "rounded-none [clip-path:polygon(25%_0%,75%_0%,100%_50%,75%_100%,25%_100%,0%_50%)]",
   },
-  // Bleu Nuit, Monochrome, Manuscrit, Nuit d'Ébène, Sahel Doré, Calligraphie Nuit —
+  // Bleu Nuit, Monochrome, Billet d'Envol, Nuit d'Ébène, Sahel Doré, Calligraphie Nuit —
   // editorial: sharp corners, a pull-quote accent bar.
   moderne: { card: "rounded-none border border-current/20 border-l-[3px]", badge: "rounded-none" },
   // Vert Sauge, Jardin Sauvage, Terracotta Bohème + 3 nouveaux — organic, slightly irregular corners.

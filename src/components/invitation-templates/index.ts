@@ -17,7 +17,7 @@ import { WaxDoreTemplate } from "./wax-dore";
 import { KenteRoyalTemplate } from "./kente-royal";
 import { SahelDoreTemplate } from "./sahel-dore";
 import { BleuNuitTemplate } from "./bleu-nuit";
-import { ManuscritTemplate } from "./manuscrit";
+import { BilletEnvolTemplate } from "./billet-envol";
 import { MonochromeTemplate } from "./monochrome";
 import { AquarelleTemplate } from "./aquarelle";
 import { ConfettiTemplate } from "./confetti";
@@ -58,7 +58,7 @@ const themeComponents: Partial<Record<ThemeId, ComponentType<TemplateProps>>> = 
   "kente-royal": KenteRoyalTemplate,
   "sahel-dore": SahelDoreTemplate,
   "bleu-nuit": BleuNuitTemplate,
-  manuscrit: ManuscritTemplate,
+  manuscrit: BilletEnvolTemplate,
   monochrome: MonochromeTemplate,
   aquarelle: AquarelleTemplate,
   confetti: ConfettiTemplate,
