@@ -6,7 +6,9 @@ import confetti from "@/assets/theme-thumbs/confetti.png.asset.json";
 import ivoireEpure from "@/assets/theme-thumbs/ivoire-epure.png.asset.json";
 import jardinSauvage from "@/assets/theme-thumbs/jardin-sauvage.png.asset.json";
 import kenteRoyal from "@/assets/theme-thumbs/kente-royal.png.asset.json";
-import manuscrit from "@/assets/theme-thumbs/manuscrit.png.asset.json";
+// Le slug reste « manuscrit » pour les invitations déjà publiées ; le thème,
+// lui, s'appelle désormais Billet d'Envol.
+import billetEnvol from "@/assets/theme-thumbs/billet-envol.png";
 import monochrome from "@/assets/theme-thumbs/monochrome.png.asset.json";
 import orAntique from "@/assets/theme-thumbs/or-antique.png.asset.json";
 import papierKraft from "@/assets/theme-thumbs/papier-kraft.png.asset.json";
@@ -43,7 +45,7 @@ export const THEME_THUMBNAIL_URL: Partial<Record<ThemeId, string>> = {
   "kente-royal": kenteRoyal.url,
   "sahel-dore": sahelDore.url,
   "bleu-nuit": bleuNuit.url,
-  manuscrit: manuscrit.url,
+  manuscrit: billetEnvol,
   monochrome: monochrome.url,
   aquarelle: aquarelle.url,
   confetti: confetti.url,

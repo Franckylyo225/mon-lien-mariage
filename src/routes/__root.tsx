@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -17,8 +18,6 @@ import { ConsentProvider } from "../lib/consent";
 import { ConsentManager } from "../components/consent/ConsentManager";
 import { useFacebookPixelPageView } from "../hooks/use-facebook-pixel";
 import { useGaPageView } from "../hooks/use-ga-page-view";
-
-
 
 function NotFoundComponent() {
   return (
@@ -50,9 +49,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="font-serif text-2xl italic text-foreground">
-          Un petit imprévu…
-        </h1>
+        <h1 className="font-serif text-2xl italic text-foreground">Un petit imprévu…</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Quelque chose n'a pas fonctionné. Réessayez ou revenez à l'accueil.
         </p>
@@ -90,7 +87,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Créez votre invitation de mariage digitale en 10 minutes. RSVP, programme et partage WhatsApp — pensée pour l'Afrique de l'Ouest.",
       },
       { name: "author", content: "MonInvit.com" },
-      { name: "keywords", content: "invitation mariage digitale, faire-part mariage en ligne, RSVP mariage, invitation dot Afrique, invitation mariage Côte d'Ivoire, invitation mariage Sénégal, invitation mariage Bénin, invitation mariage Togo, invitation mariage Mali, invitation mariage Burkina Faso, invitation mariage Afrique de l'Ouest, faire-part digital, invitation WhatsApp" },
+      {
+        name: "keywords",
+        content:
+          "invitation mariage digitale, faire-part mariage en ligne, RSVP mariage, invitation dot Afrique, invitation mariage Côte d'Ivoire, invitation mariage Sénégal, invitation mariage Bénin, invitation mariage Togo, invitation mariage Mali, invitation mariage Burkina Faso, invitation mariage Afrique de l'Ouest, faire-part digital, invitation WhatsApp",
+      },
       { name: "robots", content: "index, follow, max-image-preview:large" },
       { name: "theme-color", content: "#993556" },
       // Geo targeting — Afrique de l'Ouest
@@ -116,7 +117,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@moninvit" },
       { name: "twitter:title", content: "MonInvit — Invitations de mariage digitales" },
-      { name: "twitter:description", content: "Créez votre invitation de mariage digitale en 10 minutes. RSVP, programme et partage WhatsApp — pensée pour l'Afrique de l'Ouest." },
+      {
+        name: "twitter:description",
+        content:
+          "Créez votre invitation de mariage digitale en 10 minutes. RSVP, programme et partage WhatsApp — pensée pour l'Afrique de l'Ouest.",
+      },
       { property: "og:image", content: "https://moninvit.com/media/og-image-v3.jpg" },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
@@ -140,7 +145,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
 
       {
-
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
@@ -188,18 +192,19 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
+  // `/theme-thumb/*` n'est pas une page visitée : c'est la route interne
+  // capturée pour générer les vignettes de thèmes, et elle doit rester sans
+  // aucun élément d'interface par-dessus le gabarit.
+  const isThumbnailCapture = useRouterState({
+    select: (s) => s.location.pathname.startsWith("/theme-thumb/"),
+  });
   useFacebookPixelPageView();
   useGaPageView();
 
   useEffect(() => {
     import("@/integrations/supabase/client").then(({ supabase }) => {
       const { data: sub } = supabase.auth.onAuthStateChange((event) => {
-        if (
-          event !== "SIGNED_IN" &&
-          event !== "SIGNED_OUT" &&
-          event !== "USER_UPDATED"
-        )
-          return;
+        if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
         router.invalidate();
         if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
       });
@@ -208,16 +213,14 @@ function RootComponent() {
   }, [router, queryClient]);
 
   return (
-
     <QueryClientProvider client={queryClient}>
       <ConsentProvider>
         <WeddingProvider>
           <Outlet />
           <Toaster position="top-center" richColors closeButton />
-          <ConsentManager />
+          {isThumbnailCapture ? null : <ConsentManager />}
         </WeddingProvider>
       </ConsentProvider>
     </QueryClientProvider>
   );
 }
-
