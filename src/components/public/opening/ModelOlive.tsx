@@ -19,16 +19,17 @@ export function ModelOlive({
       className="relative flex h-full w-full flex-col items-center justify-center px-7 py-10 text-[#F6F2E9]"
       style={{ background: color, fontFamily: fontBody }}
     >
-      <p className="text-center text-[34px] italic leading-none sm:text-[42px]" style={{ fontFamily: fontHeading }}>
+      <p
+        className="text-center text-[34px] italic leading-none sm:text-[42px]"
+        style={{ fontFamily: fontHeading }}
+      >
         Save
       </p>
       <p className="mt-1 text-center text-[13px] uppercase tracking-[0.45em]">The Date</p>
 
       <div className="mt-6 w-[70vw] max-w-[300px] border border-white/40 p-2">
         <div className="aspect-[4/5] w-full overflow-hidden bg-white/10">
-          {photoUrl ? (
-            <img src={photoUrl} alt="" className="h-full w-full object-cover" />
-          ) : null}
+          {photoUrl ? <img src={photoUrl} alt="" className="h-full w-full object-cover" /> : null}
         </div>
       </div>
 

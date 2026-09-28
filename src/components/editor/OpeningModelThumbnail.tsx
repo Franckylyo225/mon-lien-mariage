@@ -5,8 +5,11 @@ import ring from "@/assets/engagement-ring.jpg.asset.json";
 import bouquet from "@/assets/hero-bouquet.jpg.asset.json";
 import { InvitationSplash } from "@/components/public/InvitationSplash";
 import { ModelArcheFloral } from "@/components/public/opening/ModelArcheFloral";
-import { ModelBreakingNews } from "@/components/public/opening/ModelBreakingNews";
+import { ModelChiffresGeants } from "@/components/public/opening/ModelChiffresGeants";
 import { ModelEditorialDate } from "@/components/public/opening/ModelEditorialDate";
+import { ModelMonogramme } from "@/components/public/opening/ModelMonogramme";
+import { ModelPrenomsXxl } from "@/components/public/opening/ModelPrenomsXxl";
+import { ModelSaveTheDate } from "@/components/public/opening/ModelSaveTheDate";
 import { ModelOlive } from "@/components/public/opening/ModelOlive";
 import { ModelPresse } from "@/components/public/opening/ModelPresse";
 import { ModelRomantique } from "@/components/public/opening/ModelRomantique";
@@ -18,6 +21,7 @@ import {
   type OpeningModelProps,
   type OpeningEffect,
 } from "@/components/public/opening/types";
+import { resolveOpening } from "@/components/public/opening/config";
 import type { Couple } from "@/lib/wedding-store";
 import type { ResolvedTheme } from "@/lib/wedding-theme";
 
@@ -27,8 +31,11 @@ const DEMO_PHOTOS: Record<OpeningModel, string> = {
   olive: ring.url,
   arche_floral: coupleEmbraced.url,
   romantique: coupleFront.url,
-  breaking_news: coupleEmbraced.url,
   editorial_date: bouquet.url,
+  prenoms_xxl: coupleEmbraced.url,
+  chiffres_geants: coupleFront.url,
+  save_the_date: bouquet.url,
+  monogramme: ring.url,
 };
 
 const MODELS = {
@@ -36,17 +43,16 @@ const MODELS = {
   olive: ModelOlive,
   arche_floral: ModelArcheFloral,
   romantique: ModelRomantique,
-  breaking_news: ModelBreakingNews,
   editorial_date: ModelEditorialDate,
+  prenoms_xxl: ModelPrenomsXxl,
+  chiffres_geants: ModelChiffresGeants,
+  save_the_date: ModelSaveTheDate,
+  monogramme: ModelMonogramme,
 } as const;
 
+/** La photo réelle du couple, ou une image de démonstration pour ne rien montrer de vide. */
 export function previewPhotoFor(model: OpeningModel, couple: Couple): string {
-  return (
-    couple.openingPageConfig?.photoUrl ||
-    couple.splashBgImageUrl ||
-    couple.heroImageUrl ||
-    DEMO_PHOTOS[model]
-  );
+  return resolveOpening(couple).photoUrl || DEMO_PHOTOS[model];
 }
 
 function numericDate(date?: string | null): string {
@@ -70,13 +76,11 @@ export function OpeningModelThumbnail({ model, couple, theme }: Props) {
   const frameRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.4);
   const meta = openingModelMeta(model);
+  const opening = resolveOpening(couple);
   const photoUrl = previewPhotoFor(model, couple);
-  const savedEffect = couple.openingPageEffect;
-  const effect: OpeningEffect =
-    model === couple.openingPageModel &&
-    (savedEffect === "tap" || savedEffect === "swipe_up" || savedEffect === "swipe_down")
-      ? savedEffect
-      : meta.defaultEffect;
+  // La vignette du modèle actif montre le geste réellement enregistré ; les
+  // autres montrent celui pour lequel elles ont été dessinées.
+  const effect: OpeningEffect = model === opening.model ? opening.effect : meta.defaultEffect;
 
   useLayoutEffect(() => {
     const frame = frameRef.current;
@@ -95,17 +99,15 @@ export function OpeningModelThumbnail({ model, couple, theme }: Props) {
     numericDate: numericDate(couple.weddingDate),
     city: couple.city || "Abidjan",
     photoUrl,
-    color: couple.openingPageConfig?.color || meta.defaultColor || theme.accent,
+    color: (model === opening.model ? opening.color : meta.defaultColor) || theme.accent,
     accent: theme.accent,
     fontHeading: theme.fontHeading,
     fontBody: theme.fontBody,
-    showDate: couple.splashShowDate !== false,
+    showDate: opening.showDate,
     effectLabel: OPENING_EFFECT_LABEL[effect],
     effect,
-    quote: couple.openingPageConfig?.quote,
-    textTone: couple.openingPageConfig?.textTone,
-    tickerText: couple.openingPageConfig?.tickerText,
-    channelLabel: couple.openingPageConfig?.channelLabel,
+    quote: opening.quote,
+    textTone: opening.textTone,
   };
 
   let visual;
@@ -120,8 +122,8 @@ export function OpeningModelThumbnail({ model, couple, theme }: Props) {
         theme={theme}
         bgMode="image"
         bgImageUrl={photoUrl}
-        kicker={couple.splashKicker}
-        tapLabel={couple.splashTapLabel}
+        kicker={opening.kicker}
+        tapLabel={opening.tapLabel}
         showDate={shared.showDate}
         effect={effect}
         onDone={() => undefined}
@@ -134,10 +136,7 @@ export function OpeningModelThumbnail({ model, couple, theme }: Props) {
 
   return (
     <div ref={frameRef} className="opening-model-thumbnail" aria-hidden>
-      <div
-        className="opening-model-thumbnail-stage"
-        style={{ transform: `scale(${scale})` }}
-      >
+      <div className="opening-model-thumbnail-stage" style={{ transform: `scale(${scale})` }}>
         {visual}
       </div>
     </div>

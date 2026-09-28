@@ -4,8 +4,11 @@ export type OpeningModel =
   | "olive"
   | "arche_floral"
   | "romantique"
-  | "breaking_news"
-  | "editorial_date";
+  | "editorial_date"
+  | "prenoms_xxl"
+  | "chiffres_geants"
+  | "save_the_date"
+  | "monogramme";
 
 export type OpeningEffect = "tap" | "swipe_up" | "swipe_down";
 
@@ -25,14 +28,40 @@ export const OPENING_EFFECT_LABEL: Record<OpeningEffect, string> = {
   swipe_down: "Glissez vers le bas",
 };
 
+/**
+ * Réglages qu'un modèle sait réellement afficher. L'éditeur s'en sert pour ne
+ * proposer que les champs utiles : un champ absent de cette liste n'est pas
+ * masqué au hasard, il n'existe simplement pas pour ce modèle.
+ */
+export type OpeningField =
+  "photo" | "color" | "backgroundMode" | "kicker" | "tapLabel" | "quote" | "textTone";
+
 export interface OpeningModelMeta {
   id: OpeningModel;
   label: string;
   description: string;
   defaultEffect: OpeningEffect;
-  supportsColor: boolean;
   defaultColor?: string;
-  supportsPhoto: boolean;
+  fields: OpeningField[];
+}
+
+export function modelSupports(meta: OpeningModelMeta, field: OpeningField): boolean {
+  return meta.fields.includes(field);
+}
+
+const FIELD_LABELS: Record<OpeningField, string> = {
+  photo: "photo",
+  color: "couleur",
+  backgroundMode: "fond",
+  kicker: "petite phrase",
+  tapLabel: "texte du bouton",
+  quote: "citation",
+  textTone: "lisibilité du texte",
+};
+
+/** « photo, couleur, bandeau défilant » — pour annoncer ce que le modèle permet de régler. */
+export function modelFieldsLabel(meta: OpeningModelMeta): string {
+  return meta.fields.map((f) => FIELD_LABELS[f]).join(", ");
 }
 
 /** Ordre d'affichage dans la galerie : le modèle historique en premier. */
@@ -42,59 +71,76 @@ export const OPENING_MODELS: OpeningModelMeta[] = [
     label: "Classique",
     description: "Ornements floraux, prénoms et date. Le modèle historique.",
     defaultEffect: "tap",
-    supportsColor: false,
-    supportsPhoto: true,
+    fields: ["photo", "backgroundMode", "kicker", "tapLabel"],
   },
   {
     id: "presse",
     label: "Presse",
     description: "Fond blanc épuré, prénoms en majuscules, photo verticale.",
     defaultEffect: "tap",
-    supportsColor: false,
-    supportsPhoto: true,
+    fields: ["photo"],
   },
   {
     id: "olive",
     label: "Olive",
     description: "Fond uni coloré, titre script et photo encadrée.",
     defaultEffect: "tap",
-    supportsColor: true,
     defaultColor: "#6B7A4F",
-    supportsPhoto: true,
+    fields: ["photo", "color"],
   },
   {
     id: "arche_floral",
     label: "Arche florale",
     description: "Photo plein écran et arche colorée avec médaillon.",
     defaultEffect: "swipe_up",
-    supportsColor: true,
     defaultColor: "#B4654A",
-    supportsPhoto: true,
+    fields: ["photo", "color"],
   },
   {
     id: "romantique",
     label: "Romantique",
     description: "Fond crème, grand script et photo en arche.",
     defaultEffect: "tap",
-    supportsColor: false,
-    supportsPhoto: true,
-  },
-  {
-    id: "breaking_news",
-    label: "Breaking news",
-    description: "Fond vif, écran TV et bandeau défilant.",
-    defaultEffect: "tap",
-    supportsColor: true,
-    defaultColor: "#C81E30",
-    supportsPhoto: true,
+    fields: ["photo"],
   },
   {
     id: "editorial_date",
     label: "Date éditoriale",
     description: "Photo plein écran et date monumentale superposée.",
     defaultEffect: "tap",
-    supportsColor: false,
-    supportsPhoto: true,
+    fields: ["photo", "quote", "textTone"],
+  },
+  {
+    id: "prenoms_xxl",
+    label: "Prénoms XXL",
+    description: "Photo encadrée par vos deux prénoms en très grand.",
+    defaultEffect: "swipe_up",
+    defaultColor: "#EFE9DC",
+    fields: ["photo", "color"],
+  },
+  {
+    id: "chiffres_geants",
+    label: "Chiffres géants",
+    description: "Votre date en très grands chiffres, prénoms en script.",
+    defaultEffect: "tap",
+    defaultColor: "#FBFAF8",
+    fields: ["color"],
+  },
+  {
+    id: "save_the_date",
+    label: "Save the date",
+    description: "Grandes capitales serif et « the » calligraphié.",
+    defaultEffect: "tap",
+    defaultColor: "#7C7F63",
+    fields: ["color"],
+  },
+  {
+    id: "monogramme",
+    label: "Monogramme",
+    description: "Vos initiales, filets fins et date empilée.",
+    defaultEffect: "tap",
+    defaultColor: "#FCFCFB",
+    fields: ["color"],
   },
 ];
 
@@ -107,8 +153,6 @@ export interface OpeningPageConfig {
   photoUrl?: string | null;
   quote?: string | null;
   textTone?: "auto" | "light" | "dark" | null;
-  tickerText?: string | null;
-  channelLabel?: string | null;
 }
 
 export interface OpeningModelProps {
@@ -129,8 +173,6 @@ export interface OpeningModelProps {
   effect?: OpeningEffect;
   quote?: string | null;
   textTone?: "auto" | "light" | "dark" | null;
-  tickerText?: string | null;
-  channelLabel?: string | null;
 }
 
 export function formatOpeningDate(date?: string | null): string {

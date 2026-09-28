@@ -12,6 +12,7 @@ import { ThemeSheet } from "./ThemeSheet";
 import { ParticleSheet } from "./ParticleSheet";
 import { MusicSheet } from "./MusicSheet";
 import { SplashSheet } from "./SplashSheet";
+import { OPENING_EFFECTS, openingModelMeta } from "@/components/public/opening/types";
 import { useResolvedTheme } from "@/components/theme/ThemeRoot";
 import { PARTICLE_STYLES } from "@/lib/particles/styles";
 import { findTrack } from "@/lib/music/tracks";
@@ -81,14 +82,25 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
   useEffect(() => {
     if (!initialSheet) return;
     const allowed: Sheet[] = [
-      "hero","caption","names","date","countdown","practical",
-      "dress","registry","story","gallery","theme","particles","music","splash",
+      "hero",
+      "caption",
+      "names",
+      "date",
+      "countdown",
+      "practical",
+      "dress",
+      "registry",
+      "story",
+      "gallery",
+      "theme",
+      "particles",
+      "music",
+      "splash",
     ];
     if ((allowed as string[]).includes(initialSheet)) {
       setSheet(initialSheet as Sheet);
     }
   }, [initialSheet]);
-
 
   // Local drafts (updated live in UI, persisted debounced)
   const [caption, setCaption] = useState(couple.caption ?? "");
@@ -132,7 +144,6 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
   };
   const [dressCodeNote, setDressCodeNote] = useState(couple.dressCodeNote ?? "");
   const dressColors = couple.dressCodeColors ?? [];
-
 
   // Registry (liste de mariage) drafts
   const registryEnabled = couple.registryEnabled ?? false;
@@ -192,9 +203,7 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
   const styleFont = countdownStyle.font ?? "serif";
   const styleAnimation = countdownStyle.animation ?? "none";
 
-  const updateCountdownStyle = (
-    patch: Partial<NonNullable<typeof couple.countdownStyle>>,
-  ) => {
+  const updateCountdownStyle = (patch: Partial<NonNullable<typeof couple.countdownStyle>>) => {
     persist({ countdownStyle: { ...countdownStyle, ...patch } });
   };
 
@@ -223,9 +232,6 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
 
   return (
     <>
-
-
-
       {/* Bottom edit bar (edit mode only) */}
       {mode === "edit" && (
         <div className="fixed inset-x-0 bottom-4 z-30 mx-auto flex max-w-xl justify-center px-4">
@@ -239,15 +245,7 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
             <EditChip
               icon={<Sparkles className="size-4" />}
               label="Page d'ouverture"
-              value={
-                couple.splashEnabled === false
-                  ? "Désactivée"
-                  : couple.splashBgMode === "image" && couple.splashBgImageUrl
-                    ? "Image de fond"
-                    : couple.splashBgMode === "color"
-                      ? "Couleur unie"
-                      : "Thème"
-              }
+              value={openingChipValue(couple)}
               onClick={() => setSheet("splash")}
             />
             <EditChip
@@ -382,8 +380,6 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
               }
               onClick={() => setSheet("music")}
             />
-
-
           </div>
         </div>
       )}
@@ -506,8 +502,8 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
         {weddingPast ? (
           <div className="rounded-xl border border-muted bg-muted/40 p-4 text-sm">
             <Timer className="mb-2 size-4" />
-            La date du mariage est passée. Le compte à rebours est
-            automatiquement masqué sur votre page.
+            La date du mariage est passée. Le compte à rebours est automatiquement masqué sur votre
+            page.
           </div>
         ) : (
           <div className="space-y-5">
@@ -577,9 +573,7 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
                       <span
                         className={cn(
                           "grid size-5 place-items-center rounded-full border text-[10px]",
-                          active
-                            ? "border-background/30 bg-background/10"
-                            : "border-border",
+                          active ? "border-background/30 bg-background/10" : "border-border",
                         )}
                       >
                         {active ? "✓" : ""}
@@ -589,9 +583,7 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
                 })}
               </div>
               {countdownUnits.length === 1 && (
-                <p className="text-[11px] opacity-60">
-                  Au moins une unité doit rester affichée.
-                </p>
+                <p className="text-[11px] opacity-60">Au moins une unité doit rester affichée.</p>
               )}
             </div>
 
@@ -602,9 +594,7 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
                 !countdownEnabled && "pointer-events-none opacity-40",
               )}
             >
-              <p className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
-                Style
-              </p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">Style</p>
 
               <StyleRow label="Couleur">
                 {(
@@ -726,7 +716,6 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
               !practicalEnabled && "pointer-events-none opacity-40",
             )}
           >
-
             <div>
               <label className="mb-2 block font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
                 Parking
@@ -909,9 +898,7 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
                 Magasins
               </p>
               {registryStores.length === 0 ? (
-                <p className="text-[11px] opacity-60">
-                  Ajoutez un premier magasin ci-dessous.
-                </p>
+                <p className="text-[11px] opacity-60">Ajoutez un premier magasin ci-dessous.</p>
               ) : (
                 registryStores.map((s, i) => (
                   <div
@@ -972,8 +959,6 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
         </div>
       </BottomSheet>
 
-
-
       <PhotoGridSheet
         open={sheet === "dress"}
         onOpenChange={(o) => !o && setSheet(null)}
@@ -1020,8 +1005,6 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
         persist={persist}
       />
 
-
-
       <ThemeBlockSheet
         open={sheet === "themeblock"}
         onOpenChange={(o) => !o && setSheet(null)}
@@ -1056,7 +1039,6 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
           />
         }
       />
-
 
       <PhotoGridSheet
         open={sheet === "gallery"}
@@ -1139,16 +1121,29 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
 
 function themeChipValue(couple: Couple): string {
   const theme = couple.theme ?? "rose-elegance";
-  const themeName = ({
-    "rose-elegance": "Rose Élégance",
-    "ivoire-epure": "Ivoire Épuré",
-    "wax-dore": "Wax Doré",
-    "vert-sauge": "Vert Sauge",
-    "bleu-nuit": "Bleu Nuit",
-    "or-antique": "Or Antique",
-  } as Record<string, string>)[theme] ?? "Personnalisé";
+  const themeName =
+    (
+      {
+        "rose-elegance": "Rose Élégance",
+        "ivoire-epure": "Ivoire Épuré",
+        "wax-dore": "Wax Doré",
+        "vert-sauge": "Vert Sauge",
+        "bleu-nuit": "Bleu Nuit",
+        "or-antique": "Or Antique",
+      } as Record<string, string>
+    )[theme] ?? "Personnalisé";
   const custom = couple.accentColor || couple.backgroundBase || couple.textColor ? " ●" : "";
   return `${themeName}${custom}`;
+}
+
+/** Names the chosen opening model + gesture, so the chip reflects what guests actually see. */
+function openingChipValue(couple: Couple): string {
+  if (couple.splashEnabled === false) return "Désactivée";
+  const model = openingModelMeta(couple.openingPageModel);
+  const effect =
+    OPENING_EFFECTS.find((e) => e.id === (couple.openingPageEffect ?? model.defaultEffect)) ??
+    OPENING_EFFECTS[0];
+  return `${model.label} · ${effect.label}`;
 }
 
 type StoryStyle = NonNullable<Couple["storyStyle"]>;
@@ -1166,9 +1161,7 @@ function StoryStyleControls({
 
   return (
     <div className="space-y-3 rounded-xl border border-border p-3">
-      <p className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
-        Style du texte
-      </p>
+      <p className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">Style du texte</p>
 
       <StyleRow label="Police">
         {(
@@ -1199,11 +1192,7 @@ function StoryStyleControls({
             { v: "lg", label: "L" },
           ] as const
         ).map((o) => (
-          <StylePill
-            key={o.v}
-            active={size === o.v}
-            onClick={() => onChange({ size: o.v })}
-          >
+          <StylePill key={o.v} active={size === o.v} onClick={() => onChange({ size: o.v })}>
             {o.label}
           </StylePill>
         ))}
@@ -1216,11 +1205,7 @@ function StoryStyleControls({
             { v: "left", label: "Gauche" },
           ] as const
         ).map((o) => (
-          <StylePill
-            key={o.v}
-            active={align === o.v}
-            onClick={() => onChange({ align: o.v })}
-          >
+          <StylePill key={o.v} active={align === o.v} onClick={() => onChange({ align: o.v })}>
             {o.label}
           </StylePill>
         ))}
@@ -1228,8 +1213,6 @@ function StoryStyleControls({
     </div>
   );
 }
-
-
 
 function EditChip({
   icon,
@@ -1287,9 +1270,7 @@ function Field({
 function StyleRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between gap-3">
-      <span className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
-        {label}
-      </span>
+      <span className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">{label}</span>
       <div className="flex flex-wrap items-center justify-end gap-1.5">{children}</div>
     </div>
   );
@@ -1322,4 +1303,3 @@ function StylePill({
     </button>
   );
 }
-

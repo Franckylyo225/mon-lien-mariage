@@ -3,8 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { usePageView } from "@/hooks/use-page-view";
 import { supabase } from "@/integrations/supabase/client";
 import { OpeningPage } from "@/components/public/opening/OpeningPage";
-import type { OpeningEffect, OpeningModel } from "@/components/public/opening/types";
-
+import { resolveOpening } from "@/components/public/opening/config";
 
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { getPublicWedding } from "@/lib/public-wedding.functions";
@@ -15,7 +14,14 @@ import { ParticleCanvas, RsvpBurstOverlay } from "@/components/particles/Particl
 import { AmbientMusicPlayer } from "@/components/music/AmbientMusicPlayer";
 import { GuestbookFab } from "@/components/invitation-templates/guestbook-fab";
 import { RevealOnScroll } from "@/components/site/RevealOnScroll";
-import type { BackgroundBase, Ceremony, Couple, EventType, TemplateId, ThemeId } from "@/lib/wedding-store";
+import type {
+  BackgroundBase,
+  Ceremony,
+  Couple,
+  EventType,
+  TemplateId,
+  ThemeId,
+} from "@/lib/wedding-store";
 import { resolveTheme } from "@/lib/wedding-theme";
 import { ThemeRoot } from "@/components/theme/ThemeRoot";
 import { normalizeEventType } from "@/lib/ceremony-meta";
@@ -162,12 +168,9 @@ function PublicInvitationPage() {
     setContentRevealed(true);
   }, []);
 
-
   usePageView(weddingId);
 
-
   if (!data.wedding) throw notFound();
-
 
   const w = data.wedding;
   const couple: Couple = {
@@ -181,33 +184,47 @@ function PublicInvitationPage() {
     storyTitle: (w as { story_title?: string | null }).story_title ?? undefined,
     storyBody: (w as { story_body?: string | null }).story_body ?? undefined,
     storyImages: ((w as { story_images?: string[] | null }).story_images as string[] | null) ?? [],
-    storyStyle: ((w as { story_style?: Record<string, unknown> | null }).story_style as Couple["storyStyle"]) ?? {},
-    storyLayout: (((w as { story_layout?: string | null }).story_layout as Couple["storyLayout"]) ?? "left"),
-    storyPhotoShape: (((w as { story_photo_shape?: string | null }).story_photo_shape as Couple["storyPhotoShape"]) ?? "rounded"),
+    storyStyle:
+      ((w as { story_style?: Record<string, unknown> | null })
+        .story_style as Couple["storyStyle"]) ?? {},
+    storyLayout:
+      ((w as { story_layout?: string | null }).story_layout as Couple["storyLayout"]) ?? "left",
+    storyPhotoShape:
+      ((w as { story_photo_shape?: string | null })
+        .story_photo_shape as Couple["storyPhotoShape"]) ?? "rounded",
     themeBlockEnabled: (w as { theme_block_enabled?: boolean | null }).theme_block_enabled ?? false,
     themeBlockTitle: (w as { theme_block_title?: string | null }).theme_block_title ?? undefined,
     themeBlockBody: (w as { theme_block_body?: string | null }).theme_block_body ?? undefined,
-    themeBlockReference: (w as { theme_block_reference?: string | null }).theme_block_reference ?? undefined,
-    themeBlockStyle: ((w as { theme_block_style?: Record<string, unknown> | null }).theme_block_style as Couple["themeBlockStyle"]) ?? {},
-    storySteps: ((data as { storySteps?: Array<Record<string, unknown>> }).storySteps ?? []).map((row) => ({
-      id: String(row.id),
-      year: (row.year as string | null) ?? null,
-      title: (row.title as string | null) ?? null,
-      text: (row.text as string | null) ?? null,
-      photoUrl: (row.photo_url as string | null) ?? null,
-    })),
+    themeBlockReference:
+      (w as { theme_block_reference?: string | null }).theme_block_reference ?? undefined,
+    themeBlockStyle:
+      ((w as { theme_block_style?: Record<string, unknown> | null })
+        .theme_block_style as Couple["themeBlockStyle"]) ?? {},
+    storySteps: ((data as { storySteps?: Array<Record<string, unknown>> }).storySteps ?? []).map(
+      (row) => ({
+        id: String(row.id),
+        year: (row.year as string | null) ?? null,
+        title: (row.title as string | null) ?? null,
+        text: (row.text as string | null) ?? null,
+        photoUrl: (row.photo_url as string | null) ?? null,
+      }),
+    ),
     galleryEnabled: (w as { gallery_enabled?: boolean | null }).gallery_enabled ?? false,
     galleryTitle: (w as { gallery_title?: string | null }).gallery_title ?? undefined,
-    galleryImages: ((w as { gallery_images?: string[] | null }).gallery_images as string[] | null) ?? [],
+    galleryImages:
+      ((w as { gallery_images?: string[] | null }).gallery_images as string[] | null) ?? [],
     galleryDisplay:
-      (((w as { gallery_display?: string | null }).gallery_display as Couple["galleryDisplay"]) ?? "grid"),
+      ((w as { gallery_display?: string | null }).gallery_display as Couple["galleryDisplay"]) ??
+      "grid",
     heroImageUrl: w.hero_image_url ?? undefined,
     templateId: (w.template_id as TemplateId) ?? "terracotta",
     theme: (w.theme as ThemeId) ?? "rose-elegance",
     eventType: normalizeEventType((w as { event_type?: string | null }).event_type),
     accent: w.accent ?? undefined,
     accentColor: (w as { accent_color?: string | null }).accent_color ?? undefined,
-    backgroundBase: ((w as { background_base?: string | null }).background_base as BackgroundBase | null) ?? undefined,
+    backgroundBase:
+      ((w as { background_base?: string | null }).background_base as BackgroundBase | null) ??
+      undefined,
     textColor: ((w as { text_color?: string | null }).text_color as string | null) ?? undefined,
     customFontTitle: (w as { custom_font_title?: string | null }).custom_font_title ?? null,
     customFontBody: (w as { custom_font_body?: string | null }).custom_font_body ?? null,
@@ -229,18 +246,15 @@ function PublicInvitationPage() {
     customInfoTitle: (w as { custom_info_title?: string | null }).custom_info_title ?? undefined,
     customInfoBody: (w as { custom_info_body?: string | null }).custom_info_body ?? undefined,
     caption: (w as { caption?: string | null }).caption ?? undefined,
-    countdownEnabled:
-      (w as { countdown_enabled?: boolean | null }).countdown_enabled ?? true,
-    countdownUnits:
-      ((w as { countdown_units?: string[] | null }).countdown_units as Couple["countdownUnits"]) ??
-      ["days", "hours", "minutes", "seconds"],
+    countdownEnabled: (w as { countdown_enabled?: boolean | null }).countdown_enabled ?? true,
+    countdownUnits: ((w as { countdown_units?: string[] | null })
+      .countdown_units as Couple["countdownUnits"]) ?? ["days", "hours", "minutes", "seconds"],
     countdownStyle:
-      ((w as { countdown_style?: Record<string, unknown> | null }).countdown_style as Couple["countdownStyle"]) ??
-      {},
+      ((w as { countdown_style?: Record<string, unknown> | null })
+        .countdown_style as Couple["countdownStyle"]) ?? {},
     practicalInfoEnabled:
       (w as { practical_info_enabled?: boolean | null }).practical_info_enabled ?? false,
-    practicalParking:
-      (w as { practical_parking?: string | null }).practical_parking ?? undefined,
+    practicalParking: (w as { practical_parking?: string | null }).practical_parking ?? undefined,
     practicalAccommodation:
       (w as { practical_accommodation?: string | null }).practical_accommodation ?? undefined,
     practicalContactName:
@@ -250,27 +264,29 @@ function PublicInvitationPage() {
     practicalCustomFields: Array.isArray(
       (w as { practical_custom_fields?: unknown }).practical_custom_fields,
     )
-      ? ((w as { practical_custom_fields?: unknown })
-          .practical_custom_fields as unknown as Array<{ label: string; value: string }>)
+      ? ((w as { practical_custom_fields?: unknown }).practical_custom_fields as unknown as Array<{
+          label: string;
+          value: string;
+        }>)
       : [],
-    registryEnabled:
-      (w as { registry_enabled?: boolean | null }).registry_enabled ?? false,
-    registryTitle:
-      (w as { registry_title?: string | null }).registry_title ?? undefined,
-    registryNote:
-      (w as { registry_note?: string | null }).registry_note ?? undefined,
+    registryEnabled: (w as { registry_enabled?: boolean | null }).registry_enabled ?? false,
+    registryTitle: (w as { registry_title?: string | null }).registry_title ?? undefined,
+    registryNote: (w as { registry_note?: string | null }).registry_note ?? undefined,
     registryStores:
-      ((w as { registry_stores?: Array<{ name: string; url?: string }> | null }).registry_stores as Couple["registryStores"]) ??
-      [],
+      ((w as { registry_stores?: Array<{ name: string; url?: string }> | null })
+        .registry_stores as Couple["registryStores"]) ?? [],
     particleEffectSlug:
-      ((w as { particle_effect_slug?: string | null }).particle_effect_slug as ParticleSlug | null) ?? null,
+      ((w as { particle_effect_slug?: string | null })
+        .particle_effect_slug as ParticleSlug | null) ?? null,
     particleIntensity:
-      ((w as { particle_intensity?: string | null }).particle_intensity as ParticleIntensity) ?? "normal",
+      ((w as { particle_intensity?: string | null }).particle_intensity as ParticleIntensity) ??
+      "normal",
     particleSpeed: (w as { particle_speed?: number | null }).particle_speed ?? 1,
     particleSize:
       ((w as { particle_size?: string | null }).particle_size as ParticleSize) ?? "normal",
     particleColorMode:
-      ((w as { particle_color_mode?: string | null }).particle_color_mode as ParticleColorMode) ?? "auto",
+      ((w as { particle_color_mode?: string | null }).particle_color_mode as ParticleColorMode) ??
+      "auto",
     particleTriggerOpen:
       (w as { particle_trigger_open?: boolean | null }).particle_trigger_open ?? true,
     particleTriggerLoop:
@@ -281,10 +297,12 @@ function PublicInvitationPage() {
     musicSlug: ((w as { music_slug?: string | null }).music_slug as string | null) ?? null,
     hasGuestbook: !!(w as { has_guestbook?: boolean | null }).has_guestbook,
     guestbookTitle: (w as { guestbook_title?: string | null }).guestbook_title ?? undefined,
-    guestbookSubtitle: (w as { guestbook_subtitle?: string | null }).guestbook_subtitle ?? undefined,
+    guestbookSubtitle:
+      (w as { guestbook_subtitle?: string | null }).guestbook_subtitle ?? undefined,
     splashEnabled: (w as { splash_enabled?: boolean | null }).splash_enabled ?? true,
     splashBgMode:
-      (((w as { splash_bg_mode?: string | null }).splash_bg_mode as Couple["splashBgMode"]) ?? "theme"),
+      ((w as { splash_bg_mode?: string | null }).splash_bg_mode as Couple["splashBgMode"]) ??
+      "theme",
     splashBgColor: (w as { splash_bg_color?: string | null }).splash_bg_color ?? null,
     splashBgImageUrl: (w as { splash_bg_image_url?: string | null }).splash_bg_image_url ?? null,
     splashKicker: (w as { splash_kicker?: string | null }).splash_kicker ?? null,
@@ -292,12 +310,10 @@ function PublicInvitationPage() {
     splashShowDate: (w as { splash_show_date?: boolean | null }).splash_show_date ?? true,
     openingPageModel:
       (w as { opening_page_model?: string | null }).opening_page_model ?? "classique",
-    openingPageEffect:
-      (w as { opening_page_effect?: string | null }).opening_page_effect ?? "tap",
+    openingPageEffect: (w as { opening_page_effect?: string | null }).opening_page_effect ?? "tap",
     openingPageConfig:
       ((w as { opening_page_config?: Record<string, unknown> | null }).opening_page_config as
-        | Couple["openingPageConfig"]
-        | null) ?? {},
+        Couple["openingPageConfig"] | null) ?? {},
   };
 
   const ceremonies: Ceremony[] = (data.ceremonies ?? []).map((c) => ({
@@ -321,149 +337,115 @@ function PublicInvitationPage() {
 
   // ---- RSVP visibility: enabled toggle + optional quota
   const rsvpEnabled = !!w.rsvp_enabled;
-  const rsvpQuota =
-    typeof w.rsvp_quota === "number" && w.rsvp_quota > 0 ? w.rsvp_quota : null;
+  const rsvpQuota = typeof w.rsvp_quota === "number" && w.rsvp_quota > 0 ? w.rsvp_quota : null;
   const rsvpCount = data.rsvpCount ?? 0;
   const quotaReached = rsvpQuota != null && rsvpCount >= rsvpQuota;
   const quotaBehavior = w.rsvp_quota_behavior === "hide" ? "hide" : "message";
 
   const resolved = resolveTheme(couple);
+  const opening = resolveOpening(couple);
   // Override couple.accent with resolved accent so templates that read couple.accent
   // reflect the user's chosen colour.
   const coupleTheme: Couple = { ...couple, accent: resolved.accent };
   const Template = componentForTheme(coupleTheme.theme);
 
-  const rsvpSlot = !rsvpEnabled
-    ? null
-    : quotaReached
-      ? quotaBehavior === "hide"
-        ? null
-        : (
-            <section className="mt-12 w-full max-w-full px-5 py-8 text-center sm:px-8">
-              <p
-                className="font-serif text-xl italic"
-                style={{ color: resolved.accent }}
-              >
-                Il n'y a plus de place disponible
-              </p>
-              <p className="mt-2 text-sm opacity-70">
-                Le nombre maximum d'invités a été atteint. Merci de votre
-                compréhension.
-              </p>
-            </section>
-          )
-      : guestPrefill && inviteToken
-        ? (
-            <IdentifiedRsvp
-              theme={coupleTheme.theme}
-              slug={slug}
-              token={inviteToken}
-              guestName={guestPrefill.name}
-              ceremonies={ceremonies}
-              onConfirmed={() => {
-                if (coupleTheme.particleTriggerRsvp !== false) setRsvpBurst(true);
-              }}
-            />
-          )
-        : (
-            <TemplateRsvpForm
-              theme={coupleTheme.theme}
-              slug={slug}
-              weddingId={w.id}
-              ceremonies={ceremonies}
-              onConfirmed={() => {
-                if (coupleTheme.particleTriggerRsvp !== false) setRsvpBurst(true);
-              }}
-            />
-          );
+  const rsvpSlot = !rsvpEnabled ? null : quotaReached ? (
+    quotaBehavior === "hide" ? null : (
+      <section className="mt-12 w-full max-w-full px-5 py-8 text-center sm:px-8">
+        <p className="font-serif text-xl italic" style={{ color: resolved.accent }}>
+          Il n'y a plus de place disponible
+        </p>
+        <p className="mt-2 text-sm opacity-70">
+          Le nombre maximum d'invités a été atteint. Merci de votre compréhension.
+        </p>
+      </section>
+    )
+  ) : guestPrefill && inviteToken ? (
+    <IdentifiedRsvp
+      theme={coupleTheme.theme}
+      slug={slug}
+      token={inviteToken}
+      guestName={guestPrefill.name}
+      ceremonies={ceremonies}
+      onConfirmed={() => {
+        if (coupleTheme.particleTriggerRsvp !== false) setRsvpBurst(true);
+      }}
+    />
+  ) : (
+    <TemplateRsvpForm
+      theme={coupleTheme.theme}
+      slug={slug}
+      weddingId={w.id}
+      ceremonies={ceremonies}
+      onConfirmed={() => {
+        if (coupleTheme.particleTriggerRsvp !== false) setRsvpBurst(true);
+      }}
+    />
+  );
 
   return (
     <>
-      {showSplash && coupleTheme.splashEnabled !== false ? (
+      {showSplash && opening.enabled ? (
         <OpeningPage
-          model={(coupleTheme.openingPageModel ?? "classique") as OpeningModel}
-          effect={(coupleTheme.openingPageEffect ?? "tap") as OpeningEffect}
-          config={coupleTheme.openingPageConfig}
-          greeting={
-            guestPrefill?.name ? `Hello ${guestPrefill.name.split(" ")[0]}` : null
-          }
-          heroImageUrl={coupleTheme.heroImageUrl}
+          opening={opening}
+          greeting={guestPrefill?.name ? `Hello ${guestPrefill.name.split(" ")[0]}` : null}
           brideName={coupleTheme.brideName}
           groomName={coupleTheme.groomName}
           weddingDate={coupleTheme.weddingDate}
           city={coupleTheme.city}
           theme={resolved}
-          bgMode={coupleTheme.splashBgMode}
-          bgColor={coupleTheme.splashBgColor}
-          bgImageUrl={coupleTheme.splashBgImageUrl}
-          kicker={coupleTheme.splashKicker}
-          tapLabel={coupleTheme.splashTapLabel}
-          showDate={coupleTheme.splashShowDate !== false}
           onDone={handleSplashDone}
           onOpenStart={handleSplashOpenStart}
         />
       ) : null}
-    <ThemeRoot
-      couple={coupleTheme}
-      className={`relative invitation-content${contentRevealed ? " revealed" : ""}`}
-    >
+      <ThemeRoot
+        couple={coupleTheme}
+        className={`relative invitation-content${contentRevealed ? " revealed" : ""}`}
+      >
+        {coupleTheme.particleEffectSlug ? (
+          <ParticleCanvas
+            config={{
+              slug: coupleTheme.particleEffectSlug as ParticleSlug,
+              intensity: (coupleTheme.particleIntensity ?? "normal") as ParticleIntensity,
+              speed: coupleTheme.particleSpeed ?? 1,
+              size: (coupleTheme.particleSize ?? "normal") as ParticleSize,
+              colorMode: (coupleTheme.particleColorMode ?? "auto") as ParticleColorMode,
+              accentColor: resolved.accent,
+            }}
+            burstOnMount={coupleTheme.particleTriggerOpen ? 24 : 0}
+            loop={!!coupleTheme.particleTriggerLoop}
+          />
+        ) : null}
 
+        {rsvpBurst ? (
+          <RsvpBurstOverlay accentColor={resolved.accent} onDone={() => setRsvpBurst(false)} />
+        ) : null}
 
-      {coupleTheme.particleEffectSlug ? (
-        <ParticleCanvas
-          config={{
-            slug: coupleTheme.particleEffectSlug as ParticleSlug,
-            intensity: (coupleTheme.particleIntensity ?? "normal") as ParticleIntensity,
-            speed: coupleTheme.particleSpeed ?? 1,
-            size: (coupleTheme.particleSize ?? "normal") as ParticleSize,
-            colorMode: (coupleTheme.particleColorMode ?? "auto") as ParticleColorMode,
-            accentColor: resolved.accent,
-          }}
-          burstOnMount={coupleTheme.particleTriggerOpen ? 24 : 0}
-          loop={!!coupleTheme.particleTriggerLoop}
-        />
-      ) : null}
-
-      {rsvpBurst ? (
-        <RsvpBurstOverlay
-          accentColor={resolved.accent}
-          onDone={() => setRsvpBurst(false)}
-        />
-      ) : null}
-
-      <RevealOnScroll>
-        <Template
-          couple={coupleTheme}
-          ceremonies={ceremonies}
-          rsvpSlot={rsvpSlot}
-        />
-      </RevealOnScroll>
-      {coupleTheme.hasGuestbook ? (
-        <GuestbookFab
-          weddingId={w.id}
-          brideName={coupleTheme.brideName}
-          groomName={coupleTheme.groomName}
-        />
-      ) : null}
-      <AmbientMusicPlayer slug={coupleTheme.musicSlug} enabled={coupleTheme.musicEnabled} />
-    </ThemeRoot>
+        <RevealOnScroll>
+          <Template couple={coupleTheme} ceremonies={ceremonies} rsvpSlot={rsvpSlot} />
+        </RevealOnScroll>
+        {coupleTheme.hasGuestbook ? (
+          <GuestbookFab
+            weddingId={w.id}
+            brideName={coupleTheme.brideName}
+            groomName={coupleTheme.groomName}
+          />
+        ) : null}
+        <AmbientMusicPlayer slug={coupleTheme.musicSlug} enabled={coupleTheme.musicEnabled} />
+      </ThemeRoot>
     </>
   );
-
 }
-
 
 function NotFound() {
   return (
     <div className="grid min-h-screen place-items-center bg-background px-6 text-center">
       <div>
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary">
-          404
-        </p>
+        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary">404</p>
         <h1 className="mt-3 font-serif text-4xl italic">Invitation introuvable</h1>
         <p className="mt-3 max-w-sm text-sm opacity-70">
-          Cette invitation n'existe pas ou n'a pas encore été publiée. Vérifiez
-          le lien reçu de la part des mariés.
+          Cette invitation n'existe pas ou n'a pas encore été publiée. Vérifiez le lien reçu de la
+          part des mariés.
         </p>
         <Link
           to="/"

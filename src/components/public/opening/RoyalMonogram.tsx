@@ -25,12 +25,7 @@ export function RoyalMonogram({ first, second, className }: Props) {
   const fontFamily = "'Pinyon Script', 'Cormorant Garamond', ui-serif, Georgia, serif";
 
   return (
-    <svg
-      viewBox="0 0 220 150"
-      className={className}
-      role="img"
-      aria-label={`Monogramme ${a}${b}`}
-    >
+    <svg viewBox="0 0 220 150" className={className} role="img" aria-label={`Monogramme ${a}${b}`}>
       {/* volute calligraphique unique qui relie les deux lettres */}
       <path
         d="M14 124c30 22 74 16 96-10 14-17 16-42 38-50 20-7 38 6 38 24"
@@ -40,7 +35,6 @@ export function RoyalMonogram({ first, second, className }: Props) {
         strokeLinecap="round"
         opacity="0.65"
       />
-
 
       <g
         fill="none"

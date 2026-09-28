@@ -1,15 +1,14 @@
 import { Suspense, lazy, type ComponentType } from "react";
-import { InvitationSplash, type SplashCustomization } from "@/components/public/InvitationSplash";
+import { InvitationSplash } from "@/components/public/InvitationSplash";
 import type { ResolvedTheme } from "@/lib/wedding-theme";
 import { OpeningShell } from "./OpeningShell";
+import type { ResolvedOpening } from "./config";
 import {
   OPENING_EFFECT_LABEL,
   formatOpeningDate,
   openingModelMeta,
-  type OpeningEffect,
   type OpeningModel,
   type OpeningModelProps,
-  type OpeningPageConfig,
 } from "./types";
 
 function formatNumericOpeningDate(date?: string | null): string {
@@ -28,19 +27,20 @@ const LAZY_MODELS: Partial<Record<OpeningModel, ComponentType<OpeningModelProps>
   olive: lazy(() => import("./ModelOlive")),
   arche_floral: lazy(() => import("./ModelArcheFloral")),
   romantique: lazy(() => import("./ModelRomantique")),
-  breaking_news: lazy(() => import("./ModelBreakingNews")),
   editorial_date: lazy(() => import("./ModelEditorialDate")),
+  prenoms_xxl: lazy(() => import("./ModelPrenomsXxl")),
+  chiffres_geants: lazy(() => import("./ModelChiffresGeants")),
+  save_the_date: lazy(() => import("./ModelSaveTheDate")),
+  monogramme: lazy(() => import("./ModelMonogramme")),
 };
 
-interface Props extends SplashCustomization {
-  model: OpeningModel;
-  effect: OpeningEffect;
-  config?: OpeningPageConfig | null;
+interface Props {
+  /** Réglages déjà repliés par `resolveOpening()`. */
+  opening: ResolvedOpening;
   brideName: string;
   groomName: string;
   weddingDate?: string | null;
   city?: string | null;
-  heroImageUrl?: string | null;
   theme: ResolvedTheme;
   greeting?: string | null;
   onDone: () => void;
@@ -48,33 +48,34 @@ interface Props extends SplashCustomization {
 }
 
 export function OpeningPage({
-  model,
-  effect,
-  config,
+  opening,
   brideName,
   groomName,
   weddingDate,
   city,
-  heroImageUrl,
   theme,
   greeting,
   onDone,
   onOpenStart,
-  ...splash
 }: Props) {
-  const meta = openingModelMeta(model);
+  const meta = openingModelMeta(opening.model);
 
   if (meta.id === "classique") {
     return (
       <InvitationSplash
-        {...splash}
         brideName={brideName}
         groomName={groomName}
         weddingDate={weddingDate}
         city={city}
         theme={theme}
-        effect={effect}
+        effect={opening.effect}
         greeting={greeting}
+        bgMode={opening.bgMode}
+        bgColor={opening.bgColor}
+        bgImageUrl={opening.photoUrl}
+        kicker={opening.kicker}
+        tapLabel={opening.tapLabel}
+        showDate={opening.showDate}
         onDone={onDone}
         onOpenStart={onOpenStart}
       />
@@ -90,23 +91,21 @@ export function OpeningPage({
     dateLabel: formatOpeningDate(weddingDate),
     numericDate: formatNumericOpeningDate(weddingDate),
     city,
-    photoUrl: config?.photoUrl || splash.bgImageUrl || heroImageUrl || null,
-    color: config?.color || meta.defaultColor || theme.accent,
+    photoUrl: opening.photoUrl,
+    color: opening.color || theme.accent,
     accent: theme.accent,
     fontHeading: theme.fontHeading,
     fontBody: theme.fontBody,
-    showDate: splash.showDate !== false,
+    showDate: opening.showDate,
     greeting,
-    effectLabel: OPENING_EFFECT_LABEL[effect],
-    effect,
-    quote: config?.quote,
-    textTone: config?.textTone,
-    tickerText: config?.tickerText,
-    channelLabel: config?.channelLabel,
+    effectLabel: OPENING_EFFECT_LABEL[opening.effect],
+    effect: opening.effect,
+    quote: opening.quote,
+    textTone: opening.textTone,
   };
 
   return (
-    <OpeningShell effect={effect} onDone={onDone} onOpenStart={onOpenStart}>
+    <OpeningShell effect={opening.effect} onDone={onDone} onOpenStart={onOpenStart}>
       <Suspense fallback={<div className="h-full w-full bg-background" />}>
         <Model {...modelProps} />
       </Suspense>

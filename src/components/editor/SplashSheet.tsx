@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import imageCompression from "browser-image-compression";
 import { supabase } from "@/integrations/supabase/client";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
-import { Camera, Check, Eye, ImageIcon, Loader2, Trash2, X } from "lucide-react";
+import { Camera, Check, Eye, ImageIcon, Info, Loader2, RotateCcw, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ensureAuthOrMessage, friendlyUploadError } from "@/lib/upload-errors";
 import { HexEditor } from "./HexEditor";
@@ -11,10 +11,18 @@ import { OpeningPage } from "@/components/public/opening/OpeningPage";
 import {
   OPENING_EFFECTS,
   OPENING_MODELS,
+  modelFieldsLabel,
+  modelSupports,
   openingModelMeta,
   type OpeningEffect,
+  type OpeningField,
   type OpeningModel,
 } from "@/components/public/opening/types";
+import {
+  openingPatch,
+  resolveOpening,
+  type OpeningChange,
+} from "@/components/public/opening/config";
 import type { Couple } from "@/lib/wedding-store";
 import type { ResolvedTheme } from "@/lib/wedding-theme";
 import { OpeningModelThumbnail, previewPhotoFor } from "./OpeningModelThumbnail";
@@ -66,19 +74,19 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
   }, [open]);
 
   const [editingModelColor, setEditingModelColor] = useState(false);
-  const model = (couple.openingPageModel ?? "classique") as OpeningModel;
-  const effect = (couple.openingPageEffect ?? "tap") as OpeningEffect;
+  const opening = resolveOpening(couple);
+  const model = opening.model;
+  const effect = opening.effect;
   const modelMeta = openingModelMeta(model);
-  const isClassique = model === "classique";
-  const isEditorialDate = model === "editorial_date";
-  const isBreakingNews = model === "breaking_news";
-  const modelColor =
-    couple.openingPageConfig?.color || modelMeta.defaultColor || theme.accent;
+  const has = (field: OpeningField) => modelSupports(modelMeta, field);
+  const modelColor = opening.color || theme.accent;
+  /** Every write goes through the shared patch builder (no stray side effects). */
+  const patchOpening = (change: OpeningChange) => onPatch(openingPatch(couple, change));
 
-  const enabled = couple.splashEnabled !== false;
-  const bgMode = couple.splashBgMode ?? "theme";
-  const bgColor = couple.splashBgColor ?? "#1f3a5f";
-  const showDate = couple.splashShowDate !== false;
+  const enabled = opening.enabled;
+  const bgMode = opening.bgMode;
+  const bgColor = opening.bgColor ?? "#1f3a5f";
+  const showDate = opening.showDate;
 
   const [kicker, setKicker] = useState(couple.splashKicker ?? "");
   const [tapLabel, setTapLabel] = useState(couple.splashTapLabel ?? "");
@@ -136,7 +144,7 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
         .from("wedding-photos")
         .createSignedUrl(path, SIGNED_URL_EXPIRY);
       if (sErr || !signed?.signedUrl) throw sErr ?? new Error("URL introuvable");
-      onPatch({ splashBgImageUrl: signed.signedUrl, splashBgMode: "image" });
+      patchOpening({ photoUrl: signed.signedUrl });
     } catch (err) {
       console.error("[splash upload]", err);
       setError(friendlyUploadError(err));
@@ -154,6 +162,13 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
           <p className="text-[12px] opacity-70">
             L'écran affiché avant votre invitation. Vos invités tapent pour l'ouvrir.
           </p>
+          <p className="flex items-start gap-2 rounded-xl border border-border bg-muted/50 px-3 py-2.5 text-[11px] leading-snug opacity-80">
+            <Info className="mt-px size-3.5 shrink-0" />
+            <span>
+              Chaque invité la voit une fois par visite : en rechargeant la page, elle ne réapparaît
+              pas. Utilisez « Voir l'aperçu » pour la revoir autant de fois que vous voulez.
+            </span>
+          </p>
 
           <label className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background px-4 py-3">
             <div>
@@ -164,7 +179,7 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
               type="button"
               role="switch"
               aria-checked={enabled}
-              onClick={() => onPatch({ splashEnabled: !enabled })}
+              onClick={() => patchOpening({ enabled: !enabled })}
               className={
                 "relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors " +
                 (enabled ? "bg-primary" : "bg-muted")
@@ -179,46 +194,61 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
             </button>
           </label>
 
-          <div className={"space-y-5 transition-opacity " + (!enabled ? "pointer-events-none opacity-40" : "")}>
+          <div
+            className={
+              "space-y-5 transition-opacity " + (!enabled ? "pointer-events-none opacity-40" : "")
+            }
+          >
             {/* Étape 1 — modèle */}
             <div>
               <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
                 Modèle
               </p>
-               <div className="grid grid-cols-2 gap-3">
-                 {OPENING_MODELS.map((m) => {
-                   const active = model === m.id;
-                   return (
-                     <Button
-                       key={m.id}
-                       type="button"
-                       variant="outline"
-                       onClick={() => {
-                         onPatch({ openingPageModel: m.id, openingPageEffect: m.defaultEffect });
-                         openPreview(m.id, m.defaultEffect);
-                       }}
-                       aria-pressed={active}
-                       aria-label={`${m.label}${active ? ", sélectionné" : ""}`}
-                       className={
-                         "group relative h-auto min-w-0 flex-col gap-2 whitespace-normal rounded-lg border-2 bg-background p-1.5 pb-2 shadow-none transition " +
-                         (active
-                           ? "border-primary ring-2 ring-primary/15"
-                           : "border-border hover:border-primary/50")
-                       }
-                     >
-                       <OpeningModelThumbnail model={m.id} couple={couple} theme={theme} />
-                       {active ? (
-                         <span className="absolute right-2 top-2 grid size-6 place-items-center rounded-full bg-primary text-primary-foreground shadow-sm">
-                           <Check className="size-3.5" />
-                         </span>
-                       ) : null}
-                       <span className={active ? "text-xs font-semibold text-primary" : "text-xs font-medium"}>
-                         {m.label}
-                       </span>
-                     </Button>
-                   );
-                 })}
+              <div className="grid grid-cols-2 gap-3">
+                {OPENING_MODELS.map((m) => {
+                  const active = model === m.id;
+                  return (
+                    <Button
+                      key={m.id}
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        patchOpening({ model: m.id });
+                        openPreview(m.id, m.defaultEffect);
+                      }}
+                      aria-pressed={active}
+                      aria-label={`${m.label}${active ? ", sélectionné" : ""}`}
+                      className={
+                        "group relative h-auto min-w-0 flex-col gap-2 whitespace-normal rounded-lg border-2 bg-background p-1.5 pb-2 shadow-none transition " +
+                        (active
+                          ? "border-primary ring-2 ring-primary/15"
+                          : "border-border hover:border-primary/50")
+                      }
+                    >
+                      <OpeningModelThumbnail model={m.id} couple={couple} theme={theme} />
+                      {active ? (
+                        <span className="absolute right-2 top-2 grid size-6 place-items-center rounded-full bg-primary text-primary-foreground shadow-sm">
+                          <Check className="size-3.5" />
+                        </span>
+                      ) : null}
+                      <span
+                        className={
+                          active ? "text-xs font-semibold text-primary" : "text-xs font-medium"
+                        }
+                      >
+                        {m.label}
+                      </span>
+                    </Button>
+                  );
+                })}
               </div>
+              <p className="mt-2.5 text-[11px] leading-snug opacity-70">
+                {modelMeta.description}
+                <br />
+                <span className="opacity-80">
+                  Réglages de ce modèle : {modelFieldsLabel(modelMeta)}.
+                </span>
+              </p>
             </div>
 
             {/* Étape 2 — effet d'ouverture */}
@@ -231,7 +261,7 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
                   <button
                     key={e.id}
                     type="button"
-                    onClick={() => onPatch({ openingPageEffect: e.id })}
+                    onClick={() => patchOpening({ effect: e.id })}
                     className={
                       "rounded-xl border px-2 py-2 text-[11px] transition " +
                       (effect === e.id
@@ -246,7 +276,7 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
             </div>
 
             {/* Couleur du modèle (modèles à fond coloré) */}
-            {!isClassique && modelMeta.supportsColor && (
+            {has("color") && (
               <div>
                 <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
                   Couleur du modèle
@@ -264,38 +294,31 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
                 {editingModelColor && (
                   <HexEditor
                     value={modelColor}
-                    onChange={(v) =>
-                      onPatch({ openingPageConfig: { ...(couple.openingPageConfig ?? {}), color: v } })
-                    }
+                    onChange={(v) => patchOpening({ color: v })}
                     onClose={() => setEditingModelColor(false)}
                   />
                 )}
               </div>
             )}
 
-            {isEditorialDate ? (
+            {has("quote") || has("textTone") ? (
               <div className="space-y-4">
                 <div>
                   <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
                     Lisibilité du texte
                   </p>
                   <div className="grid grid-cols-3 gap-2">
-                    {([
-                      { id: "auto", label: "Auto" },
-                      { id: "light", label: "Clair" },
-                      { id: "dark", label: "Foncé" },
-                    ] as const).map((tone) => (
+                    {(
+                      [
+                        { id: "auto", label: "Auto" },
+                        { id: "light", label: "Clair" },
+                        { id: "dark", label: "Foncé" },
+                      ] as const
+                    ).map((tone) => (
                       <button
                         key={tone.id}
                         type="button"
-                        onClick={() =>
-                          onPatch({
-                            openingPageConfig: {
-                              ...(couple.openingPageConfig ?? {}),
-                              textTone: tone.id,
-                            },
-                          })
-                        }
+                        onClick={() => patchOpening({ textTone: tone.id })}
                         className={
                           "rounded-xl border px-3 py-2 text-[12px] transition " +
                           ((couple.openingPageConfig?.textTone ?? "auto") === tone.id
@@ -318,14 +341,7 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
                     maxLength={140}
                     rows={3}
                     placeholder="Notre plus belle histoire commence ici…"
-                    onChange={(event) =>
-                      onPatch({
-                        openingPageConfig: {
-                          ...(couple.openingPageConfig ?? {}),
-                          quote: event.target.value,
-                        },
-                      })
-                    }
+                    onChange={(event) => patchOpening({ quote: event.target.value })}
                     className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
                   />
                   <p className="mt-1 text-right text-[10px] opacity-50">
@@ -335,83 +351,39 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
               </div>
             ) : null}
 
-            {isBreakingNews ? (
-              <div className="space-y-4">
-                <div>
-                  <label className="mb-2 block font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
-                    Bandeau d'actualité
-                  </label>
-                  <textarea
-                    value={couple.openingPageConfig?.tickerText ?? ""}
-                    maxLength={160}
-                    rows={3}
-                    placeholder="SAVE THE DATE • {PRENOM1} & {PRENOM2} • {DATE}"
-                    onChange={(event) =>
-                      onPatch({
-                        openingPageConfig: {
-                          ...(couple.openingPageConfig ?? {}),
-                          tickerText: event.target.value,
-                        },
-                      })
-                    }
-                    className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
-                  />
-                  <p className="mt-1 text-[10px] opacity-50">
-                    Variables : {"{PRENOM1}"}, {"{PRENOM2}"}, {"{DATE}"}
-                  </p>
-                </div>
-                <div>
-                  <label className="mb-2 block font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
-                    Nom de la chaîne
-                  </label>
-                  <input
-                    type="text"
-                    value={couple.openingPageConfig?.channelLabel ?? ""}
-                    maxLength={18}
-                    placeholder="LOVE TV"
-                    onChange={(event) =>
-                      onPatch({
-                        openingPageConfig: {
-                          ...(couple.openingPageConfig ?? {}),
-                          channelLabel: event.target.value,
-                        },
-                      })
-                    }
-                    className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
-                  />
+            {/* Background mode */}
+            {has("backgroundMode") ? (
+              <div>
+                <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                  Arrière-plan
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {(
+                    [
+                      { id: "theme", label: "Thème" },
+                      { id: "color", label: "Couleur" },
+                      { id: "image", label: "Image" },
+                    ] as const
+                  ).map((o) => (
+                    <button
+                      key={o.id}
+                      type="button"
+                      onClick={() => patchOpening({ bgMode: o.id })}
+                      className={
+                        "rounded-xl border px-3 py-2 text-[12px] transition " +
+                        (bgMode === o.id
+                          ? "border-foreground bg-foreground text-background"
+                          : "border-border bg-background hover:border-foreground/40")
+                      }
+                    >
+                      {o.label}
+                    </button>
+                  ))}
                 </div>
               </div>
             ) : null}
 
-            {/* Background mode */}
-            <div className={isClassique ? undefined : "hidden"}>
-              <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
-                Arrière-plan
-              </p>
-              <div className="grid grid-cols-3 gap-2">
-                {([
-                  { id: "theme", label: "Thème" },
-                  { id: "color", label: "Couleur" },
-                  { id: "image", label: "Image" },
-                ] as const).map((o) => (
-                  <button
-                    key={o.id}
-                    type="button"
-                    onClick={() => onPatch({ splashBgMode: o.id })}
-                    className={
-                      "rounded-xl border px-3 py-2 text-[12px] transition " +
-                      (bgMode === o.id
-                        ? "border-foreground bg-foreground text-background"
-                        : "border-border bg-background hover:border-foreground/40")
-                    }
-                  >
-                    {o.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {bgMode === "color" && (
+            {has("backgroundMode") && bgMode === "color" && (
               <div>
                 <div className="flex items-center gap-3">
                   <button
@@ -426,14 +398,14 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
                 {editingColor && (
                   <HexEditor
                     value={bgColor}
-                    onChange={(v) => onPatch({ splashBgColor: v })}
+                    onChange={(v) => patchOpening({ bgColor: v })}
                     onClose={() => setEditingColor(false)}
                   />
                 )}
               </div>
             )}
 
-            {(bgMode === "image" || !isClassique) && (
+            {has("photo") && (!has("backgroundMode") || bgMode === "image") && (
               <div className="space-y-3">
                 {couple.splashBgImageUrl ? (
                   <div className="relative overflow-hidden rounded-xl border border-border">
@@ -444,7 +416,7 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
                     />
                     <button
                       type="button"
-                      onClick={() => onPatch({ splashBgImageUrl: null })}
+                      onClick={() => patchOpening({ photoUrl: null })}
                       className="absolute right-2 top-2 grid size-8 place-items-center rounded-full bg-background/90 shadow"
                       aria-label="Retirer l'image"
                     >
@@ -500,54 +472,58 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
             )}
 
             {/* Texts */}
-            <div className={isClassique ? undefined : "hidden"}>
-              <label className="mb-2 block font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
-                Petite phrase
-              </label>
-              <input
-                type="text"
-                value={kicker}
-                maxLength={40}
-                placeholder="Vous êtes invité(e)"
-                onChange={(e) => {
-                  setKicker(e.target.value);
-                  onPatch({ splashKicker: e.target.value });
-                }}
-                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
-              />
-              <div className="mt-2 flex flex-wrap gap-2">
-                {KICKER_SUGGESTIONS.map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => {
-                      setKicker(s);
-                      onPatch({ splashKicker: s });
-                    }}
-                    className="rounded-full border border-border bg-muted px-3 py-1.5 text-[11px] transition hover:bg-foreground hover:text-background"
-                  >
-                    {s}
-                  </button>
-                ))}
+            {has("kicker") ? (
+              <div>
+                <label className="mb-2 block font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                  Petite phrase
+                </label>
+                <input
+                  type="text"
+                  value={kicker}
+                  maxLength={40}
+                  placeholder="Vous êtes invité(e)"
+                  onChange={(e) => {
+                    setKicker(e.target.value);
+                    patchOpening({ kicker: e.target.value });
+                  }}
+                  className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                />
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {KICKER_SUGGESTIONS.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => {
+                        setKicker(s);
+                        patchOpening({ kicker: s });
+                      }}
+                      className="rounded-full border border-border bg-muted px-3 py-1.5 text-[11px] transition hover:bg-foreground hover:text-background"
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : null}
 
-            <div className={isClassique && effect === "tap" ? undefined : "hidden"}>
-              <label className="mb-2 block font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
-                Texte du bouton d'ouverture
-              </label>
-              <input
-                type="text"
-                value={tapLabel}
-                maxLength={30}
-                placeholder="Tapez pour ouvrir"
-                onChange={(e) => {
-                  setTapLabel(e.target.value);
-                  onPatch({ splashTapLabel: e.target.value });
-                }}
-                className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
-              />
-            </div>
+            {has("tapLabel") && effect === "tap" ? (
+              <div>
+                <label className="mb-2 block font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">
+                  Texte du bouton d'ouverture
+                </label>
+                <input
+                  type="text"
+                  value={tapLabel}
+                  maxLength={30}
+                  placeholder="Tapez pour ouvrir"
+                  onChange={(e) => {
+                    setTapLabel(e.target.value);
+                    patchOpening({ tapLabel: e.target.value });
+                  }}
+                  className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/40"
+                />
+              </div>
+            ) : null}
 
             <label className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background px-4 py-3">
               <div>
@@ -558,7 +534,7 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
                 type="button"
                 role="switch"
                 aria-checked={showDate}
-                onClick={() => onPatch({ splashShowDate: !showDate })}
+                onClick={() => patchOpening({ showDate: !showDate })}
                 className={
                   "relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors " +
                   (showDate ? "bg-primary" : "bg-muted")
@@ -602,36 +578,42 @@ export function SplashSheet({ open, onOpenChange, weddingId, couple, theme, onPa
               className="fixed inset-0 z-[9999]"
             >
               <OpeningPage
-                model={previewModel ?? model}
-                effect={previewEffect ?? effect}
-                config={{
-                  ...(couple.openingPageConfig ?? {}),
+                opening={{
+                  ...opening,
+                  model: previewModel ?? model,
+                  effect: previewEffect ?? effect,
+                  // Une photo de démonstration quand le couple n'a pas encore
+                  // la sienne, pour que l'aperçu ne soit jamais vide.
                   photoUrl: previewPhotoFor(previewModel ?? model, couple),
                 }}
-                heroImageUrl={couple.heroImageUrl}
                 brideName={couple.brideName}
                 groomName={couple.groomName}
                 weddingDate={couple.weddingDate}
                 city={couple.city}
                 theme={theme}
-                bgMode={bgMode}
-                bgColor={couple.splashBgColor}
-                bgImageUrl={previewPhotoFor(previewModel ?? model, couple)}
-                kicker={couple.splashKicker}
-                tapLabel={couple.splashTapLabel}
-                showDate={showDate}
                 onDone={() => setPreview(false)}
               />
-              <Button
-                type="button"
-                variant="secondary"
-                size="icon"
-                onClick={() => setPreview(false)}
-                aria-label="Fermer l'aperçu"
-                className="fixed right-4 top-4 z-[10000] size-10 rounded-full bg-background/85 text-foreground shadow-lg backdrop-blur-sm transition active:scale-95"
-              >
-                <X className="size-5" />
-              </Button>
+              <div className="fixed right-4 top-4 z-[10000] flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => setPreviewKey((k) => k + 1)}
+                  className="h-10 gap-1.5 rounded-full bg-background/85 px-4 text-[12px] text-foreground shadow-lg backdrop-blur-sm transition active:scale-95"
+                >
+                  <RotateCcw className="size-4" />
+                  Revoir
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="icon"
+                  onClick={() => setPreview(false)}
+                  aria-label="Fermer l'aperçu"
+                  className="size-10 rounded-full bg-background/85 text-foreground shadow-lg backdrop-blur-sm transition active:scale-95"
+                >
+                  <X className="size-5" />
+                </Button>
+              </div>
             </div>,
             document.body,
           )

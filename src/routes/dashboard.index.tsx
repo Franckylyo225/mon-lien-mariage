@@ -10,8 +10,10 @@ import {
   Lock,
   Pencil,
   Share,
+  Sparkles,
   Users,
 } from "lucide-react";
+import { openingModelMeta } from "@/components/public/opening/types";
 import { useWedding, configProgress, isPastEvent } from "@/lib/wedding-store";
 import { toast } from "sonner";
 import { BasicInfoSheet } from "@/components/dashboard/BasicInfoSheet";
@@ -141,6 +143,14 @@ function DashboardHome() {
 
   // If infos incomplete, surface a card to open the sheet at the top of todos
   const showInfosCard = !infosDone;
+
+  // The opening page always has a working default, so it is a discovery card rather than a
+  // to-do: it disappears as soon as the couple has touched it in any way.
+  const showOpeningDiscovery =
+    couple.splashEnabled !== false &&
+    (couple.openingPageModel ?? "classique") === "classique" &&
+    !couple.splashKicker &&
+    !couple.splashBgImageUrl;
 
   const brideName = couple.brideName || "Prénom A";
   const groomName = couple.groomName || "Prénom B";
@@ -328,6 +338,27 @@ function DashboardHome() {
           </button>
         )}
       </section>
+
+      {/* Bloc 4 bis — Découverte de la page d'ouverture (disparaît une fois personnalisée) */}
+      {showOpeningDiscovery ? (
+        <Link
+          to="/dashboard/preview"
+          search={{ sheet: "splash" }}
+          className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3.5 transition hover:bg-secondary/30 active:bg-secondary/50"
+        >
+          <IconBadge>
+            <Sparkles className="size-[18px]" strokeWidth={1.75} />
+          </IconBadge>
+          <div className="min-w-0 flex-1">
+            <p className="text-[14px] font-semibold">Votre page d'ouverture</p>
+            <p className="text-[12px] leading-snug text-muted-foreground">
+              Le premier écran que voient vos invités. 7 modèles au choix — actuellement «{" "}
+              {openingModelMeta(couple.openingPageModel).label} ».
+            </p>
+          </div>
+          <ChevronRight size={16} className="shrink-0 text-muted-foreground" />
+        </Link>
+      ) : null}
 
       {/* Bloc 5 — Déjà fait */}
       {doneItems.length > 0 ? (

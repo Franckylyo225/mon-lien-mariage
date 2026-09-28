@@ -26,9 +26,7 @@ export function ModelPresse({
 
       <div className="relative mt-7 w-[68vw] max-w-[300px] overflow-hidden bg-[#efeae4]">
         <div className="aspect-[3/4] w-full">
-          {photoUrl ? (
-            <img src={photoUrl} alt="" className="h-full w-full object-cover" />
-          ) : null}
+          {photoUrl ? <img src={photoUrl} alt="" className="h-full w-full object-cover" /> : null}
         </div>
         <div className="absolute inset-0 grid place-items-center">
           <p className="px-3 text-center text-[26px] font-semibold uppercase leading-[0.95] tracking-[0.06em] text-white mix-blend-difference sm:text-[34px]">

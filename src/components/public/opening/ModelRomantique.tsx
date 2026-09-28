@@ -36,9 +36,7 @@ export function ModelRomantique({
 
       <div className="relative mt-5 w-[62vw] max-w-[260px] overflow-hidden rounded-t-full rounded-b-[999px] border border-[#3A2E28]/15 bg-white/50">
         <div className="aspect-[3/4] w-full">
-          {photoUrl ? (
-            <img src={photoUrl} alt="" className="h-full w-full object-cover" />
-          ) : null}
+          {photoUrl ? <img src={photoUrl} alt="" className="h-full w-full object-cover" /> : null}
         </div>
       </div>
 
