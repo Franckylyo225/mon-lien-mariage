@@ -269,7 +269,7 @@ export function SiteFooter() {
             </p>
             <div className="mt-4 flex flex-wrap gap-4 font-[family-name:var(--font-brand-ui)] text-xs font-medium text-[#7A6D70]">
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/moninvit_web/"
                 target="_blank"
                 rel="noreferrer noopener"
                 className="hover:text-[#E82050]"
@@ -277,7 +277,7 @@ export function SiteFooter() {
                 Instagram
               </a>
               <a
-                href="https://tiktok.com"
+                href="https://www.tiktok.com/@moninvit.com"
                 target="_blank"
                 rel="noreferrer noopener"
                 className="hover:text-[#E82050]"
@@ -285,7 +285,7 @@ export function SiteFooter() {
                 TikTok
               </a>
               <a
-                href="https://wa.me/2250000000"
+                href="https://wa.me/2250718525502"
                 target="_blank"
                 rel="noreferrer noopener"
                 className="hover:text-[#E82050]"

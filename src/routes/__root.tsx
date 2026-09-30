@@ -164,7 +164,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             { "@type": "Country", name: "Guinée" },
             { "@type": "Country", name: "Niger" },
           ],
-          sameAs: [],
+          sameAs: [
+            "https://www.instagram.com/moninvit_web/",
+            "https://www.tiktok.com/@moninvit.com",
+          ],
         }),
       },
     ],
