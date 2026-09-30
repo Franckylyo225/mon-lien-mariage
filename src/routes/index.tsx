@@ -147,14 +147,12 @@ function Landing() {
       <SiteHeader />
       <main id="main">
         <Hero />
-        <SocialProof />
         <ProblemSection />
         <Features />
         <LiveDemo />
         <HowItWorks />
         <TemplateGallery />
         <Pricing />
-        <Testimonials />
         <Faq />
         <FinalCta />
       </main>
@@ -332,11 +330,10 @@ function Hero() {
             Aucune carte bancaire · Tu paies uniquement à la publication
           </p>
 
-          <dl className="mx-auto mt-8 grid max-w-lg grid-cols-3 gap-3 border-t border-[#F1E3C6] pt-5 sm:mt-10 sm:gap-4 sm:pt-6 lg:mx-0">
+          <dl className="mx-auto mt-8 grid max-w-sm grid-cols-2 gap-3 border-t border-[#F1E3C6] pt-5 sm:mt-10 sm:gap-4 sm:pt-6 lg:mx-0">
             {[
               ["+30", "Modèles romantiques"],
               ["10 min", "Pour publier"],
-              ["+500", "Couples conquis"],
             ].map(([n, l]) => (
               <div key={l}>
                 <dt className="font-[family-name:var(--font-brand-serif)] text-[clamp(22px,6vw,30px)] font-medium text-[#E82050]">
@@ -354,127 +351,6 @@ function Hero() {
         {/* Aperçus superposés (sans cadre de téléphone) */}
         <HeroPreview />
 
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------ social proof ------------------------------ */
-
-const QUICK_PROOF = [
-  {
-    initial: "A",
-    quote: "Nos invités ont cru qu'on avait payé un designer.",
-    author: "Adjoua & Koffi · Mariage à Abidjan · Mars 2026",
-  },
-  {
-    initial: "M",
-    quote:
-      "En 20 minutes, le lien était prêt. La réaction de ma belle-mère… inoubliable.",
-    author: "Mariama & Seydou · Bouaké · Janvier 2026",
-  },
-];
-
-function SocialProof() {
-  const [index, setIndex] = useState(0);
-  const count = QUICK_PROOF.length;
-  const go = (dir: number) => setIndex((i) => (i + dir + count) % count);
-
-  const touchStartX = useRef<number | null>(null);
-  const onTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0]?.clientX ?? null;
-  };
-  const onTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartX.current == null) return;
-    const dx = e.changedTouches[0]?.clientX - touchStartX.current;
-    if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
-    touchStartX.current = null;
-  };
-
-  return (
-    <section className="border-y border-[#F4EFF0] bg-white py-10">
-      {/* Desktop: two columns */}
-      <div className="mx-auto hidden max-w-5xl gap-8 px-5 md:grid md:grid-cols-2 md:divide-x md:divide-[#F4EFF0]">
-        {QUICK_PROOF.map((t, i) => (
-          <div key={t.initial} className={i === 1 ? "md:pl-8" : ""}>
-            <Stars />
-            <blockquote className="mt-2 font-[family-name:var(--font-brand-serif)] text-[15px] italic leading-relaxed text-[#201A1C]">
-              « {t.quote} »
-            </blockquote>
-            <div className="mt-3 flex items-center gap-3">
-              <span className="grid size-[38px] shrink-0 place-items-center rounded-full bg-[#FBDDE5] font-[family-name:var(--font-brand-ui)] text-sm font-bold text-[#E82050]">
-                {t.initial}
-              </span>
-              <p className="font-[family-name:var(--font-brand-ui)] text-[11px] font-medium text-[#7A6D70]">
-                — {t.author}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Mobile: one-at-a-time slider */}
-      <div
-        className="mx-auto max-w-5xl px-5 md:hidden"
-        onTouchStart={onTouchStart}
-        onTouchEnd={onTouchEnd}
-      >
-        <div className="overflow-hidden">
-          <div
-            className="flex transition-transform duration-300 ease-out"
-            style={{ transform: `translateX(-${index * 100}%)` }}
-          >
-            {QUICK_PROOF.map((t) => (
-              <div key={t.initial} className="w-full shrink-0 px-1">
-                <Stars />
-                <blockquote className="mt-2 font-[family-name:var(--font-brand-serif)] text-[15px] italic leading-relaxed text-[#201A1C]">
-                  « {t.quote} »
-                </blockquote>
-                <div className="mt-3 flex items-center gap-3">
-                  <span className="grid size-[38px] shrink-0 place-items-center rounded-full bg-[#FBDDE5] font-[family-name:var(--font-brand-ui)] text-sm font-bold text-[#E82050]">
-                    {t.initial}
-                  </span>
-                  <p className="font-[family-name:var(--font-brand-ui)] text-[11px] font-medium text-[#7A6D70]">
-                    — {t.author}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-5 flex items-center justify-center gap-4">
-          <button
-            type="button"
-            onClick={() => go(-1)}
-            aria-label="Témoignage précédent"
-            className="grid size-8 place-items-center rounded-full border border-[#F4EFF0] text-[#5A4F52] active:bg-[#FBF8F8]"
-          >
-            ←
-          </button>
-          <div className="flex items-center gap-1.5">
-            {QUICK_PROOF.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => setIndex(i)}
-                aria-label={`Aller au témoignage ${i + 1}`}
-                className={
-                  "h-1.5 rounded-full transition-all " +
-                  (i === index ? "w-5 bg-[#E82050]" : "w-1.5 bg-[#F4EFF0]")
-                }
-              />
-            ))}
-          </div>
-          <button
-            type="button"
-            onClick={() => go(1)}
-            aria-label="Témoignage suivant"
-            className="grid size-8 place-items-center rounded-full border border-[#F4EFF0] text-[#5A4F52] active:bg-[#FBF8F8]"
-          >
-            →
-          </button>
-        </div>
       </div>
     </section>
   );
@@ -835,159 +711,6 @@ function Pricing() {
               </Body>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------- testimonials ----------------------------- */
-
-const REVIEWS = [
-  {
-    initial: "A",
-    quote:
-      "On hésitait. Puis on a calculé les cartons papier : 200 invités × 1 500 XOF = 300 000 XOF. moninvit nous a fait économiser une fortune.",
-    author: "A.K. · Mariage à Abidjan · Mars 2026",
-  },
-  {
-    initial: "M",
-    quote:
-      "La dot, le civil, la réception. Tout sur une page. Nos familles avaient toujours la bonne info.",
-    author: "M.S. · Bouaké · Janvier 2026",
-  },
-  {
-    initial: "C",
-    quote: "Ma belle-mère a pleuré en recevant le lien.",
-    author: "C.A. · Abidjan · Avril 2026",
-  },
-];
-
-export function ReviewCard({
-  initial,
-  quote,
-  author,
-}: {
-  initial: string;
-  quote: string;
-  author: string;
-}) {
-  return (
-    <figure className="flex flex-col rounded-2xl border border-[#F4EFF0] bg-white p-7 shadow-[0_16px_40px_-32px_rgba(32,26,28,0.5)]">
-      <Stars />
-      <blockquote className="mt-4 flex-1 font-[family-name:var(--font-brand-serif)] text-[16px] italic leading-[1.7] text-[#201A1C]">
-        « {quote} »
-      </blockquote>
-      <div aria-hidden className="my-5 h-px bg-[#F4EFF0]" />
-      <figcaption className="flex items-center gap-3">
-        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#FBDDE5] font-[family-name:var(--font-brand-ui)] text-xs font-bold text-[#E82050]">
-          {initial}
-        </span>
-        <span className="font-[family-name:var(--font-brand-ui)] text-[11px] font-medium text-[#7A6D70]">
-          {author}
-        </span>
-      </figcaption>
-    </figure>
-  );
-}
-
-function Testimonials() {
-  const [index, setIndex] = useState(0);
-  const count = REVIEWS.length;
-
-  const go = (dir: number) =>
-    setIndex((i) => (i + dir + count) % count);
-
-  // Swipe handlers (mobile only — desktop shows grid)
-  const touchStartX = useRef<number | null>(null);
-  const onTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0]?.clientX ?? null;
-  };
-  const onTouchEnd = (e: React.TouchEvent) => {
-    if (touchStartX.current == null) return;
-    const dx = e.changedTouches[0]?.clientX - touchStartX.current;
-    if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
-    touchStartX.current = null;
-  };
-
-  return (
-    <section className="bg-white py-24">
-      <div className="mx-auto max-w-6xl px-5">
-        <div className="text-center">
-          <Kicker>Ils ont dit oui à moninvit</Kicker>
-          <H2 className="mt-4">Des couples ivoiriens racontent.</H2>
-        </div>
-
-        {/* Desktop: grid */}
-        <div className="mt-12 hidden gap-6 md:grid md:grid-cols-3">
-          {REVIEWS.map((r) => (
-            <ReviewCard key={r.author} {...r} />
-          ))}
-        </div>
-
-        {/* Mobile: one-at-a-time slider */}
-        <div
-          className="mt-12 md:hidden"
-          onTouchStart={onTouchStart}
-          onTouchEnd={onTouchEnd}
-        >
-          <div className="overflow-hidden">
-            <div
-              className="flex transition-transform duration-300 ease-out"
-              style={{ transform: `translateX(-${index * 100}%)` }}
-            >
-              {REVIEWS.map((r) => (
-                <div key={r.author} className="w-full shrink-0 px-1">
-                  <ReviewCard {...r} />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Controls */}
-          <div className="mt-6 flex items-center justify-center gap-4">
-            <button
-              type="button"
-              onClick={() => go(-1)}
-              aria-label="Témoignage précédent"
-              className="grid size-9 place-items-center rounded-full border border-[#F4EFF0] text-[#5A4F52] active:bg-[#FBF8F8]"
-            >
-              ←
-            </button>
-            <div className="flex items-center gap-1.5">
-              {REVIEWS.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => setIndex(i)}
-                  aria-label={`Aller au témoignage ${i + 1}`}
-                  className={
-                    "h-1.5 rounded-full transition-all " +
-                    (i === index
-                      ? "w-5 bg-[#E82050]"
-                      : "w-1.5 bg-[#F4EFF0]")
-                  }
-                />
-              ))}
-            </div>
-            <button
-              type="button"
-              onClick={() => go(1)}
-              aria-label="Témoignage suivant"
-              className="grid size-9 place-items-center rounded-full border border-[#F4EFF0] text-[#5A4F52] active:bg-[#FBF8F8]"
-            >
-              →
-            </button>
-          </div>
-        </div>
-
-        <div className="mt-10 text-center">
-          <Link
-            to="/temoignages"
-            className="font-[family-name:var(--font-brand-ui)] text-[15px] font-semibold text-[#C81A45] hover:underline"
-          >
-            Lire tous les témoignages →
-          </Link>
         </div>
       </div>
     </section>
