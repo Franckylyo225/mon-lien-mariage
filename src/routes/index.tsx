@@ -1,7 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { queryOptions, useQuery } from "@tanstack/react-query";
-import { getPublishedCount } from "@/lib/public-wedding.functions";
 import {
   HeartHandshake,
   CalendarRange,
@@ -51,11 +49,6 @@ const HOME_FAQS: { q: string; a: string }[] = [
     a: "Le livre d'or est une option à 1 990 XOF, activable avant ou après la publication depuis ton tableau de bord.",
   },
 ];
-
-const publishedCountOptions = queryOptions({
-  queryKey: ["published-count"],
-  queryFn: () => getPublishedCount(),
-});
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -277,14 +270,6 @@ function HeroPreview() {
 /* ---------------------------------- hero ---------------------------------- */
 
 function Hero() {
-  const { data } = useQuery(publishedCountOptions);
-  const count = data?.count ?? 0;
-  const countLabel =
-    count > 0
-      ? count >= 100
-        ? `${count}+`
-        : `${count}`
-      : "Nouveau";
   return (
     <section
       className="border-b border-[#F4EFF0]"
@@ -297,7 +282,7 @@ function Hero() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#16A34A] opacity-60" />
               <span className="relative inline-flex size-2 sm:size-2.5 rounded-full bg-[#16A34A] shadow-[0_0_6px_2px_rgba(22,163,74,0.6)]" />
             </span>
-            {countLabel} pages d'invitations en ligne
+            +150 couples nous font déjà confiance
           </span>
 
           <h1 className="mx-auto mt-5 max-w-[16ch] text-balance font-[family-name:var(--font-brand-serif)] text-[clamp(30px,8.2vw,42px)] font-medium leading-[1.06] tracking-[-0.015em] text-[#201A1C] sm:mt-6 sm:max-w-[18ch] sm:text-[clamp(42px,5.4vw,56px)] sm:leading-[1.04] lg:mx-0 lg:text-[66px] lg:leading-[1.02]">
