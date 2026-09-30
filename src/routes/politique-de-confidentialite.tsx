@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageShell } from "@/components/site/SiteChrome";
+import { LEGAL_ENTITY } from "@/lib/legal-entity";
 
 export const Route = createFileRoute("/politique-de-confidentialite")({
   head: () => ({
@@ -13,8 +14,7 @@ export const Route = createFileRoute("/politique-de-confidentialite")({
       { property: "og:title", content: "Politique de confidentialité — MonInvit.com" },
       {
         property: "og:description",
-        content:
-          "Transparence sur la collecte et la protection de vos données sur MonInvit.com.",
+        content: "Transparence sur la collecte et la protection de vos données sur MonInvit.com.",
       },
     ],
     links: [{ rel: "canonical", href: "/politique-de-confidentialite" }],
@@ -38,9 +38,9 @@ function PrivacyPage() {
 
         <Section title="1. Qui sommes-nous ?">
           <p>
-            MonInvit.com est édité depuis Abidjan, Côte d'Ivoire. Nous sommes
-            responsables du traitement de vos données personnelles au sens de la loi
-            n°2013-450 relative à la protection des données à caractère personnel.
+            MonInvit.com est édité depuis Abidjan, Côte d'Ivoire. Nous sommes responsables du
+            traitement de vos données personnelles au sens de la loi n°2013-450 relative à la
+            protection des données à caractère personnel.
           </p>
         </Section>
 
@@ -50,20 +50,19 @@ function PrivacyPage() {
               <strong>Compte :</strong> adresse e-mail, nom, mot de passe (chiffré).
             </li>
             <li>
-              <strong>Invitation :</strong> prénoms des mariés, date, lieu, photos,
-              programme, thème choisi.
+              <strong>Invitation :</strong> prénoms des mariés, date, lieu, photos, programme, thème
+              choisi.
             </li>
             <li>
-              <strong>Invités :</strong> noms et numéros de téléphone que vous
-              ajoutez à votre liste.
+              <strong>Invités :</strong> noms et numéros de téléphone que vous ajoutez à votre
+              liste.
             </li>
             <li>
-              <strong>Paiement :</strong> traité par notre prestataire ; nous ne
-              stockons jamais vos coordonnées bancaires.
+              <strong>Paiement :</strong> traité par notre prestataire ; nous ne stockons jamais vos
+              coordonnées bancaires.
             </li>
             <li>
-              <strong>Usage :</strong> pages visitées, appareil, pour améliorer le
-              service.
+              <strong>Usage :</strong> pages visitées, appareil, pour améliorer le service.
             </li>
           </ul>
         </Section>
@@ -79,24 +78,18 @@ function PrivacyPage() {
         </Section>
 
         <Section title="4. Partage des données">
-          <p>
-            Nous ne vendons jamais vos données. Nous les partageons uniquement
-            avec&nbsp;:
-          </p>
+          <p>Nous ne vendons jamais vos données. Nous les partageons uniquement avec&nbsp;:</p>
           <ul className="list-disc space-y-2 pl-5">
             <li>Notre hébergeur, pour stocker et servir la plateforme.</li>
             <li>Notre prestataire de paiement, pour traiter votre publication.</li>
-            <li>
-              Les autorités, uniquement si la loi ivoirienne l'exige.
-            </li>
+            <li>Les autorités, uniquement si la loi ivoirienne l'exige.</li>
           </ul>
         </Section>
 
         <Section title="5. Conservation">
           <p>
-            Vos données sont conservées tant que votre compte est actif. Après
-            suppression, elles sont effacées sous 30 jours, sauf obligation légale
-            de conservation (facturation).
+            Vos données sont conservées tant que votre compte est actif. Après suppression, elles
+            sont effacées sous 30 jours, sauf obligation légale de conservation (facturation).
           </p>
         </Section>
 
@@ -109,10 +102,9 @@ function PrivacyPage() {
             <li>Retirer votre consentement.</li>
           </ul>
           <p>
-            Les mariés peuvent également supprimer à tout moment, depuis leur tableau
-            de bord, les données de leurs invités&nbsp;: une confirmation en
-            particulier ou l'ensemble des confirmations reçues. La suppression est
-            immédiate et définitive.
+            Les mariés peuvent également supprimer à tout moment, depuis leur tableau de bord, les
+            données de leurs invités&nbsp;: une confirmation en particulier ou l'ensemble des
+            confirmations reçues. La suppression est immédiate et définitive.
           </p>
           <p>
             Pour exercer ces droits, écrivez-nous à{" "}
@@ -128,23 +120,23 @@ function PrivacyPage() {
 
         <Section title="7. Sécurité">
           <p>
-            Les mots de passe sont chiffrés, les échanges se font en HTTPS et
-            l'accès à vos données est restreint. Malgré nos efforts, aucun système
-            n'est infaillible : en cas d'incident, nous vous notifierons rapidement.
+            Les mots de passe sont chiffrés, les échanges se font en HTTPS et l'accès à vos données
+            est restreint. Malgré nos efforts, aucun système n'est infaillible : en cas d'incident,
+            nous vous notifierons rapidement.
           </p>
         </Section>
 
         <Section title="8. Cookies">
           <p>
-            Nous utilisons uniquement les cookies techniques nécessaires au
-            fonctionnement du site (session, préférences). Aucun cookie publicitaire.
+            Nous utilisons uniquement les cookies techniques nécessaires au fonctionnement du site
+            (session, préférences). Aucun cookie publicitaire.
           </p>
         </Section>
 
         <Section title="9. Enfants">
           <p>
-            Le Service n'est pas destiné aux mineurs de moins de 16 ans. Nous ne
-            collectons pas sciemment leurs données.
+            Le Service n'est pas destiné aux mineurs de moins de 16 ans. Nous ne collectons pas
+            sciemment leurs données.
           </p>
         </Section>
 
@@ -159,6 +151,18 @@ function PrivacyPage() {
             </a>
             . Nous répondons sous 5 jours ouvrés.
           </p>
+          <p className="mt-3">
+            {LEGAL_ENTITY.serviceName} est édité par {LEGAL_ENTITY.name}, {LEGAL_ENTITY.legalForm}{" "}
+            au capital de {LEGAL_ENTITY.capital}, dont le siège est à {LEGAL_ENTITY.address} (RCCM{" "}
+            {LEGAL_ENTITY.rccm}). Voir les{" "}
+            <a
+              href="/mentions-legales"
+              className="font-medium text-[#E82050] underline underline-offset-2"
+            >
+              mentions légales
+            </a>
+            .
+          </p>
         </Section>
       </LegalBody>
     </PageShell>
@@ -169,9 +173,7 @@ function LegalBody({ children }: { children: React.ReactNode }) {
   return (
     <section className="mx-auto max-w-3xl px-5 pb-24">
       <div className="rounded-3xl border border-[#F1E3C6]/50 bg-white/60 p-6 shadow-sm backdrop-blur sm:p-10">
-        <div className="space-y-8 text-[15px] leading-relaxed text-[#201A1C]">
-          {children}
-        </div>
+        <div className="space-y-8 text-[15px] leading-relaxed text-[#201A1C]">{children}</div>
       </div>
     </section>
   );
@@ -180,9 +182,7 @@ function LegalBody({ children }: { children: React.ReactNode }) {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h2 className="font-[family-name:var(--font-display)] text-2xl text-[#201A1C]">
-        {title}
-      </h2>
+      <h2 className="font-[family-name:var(--font-display)] text-2xl text-[#201A1C]">{title}</h2>
       <div className="mt-3 space-y-3 text-[#5A4F52]">{children}</div>
     </div>
   );

@@ -18,6 +18,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PublishRouteImport } from './routes/publish'
 import { Route as PolitiqueDeConfidentialiteRouteImport } from './routes/politique-de-confidentialite'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as InvitationRouteImport } from './routes/invitation'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
@@ -120,6 +121,11 @@ const PolitiqueDeConfidentialiteRoute =
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
+  id: '/mentions-legales',
+  path: '/mentions-legales',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -423,6 +429,7 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/onboarding': typeof OnboardingRouteWithChildren
   '/politique-de-confidentialite': typeof PolitiqueDeConfidentialiteRoute
   '/publish': typeof PublishRoute
@@ -489,6 +496,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/onboarding': typeof OnboardingRouteWithChildren
   '/politique-de-confidentialite': typeof PolitiqueDeConfidentialiteRoute
   '/publish': typeof PublishRoute
@@ -558,6 +566,7 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/invitation': typeof InvitationRoute
   '/login': typeof LoginRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
   '/onboarding': typeof OnboardingRouteWithChildren
   '/politique-de-confidentialite': typeof PolitiqueDeConfidentialiteRoute
   '/publish': typeof PublishRoute
@@ -628,6 +637,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/invitation'
     | '/login'
+    | '/mentions-legales'
     | '/onboarding'
     | '/politique-de-confidentialite'
     | '/publish'
@@ -694,6 +704,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/invitation'
     | '/login'
+    | '/mentions-legales'
     | '/onboarding'
     | '/politique-de-confidentialite'
     | '/publish'
@@ -762,6 +773,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/invitation'
     | '/login'
+    | '/mentions-legales'
     | '/onboarding'
     | '/politique-de-confidentialite'
     | '/publish'
@@ -831,6 +843,7 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   InvitationRoute: typeof InvitationRoute
   LoginRoute: typeof LoginRoute
+  MentionsLegalesRoute: typeof MentionsLegalesRoute
   OnboardingRoute: typeof OnboardingRouteWithChildren
   PolitiqueDeConfidentialiteRoute: typeof PolitiqueDeConfidentialiteRoute
   PublishRoute: typeof PublishRoute
@@ -926,6 +939,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentions-legales': {
+      id: '/mentions-legales'
+      path: '/mentions-legales'
+      fullPath: '/mentions-legales'
+      preLoaderRoute: typeof MentionsLegalesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -1431,6 +1451,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   InvitationRoute: InvitationRoute,
   LoginRoute: LoginRoute,
+  MentionsLegalesRoute: MentionsLegalesRoute,
   OnboardingRoute: OnboardingRouteWithChildren,
   PolitiqueDeConfidentialiteRoute: PolitiqueDeConfidentialiteRoute,
   PublishRoute: PublishRoute,

@@ -63,10 +63,7 @@ export function SiteHeader() {
           <Logo />
         </Link>
 
-        <nav
-          aria-label="Navigation principale"
-          className="hidden items-center gap-1 md:flex"
-        >
+        <nav aria-label="Navigation principale" className="hidden items-center gap-1 md:flex">
           {NAV.map((n) => {
             const hash = "hash" in n ? n.hash : undefined;
             const active = isActive(pathname, n.to, hash);
@@ -81,9 +78,7 @@ export function SiteHeader() {
                 aria-current={active ? "page" : undefined}
                 className={
                   "rounded-full px-3 py-2 font-[family-name:var(--font-brand-ui)] text-sm font-semibold transition " +
-                  (active
-                    ? "text-[#E82050]"
-                    : "text-[#3D3437] hover:text-[#E82050]")
+                  (active ? "text-[#E82050]" : "text-[#3D3437] hover:text-[#E82050]")
                 }
               >
                 {n.label}
@@ -169,7 +164,15 @@ export function SiteHeader() {
             onClick={() => setOpen(false)}
             className="grid size-11 place-items-center rounded-full text-[#201A1C]"
           >
-            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" className="size-5">
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              className="size-5"
+            >
               <path d="M6 6l12 12" />
               <path d="M18 6L6 18" />
             </svg>
@@ -240,10 +243,7 @@ export function MobileStickyCta() {
           Gratuit jusqu'à la publication
         </p>
       </div>
-      <Link
-        to="/signup"
-        className="btn-framboise shrink-0 px-[18px] py-[10px] text-[13px]"
-      >
+      <Link to="/signup" className="btn-framboise shrink-0 px-[18px] py-[10px] text-[13px]">
         Commencer →
       </Link>
     </div>
@@ -261,16 +261,37 @@ export function SiteFooter() {
               <Logo className="h-6" />
             </Link>
             <p className="mt-4 max-w-[280px] font-[family-name:var(--font-brand-body)] text-sm leading-relaxed text-[#5A4F52]">
-              Des invitations digitales élégantes, pensées avec amour pour les
-              mariés de Côte d'Ivoire.
+              Des invitations digitales élégantes, pensées avec amour pour les mariés de Côte
+              d'Ivoire.
             </p>
             <p className="mt-4 font-[family-name:var(--font-brand-ui)] text-[13px] font-semibold text-[#C6A15B]">
               Célébrons ton union ♡
             </p>
             <div className="mt-4 flex flex-wrap gap-4 font-[family-name:var(--font-brand-ui)] text-xs font-medium text-[#7A6D70]">
-              <a href="https://instagram.com" target="_blank" rel="noreferrer noopener" className="hover:text-[#E82050]">Instagram</a>
-              <a href="https://tiktok.com" target="_blank" rel="noreferrer noopener" className="hover:text-[#E82050]">TikTok</a>
-              <a href="https://wa.me/2250000000" target="_blank" rel="noreferrer noopener" className="hover:text-[#E82050]">WhatsApp</a>
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noreferrer noopener"
+                className="hover:text-[#E82050]"
+              >
+                Instagram
+              </a>
+              <a
+                href="https://tiktok.com"
+                target="_blank"
+                rel="noreferrer noopener"
+                className="hover:text-[#E82050]"
+              >
+                TikTok
+              </a>
+              <a
+                href="https://wa.me/2250000000"
+                target="_blank"
+                rel="noreferrer noopener"
+                className="hover:text-[#E82050]"
+              >
+                WhatsApp
+              </a>
             </div>
           </div>
 
@@ -291,6 +312,7 @@ export function SiteFooter() {
             <FooterLink to="/termes-et-conditions">Termes & conditions</FooterLink>
             <FooterLink to="/politique-de-confidentialite">Confidentialité</FooterLink>
             <FooterLink to="/conditions-generales-de-vente">Conditions de vente</FooterLink>
+            <FooterLink to="/mentions-legales">Mentions légales</FooterLink>
             <li>
               <button
                 type="button"
