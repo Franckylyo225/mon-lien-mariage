@@ -40,7 +40,7 @@ function CgvPage() {
       intro="Gratuit jusqu'à la publication, un paiement unique ensuite. Voici, en clair, ce que vous achetez et dans quelles conditions."
     >
       <LegalBody>
-        <Meta>Dernière mise à jour&nbsp;: 6 août 2026</Meta>
+        <Meta>Dernière mise à jour&nbsp;: 30 septembre 2026</Meta>
 
         <Section title="1. Objet">
           <p>
@@ -119,8 +119,9 @@ function CgvPage() {
 
         <Section title="7. Durée de mise en ligne">
           <p>
-            L'invitation publiée reste accessible pendant au moins douze (12) mois à compter de la
-            date de publication. Passé ce délai, MonInvit.com peut archiver la page ; les données
+            L'invitation publiée reste en ligne pendant douze (12) mois à compter de la date de
+            publication. La mise en ligne n'est pas illimitée dans le temps : passé ce délai,
+            MonInvit.com archive la page et son lien public cesse d'être accessible. Les données
             restent récupérables sur simple demande pendant trois (3) mois supplémentaires.
           </p>
         </Section>

@@ -607,7 +607,7 @@ const INCLUDED = [
   "Toutes vos cérémonies (dot, civil…)",
   "Musique d'ambiance (26 titres)",
   "Compte à rebours automatique",
-  "Accès à vie",
+  "Invitation en ligne 12 mois après publication",
 ];
 
 function Pricing() {

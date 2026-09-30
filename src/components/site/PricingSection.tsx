@@ -9,7 +9,7 @@ import {
   Music,
   Clock,
   BookHeart,
-  Infinity as InfinityIcon,
+  CalendarClock,
   Lock,
 } from "lucide-react";
 
@@ -27,7 +27,7 @@ const ITEMS: {
   { icon: Music, title: "Musique d'ambiance", sub: "26 titres · ou votre propre chanson" },
   { icon: Clock, title: "Compte à rebours", sub: "Automatique dès la publication" },
   { icon: BookHeart, title: "Livre d'or", sub: "Option activable avant ou après", addon: true },
-  { icon: InfinityIcon, title: "Accès à vie", sub: "Vos données protégées" },
+  { icon: CalendarClock, title: "Invitation en ligne 12 mois", sub: "À compter de la publication" },
 ];
 
 const PREVIEW_URL = "https://www.moninvit.com/e/basile-et-armelle1";
