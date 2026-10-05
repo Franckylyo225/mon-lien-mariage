@@ -23,7 +23,7 @@ export function SaveIndicator({ status }: { status: SaveStatus }) {
   }[status];
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-24 z-40 flex justify-center px-4">
+    <div className="pointer-events-none fixed inset-x-0 bottom-[calc(var(--page-dock-h,0px)+1rem)] z-40 flex justify-center px-4">
       <div
         className={`animate-fade-in inline-flex items-center gap-2 rounded-full px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] shadow-lg ${config.cls}`}
       >

@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState, type CSSProperties } from "react";
 import { useWedding, configProgress } from "@/lib/wedding-store";
 import { supabase } from "@/integrations/supabase/client";
 import { AppHeader } from "@/components/mobile-shell/AppHeader";
@@ -11,6 +11,7 @@ import { PageChromeProvider, usePageChrome } from "@/lib/page-chrome";
 import { AutosaveProvider } from "@/lib/autosave-context";
 import { registerDashboardServiceWorker } from "@/components/pwa/pwa-install";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 const InstallPrompt = lazy(() =>
   import("@/components/pwa/InstallPrompt").then((module) => ({ default: module.InstallPrompt })),
@@ -32,6 +33,14 @@ export const Route = createFileRoute("/dashboard")({
   }),
   component: DashboardLayout,
 });
+
+/**
+ * Space the floating bottom bar reserves on an immersive page: the bar itself
+ * (action dock or edit chip bar — only ever one at a time), its gutter and the
+ * device inset. Exposed as `--page-dock-h` so page content can clear it
+ * without measuring anything.
+ */
+const PAGE_DOCK_HEIGHT = "calc(4rem + 0.75rem + env(safe-area-inset-bottom))";
 
 const TITLES: Record<string, string> = {
   "/dashboard": "",
@@ -177,11 +186,19 @@ function DashboardChrome({
   onSignOut: () => Promise<void>;
 }) {
   const { mode } = useEditMode();
-  const { centerNode, actionBarNode } = usePageChrome();
+  const { centerNode, actionBarNode, options } = usePageChrome();
+  const navigate = useNavigate();
   const editing = mode === "edit";
+  // Immersive routes (the page editor) drop the tab bar entirely and trade the
+  // drawer avatar for a back button, in both preview and edit mode.
+  const immersive = !!options.hideBottomNav;
+  const showNav = !editing && !immersive;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div
+      className="min-h-screen bg-background"
+      style={actionBarNode ? ({ "--page-dock-h": PAGE_DOCK_HEIGHT } as CSSProperties) : undefined}
+    >
       <AppHeader
         title={title}
         initial={initial}
@@ -190,17 +207,24 @@ function DashboardChrome({
         userId={userId}
         avatarUrl={avatarUrl}
         centerContent={centerNode}
+        onBack={options.backTo ? () => navigate({ to: options.backTo! }) : undefined}
+        backLabel={options.backLabel}
       />
 
-      {actionBarNode}
-
-      <main className={`mx-auto max-w-xl px-4 pt-6 ${editing ? "pb-4" : "pb-24"}`}>
+      <main
+        className={cn(
+          "mx-auto max-w-xl px-4 pt-6",
+          actionBarNode ? "pb-0" : editing ? "pb-4" : "pb-24",
+        )}
+      >
         <Outlet />
       </main>
 
-      {!editing && <Fab />}
-      {!editing && <BottomNav isPublished={isPublished} />}
-      {!editing && showInstallPrompt ? (
+      {actionBarNode}
+
+      {showNav && <Fab />}
+      {showNav && <BottomNav isPublished={isPublished} />}
+      {!editing && !immersive && showInstallPrompt ? (
         <Suspense fallback={null}>
           <InstallPrompt />
         </Suspense>

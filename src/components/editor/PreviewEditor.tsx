@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { useWedding, type Couple } from "@/lib/wedding-store";
 import { useAutosaveContext } from "@/lib/autosave-context";
+import { useMorphPhase } from "@/hooks/use-morph-phase";
 import { SaveIndicator } from "./SaveIndicator";
 import { HeroPhotoSheet } from "./HeroPhotoSheet";
 import { PhotoGridSheet } from "./PhotoGridSheet";
@@ -77,6 +78,9 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
   const [sheet, setSheet] = useState<Sheet>(null);
   const { status, schedule } = useAutosaveContext();
   const resolvedTheme = useResolvedTheme(couple);
+  // The chip bar takes over the action dock's anchor; both animate so the
+  // handover reads as one bar changing shape rather than two swapping.
+  const barPhase = useMorphPhase(mode === "edit");
 
   // Open a deep-linked sheet once, when the editor mounts / prop changes.
   useEffect(() => {
@@ -232,154 +236,161 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
 
   return (
     <>
-      {/* Bottom edit bar (edit mode only) */}
-      {mode === "edit" && (
-        <div className="fixed inset-x-0 bottom-4 z-30 mx-auto flex max-w-xl justify-center px-4">
-          <div className="flex w-full items-center gap-2 overflow-x-auto rounded-2xl border border-background/20 bg-foreground/95 p-2 shadow-lg backdrop-blur">
-            <EditChip
-              icon={<Palette className="size-4" />}
-              label="Thème & couleurs"
-              value={themeChipValue(couple)}
-              onClick={() => setSheet("theme")}
-            />
-            <EditChip
-              icon={<Sparkles className="size-4" />}
-              label="Page d'ouverture"
-              value={openingChipValue(couple)}
-              onClick={() => setSheet("splash")}
-            />
-            <EditChip
-              icon={<ImageIcon className="size-4" />}
-              label="Photo couverture"
-              value={couple.heroImageUrl ? "Photo choisie" : "Ajouter"}
-              onClick={() => setSheet("hero")}
-            />
-            <EditChip
-              icon={<Type className="size-4" />}
-              label="Petit texte"
-              value={caption || "Ils se disent oui"}
-              onClick={() => setSheet("caption")}
-            />
-            {!couple.isLocked && (
+      {/* Bottom edit bar — replaces the action dock, same anchor. */}
+      {barPhase !== "hidden" && (
+        <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40">
+          <div className="mx-auto max-w-xl px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+            <div
+              className={cn(
+                "pointer-events-auto flex w-full items-center gap-2 overflow-x-auto rounded-2xl border border-background/20 bg-foreground/95 p-2 shadow-lg backdrop-blur",
+                barPhase === "out" ? "animate-dock-out" : "animate-dock-in",
+              )}
+            >
               <EditChip
-                icon={<Users className="size-4" />}
-                label="Prénoms"
-                value={`${bride} & ${groom}`}
-                onClick={() => setSheet("names")}
+                icon={<Palette className="size-4" />}
+                label="Thème & couleurs"
+                value={themeChipValue(couple)}
+                onClick={() => setSheet("theme")}
               />
-            )}
-            <EditChip
-              icon={<Calendar className="size-4" />}
-              label="Date & lieu"
-              value={`${date || "—"} · ${city}`}
-              onClick={() => setSheet("date")}
-            />
-            <EditChip
-              icon={<Timer className="size-4" />}
-              label="Compte à rebours"
-              value={
-                weddingPast
-                  ? "Masqué (date passée)"
-                  : !countdownEnabled
+              <EditChip
+                icon={<Sparkles className="size-4" />}
+                label="Page d'ouverture"
+                value={openingChipValue(couple)}
+                onClick={() => setSheet("splash")}
+              />
+              <EditChip
+                icon={<ImageIcon className="size-4" />}
+                label="Photo couverture"
+                value={couple.heroImageUrl ? "Photo choisie" : "Ajouter"}
+                onClick={() => setSheet("hero")}
+              />
+              <EditChip
+                icon={<Type className="size-4" />}
+                label="Petit texte"
+                value={caption || "Ils se disent oui"}
+                onClick={() => setSheet("caption")}
+              />
+              {!couple.isLocked && (
+                <EditChip
+                  icon={<Users className="size-4" />}
+                  label="Prénoms"
+                  value={`${bride} & ${groom}`}
+                  onClick={() => setSheet("names")}
+                />
+              )}
+              <EditChip
+                icon={<Calendar className="size-4" />}
+                label="Date & lieu"
+                value={`${date || "—"} · ${city}`}
+                onClick={() => setSheet("date")}
+              />
+              <EditChip
+                icon={<Timer className="size-4" />}
+                label="Compte à rebours"
+                value={
+                  weddingPast
+                    ? "Masqué (date passée)"
+                    : !countdownEnabled
+                      ? "Désactivé"
+                      : countdownUnits
+                          .map((u) => ({ days: "J", hours: "H", minutes: "M", seconds: "S" })[u])
+                          .join(" · ")
+                }
+                onClick={() => setSheet("countdown")}
+              />
+              <EditChip
+                icon={<BookHeart className="size-4" />}
+                label="Notre histoire"
+                value={
+                  couple.storyEnabled === false
                     ? "Désactivé"
-                    : countdownUnits
-                        .map((u) => ({ days: "J", hours: "H", minutes: "M", seconds: "S" })[u])
-                        .join(" · ")
-              }
-              onClick={() => setSheet("countdown")}
-            />
-            <EditChip
-              icon={<BookHeart className="size-4" />}
-              label="Notre histoire"
-              value={
-                couple.storyEnabled === false
-                  ? "Désactivé"
-                  : (couple.storySteps?.length ?? 0) === 0
-                    ? "À compléter"
-                    : `${couple.storySteps?.length ?? 0} étape${(couple.storySteps?.length ?? 0) > 1 ? "s" : ""}`
-              }
-              onClick={() => setSheet("story")}
-            />
-            <EditChip
-              icon={<Palette className="size-4" />}
-              label="Thème du mariage"
-              value={
-                !(couple.themeBlockEnabled ?? false)
-                  ? "Désactivé"
-                  : !couple.themeBlockBody
-                    ? "À compléter"
-                    : "Personnalisé"
-              }
-              onClick={() => setSheet("themeblock")}
-            />
-            <EditChip
-              icon={<Images className="size-4" />}
-              label="Galerie"
-              value={
-                !(couple.galleryEnabled ?? false)
-                  ? "Désactivée"
-                  : (couple.galleryImages?.length ?? 0) === 0
-                    ? "À compléter"
-                    : `${couple.galleryImages?.length ?? 0} photo${(couple.galleryImages?.length ?? 0) > 1 ? "s" : ""}`
-              }
-              onClick={() => setSheet("gallery")}
-            />
-            <EditChip
-              icon={<Gift className="size-4" />}
-              label="Liste de mariage"
-              value={
-                !registryEnabled
-                  ? "Désactivée"
-                  : registryStoreCount === 0
-                    ? "À compléter"
-                    : `${registryStoreCount} magasin${registryStoreCount > 1 ? "s" : ""}`
-              }
-              onClick={() => setSheet("registry")}
-            />
-            <EditChip
-              icon={<Shirt className="size-4" />}
-              label="Dress code"
-              value={
-                !dressCodeEnabled
-                  ? "Désactivé"
-                  : dressFilledCount === 0
-                    ? "À compléter"
-                    : `${dressFilledCount} élément${dressFilledCount > 1 ? "s" : ""}`
-              }
-              onClick={() => setSheet("dress")}
-            />
-            <EditChip
-              icon={<Info className="size-4" />}
-              label="Infos pratiques"
-              value={
-                !practicalEnabled
-                  ? "Désactivé"
-                  : practicalFilledCount === 0
-                    ? "À compléter"
-                    : `${practicalFilledCount} info${practicalFilledCount > 1 ? "s" : ""}`
-              }
-              onClick={() => setSheet("practical")}
-            />
-            <EditChip
-              icon={<Stars className="size-4" />}
-              label="Effet de particules"
-              value={
-                couple.particleEffectSlug
-                  ? `${PARTICLE_STYLES[couple.particleEffectSlug].emoji} ${PARTICLE_STYLES[couple.particleEffectSlug].name}`
-                  : "Aucun"
-              }
-              onClick={() => setSheet("particles")}
-            />
-            <EditChip
-              icon={<Music2 className="size-4" />}
-              label="Musique d'ambiance"
-              value={
-                couple.musicEnabled && couple.musicSlug
-                  ? (findTrack(couple.musicSlug)?.name ?? "Choisie")
-                  : "Aucune"
-              }
-              onClick={() => setSheet("music")}
-            />
+                    : (couple.storySteps?.length ?? 0) === 0
+                      ? "À compléter"
+                      : `${couple.storySteps?.length ?? 0} étape${(couple.storySteps?.length ?? 0) > 1 ? "s" : ""}`
+                }
+                onClick={() => setSheet("story")}
+              />
+              <EditChip
+                icon={<Palette className="size-4" />}
+                label="Thème du mariage"
+                value={
+                  !(couple.themeBlockEnabled ?? false)
+                    ? "Désactivé"
+                    : !couple.themeBlockBody
+                      ? "À compléter"
+                      : "Personnalisé"
+                }
+                onClick={() => setSheet("themeblock")}
+              />
+              <EditChip
+                icon={<Images className="size-4" />}
+                label="Galerie"
+                value={
+                  !(couple.galleryEnabled ?? false)
+                    ? "Désactivée"
+                    : (couple.galleryImages?.length ?? 0) === 0
+                      ? "À compléter"
+                      : `${couple.galleryImages?.length ?? 0} photo${(couple.galleryImages?.length ?? 0) > 1 ? "s" : ""}`
+                }
+                onClick={() => setSheet("gallery")}
+              />
+              <EditChip
+                icon={<Gift className="size-4" />}
+                label="Liste de mariage"
+                value={
+                  !registryEnabled
+                    ? "Désactivée"
+                    : registryStoreCount === 0
+                      ? "À compléter"
+                      : `${registryStoreCount} magasin${registryStoreCount > 1 ? "s" : ""}`
+                }
+                onClick={() => setSheet("registry")}
+              />
+              <EditChip
+                icon={<Shirt className="size-4" />}
+                label="Dress code"
+                value={
+                  !dressCodeEnabled
+                    ? "Désactivé"
+                    : dressFilledCount === 0
+                      ? "À compléter"
+                      : `${dressFilledCount} élément${dressFilledCount > 1 ? "s" : ""}`
+                }
+                onClick={() => setSheet("dress")}
+              />
+              <EditChip
+                icon={<Info className="size-4" />}
+                label="Infos pratiques"
+                value={
+                  !practicalEnabled
+                    ? "Désactivé"
+                    : practicalFilledCount === 0
+                      ? "À compléter"
+                      : `${practicalFilledCount} info${practicalFilledCount > 1 ? "s" : ""}`
+                }
+                onClick={() => setSheet("practical")}
+              />
+              <EditChip
+                icon={<Stars className="size-4" />}
+                label="Effet de particules"
+                value={
+                  couple.particleEffectSlug
+                    ? `${PARTICLE_STYLES[couple.particleEffectSlug].emoji} ${PARTICLE_STYLES[couple.particleEffectSlug].name}`
+                    : "Aucun"
+                }
+                onClick={() => setSheet("particles")}
+              />
+              <EditChip
+                icon={<Music2 className="size-4" />}
+                label="Musique d'ambiance"
+                value={
+                  couple.musicEnabled && couple.musicSlug
+                    ? (findTrack(couple.musicSlug)?.name ?? "Choisie")
+                    : "Aucune"
+                }
+                onClick={() => setSheet("music")}
+              />
+            </div>
           </div>
         </div>
       )}

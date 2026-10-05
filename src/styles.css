@@ -387,6 +387,39 @@
   }
 }
 
+/* Page editor bottom bars. The action dock and the edit chip bar share one
+   anchor and never show at once: tapping "Modifier" shrinks the dock away
+   while the chip bar grows into its place, so the two read as a single
+   surface changing shape. The enter delay covers the outgoing bar's exit. */
+@keyframes dockIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes dockOut {
+  from { opacity: 1; transform: none; }
+  to   { opacity: 0; transform: translateY(8px) scale(0.96); }
+}
+@keyframes dockSwap {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: none; }
+}
+@utility animate-dock-in {
+  animation: dockIn 280ms var(--ease-out-expo) 110ms both;
+}
+@utility animate-dock-out {
+  animation: dockOut 190ms var(--ease-out-expo) both;
+}
+@utility animate-dock-swap {
+  animation: dockSwap 220ms var(--ease-out-expo) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-dock-in,
+  .animate-dock-out,
+  .animate-dock-swap {
+    animation: none;
+  }
+}
+
 /* Editable zone highlight — used in edit mode on preview page */
 @utility preview-editable {
   outline: 1.5px dashed #D97706;

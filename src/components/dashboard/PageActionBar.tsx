@@ -1,17 +1,23 @@
-import { ArrowRight, Check, Pencil, Eye, LoaderCircle, Share } from "lucide-react";
+import type { ReactNode } from "react";
+import { ArrowRight, Pencil, Eye, LoaderCircle, Share } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { SaveStatus } from "@/hooks/use-autosave";
+import { useMorphPhase } from "@/hooks/use-morph-phase";
 
 /**
- * Sticky action bar rendered directly below the AppHeader on the preview
- * page. Two slots: a secondary action on the left, a primary action on the
- * right. Contents depend on preview/edit mode and publish state.
+ * Floating action dock pinned to the bottom of the page editor.
+ *
+ * It owns the bottom of the screen in preview mode only: tapping "Modifier"
+ * hands that spot over to the editor's chip bar, which anchors at the same
+ * place, so one shrinks away as the other grows in. Coming back out is the
+ * header's "Terminer" button.
+ *
+ * The space both bars occupy is mirrored by `--page-dock-h` on the dashboard
+ * chrome, which page content uses to keep clear of them.
  */
 interface Props {
   mode: "preview" | "edit";
   isPublished: boolean;
   isPublishing?: boolean;
-  saveStatus: SaveStatus;
   onEditToggle: () => void;
   onPublish: () => void;
   onShare: () => void;
@@ -22,141 +28,118 @@ export function PageActionBar({
   mode,
   isPublished,
   isPublishing = false,
-  saveStatus,
   onEditToggle,
   onPublish,
   onShare,
   onView,
 }: Props) {
-  const editing = mode === "edit";
+  const phase = useMorphPhase(mode !== "edit");
+  if (phase === "hidden") return null;
 
   return (
-    <div
-      className={cn(
-        "sticky top-14 z-20 border-b border-border/60 bg-background/95 backdrop-blur",
-      )}
-    >
-      <div className="mx-auto flex h-13 max-w-xl items-center justify-between gap-2 px-3 py-2 sm:h-14 sm:px-5">
-        {/* Secondary (left) */}
-        <div className="flex min-w-0 items-center">
-          {editing ? (
-            <SaveStatusIndicator status={saveStatus} />
-          ) : isPublishing ? (
-            <span aria-hidden />
-          ) : (
-            <div className="flex items-center gap-1.5">
-              <button
-                type="button"
-                onClick={onEditToggle}
-                aria-label="Passer en mode édition"
-                className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-transparent px-3 py-1.5 text-[11px] font-medium text-foreground transition hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:px-4 sm:py-2 sm:text-[13px]"
-              >
-                <Pencil size={14} strokeWidth={2} />
-                <span>Modifier</span>
-              </button>
-              <button
-                type="button"
-                onClick={onView}
-                aria-label="Voir la page en plein écran comme un visiteur"
-                className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-transparent px-3 py-1.5 text-[11px] font-medium text-foreground transition hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:px-4 sm:py-2 sm:text-[13px]"
-              >
-                <Eye size={14} strokeWidth={2} />
-                <span>Aperçu</span>
-              </button>
-            </div>
+    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40">
+      <div className="mx-auto max-w-xl px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+        <div
+          className={cn(
+            "pointer-events-auto rounded-full border border-border/70 bg-background/90 p-1.5 shadow-[0_14px_36px_-14px_rgba(26,26,26,0.45)] backdrop-blur",
+            phase === "out" ? "animate-dock-out" : "animate-dock-in",
           )}
-        </div>
-
-        {/* Primary (right) */}
-        <div className="flex shrink-0 items-center">
-          {isPublishing ? (
-            <button
-              type="button"
-              disabled
-              aria-label="Publication en cours"
-              className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-[11px] font-medium text-muted-foreground opacity-70 sm:px-4 sm:py-2 sm:text-[13px]"
-            >
-              <LoaderCircle size={14} className="motion-safe:animate-spin" />
-              <span>Publication…</span>
-            </button>
-          ) : editing ? (
-            <button
-              type="button"
-              onClick={onEditToggle}
-              aria-label="Terminer l'édition"
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium transition hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:px-4 sm:py-2 sm:text-[13px]"
-              style={{ backgroundColor: "#1A1A1A", color: "#ffffff" }}
-            >
-              <Check size={14} strokeWidth={2.5} />
-              <span>Terminer</span>
-            </button>
-          ) : isPublished ? (
-            <button
-              type="button"
-              onClick={onShare}
-              aria-label="Partager le lien de votre page"
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium transition hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:px-4 sm:py-2 sm:text-[13px]"
-              style={{ backgroundColor: "#4B1528", color: "#FBEAF0" }}
-            >
-              <Share size={14} strokeWidth={2} />
-              <span>Partager</span>
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={onPublish}
-              aria-label="Publier votre mariage"
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium transition hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:px-4 sm:py-2 sm:text-[13px]"
-              style={{ backgroundColor: "#4B1528", color: "#FBEAF0" }}
-            >
-              <span>Publier</span>
-              <ArrowRight size={14} strokeWidth={2} />
-            </button>
-          )}
+        >
+          {/* Keyed so switching to and from the publishing state crossfades. */}
+          <div
+            key={isPublishing ? "publishing" : "actions"}
+            className="animate-dock-swap flex items-center gap-1"
+          >
+            {isPublishing ? (
+              <DockButton
+                variant="primary"
+                disabled
+                label="Publication…"
+                ariaLabel="Publication en cours"
+                icon={<LoaderCircle size={16} className="motion-safe:animate-spin" />}
+              />
+            ) : (
+              <>
+                <DockButton
+                  onClick={onView}
+                  label="Aperçu"
+                  ariaLabel="Voir la page en plein écran comme un visiteur"
+                  icon={<Eye size={16} strokeWidth={2} />}
+                />
+                <DockButton
+                  onClick={onEditToggle}
+                  label="Modifier"
+                  ariaLabel="Passer en mode édition"
+                  icon={<Pencil size={16} strokeWidth={2} />}
+                />
+                {isPublished ? (
+                  <DockButton
+                    variant="primary"
+                    onClick={onShare}
+                    label="Partager"
+                    ariaLabel="Partager le lien de votre page"
+                    icon={<Share size={16} strokeWidth={2} />}
+                  />
+                ) : (
+                  <DockButton
+                    variant="primary"
+                    onClick={onPublish}
+                    label="Publier"
+                    ariaLabel="Publier votre mariage"
+                    icon={<ArrowRight size={16} strokeWidth={2} />}
+                    iconAfter
+                  />
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-function SaveStatusIndicator({ status }: { status: SaveStatus }) {
-  // Treat idle as "saved" once the user is in edit mode — cleaner UX than
-  // showing nothing.
-  const showAsSaving = status === "saving";
-  const showAsError = status === "error";
+/** Matches the publish flow's brand buttons. */
+const PRIMARY_STYLE = { backgroundColor: "#4B1528", color: "#FBEAF0" };
+
+function DockButton({
+  label,
+  ariaLabel,
+  icon,
+  iconAfter = false,
+  variant = "ghost",
+  disabled = false,
+  onClick,
+}: {
+  label: string;
+  ariaLabel: string;
+  icon: ReactNode;
+  iconAfter?: boolean;
+  variant?: "ghost" | "primary";
+  disabled?: boolean;
+  onClick?: () => void;
+}) {
+  const filled = variant === "primary";
 
   return (
-    <span
-      role="status"
-      aria-live="polite"
-      className="inline-flex items-center gap-1.5 text-[11px] font-medium sm:text-[12px]"
-      style={{
-        color: showAsError
-          ? "var(--destructive)"
-          : showAsSaving
-            ? "#4B5563"
-            : "#059669",
-      }}
-    >
-      {showAsSaving ? (
-        <LoaderCircle
-          size={14}
-          strokeWidth={2}
-          className="motion-safe:animate-spin"
-          aria-hidden
-        />
-      ) : showAsError ? (
-        <Check size={14} strokeWidth={2.5} aria-hidden />
-      ) : (
-        <Check size={14} strokeWidth={2.5} aria-hidden />
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={ariaLabel}
+      className={cn(
+        "inline-flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-full px-3 text-[12px] font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:text-[13px]",
+        disabled
+          ? "cursor-not-allowed opacity-70"
+          : filled
+            ? "hover:opacity-90 active:scale-[0.97]"
+            : "text-foreground hover:bg-muted active:scale-[0.97]",
       )}
-      <span>
-        {showAsSaving
-          ? "Enregistrement…"
-          : showAsError
-            ? "Erreur — réessayez"
-            : "Enregistré"}
-      </span>
-    </span>
+      style={filled ? PRIMARY_STYLE : undefined}
+    >
+      {iconAfter ? null : icon}
+      <span>{label}</span>
+      {iconAfter ? icon : null}
+    </button>
   );
 }

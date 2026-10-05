@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { Bell } from "lucide-react";
+import { Bell, ChevronLeft } from "lucide-react";
 import { NotificationBell } from "./NotificationBell";
 
 interface AppHeaderProps {
@@ -21,6 +21,13 @@ interface AppHeaderProps {
    * status pill instead of a page title).
    */
   centerContent?: ReactNode;
+  /**
+   * When provided, the leading avatar is replaced by a back chevron. Immersive
+   * routes (the page editor) use it: the drawer is unreachable there anyway
+   * since the bottom tab bar is hidden, so the slot is better spent on an exit.
+   */
+  onBack?: () => void;
+  backLabel?: string;
 }
 
 export function AppHeader({
@@ -31,28 +38,40 @@ export function AppHeader({
   hasNotifications,
   userId,
   centerContent,
+  onBack,
+  backLabel,
 }: AppHeaderProps) {
   const [photoFailed, setPhotoFailed] = useState(false);
   return (
     <header className="sticky top-0 z-30 h-14 border-b border-border/70 bg-background/95 backdrop-blur">
       <div className="mx-auto flex h-full max-w-xl items-center justify-between gap-3 px-3 sm:px-5">
-        <button
-          onClick={onOpenDrawer}
-          aria-label="Ouvrir le menu"
-          className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-secondary to-card p-0.5 shadow-[0_0_0_4px] shadow-primary/10 ring-1 ring-primary/30 transition active:scale-95"
-        >
-          {avatarUrl && !photoFailed ? (
-            <img
-              src={avatarUrl}
-              alt=""
-              referrerPolicy="no-referrer"
-              onError={() => setPhotoFailed(true)}
-              className="size-full rounded-full object-cover"
-            />
-          ) : (
-            <span className="font-produit text-[15px] font-bold text-primary">{initial}</span>
-          )}
-        </button>
+        {onBack ? (
+          <button
+            onClick={onBack}
+            aria-label={backLabel ?? "Retour"}
+            className="grid size-10 shrink-0 place-items-center rounded-full border border-border/70 bg-card text-foreground transition active:scale-95"
+          >
+            <ChevronLeft size={20} strokeWidth={2} />
+          </button>
+        ) : (
+          <button
+            onClick={onOpenDrawer}
+            aria-label="Ouvrir le menu"
+            className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-secondary to-card p-0.5 shadow-[0_0_0_4px] shadow-primary/10 ring-1 ring-primary/30 transition active:scale-95"
+          >
+            {avatarUrl && !photoFailed ? (
+              <img
+                src={avatarUrl}
+                alt=""
+                referrerPolicy="no-referrer"
+                onError={() => setPhotoFailed(true)}
+                className="size-full rounded-full object-cover"
+              />
+            ) : (
+              <span className="font-produit text-[15px] font-bold text-primary">{initial}</span>
+            )}
+          </button>
+        )}
 
         <div className="flex min-w-0 flex-1 items-center justify-center">
           {centerContent ?? (

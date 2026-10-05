@@ -6,7 +6,6 @@ import { TemplateRsvpForm } from "@/components/invitation-templates/rsvp-form";
 import { PreviewEditor } from "@/components/editor/PreviewEditor";
 import { useEditMode } from "@/lib/edit-mode";
 import { usePageChrome } from "@/lib/page-chrome";
-import { useAutosaveContext } from "@/lib/autosave-context";
 import { cn } from "@/lib/utils";
 import { ThemeRoot, useResolvedTheme } from "@/components/theme/ThemeRoot";
 import { ParticleCanvas } from "@/components/particles/ParticleCanvas";
@@ -21,6 +20,7 @@ import {
   type PageStatus,
 } from "@/components/dashboard/PageStatusPill";
 import { PageActionBar } from "@/components/dashboard/PageActionBar";
+import { PageEditDoneButton } from "@/components/dashboard/PageEditDoneButton";
 
 export const Route = createFileRoute("/dashboard/preview")({
   validateSearch: (search: Record<string, unknown>) => ({
@@ -38,8 +38,7 @@ export const Route = createFileRoute("/dashboard/preview")({
 function PreviewPage() {
   const { couple, ceremonies, weddingId } = useWedding();
   const { mode, toggle, setMode } = useEditMode();
-  const { setCenterNode, setActionBarNode } = usePageChrome();
-  const { status: saveStatus } = useAutosaveContext();
+  const { setCenterNode, setActionBarNode, setOptions } = usePageChrome();
   const navigate = useNavigate();
   const { sheet: initialSheetParam } = Route.useSearch();
 
@@ -47,6 +46,21 @@ function PreviewPage() {
   useEffect(() => {
     if (initialSheetParam) setMode("edit");
   }, [initialSheetParam, setMode]);
+
+  // Immersive chrome: no tab bar, and the header avatar becomes a way out.
+  // Edit mode lives on the dashboard layout, so leaving without clearing it
+  // would strip the tab bar off whatever route comes next.
+  useEffect(() => {
+    setOptions({
+      hideBottomNav: true,
+      backTo: "/dashboard",
+      backLabel: "Retour au tableau de bord",
+    });
+    return () => {
+      setOptions({});
+      setMode("preview");
+    };
+  }, [setOptions, setMode]);
 
   const [isPublishing, setIsPublishing] = useState(false);
 
@@ -63,13 +77,20 @@ function PreviewPage() {
 
   // Inject header center + sticky action bar into the dashboard chrome.
   useEffect(() => {
-    setCenterNode(<PageStatusPill status={status} />);
+    setCenterNode(
+      <span key={status} className="animate-dock-swap inline-flex min-w-0">
+        {status === "edit" ? (
+          <PageEditDoneButton onDone={toggle} />
+        ) : (
+          <PageStatusPill status={status} />
+        )}
+      </span>,
+    );
     setActionBarNode(
       <PageActionBar
         mode={mode}
         isPublished={couple.isPublished}
         isPublishing={isPublishing}
-        saveStatus={saveStatus}
         onEditToggle={toggle}
         onPublish={() => {
           setIsPublishing(true);
@@ -96,7 +117,6 @@ function PreviewPage() {
     mode,
     couple.isPublished,
     isPublishing,
-    saveStatus,
     toggle,
     navigate,
     setCenterNode,
@@ -110,8 +130,9 @@ function PreviewPage() {
     <ThemeRoot couple={couple} className="relative -mx-4 -my-8 sm:-mx-8">
       <div
         className={cn(
-          "mt-4 transition-all",
-          mode === "edit" && "pb-40 [&_[data-editable]]:preview-editable",
+          // Clears whichever bottom bar is showing — they never stack.
+          "mt-4 pb-[calc(var(--page-dock-h,0px)+1.5rem)] transition-all",
+          mode === "edit" && "[&_[data-editable]]:preview-editable",
         )}
       >
         <Template
