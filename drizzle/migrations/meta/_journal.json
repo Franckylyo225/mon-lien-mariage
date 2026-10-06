@@ -29,6 +29,13 @@
       "when": 1791245829389,
       "tag": "0003_guestbook_message_favorite",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1791247265425,
+      "tag": "0004_wedding_colour_palettes",
+      "breakpoints": true
     }
   ]
 }

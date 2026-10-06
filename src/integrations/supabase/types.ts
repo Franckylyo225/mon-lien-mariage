@@ -1018,7 +1018,9 @@ export type Database = {
           opening_page_config: Json
           opening_page_effect: string
           opening_page_model: string
+          ornament_color: string | null
           owner_id: string
+          palette: string | null
           particle_color_mode: string | null
           particle_effect_slug: string | null
           particle_intensity: string | null
@@ -1044,6 +1046,7 @@ export type Database = {
           rsvp_ever_enabled: boolean
           rsvp_quota: number | null
           rsvp_quota_behavior: string
+          secondary_color: string | null
           share_description: string | null
           share_image_url: string | null
           share_title: string | null
@@ -1124,7 +1127,9 @@ export type Database = {
           opening_page_config?: Json
           opening_page_effect?: string
           opening_page_model?: string
+          ornament_color?: string | null
           owner_id: string
+          palette?: string | null
           particle_color_mode?: string | null
           particle_effect_slug?: string | null
           particle_intensity?: string | null
@@ -1150,6 +1155,7 @@ export type Database = {
           rsvp_ever_enabled?: boolean
           rsvp_quota?: number | null
           rsvp_quota_behavior?: string
+          secondary_color?: string | null
           share_description?: string | null
           share_image_url?: string | null
           share_title?: string | null
@@ -1230,7 +1236,9 @@ export type Database = {
           opening_page_config?: Json
           opening_page_effect?: string
           opening_page_model?: string
+          ornament_color?: string | null
           owner_id?: string
+          palette?: string | null
           particle_color_mode?: string | null
           particle_effect_slug?: string | null
           particle_intensity?: string | null
@@ -1256,6 +1264,7 @@ export type Database = {
           rsvp_ever_enabled?: boolean
           rsvp_quota?: number | null
           rsvp_quota_behavior?: string
+          secondary_color?: string | null
           share_description?: string | null
           share_image_url?: string | null
           share_title?: string | null
