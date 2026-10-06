@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { usePageView } from "@/hooks/use-page-view";
+import { InvitationNotFound } from "@/components/public/InvitationNotFound";
 import { supabase } from "@/integrations/supabase/client";
 import { OpeningPage } from "@/components/public/opening/OpeningPage";
 import { resolveOpening } from "@/components/public/opening/config";
@@ -77,8 +78,8 @@ export const Route = createFileRoute("/e/$slug")({
   loader: ({ context, params }) =>
     context.queryClient.ensureQueryData(publicWeddingQuery(params.slug)),
   component: PublicInvitationPage,
-  notFoundComponent: NotFound,
-  errorComponent: () => <NotFound />,
+  notFoundComponent: InvitationNotFound,
+  errorComponent: InvitationNotFound,
 });
 
 type GuestPrefill = {
@@ -437,23 +438,3 @@ function PublicInvitationPage() {
   );
 }
 
-function NotFound() {
-  return (
-    <div className="grid min-h-screen place-items-center bg-background px-6 text-center">
-      <div>
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary">404</p>
-        <h1 className="mt-3 font-serif text-4xl italic">Invitation introuvable</h1>
-        <p className="mt-3 max-w-sm text-sm opacity-70">
-          Cette invitation n'existe pas ou n'a pas encore été publiée. Vérifiez le lien reçu de la
-          part des mariés.
-        </p>
-        <Link
-          to="/"
-          className="mt-6 inline-block font-mono text-[10px] uppercase tracking-widest opacity-60 hover:opacity-100"
-        >
-          ← Retour à l'accueil
-        </Link>
-      </div>
-    </div>
-  );
-}
