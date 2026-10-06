@@ -24,6 +24,7 @@ import type {
   ThemeId,
 } from "@/lib/wedding-store";
 import { resolveTheme } from "@/lib/wedding-theme";
+import { isPaletteId, type PaletteId } from "@/lib/wedding-palette";
 import { ThemeRoot } from "@/components/theme/ThemeRoot";
 import { normalizeEventType } from "@/lib/ceremony-meta";
 import type {
@@ -220,12 +221,19 @@ function PublicInvitationPage() {
     heroImageUrl: w.hero_image_url ?? undefined,
     templateId: (w.template_id as TemplateId) ?? "terracotta",
     theme: (w.theme as ThemeId) ?? "rose-elegance",
+    palette: isPaletteId((w as { palette?: string | null }).palette)
+      ? ((w as { palette?: string | null }).palette as PaletteId)
+      : undefined,
     eventType: normalizeEventType((w as { event_type?: string | null }).event_type),
     accent: w.accent ?? undefined,
     accentColor: (w as { accent_color?: string | null }).accent_color ?? undefined,
     backgroundBase:
       ((w as { background_base?: string | null }).background_base as BackgroundBase | null) ??
       undefined,
+    secondaryColor:
+      ((w as { secondary_color?: string | null }).secondary_color as string | null) ?? undefined,
+    ornamentColor:
+      ((w as { ornament_color?: string | null }).ornament_color as string | null) ?? undefined,
     textColor: ((w as { text_color?: string | null }).text_color as string | null) ?? undefined,
     customFontTitle: (w as { custom_font_title?: string | null }).custom_font_title ?? null,
     customFontBody: (w as { custom_font_body?: string | null }).custom_font_body ?? null,
