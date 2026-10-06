@@ -99,8 +99,11 @@ export function PageActionBar({
   );
 }
 
-/** Matches the publish flow's brand buttons. */
-const PRIMARY_STYLE = { backgroundColor: "#4B1528", color: "#FBEAF0" };
+/** The product's one brand button colour, shared with the marketing site. */
+const PRIMARY_STYLE = {
+  backgroundColor: "var(--primary)",
+  color: "var(--primary-foreground)",
+};
 
 function DockButton({
   label,

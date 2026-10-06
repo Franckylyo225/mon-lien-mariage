@@ -279,7 +279,7 @@
   --card-foreground: #1A1A1A;
   --popover: #FFFFFF;
   --popover-foreground: #1A1A1A;
-  --primary: #993556;
+  --primary: var(--framboise);
   --primary-foreground: #FFFFFF;
   --secondary: #FBEAF0;
   --secondary-foreground: #7A2440;
@@ -289,7 +289,7 @@
   --destructive-foreground: #FFFFFF;
   --border: #E5E5E5;
   --input: #E5E5E5;
-  --ring: #993556;
+  --ring: var(--framboise);
 }
 
 :root[data-theme="ivoire-epure"] {
@@ -301,8 +301,8 @@
   --card-foreground: #111111;
   --popover: #FFFFFF;
   --popover-foreground: #111111;
-  --primary: #111111;
-  --primary-foreground: #F8F5EF;
+  --primary: var(--framboise);
+  --primary-foreground: #FFFFFF;
   --secondary: #F0E7D0;
   --secondary-foreground: #6E5322;
   --accent: #E9DFC4;
@@ -311,7 +311,7 @@
   --destructive-foreground: #FFFFFF;
   --border: #E1DACB;
   --input: #E1DACB;
-  --ring: #C9A84C;
+  --ring: var(--framboise);
 }
 
 :root[data-theme="wax-dore"] {
@@ -323,8 +323,8 @@
   --card-foreground: #2A1A0F;
   --popover: #FFFDF7;
   --popover-foreground: #2A1A0F;
-  --primary: #B85C1E;
-  --primary-foreground: #FFF7EA;
+  --primary: var(--framboise);
+  --primary-foreground: #FFFFFF;
   --secondary: #F6DFB6;
   --secondary-foreground: #6E3B10;
   --accent: #E8CBA0;
@@ -333,7 +333,7 @@
   --destructive-foreground: #FFF7EA;
   --border: #E5D2AC;
   --input: #E5D2AC;
-  --ring: #B85C1E;
+  --ring: var(--framboise);
 }
 
 @keyframes slideUp {

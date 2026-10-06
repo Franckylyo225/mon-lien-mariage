@@ -210,7 +210,7 @@ function AdminSettings() {
           {!editing ? (
             <button
               onClick={startCreate}
-              className="inline-flex items-center gap-1.5 rounded-full bg-[#4B1528] px-3 py-2 text-[12px] font-medium text-white transition hover:opacity-90"
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-2 text-[12px] font-medium text-primary-foreground transition hover:opacity-90"
             >
               <Plus size={14} />
               Nouveau code
@@ -477,7 +477,7 @@ function PromoForm({
         <button
           onClick={onSubmit}
           disabled={busy}
-          className="inline-flex items-center gap-1.5 rounded-full bg-[#4B1528] px-4 py-2 text-[12px] font-medium text-white transition hover:opacity-90 disabled:opacity-60"
+          className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-[12px] font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
         >
           {busy ? <LoaderCircle className="animate-spin" size={14} /> : null}
           {form.id ? "Enregistrer" : "Créer"}

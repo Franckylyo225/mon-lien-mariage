@@ -198,7 +198,7 @@ export function PricingSection() {
 
           <Link
             to="/signup"
-            className="mt-7 block w-full rounded-xl bg-[#4B1528] px-4 py-[14px] text-center text-[15px] font-semibold text-[#FBEAF0] transition hover:opacity-[0.88] sm:py-4"
+            className="mt-7 block w-full rounded-xl bg-primary px-4 py-[14px] text-center text-[15px] font-semibold text-primary-foreground transition hover:opacity-[0.88] sm:py-4"
           >
             Commencer gratuitement →
           </Link>
