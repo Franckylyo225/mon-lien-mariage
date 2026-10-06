@@ -77,8 +77,8 @@ export const Route = createFileRoute("/e/$slug")({
   loader: ({ context, params }) =>
     context.queryClient.ensureQueryData(publicWeddingQuery(params.slug)),
   component: PublicInvitationPage,
-  notFoundComponent: NotFound,
-  errorComponent: () => <NotFound />,
+  notFoundComponent: InvitationNotFound,
+  errorComponent: InvitationNotFound,
 });
 
 type GuestPrefill = {
