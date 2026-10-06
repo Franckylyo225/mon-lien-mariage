@@ -1,5 +1,6 @@
 import type { Couple, ThemeId, TemplateId } from "./wedding-store";
 import { findBodyFont, findTitleFont } from "./fonts";
+import { PALETTES, inkFor, mutedInkFor, isHex, isPaletteId } from "./wedding-palette";
 
 export type BackgroundSlug = "ivoire" | "creme" | "blanc" | "gris";
 
@@ -677,15 +678,20 @@ export interface ResolvedTheme {
   fontBody: string;
   deep: string;
   onDeep: string;
+  /** Metal for rules, frames and filigree. Never carries text. */
+  ornament: string;
 }
 
 export function resolveTheme(
   couple: Pick<
     Couple,
     | "theme"
+    | "palette"
     | "accentColor"
     | "backgroundBase"
     | "accent"
+    | "secondaryColor"
+    | "ornamentColor"
     | "textColor"
     | "customFontTitle"
     | "customFontBody"
@@ -693,36 +699,57 @@ export function resolveTheme(
 ): ResolvedTheme {
   const themeSlug: ThemeId = THEMES[couple.theme] ? couple.theme : "rose-elegance";
   const theme = THEMES[themeSlug];
+
+  // A palette, when chosen, supplies colour; the theme keeps layout, fonts and
+  // ornaments. Weddings created before palettes existed have none, and fall
+  // back to their theme exactly as before.
+  const palette = isPaletteId(couple.palette) ? PALETTES[couple.palette] : null;
+
   const rawBg = couple.backgroundBase;
   let bg: string;
-  if (rawBg && /^#[0-9A-Fa-f]{6}$/.test(rawBg)) {
+  if (isHex(rawBg)) {
     bg = rawBg;
   } else if (isValidBgSlug(rawBg)) {
     bg = BG_HEX[rawBg];
   } else {
-    bg = theme.defaultBgHex ?? BG_HEX[theme.defaultBg];
+    bg = palette?.bg ?? theme.defaultBgHex ?? BG_HEX[theme.defaultBg];
   }
-  const accent =
-    couple.accentColor && /^#[0-9A-Fa-f]{6}$/.test(couple.accentColor)
-      ? couple.accentColor
-      : couple.accent && /^#[0-9A-Fa-f]{6}$/.test(couple.accent)
-        ? couple.accent
-        : theme.defaultAccent;
-  const customText =
-    couple.textColor && /^#[0-9A-Fa-f]{6}$/.test(couple.textColor) ? couple.textColor : null;
+
+  const accent = isHex(couple.accentColor)
+    ? couple.accentColor
+    : isHex(couple.accent)
+      ? couple.accent
+      : (palette?.accent ?? theme.defaultAccent);
+
+  const customText = isHex(couple.textColor) ? couple.textColor : null;
+
+  const deep = isHex(couple.secondaryColor)
+    ? couple.secondaryColor
+    : (palette?.deep ?? theme.deep ?? customText ?? theme.defaultText ?? "#1A1A1A");
+
+  const ornament = isHex(couple.ornamentColor)
+    ? couple.ornamentColor
+    : (palette?.ornament ?? accent);
+
+  // Under a palette the ink is derived from the background, so the hierarchy
+  // between primary and secondary text survives a custom text colour. Without
+  // a palette the legacy behaviour is kept so published pages do not shift.
+  const textPrimary = customText ?? (palette ? inkFor(bg) : (theme.defaultText ?? "#1A1A1A"));
+  const textSecondary = palette ? mutedInkFor(bg) : (customText ?? theme.muted ?? "#6B6B6B");
 
   return {
     themeSlug,
     bg,
     accent,
-    textPrimary: customText ?? theme.defaultText ?? "#1A1A1A",
-    textSecondary: customText ?? theme.muted ?? "#6B6B6B",
+    textPrimary,
+    textSecondary,
     border: "rgba(0,0,0,0.08)",
     surface: "#FFFFFF",
     fontHeading: findTitleFont(couple.customFontTitle)?.family ?? theme.fontHeading,
     fontBody: findBodyFont(couple.customFontBody)?.family ?? theme.fontBody,
-    deep: theme.deep ?? customText ?? theme.defaultText ?? "#1A1A1A",
-    onDeep: theme.onDeep ?? "#FFFFFF",
+    deep,
+    onDeep: palette ? inkFor(deep) : (theme.onDeep ?? "#FFFFFF"),
+    ornament,
   };
 }
 
@@ -742,6 +769,7 @@ export function themeCssVars(r: ResolvedTheme): Record<string, string> {
     "--wedding-font-body": r.fontBody,
     "--wedding-deep": r.deep,
     "--wedding-on-deep": r.onDeep,
+    "--wedding-ornament": r.ornament,
   };
 }
 

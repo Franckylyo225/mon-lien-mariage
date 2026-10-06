@@ -12,6 +12,7 @@ import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import type { GuestType } from "./guest-meta";
 import { normalizeEventType } from "./ceremony-meta";
+import { isPaletteId, type PaletteId } from "./wedding-palette";
 import type { StoryLayout, StoryPhotoShape, StoryStep } from "@/components/public/StoryTimeline";
 
 export type CeremonyType =
@@ -192,9 +193,15 @@ export interface Couple {
 
   templateId: TemplateId;
   theme: ThemeId;
+  /** Colour set, independent of the theme's layout and typography. */
+  palette?: PaletteId;
   accent?: string;
   accentColor?: string;
   backgroundBase?: BackgroundBase;
+  /** Overrides the palette's `deep`: bands, photo veils, footer. */
+  secondaryColor?: string;
+  /** Overrides the palette's metal: rules, frames, filigree. */
+  ornamentColor?: string;
   textColor?: string;
   customFontTitle?: string | null;
   customFontBody?: string | null;
@@ -572,9 +579,16 @@ function rowToCouple(w: WeddingRow): Couple {
     theme: (w.theme as ThemeId) ?? "rose-elegance",
     eventType: normalizeEventType(w.event_type),
 
+    palette: isPaletteId((w as { palette?: string | null }).palette)
+      ? ((w as { palette?: string | null }).palette as PaletteId)
+      : undefined,
     accent: w.accent ?? undefined,
     accentColor: w.accent_color ?? undefined,
     backgroundBase: (w.background_base as BackgroundBase | null) ?? undefined,
+    secondaryColor:
+      ((w as { secondary_color?: string | null }).secondary_color as string | null) ?? undefined,
+    ornamentColor:
+      ((w as { ornament_color?: string | null }).ornament_color as string | null) ?? undefined,
     textColor: ((w as { text_color?: string | null }).text_color as string | null) ?? undefined,
     customFontTitle: w.custom_font_title ?? null,
     customFontBody: w.custom_font_body ?? null,
@@ -706,9 +720,12 @@ function coupleToRow(p: Partial<Couple>): Record<string, unknown> {
   if (p.theme !== undefined) r.theme = p.theme;
   if (p.eventType !== undefined) r.event_type = p.eventType;
 
+  if (p.palette !== undefined) r.palette = p.palette || null;
   if (p.accent !== undefined) r.accent = p.accent;
   if (p.accentColor !== undefined) r.accent_color = p.accentColor || null;
   if (p.backgroundBase !== undefined) r.background_base = p.backgroundBase || null;
+  if (p.secondaryColor !== undefined) r.secondary_color = p.secondaryColor || null;
+  if (p.ornamentColor !== undefined) r.ornament_color = p.ornamentColor || null;
   if (p.textColor !== undefined) r.text_color = p.textColor || null;
   if (p.customFontTitle !== undefined) r.custom_font_title = p.customFontTitle || null;
   if (p.customFontBody !== undefined) r.custom_font_body = p.customFontBody || null;

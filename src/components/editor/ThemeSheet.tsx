@@ -2,18 +2,10 @@ import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import type { Couple, ThemeId } from "@/lib/wedding-store";
-import {
-  BACKGROUNDS,
-  THEMES,
-  THEME_FAMILIES,
-  resolveTheme,
-  isValidBgSlug,
-  type BackgroundSlug,
-  type ThemeFamilyId,
-} from "@/lib/wedding-theme";
-import { Check, Plus } from "lucide-react";
+import { THEMES, THEME_FAMILIES, type ThemeFamilyId } from "@/lib/wedding-theme";
+import { Check } from "lucide-react";
 import { ThemeThumbnail } from "./ThemeThumbnail";
-import { HexEditor } from "./HexEditor";
+import { PalettePanel } from "./PalettePanel";
 import { TypographyPanel } from "./TypographyPanel";
 
 interface ThemeSheetProps {
@@ -28,39 +20,21 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
 
   const currentFamily: ThemeFamilyId = THEMES[couple.theme]?.family ?? "classique";
   const [family, setFamily] = useState<ThemeFamilyId>(currentFamily);
-  const [editingBg, setEditingBg] = useState(false);
 
-  const resolved = resolveTheme(couple);
-
+  // A theme is a layout now, so switching one keeps the chosen palette. Only
+  // the per-colour overrides are cleared, so the palette applies cleanly.
   const selectTheme = (slug: ThemeId) => {
-    // Applying a theme resets custom accent/background so the theme defaults kick in.
     onPatch({
       theme: slug,
       accentColor: undefined,
       backgroundBase: undefined,
+      secondaryColor: undefined,
+      ornamentColor: undefined,
       textColor: undefined,
     });
   };
 
-  const selectBg = (slug: BackgroundSlug) => {
-    setEditingBg(false);
-    onPatch({ backgroundBase: slug });
-  };
-  const restoreDefaults = () => {
-    setEditingBg(false);
-    onPatch({ accentColor: undefined, backgroundBase: undefined, textColor: undefined });
-  };
-
   const familyDef = THEME_FAMILIES.find((f) => f.id === family) ?? THEME_FAMILIES[0];
-
-  // Detect a custom (hex) background vs a preset slug.
-  const rawBg = couple.backgroundBase;
-  const isCustomBg = !!rawBg && /^#[0-9A-Fa-f]{6}$/.test(rawBg);
-  const customBgHex = isCustomBg ? (rawBg as string) : resolved.bg;
-
-  const rawText = couple.textColor;
-  const hasCustomText = !!rawText && /^#[0-9A-Fa-f]{6}$/.test(rawText);
-  const customTextHex = hasCustomText ? (rawText as string) : resolved.textPrimary;
 
   return (
     <BottomSheet open={open} onOpenChange={onOpenChange} title="Thème & couleurs">
@@ -74,7 +48,7 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
             tab === "theme" ? "bg-foreground text-background" : "opacity-60",
           )}
         >
-          Thème
+          Mise en page
         </button>
         <button
           type="button"
@@ -163,132 +137,7 @@ export function ThemeSheet({ open, onOpenChange, couple, onPatch }: ThemeSheetPr
           </div>
         </div>
       ) : tab === "colors" ? (
-        <div className="space-y-6">
-          <section>
-            <HexEditor
-              value={resolved.accent}
-              onChange={(hex) => onPatch({ accentColor: hex })}
-              onRemove={couple.accentColor ? () => onPatch({ accentColor: undefined }) : undefined}
-              label="Couleur d'accent"
-            />
-          </section>
-
-          <section>
-            <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.2em] opacity-60">Fond</p>
-            <div className="grid grid-cols-2 gap-3">
-              {BACKGROUNDS.map((b) => {
-                const activeSlug = isValidBgSlug(rawBg) ? rawBg : undefined;
-                const active = !isCustomBg && activeSlug === b.slug;
-                return (
-                  <button
-                    key={b.slug}
-                    type="button"
-                    onClick={() => selectBg(b.slug)}
-                    className={cn(
-                      "flex flex-col items-center gap-2 rounded-2xl border-2 p-4 transition",
-                      active ? "" : "border-border",
-                    )}
-                    style={active ? { borderColor: resolved.accent } : undefined}
-                  >
-                    <span
-                      className="grid h-16 w-full place-items-center rounded-lg border border-black/5"
-                      style={{ background: b.hex }}
-                    >
-                      <span
-                        className="text-2xl italic"
-                        style={{
-                          fontFamily: "Playfair Display, serif",
-                          color: "#1A1A1A",
-                        }}
-                      >
-                        Aa
-                      </span>
-                    </span>
-                    <span className="text-[11px]">{b.name}</span>
-                  </button>
-                );
-              })}
-
-              {/* Custom hex background tile */}
-              <button
-                type="button"
-                onClick={() => {
-                  if (!isCustomBg) {
-                    onPatch({ backgroundBase: customBgHex });
-                  }
-                  setEditingBg((v) => !v);
-                }}
-                className={cn(
-                  "flex flex-col items-center gap-2 rounded-2xl border-2 p-4 transition",
-                  isCustomBg ? "" : "border-dashed border-border",
-                )}
-                style={isCustomBg ? { borderColor: resolved.accent } : undefined}
-              >
-                <span
-                  className="grid h-16 w-full place-items-center rounded-lg border border-black/5"
-                  style={{
-                    background: isCustomBg
-                      ? customBgHex
-                      : "repeating-conic-gradient(#f3f4f6 0% 25%, #e5e7eb 0% 50%) 50% / 12px 12px",
-                  }}
-                >
-                  {isCustomBg ? (
-                    <span
-                      className="text-2xl italic"
-                      style={{
-                        fontFamily: "Playfair Display, serif",
-                        color: "#1A1A1A",
-                      }}
-                    >
-                      Aa
-                    </span>
-                  ) : (
-                    <Plus className="size-5 opacity-60" />
-                  )}
-                </span>
-                <span className="text-[11px]">
-                  {isCustomBg ? customBgHex.toUpperCase() : "Personnalisé"}
-                </span>
-              </button>
-            </div>
-
-            {editingBg && (
-              <HexEditor
-                value={customBgHex}
-                onChange={(v) => onPatch({ backgroundBase: v })}
-                onClose={() => setEditingBg(false)}
-                onRemove={
-                  isCustomBg
-                    ? () => {
-                        setEditingBg(false);
-                        onPatch({ backgroundBase: undefined });
-                      }
-                    : undefined
-                }
-                removeLabel="Retirer"
-              />
-            )}
-          </section>
-
-          <section>
-            <HexEditor
-              value={customTextHex}
-              onChange={(hex) => onPatch({ textColor: hex })}
-              onRemove={hasCustomText ? () => onPatch({ textColor: undefined }) : undefined}
-              label="Couleur secondaire (texte)"
-              helper="Utile lorsque le fond personnalisé rend le texte peu lisible."
-            />
-          </section>
-
-          <button
-            type="button"
-            onClick={restoreDefaults}
-            disabled={!couple.accentColor && !couple.backgroundBase && !couple.textColor}
-            className="w-full rounded-full border border-border bg-background py-3 text-center font-mono text-[11px] uppercase tracking-widest transition hover:border-foreground/40 hover:bg-muted/40 disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            Restaurer les valeurs du thème
-          </button>
-        </div>
+        <PalettePanel couple={couple} onPatch={onPatch} />
       ) : (
         <TypographyPanel couple={couple} onPatch={onPatch} defaultExpanded />
       )}

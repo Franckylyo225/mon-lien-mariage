@@ -6,7 +6,16 @@ import { useWeddingFonts } from "@/hooks/use-wedding-fonts";
 
 type ThemeCouple = Pick<
   Couple,
-  "theme" | "accentColor" | "backgroundBase" | "accent" | "textColor" | "customFontTitle" | "customFontBody"
+  | "theme"
+  | "palette"
+  | "accentColor"
+  | "backgroundBase"
+  | "accent"
+  | "secondaryColor"
+  | "ornamentColor"
+  | "textColor"
+  | "customFontTitle"
+  | "customFontBody"
 >;
 
 interface Props {
@@ -30,19 +39,10 @@ interface Props {
  * `/e/$slug` page. Avoids drifting between routes that used to inject
  * `<style>:root{…}</style>` versus mutate `document.documentElement`.
  */
-export function ThemeRoot({
-  couple,
-  className,
-  style,
-  children,
-  dataAttrs,
-}: Props) {
+export function ThemeRoot({ couple, className, style, children, dataAttrs }: Props) {
   useWeddingFonts(couple);
   const resolved = useResolvedTheme(couple);
-  const vars = useMemo(
-    () => themeCssVars(resolved) as unknown as React.CSSProperties,
-    [resolved],
-  );
+  const vars = useMemo(() => themeCssVars(resolved) as unknown as React.CSSProperties, [resolved]);
   return (
     <div
       className={"wedding-typography relative " + (className ?? "")}
@@ -62,6 +62,17 @@ export function useResolvedTheme(couple: ThemeCouple): ResolvedTheme {
   return useMemo(
     () => resolveTheme(couple),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [couple.theme, couple.accentColor, couple.backgroundBase, couple.accent, couple.textColor, couple.customFontTitle, couple.customFontBody],
+    [
+      couple.theme,
+      couple.palette,
+      couple.accentColor,
+      couple.backgroundBase,
+      couple.accent,
+      couple.secondaryColor,
+      couple.ornamentColor,
+      couple.textColor,
+      couple.customFontTitle,
+      couple.customFontBody,
+    ],
   );
 }
