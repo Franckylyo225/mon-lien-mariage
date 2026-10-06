@@ -356,6 +356,7 @@ export type Database = {
           created_at: string
           id: string
           is_approved: boolean
+          is_favorite: boolean
           message: string
           wedding_id: string
         }
@@ -366,6 +367,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_approved?: boolean
+          is_favorite?: boolean
           message: string
           wedding_id: string
         }
@@ -376,6 +378,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_approved?: boolean
+          is_favorite?: boolean
           message?: string
           wedding_id?: string
         }

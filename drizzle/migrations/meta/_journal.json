@@ -22,6 +22,13 @@
       "when": 1791245784108,
       "tag": "0002_allow_new_opening_page_models",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791245829389,
+      "tag": "0003_guestbook_message_favorite",
+      "breakpoints": true
     }
   ]
 }
