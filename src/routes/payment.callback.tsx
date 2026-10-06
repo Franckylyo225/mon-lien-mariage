@@ -344,7 +344,7 @@ function LoadingScreen({
           <Heart size={26} color={FRAMBOISE} strokeWidth={1.6} />
         </span>
         <h1
-          className="mt-5 text-[26px] italic leading-tight"
+          className="mt-5 text-[26px] leading-tight"
           style={{ fontFamily: TITLE_FONT }}
         >
           Ton invitation se prépare…
@@ -500,7 +500,7 @@ function SuccessScreen({
       </span>
 
       <h1
-        className="mt-5 text-[28px] italic leading-tight"
+        className="mt-5 text-[28px] leading-tight"
         style={{ fontFamily: TITLE_FONT, animation: "payFadeUp 600ms 120ms ease both" }}
       >
         {isAddon ? "Livre d'or activé !" : "Ton invitation est en ligne !"}
@@ -666,7 +666,7 @@ function PaymentFailed({
       >
         ✕
       </span>
-      <h1 className="mt-5 text-[26px] italic" style={{ fontFamily: TITLE_FONT }}>
+      <h1 className="mt-5 text-[26px]" style={{ fontFamily: TITLE_FONT }}>
         Paiement non abouti
       </h1>
       <p className="mt-2 text-[13px] whitespace-pre-line" style={{ opacity: 0.6 }}>

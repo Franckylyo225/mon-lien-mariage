@@ -9,10 +9,12 @@ import {
   QrCode,
   Users,
   CalendarHeart,
-  BookHeart,
+  Music,
+  Hourglass,
   Loader2,
   Tag,
   AlertTriangle,
+  ShieldCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { redirectToCheckout } from "@/lib/checkout-redirect";
@@ -24,8 +26,6 @@ import { useNavigate } from "@tanstack/react-router";
 import { fbq } from "@/lib/facebook-pixel";
 import { BASE_PRICE_XOF, GUESTBOOK_ADDON_XOF } from "@/lib/pricing";
 
-
-
 export const Route = createFileRoute("/publish")({
   head: () => ({
     meta: [
@@ -35,7 +35,6 @@ export const Route = createFileRoute("/publish")({
   }),
   component: PublishPage,
 });
-
 
 function formatFrenchDate(iso: string): string | null {
   if (!iso) return null;
@@ -72,11 +71,17 @@ function PublishPage() {
     !flags.programme && { label: "Une étape avec sa date", to: "/dashboard/ceremonies" as const },
     !flags.page && { label: "Une photo de couverture", to: "/dashboard/preview" as const },
     !flags.invites && { label: "La liste des invités (RSVP)", to: "/dashboard/guests" as const },
-  ].filter((m): m is { label: string; to: "/dashboard/ceremonies" | "/dashboard/preview" | "/dashboard/guests" } => !!m);
+  ].filter(
+    (
+      m,
+    ): m is {
+      label: string;
+      to: "/dashboard/ceremonies" | "/dashboard/preview" | "/dashboard/guests";
+    } => !!m,
+  );
 
   const baseSlug = useMemo(
-    () =>
-      couple.slug || slugify(`${couple.brideName}-et-${couple.groomName}`) || "",
+    () => couple.slug || slugify(`${couple.brideName}-et-${couple.groomName}`) || "",
     [couple.slug, couple.brideName, couple.groomName],
   );
 
@@ -204,6 +209,40 @@ function PublishPage() {
   const slugOk = slugStatus === "available";
   const canPublish = slugOk && namesConfirmed && flags.infos;
 
+  // A disabled button with no explanation reads as a broken page, so name the
+  // one thing standing in the way.
+  const isFree = !!appliedPromo && appliedPromo.discount >= 100;
+
+  const blockingReason = !flags.infos
+    ? "Renseignez d'abord vos prénoms et la date depuis le tableau de bord."
+    : !slugOk
+      ? "Choisissez un lien disponible ci-dessus."
+      : !namesConfirmed
+        ? "Confirmez l'orthographe de vos prénoms ci-dessus."
+        : null;
+
+  // Honest urgency: their own date, no invented scarcity.
+  const daysUntilWedding = useMemo(() => {
+    if (!couple.weddingDate) return null;
+    const d = new Date(couple.weddingDate + "T00:00:00");
+    if (Number.isNaN(d.getTime())) return null;
+    const days = Math.ceil((d.getTime() - new Date().setHours(0, 0, 0, 0)) / 86400000);
+    return days > 0 ? days : null;
+  }, [couple.weddingDate]);
+
+  // The inline CTA sits three screens down; mirror it in a sticky bar while
+  // it is out of view.
+  const ctaRef = useRef<HTMLDivElement | null>(null);
+  const [ctaInView, setCtaInView] = useState(true);
+  useEffect(() => {
+    const el = ctaRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(([entry]) => setCtaInView(entry.isIntersecting), {
+      rootMargin: "-80px 0px 0px 0px",
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [alreadyPublished]);
 
   const handlePromo = async () => {
     const code = promoCode.trim().toUpperCase();
@@ -270,7 +309,6 @@ function PublishPage() {
         toast.success("Votre invitation est publiée !");
         navigate({ to: "/dashboard/share" });
       } catch (e) {
-
         const msg = e instanceof Error ? e.message : "Publication impossible.";
         setPayError(msg);
         toast.error(msg);
@@ -297,24 +335,17 @@ function PublishPage() {
       redirectToCheckout(res.authorization_url);
     } catch (e) {
       console.error("[paywall] payment init failed", e);
-      const msg =
-        e instanceof Error
-          ? e.message
-          : "Impossible de lancer le paiement. Réessayez.";
+      const msg = e instanceof Error ? e.message : "Impossible de lancer le paiement. Réessayez.";
       setPayError(msg);
       toast.error(msg);
       setPublishing(false);
     }
   };
 
-
-
   if (loading) {
     return (
       <div className="grid min-h-screen place-items-center bg-background">
-        <p className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-40">
-          Chargement…
-        </p>
+        <p className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-40">Chargement…</p>
       </div>
     );
   }
@@ -344,22 +375,27 @@ function PublishPage() {
           >
             <Check className="size-6" strokeWidth={2} />
           </span>
-          <p className="mt-5 page-kicker">
-            Événement en ligne
-          </p>
+          <p className="mt-5 page-kicker">Événement en ligne</p>
           <h1 className="mt-2 font-produit text-[26px] font-bold leading-tight tracking-tight">
             Cet événement est déjà publié
           </h1>
           <p className="mt-3 text-[12px] leading-[1.6] text-muted-foreground">
-            Le paiement pour <span className="italic">{couple.brideName || "…"} &amp; {couple.groomName || "…"}</span> a
-            été effectué. Votre page est accessible via :
+            Le paiement pour{" "}
+            <span className="font-medium text-foreground">
+              {couple.brideName || "…"} &amp; {couple.groomName || "…"}
+            </span>{" "}
+            a été effectué. Votre page est accessible via :
           </p>
           {slug ? (
             <div className="mx-auto mt-4 inline-flex max-w-full items-center gap-2 rounded-[10px] bg-muted px-3 py-2">
-              <Link2 className="size-3.5 shrink-0" style={{ color: "#993556" }} strokeWidth={1.75} />
+              <Link2
+                className="size-3.5 shrink-0"
+                style={{ color: "var(--primary)" }}
+                strokeWidth={1.75}
+              />
               <span className="truncate text-[12px] font-medium">
                 <span className="text-foreground">moninvit.com/e/</span>
-                <span style={{ color: "#993556" }}>{slug}</span>
+                <span style={{ color: "var(--primary)" }}>{slug}</span>
               </span>
             </div>
           ) : null}
@@ -367,7 +403,7 @@ function PublishPage() {
             <Link
               to="/dashboard/share"
               className="inline-flex w-full items-center justify-center gap-2 rounded-[14px] px-4 py-3.5 text-[14px] font-medium transition"
-              style={{ background: "#4B1528", color: "#FBEAF0" }}
+              style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
             >
               Partager mon invitation
             </Link>
@@ -407,161 +443,50 @@ function PublishPage() {
       <main className="mx-auto max-w-xl px-[14px] pb-16 pt-10">
         {/* 2. Hero */}
         <section className="mb-6 text-center">
-          <p className="page-kicker">
-            Dernière étape
-          </p>
+          <p className="page-kicker">Dernière étape</p>
           <div className="mt-4 flex flex-col items-center leading-tight">
-            <span className="font-serif text-[28px] italic">
-              {couple.brideName || "—"}
-            </span>
-            <span className="my-0.5 font-serif text-[16px] italic text-primary">
-              &amp;
-            </span>
-            <span className="font-serif text-[28px] italic">
-              {couple.groomName || "—"}
-            </span>
+            <span className="font-serif text-[30px]">{couple.brideName || "—"}</span>
+            <span className="my-0.5 font-serif text-[17px] text-primary">&amp;</span>
+            <span className="font-serif text-[30px]">{couple.groomName || "—"}</span>
           </div>
           {subLine ? (
-            <p className="mt-3 text-[12px] capitalize text-muted-foreground">
-              {subLine}
-            </p>
+            <p className="mt-3 text-[13px] capitalize text-muted-foreground">{subLine}</p>
           ) : null}
-          <div
-            className="mx-auto my-3 h-px w-8 bg-primary"
-            style={{ opacity: 0.4 }}
-          />
-          <p className="text-[12px] leading-[1.5] text-muted-foreground">
-            {missing.length === 0 ? "Votre page est prête." : "Votre page est en ligne dès la publication."}
+          <div className="mx-auto my-3 h-px w-8 bg-primary" style={{ opacity: 0.4 }} />
+          <p className="text-[13px] leading-[1.6] text-muted-foreground">
+            {missing.length === 0
+              ? "Votre page est prête."
+              : "Votre page est en ligne dès la publication."}
             <br />
             {missing.length === 0
               ? "Publiez-la pour la partager avec vos invités."
               : "Vous pourrez la compléter à tout moment ensuite."}
           </p>
+          {daysUntilWedding ? (
+            <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-[12px] font-medium text-muted-foreground">
+              <Hourglass className="size-3.5" strokeWidth={1.75} />
+              Votre mariage est dans {daysUntilWedding} jour{daysUntilWedding > 1 ? "s" : ""}
+            </p>
+          ) : null}
         </section>
 
-        {/* 3. Carte URL : lien suggéré + choix personnalisé */}
-        <div className="mb-4">
-          <div
-            className={`flex items-center gap-3 rounded-[10px] px-[14px] py-2.5 ${
-              slugStatus === "taken" || slugStatus === "invalid"
-                ? "bg-[#fef2f2]"
-                : "bg-muted"
-            }`}
-          >
-            <div
-              className="grid size-7 shrink-0 place-items-center rounded-md"
-              style={{ background: "#FBEAF0" }}
-            >
-              <Link2 className="size-3.5" style={{ color: "#993556" }} strokeWidth={1.75} />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground/70">
-                Votre lien
-              </p>
-              <p className="truncate text-[12px] font-medium">
-                <span className="text-foreground">moninvit.com/e/</span>
-                <span style={{ color: "#993556" }}>{slug}</span>
-              </p>
-            </div>
-            {slugStatus === "checking" ? (
-              <Loader2 className="size-3.5 shrink-0 animate-spin text-muted-foreground" strokeWidth={2} />
-            ) : slugStatus === "available" ? (
-              <Check className="size-3.5 shrink-0" style={{ color: "#059669" }} strokeWidth={2} />
-            ) : (
-              <AlertTriangle className="size-3.5 shrink-0" style={{ color: "#b91c1c" }} strokeWidth={2} />
-            )}
-          </div>
-
-          <div className="mt-2 flex items-center justify-between gap-2">
-            <p className="text-[11px] leading-[1.5] text-muted-foreground">
-              {suggestion && suggestion === slug && suggestion !== baseSlug
-                ? "Lien suggéré automatiquement car l'adresse idéale était déjà prise."
-                : slugStatus === "available"
-                  ? "Ce lien est disponible."
-                  : "Vérification du lien…"}
-            </p>
-            <button
-              type="button"
-              onClick={() => {
-                setCustomOpen((v) => !v);
-                setCustomSlug(slug);
-              }}
-              className="shrink-0 text-[11px] font-medium underline underline-offset-2"
-              style={{ color: "#993556" }}
-            >
-              {customOpen ? "Fermer" : "Choisir un autre lien"}
-            </button>
-          </div>
-
-          {(slugStatus === "taken" || slugStatus === "invalid") && (
-            <p className="mt-2 text-[12px] leading-[1.5] text-[#7f1d1d]">
-              {slugStatus === "taken"
-                ? "Ce lien public est déjà utilisé par un autre événement."
-                : "Le format de ce lien n'est pas valide."}
-            </p>
-          )}
-
-          {customOpen && (
-            <div className="mt-3 rounded-[12px] border border-border/60 bg-card p-3">
-              <p className="mb-2 text-[11px] leading-[1.4] text-muted-foreground">
-                Saisissez le lien souhaité. Nous vérifions sa disponibilité en temps réel.
-              </p>
-              <div className="flex gap-2">
-                <div className="flex flex-1 items-center gap-1 rounded-[10px] border border-border/60 bg-background px-2">
-                  <span className="text-[11px] text-muted-foreground">moninvit.com/e/</span>
-                  <input
-                    type="text"
-                    value={customSlug}
-                    onChange={(e) =>
-                      setCustomSlug(
-                        e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"),
-                      )
-                    }
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") applySlug(customSlug);
-                    }}
-                    placeholder="mon-lien"
-                    className="min-w-0 flex-1 bg-transparent py-2 text-[12px] outline-none"
-                    maxLength={60}
-                    autoCapitalize="none"
-                    autoCorrect="off"
-                    spellCheck={false}
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={() => applySlug(customSlug)}
-                  disabled={!customSlug.trim()}
-                  className="shrink-0 rounded-[10px] px-3 text-[12px] font-medium disabled:opacity-60"
-                  style={{ background: "#4B1528", color: "#FBEAF0" }}
-                >
-                  Vérifier
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-
-
-        {/* 4. Carte formule */}
+        {/* 3. Carte formule : ce que vous obtenez et le prix */}
         <section className="mb-3 rounded-[14px] border border-border/60 bg-card p-4">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground/70">
                 Formule
               </p>
-              <p className="mt-1 font-serif text-[18px] italic">
-                Publication complète
-              </p>
+              <p className="mt-1 font-serif text-[19px]">Publication complète</p>
             </div>
             <div className="text-right">
-              <p className="font-serif text-[26px] italic leading-none">
+              <p className="font-serif text-[30px] leading-none">
                 {BASE_PRICE_XOF.toLocaleString("fr-FR")}
-                <span className="ml-1 font-sans text-[11px] font-normal not-italic text-muted-foreground">
+                <span className="ml-1 font-sans text-[11px] font-normal text-muted-foreground">
                   XOF
                 </span>
               </p>
-              <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground/70">
+              <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground/70">
                 Paiement unique
               </p>
             </div>
@@ -574,19 +499,17 @@ function PublishPage() {
               <li key={it.name} className="flex items-start gap-2.5 py-1.5">
                 <span
                   className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full"
-                  style={{ background: "#FBEAF0" }}
+                  style={{ background: "var(--secondary)" }}
                 >
                   <it.Icon
                     className="size-[11px]"
-                    style={{ color: "#993556" }}
+                    style={{ color: "var(--primary)" }}
                     strokeWidth={1.75}
                   />
                 </span>
                 <div className="min-w-0">
-                  <p className="text-[12px] font-medium leading-tight">
-                    {it.name}
-                  </p>
-                  <p className="text-[10px] leading-[1.4] text-muted-foreground">
+                  <p className="text-[13px] font-medium leading-tight">{it.name}</p>
+                  <p className="mt-0.5 text-[12px] leading-[1.45] text-muted-foreground">
                     {it.desc}
                   </p>
                 </div>
@@ -600,68 +523,65 @@ function PublishPage() {
                 type="checkbox"
                 checked={includeGuestbook}
                 onChange={(e) => setIncludeGuestbook(e.target.checked)}
-                className="mt-0.5 size-4 shrink-0 accent-[#993556]"
+                className="mt-0.5 size-4 shrink-0 accent-[var(--primary)]"
               />
               <div className="min-w-0 flex-1">
                 <div className="flex items-baseline justify-between gap-2">
-                  <p className="text-[12px] font-medium leading-tight">
+                  <p className="text-[13px] font-medium leading-tight">
                     Livre d'or numérique
                     <span
                       className="ml-2 rounded-full px-1.5 py-0.5 font-mono text-[8px] uppercase tracking-wider"
-                      style={{ background: "#FBEAF0", color: "#993556" }}
+                      style={{ background: "var(--secondary)", color: "var(--primary)" }}
                     >
                       Option
                     </span>
                   </p>
-                  <span className="whitespace-nowrap font-serif text-[13px] italic">
+                  <span className="whitespace-nowrap font-serif text-[15px]">
                     + {GUESTBOOK_ADDON_XOF.toLocaleString("fr-FR")}
-                    <span className="ml-0.5 font-sans text-[9px] not-italic text-muted-foreground">
-                      XOF
-                    </span>
+                    <span className="ml-0.5 font-sans text-[9px] text-muted-foreground">XOF</span>
                   </span>
                 </div>
-                <p className="mt-0.5 text-[10px] leading-[1.4] text-muted-foreground">
+                <p className="mt-1 text-[12px] leading-[1.45] text-muted-foreground">
                   Vos invités laissent un mot doux. PDF souvenir téléchargeable.
                 </p>
               </div>
             </label>
           </div>
 
-
           {discount > 0 ? (
             <div className="mt-3 flex items-baseline justify-between border-t border-border/60 pt-3">
               <span className="text-[12px] text-muted-foreground">
                 Code <span className="font-mono">{appliedPromo?.code}</span> (−{discount}%)
               </span>
-              <span className="text-[12px] font-medium" style={{ color: "#993556" }}>
+              <span className="text-[12px] font-medium" style={{ color: "var(--primary)" }}>
                 −{Math.round(gross - total).toLocaleString("fr-FR")} XOF
               </span>
             </div>
           ) : null}
 
           <div className="mt-1 flex items-baseline justify-between border-t border-border/60 pt-3">
-            <span className="text-[13px] font-medium">Total</span>
-            <span className="font-serif text-[22px] italic leading-none">
+            <span className="text-[14px] font-medium">Total</span>
+            <span className="font-serif text-[24px] leading-none">
               {discount > 0 ? (
-                <span className="mr-2 font-sans text-[13px] not-italic text-muted-foreground line-through">
+                <span className="mr-2 font-sans text-[13px] text-muted-foreground line-through">
                   {gross.toLocaleString("fr-FR")}
                 </span>
               ) : null}
               {total.toLocaleString("fr-FR")}
-              <span className="ml-1 font-sans text-[11px] font-normal not-italic text-muted-foreground">
+              <span className="ml-1 font-sans text-[11px] font-normal text-muted-foreground">
                 XOF
               </span>
             </span>
           </div>
         </section>
 
-        {/* 5b. Code promo */}
+        {/* 4. Code promo */}
         <div className="mb-2">
           {!promoOpen ? (
             <button
               type="button"
               onClick={() => setPromoOpen(true)}
-              className="mx-auto flex items-center gap-1.5 text-[12px] text-muted-foreground underline underline-offset-2 transition hover:text-foreground"
+              className="mx-auto flex items-center gap-1.5 text-[13px] text-muted-foreground underline underline-offset-2 transition hover:text-foreground"
             >
               <Tag className="size-3.5" strokeWidth={1.75} />
               J'ai un code promo
@@ -703,7 +623,7 @@ function PublishPage() {
                   onClick={handlePromo}
                   disabled={promoLoading || !promoCode.trim() || !weddingId}
                   className="inline-flex items-center justify-center gap-1.5 rounded-[10px] px-4 text-[12px] font-medium transition disabled:opacity-60"
-                  style={{ background: "#4B1528", color: "#FBEAF0" }}
+                  style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
                 >
                   {promoLoading ? (
                     <Loader2 className="size-3.5 animate-spin" strokeWidth={2} />
@@ -716,10 +636,116 @@ function PublishPage() {
           )}
         </div>
 
-        {/* 4b. Avant de publier : prénoms + éléments manquants */}
+        {/* 5. Carte URL : lien suggéré + choix personnalisé */}
+        <div className="mb-4">
+          <div
+            className={`flex items-center gap-3 rounded-[10px] px-[14px] py-2.5 ${
+              slugStatus === "taken" || slugStatus === "invalid" ? "bg-[#fef2f2]" : "bg-muted"
+            }`}
+          >
+            <div
+              className="grid size-7 shrink-0 place-items-center rounded-md"
+              style={{ background: "var(--secondary)" }}
+            >
+              <Link2 className="size-3.5" style={{ color: "var(--primary)" }} strokeWidth={1.75} />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground/70">
+                Votre lien
+              </p>
+              <p className="truncate text-[13px] font-medium">
+                <span className="text-foreground">moninvit.com/e/</span>
+                <span style={{ color: "var(--primary)" }}>{slug}</span>
+              </p>
+            </div>
+            {slugStatus === "checking" ? (
+              <Loader2
+                className="size-3.5 shrink-0 animate-spin text-muted-foreground"
+                strokeWidth={2}
+              />
+            ) : slugStatus === "available" ? (
+              <Check className="size-3.5 shrink-0" style={{ color: "#059669" }} strokeWidth={2} />
+            ) : (
+              <AlertTriangle
+                className="size-3.5 shrink-0"
+                style={{ color: "#b91c1c" }}
+                strokeWidth={2}
+              />
+            )}
+          </div>
+
+          <div className="mt-2 flex items-center justify-between gap-2">
+            <p className="text-[12px] leading-[1.5] text-muted-foreground">
+              {suggestion && suggestion === slug && suggestion !== baseSlug
+                ? "Lien suggéré automatiquement car l'adresse idéale était déjà prise."
+                : slugStatus === "available"
+                  ? "Ce lien est disponible."
+                  : "Vérification du lien…"}
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setCustomOpen((v) => !v);
+                setCustomSlug(slug);
+              }}
+              className="shrink-0 text-[12px] font-medium underline underline-offset-2"
+              style={{ color: "var(--primary)" }}
+            >
+              {customOpen ? "Fermer" : "Choisir un autre lien"}
+            </button>
+          </div>
+
+          {(slugStatus === "taken" || slugStatus === "invalid") && (
+            <p className="mt-2 text-[12px] leading-[1.5] text-[#7f1d1d]">
+              {slugStatus === "taken"
+                ? "Ce lien public est déjà utilisé par un autre événement."
+                : "Le format de ce lien n'est pas valide."}
+            </p>
+          )}
+
+          {customOpen && (
+            <div className="mt-3 rounded-[12px] border border-border/60 bg-card p-3">
+              <p className="mb-2 text-[11px] leading-[1.4] text-muted-foreground">
+                Saisissez le lien souhaité. Nous vérifions sa disponibilité en temps réel.
+              </p>
+              <div className="flex gap-2">
+                <div className="flex flex-1 items-center gap-1 rounded-[10px] border border-border/60 bg-background px-2">
+                  <span className="text-[11px] text-muted-foreground">moninvit.com/e/</span>
+                  <input
+                    type="text"
+                    value={customSlug}
+                    onChange={(e) =>
+                      setCustomSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"))
+                    }
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") applySlug(customSlug);
+                    }}
+                    placeholder="mon-lien"
+                    className="min-w-0 flex-1 bg-transparent py-2 text-[12px] outline-none"
+                    maxLength={60}
+                    autoCapitalize="none"
+                    autoCorrect="off"
+                    spellCheck={false}
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => applySlug(customSlug)}
+                  disabled={!customSlug.trim()}
+                  className="shrink-0 rounded-[10px] px-3 text-[12px] font-medium disabled:opacity-60"
+                  style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+                >
+                  Vérifier
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* 6. Avant de publier : prénoms + éléments manquants */}
         <section className="mb-4 rounded-2xl border border-border bg-card p-4">
-          <h2 className="text-[14px] font-semibold">Avant de publier</h2>
-          <label className="mt-3 flex cursor-pointer items-start gap-3 text-[13px] leading-snug">
+          <h2 className="text-[15px] font-semibold">Avant de publier</h2>
+          <label className="mt-3 flex cursor-pointer items-start gap-3 text-[14px] leading-snug">
             <input
               type="checkbox"
               checked={namesConfirmed}
@@ -731,24 +757,24 @@ function PublishPage() {
               <strong className="font-semibold">
                 {couple.brideName || "—"} &amp; {couple.groomName || "—"}
               </strong>{" "}
-              sont corrects. Ils ne pourront plus être modifiés après la publication.
+              sont bien orthographiés. Ils sont figés une fois la page publiée.
             </span>
           </label>
 
           {!flags.infos ? (
-            <p className="mt-3 rounded-xl bg-amber-50 px-3 py-2 text-[12px] text-amber-800">
+            <p className="mt-3 rounded-xl bg-amber-50 px-3 py-2 text-[13px] text-amber-800">
               Renseignez d'abord les prénoms et la date depuis le tableau de bord.
             </p>
           ) : null}
 
           {missing.length > 0 ? (
             <div className="mt-3 rounded-xl bg-muted/60 p-3">
-              <p className="text-[12px] font-medium">
+              <p className="text-[13px] font-medium">
                 Encore à compléter — vous pourrez le faire après la publication :
               </p>
               <ul className="mt-1.5 space-y-1">
                 {missing.map((m) => (
-                  <li key={m.to} className="flex items-center justify-between gap-3 text-[12px]">
+                  <li key={m.to} className="flex items-center justify-between gap-3 text-[13px]">
                     <span className="text-muted-foreground">{m.label}</span>
                     <Link to={m.to} className="shrink-0 font-medium text-primary hover:underline">
                       Ajouter
@@ -760,15 +786,36 @@ function PublishPage() {
           ) : null}
         </section>
 
-        {/* 5. Bouton — Publier (activé après code promo) */}
-        <div className="mb-2.5">
+        {/* 7. Réassurance paiement puis bouton */}
+        <div ref={ctaRef} className="mb-2.5">
+          <div className="mb-3 rounded-2xl border border-border/60 bg-card p-3.5">
+            <p className="flex items-center gap-1.5 text-[13px] font-medium">
+              <ShieldCheck className="size-4 shrink-0 text-primary" strokeWidth={1.75} />
+              Paiement sécurisé par Paystack
+            </p>
+            <ul className="mt-2.5 flex flex-wrap gap-1.5">
+              {PAYMENT_METHODS.map((m) => (
+                <li
+                  key={m}
+                  className="rounded-full bg-muted px-2.5 py-1 text-[12px] font-medium text-muted-foreground"
+                >
+                  {m}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-2.5 text-[12px] leading-[1.5] text-muted-foreground">
+              Paiement unique, sans abonnement ni prélèvement. Votre page est en ligne immédiatement
+              après le paiement.
+            </p>
+          </div>
+
           <button
             type="button"
             onClick={handlePublish}
             disabled={!canPublish || publishing || !weddingId}
             aria-disabled={!canPublish || publishing || !weddingId}
             title="Publier votre invitation"
-            className="btn-accent-gradient inline-flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-4 text-[15px] font-semibold"
+            className="btn-accent-gradient inline-flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-4 text-[16px] font-semibold"
           >
             {publishing ? (
               <Loader2 className="size-4 animate-spin" strokeWidth={2} />
@@ -776,48 +823,86 @@ function PublishPage() {
               <Check className="size-4" strokeWidth={2} />
             )}
             {publishing
-              ? appliedPromo && appliedPromo.discount >= 100
+              ? isFree
                 ? "Publication en cours…"
                 : "Redirection vers le paiement…"
-              : appliedPromo && appliedPromo.discount >= 100
+              : isFree
                 ? "Publier mon invitation"
                 : `Payer ${total.toLocaleString("fr-FR")} XOF et publier`}
           </button>
 
+          {!canPublish && blockingReason ? (
+            <p className="mt-2 text-center text-[12px] leading-[1.5] text-muted-foreground">
+              {blockingReason}
+            </p>
+          ) : null}
+
           {payError ? (
             <p
               role="alert"
-              className="mt-2 rounded-[10px] border border-destructive/30 bg-destructive/10 px-3 py-2 text-center text-[11px] leading-[1.5] text-destructive"
+              className="mt-2 rounded-[10px] border border-destructive/30 bg-destructive/10 px-3 py-2 text-center text-[12px] leading-[1.5] text-destructive"
             >
               {payError}
             </p>
           ) : null}
 
-
-          {appliedPromo && appliedPromo.discount >= 100 ? (
-            <p className="mt-2 text-center text-[11px] leading-[1.5] text-muted-foreground">
-              Code <span className="font-mono">{appliedPromo.code}</span> appliqué —
-              publication gratuite.
+          {isFree ? (
+            <p className="mt-2 text-center text-[12px] leading-[1.5] text-muted-foreground">
+              Code <span className="font-mono">{appliedPromo?.code}</span> appliqué — publication
+              gratuite.
             </p>
-          ) : (
-            <p className="mt-2 text-center text-[11px] leading-[1.5] text-muted-foreground">
-              Paiement sécurisé par Paystack.
-              <br />
-              Carte bancaire, Mobile Money ou USSD.
-            </p>
-          )}
+          ) : null}
         </div>
 
-
-        <p className="mt-3.5 text-center text-[10px] leading-[1.5] text-muted-foreground/70">
-          Après publication, vous pouvez toujours modifier
-          <br />
-          vos étapes et gérer vos invités.
+        <p className="mt-3.5 text-center text-[12px] leading-[1.6] text-muted-foreground">
+          Après publication vous pouvez toujours modifier vos étapes et gérer vos invités. Votre
+          page reste en ligne 12 mois.
         </p>
       </main>
+
+      {/* Rappel collant tant que le bouton est hors de l'écran. */}
+      {!ctaInView ? (
+        <div className="animate-dock-in pointer-events-none fixed inset-x-0 bottom-0 z-40">
+          <div className="mx-auto max-w-xl px-[14px] pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+            <div className="pointer-events-auto flex items-center gap-3 rounded-2xl border border-border/70 bg-background/95 p-2 shadow-[0_14px_36px_-14px_rgba(26,26,26,0.45)] backdrop-blur">
+              <div className="min-w-0 shrink-0 pl-2">
+                <p className="font-mono text-[9px] uppercase tracking-[0.06em] text-muted-foreground/70">
+                  Total
+                </p>
+                <p className="font-serif text-[18px] leading-none">
+                  {total.toLocaleString("fr-FR")}
+                  <span className="ml-1 font-sans text-[11px] text-muted-foreground">XOF</span>
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() =>
+                  canPublish
+                    ? handlePublish()
+                    : ctaRef.current?.scrollIntoView({ behavior: "smooth", block: "center" })
+                }
+                disabled={publishing || !weddingId}
+                className="btn-accent-gradient inline-flex min-h-11 flex-1 items-center justify-center gap-2 rounded-xl px-3 text-[14px] font-semibold"
+              >
+                {publishing ? <Loader2 className="size-4 animate-spin" strokeWidth={2} /> : null}
+                {publishing
+                  ? "Patientez…"
+                  : !canPublish
+                    ? "Finaliser"
+                    : isFree
+                      ? "Publier"
+                      : `Payer ${total.toLocaleString("fr-FR")} XOF`}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
+
+/** Shown before the click: in Côte d'Ivoire, Mobile Money is often the decider. */
+const PAYMENT_METHODS = ["Mobile Money", "Carte bancaire", "USSD"];
 
 const INCLUDED = [
   {
@@ -841,8 +926,13 @@ const INCLUDED = [
     desc: "Dot, civil, religieux, réception…",
   },
   {
-    Icon: BookHeart,
-    name: "Livre d'or après le mariage",
-    desc: "Photos et messages de vos invités en souvenir",
+    Icon: Music,
+    name: "Musique d'ambiance",
+    desc: "26 titres, ou votre propre chanson",
+  },
+  {
+    Icon: Hourglass,
+    name: "Compte à rebours",
+    desc: "Il démarre dès la publication",
   },
 ];
