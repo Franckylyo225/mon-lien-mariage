@@ -21,16 +21,7 @@ function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
-    const { error: err } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
-    if (err) {
-      setError(err.message);
-      return;
-    }
+  const routeAfterAuth = async () => {
     // Route based on number of weddings
     const { data: userRes } = await supabase.auth.getUser();
     const userId = userRes.user?.id;
@@ -69,7 +60,34 @@ function LoginPage() {
       }
     }
     navigate({ to: "/dashboard" });
+  };
 
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    const { error: err } = await supabase.auth.signInWithPassword({ email, password });
+    setLoading(false);
+    if (err) {
+      setError(err.message);
+      return;
+    }
+    await routeAfterAuth();
+  };
+
+  const signInWithGoogle = async () => {
+    setError(null);
+    setLoading(true);
+    const result = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: window.location.origin,
+    });
+    setLoading(false);
+    if (result.error) {
+      setError(result.error.message);
+      return;
+    }
+    if (result.redirected) return;
+    await routeAfterAuth();
   };
 
   return (
