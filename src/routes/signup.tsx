@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
 import { Logo } from "@/components/site/SiteChrome";
 import {
   PasswordChecklist,
@@ -111,6 +112,53 @@ function SignupPage() {
     }
   };
 
+  const signInWithGoogle = async () => {
+    setError(null);
+    setLoading(true);
+    const result = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: window.location.origin,
+    });
+    setLoading(false);
+    if (result.error) {
+      setError(result.error.message);
+      return;
+    }
+    if (result.redirected) return;
+    // Google account authenticated: route like after a classic signup.
+    const { data: userRes } = await supabase.auth.getUser();
+    const userId = userRes.user?.id;
+    if (userId) {
+      const { data: list } = await supabase
+        .from("weddings")
+        .select("id, onboarding_step")
+        .eq("owner_id", userId)
+        .order("created_at", { ascending: false });
+      const weddings = list ?? [];
+      if (weddings.length >= 2) {
+        navigate({ to: "/dashboard/events" });
+        return;
+      }
+      if (weddings.length === 1) {
+        const rawStep = weddings[0].onboarding_step as number | null;
+        const step = Number.isInteger(rawStep) && rawStep !== null && rawStep >= 0 && rawStep <= 4
+          ? rawStep
+          : 0;
+        const targets = [
+          "/onboarding/prenoms",
+          "/onboarding/evenement",
+          "/onboarding/dates",
+          "/onboarding/theme",
+        ] as const;
+        if (step < 4) {
+          navigate({ to: targets[step as 0 | 1 | 2 | 3] });
+          return;
+        }
+        navigate({ to: "/dashboard" });
+        return;
+      }
+    }
+    navigate({ to: "/onboarding/prenoms" });
+  };
 
   return (
     <AuthLayout
