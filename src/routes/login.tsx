@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
 import { AuthLayout, Field, inputClass } from "./signup";
 
 export const Route = createFileRoute("/login")({
