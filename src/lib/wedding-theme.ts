@@ -495,7 +495,7 @@ export const THEME_FAMILIES: ThemeFamilyDef[] = [
   },
   {
     id: "traditionnel",
-    label: "🌍 Traditionnel",
+    label: "Traditionnel",
     themes: [
       "wax-dore",
       "kente-royal",

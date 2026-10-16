@@ -40,16 +40,13 @@ export function useWeddingFonts(wedding: FontWedding) {
       return;
     }
 
-    const link = existing instanceof HTMLLinkElement
-      ? existing
-      : document.createElement("link");
+    const link = existing instanceof HTMLLinkElement ? existing : document.createElement("link");
     link.id = linkId;
     link.rel = "stylesheet";
     link.href = `https://fonts.googleapis.com/css2?${params
       .map((font) => `family=${font}`)
       .join("&")}&display=swap`;
     if (!link.isConnected) document.head.appendChild(link);
-
   }, [titleFont?.googleFont, bodyFont?.googleFont]);
 
   const theme = THEMES[wedding.theme] ?? THEMES["rose-elegance"];
@@ -61,10 +58,22 @@ export function useWeddingFonts(wedding: FontWedding) {
     loadLocalFontIfNeeded(bodyFontFamily);
   }, [titleFontFamily, bodyFontFamily]);
 
-  return useMemo(
-    () => ({ titleFontFamily, bodyFontFamily }),
-    [titleFontFamily, bodyFontFamily],
-  );
+  return useMemo(() => ({ titleFontFamily, bodyFontFamily }), [titleFontFamily, bodyFontFamily]);
+}
+
+/**
+ * Warms the on-demand fonts of a set of themes.
+ *
+ * Theme pickers render a type sample per theme, so they need those families
+ * loaded before the sample is painted — otherwise a handful of themes fall
+ * back to a generic serif. Idempotent: the dynamic imports are cached.
+ */
+export function preloadThemeFonts(themes: Iterable<string>) {
+  for (const slug of themes) {
+    const theme = THEMES[slug as keyof typeof THEMES];
+    if (!theme) continue;
+    loadLocalFontIfNeeded(theme.fontHeading);
+  }
 }
 
 export { TITLE_FONTS, BODY_FONTS };

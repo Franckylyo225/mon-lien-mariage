@@ -1,9 +1,7 @@
 import type { CeremonyType, EventType, TemplateId } from "./wedding-store";
+import mariageHero from "@/assets/abidjan-couple.jpg.asset.json";
 
-const EVENT_TYPE_META: Record<
-  EventType,
-  { label: string; programTitle: string }
-> = {
+const EVENT_TYPE_META: Record<EventType, { label: string; programTitle: string }> = {
   mariage: { label: "Mariage", programTitle: "Programme du mariage" },
   dot: { label: "Mariage traditionnel", programTitle: "Programme du mariage traditionnel" },
   traditionnel: {
@@ -26,8 +24,129 @@ export function normalizeEventType(value: string | null | undefined): EventType 
   return value && value in EVENT_TYPE_META ? (value as EventType) : "mariage";
 }
 
-export const eventTypeOrder: EventType[] = ["mariage", "coutumier", "anniversaire", "dot", "traditionnel", "autre"];
+export const eventTypeOrder: EventType[] = [
+  "mariage",
+  "coutumier",
+  "anniversaire",
+  "dot",
+  "traditionnel",
+  "autre",
+];
 
+/**
+ * Prénoms d'exemple affichés dans un aperçu tant que l'utilisateur n'a pas
+ * saisi les siens.
+ *
+ * Les événements de couple en portent deux ; une célébration individuelle n'en
+ * porte qu'un et laisse `groomName` vide. Centralisé ici, à côté de
+ * `eventTypeMeta`, pour qu'un aperçu n'invente jamais ses propres prénoms.
+ */
+const EVENT_TYPE_PLACEHOLDER_NAMES: Record<EventType, { brideName: string; groomName: string }> = {
+  mariage: { brideName: "Aïcha", groomName: "Loïc" },
+  dot: { brideName: "Aïcha", groomName: "Loïc" },
+  traditionnel: { brideName: "Aïcha", groomName: "Loïc" },
+  coutumier: { brideName: "Aïcha", groomName: "Loïc" },
+  anniversaire: { brideName: "Aïcha", groomName: "" },
+  autre: { brideName: "Aya", groomName: "" },
+};
+
+/* ------------------------------------------------------------------ */
+/* Choix d'événement de l'onboarding (étape 2)                         */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Les identifiants proposés à l'étape 2. Volontairement plus large que
+ * `EventType` : un choix peut être affiché en teasing avant que le reste du
+ * système (modèle de données, thèmes, vocabulaire) ne sache le traiter.
+ */
+export type EventChoiceId = EventType | "bapteme" | "entreprise";
+
+export interface EventChoice {
+  id: EventChoiceId;
+  label: string;
+  sublabel: string;
+  /** Nom d'icône lucide-react, résolu par la vue — ce module reste sans React. */
+  icon: string;
+  /** Dégradé décor, du haut-gauche vers le bas-droit. */
+  gradient: [string, string];
+  /** Couleur d'anneau quand le choix est sélectionné. */
+  accent: string;
+  /** Photo de fond : rendu en carte hero plutôt qu'en tuile décor. */
+  image?: string;
+  /** Affiché mais pas encore sélectionnable. */
+  comingSoon?: boolean;
+}
+
+/**
+ * Pour activer un choix « bientôt » : ajouter son id à `EventType` dans
+ * wedding-store, puis retirer `comingSoon` ici. Le composant n'a pas à bouger.
+ */
+export const EVENT_CHOICES: EventChoice[] = [
+  {
+    id: "mariage",
+    label: "Mariage",
+    sublabel: "Civil, religieux, traditionnel — toutes vos cérémonies réunies.",
+    icon: "rings",
+    gradient: ["#8E2A47", "#4A1526"],
+    accent: "#E82050",
+    image: mariageHero.url,
+  },
+  {
+    id: "coutumier",
+    label: "Mariage coutumier",
+    sublabel: "Rites & traditions",
+    icon: "gem",
+    gradient: ["#B45309", "#7E3908"],
+    accent: "#B45309",
+  },
+  {
+    id: "anniversaire",
+    label: "Anniversaire",
+    sublabel: "De mariage",
+    icon: "cake",
+    gradient: ["#D98BA8", "#A8486B"],
+    accent: "#A8486B",
+    comingSoon: true,
+  },
+  {
+    id: "bapteme",
+    label: "Baptême",
+    sublabel: "Première célébration",
+    icon: "droplet",
+    gradient: ["#8FA7C4", "#5E7BA0"],
+    accent: "#5E7BA0",
+    comingSoon: true,
+  },
+  {
+    id: "entreprise",
+    label: "Entreprise",
+    sublabel: "Événement professionnel",
+    icon: "building",
+    gradient: ["#33404E", "#1A2129"],
+    accent: "#C6A15B",
+    comingSoon: true,
+  },
+  {
+    id: "autre",
+    label: "Autre célébration",
+    sublabel: "Un moment à votre image",
+    icon: "sparkles",
+    gradient: ["#FFFFFF", "#F5F5F4"],
+    accent: "#6B6B6B",
+  },
+];
+
+/** Un choix est enregistrable seulement s'il existe dans `EventType`. */
+export function isSelectableChoice(choice: EventChoice): choice is EventChoice & { id: EventType } {
+  return !choice.comingSoon;
+}
+
+export function placeholderNamesFor(eventType: string | null | undefined): {
+  brideName: string;
+  groomName: string;
+} {
+  return EVENT_TYPE_PLACEHOLDER_NAMES[normalizeEventType(eventType)];
+}
 
 export const ceremonyMeta: Record<
   CeremonyType,

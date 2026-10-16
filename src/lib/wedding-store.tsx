@@ -407,8 +407,13 @@ const defaultAccount = (): Account => ({
 });
 
 const emptyCouple = (): Couple => ({
-  brideName: "Aïcha",
-  groomName: "Loïc",
+  // Deliberately blank. This object seeds the `weddings` row of a brand-new
+  // account (see the bootstrap in loadWedding and createNewWedding), so any
+  // name put here is written to the database and ends up on a published
+  // invitation. The demo names belong to `defaultCouple`, the signed-out
+  // showcase, and to the onboarding placeholders — never to real rows.
+  brideName: "",
+  groomName: "",
   weddingDate: "",
   city: "Abidjan",
   introMessage: "",
