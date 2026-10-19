@@ -316,7 +316,7 @@ export function PreviewEditor({ mode, initialSheet }: EditorProps) {
                 value={
                   !(couple.themeBlockEnabled ?? false)
                     ? "Désactivé"
-                    : !couple.themeBlockBody
+                    : !couple.themeBlockTitle && !couple.themeBlockBody
                       ? "À compléter"
                       : "Personnalisé"
                 }

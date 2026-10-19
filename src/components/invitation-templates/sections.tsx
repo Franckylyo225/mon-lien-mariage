@@ -16,6 +16,7 @@ import {
 import type { Ceremony, Couple, ThemeId } from "@/lib/wedding-store";
 import { ceremonyMapsHref, ceremonyVenue, programItemMapsHref } from "@/lib/wedding-store";
 import { THEMES, type ThemeFamilyId } from "@/lib/wedding-theme";
+import { eventTypeMeta } from "@/lib/ceremony-meta";
 import { StoryHeader, StoryTimeline } from "@/components/public/StoryTimeline";
 import { ThemeIcon } from "./theme-icon";
 import dressCodeIcon from "@/assets/icons/dress-code.png.asset.json";
@@ -875,69 +876,232 @@ export function OurStorySection({ couple, accent }: { couple: Couple; accent?: s
   );
 }
 
-// ---------- Thème du mariage (bloc de contenu libre) ----------
+// ---------- Thème du mariage (bloc « featured ») ----------
+
+/**
+ * Brin botanique, même famille que les ornements des thèmes botaniques
+ * (jardin-sauvage, vert-sauge) : tracé fin + feuilles pleines, entièrement
+ * recolorable via `currentColor`.
+ *
+ * La moitié basse du viewBox est volontairement vide : la base du brin tombe
+ * au centre vertical (y = 16), ce qui permet de le poser exactement à cheval
+ * sur la bordure d'une carte avec un simple `-translate-y-1/2`. `flip`
+ * retourne le brin pour la bordure basse, et garde ce même point d'ancrage.
+ */
+function BotanicalSprig({
+  color,
+  width = 58,
+  flip = false,
+}: {
+  color: string;
+  width?: number;
+  flip?: boolean;
+}) {
+  const leaves: [number, number, number][] = [
+    [24.5, 14, -26],
+    [18, 11.6, -33],
+    [11.8, 8.4, -41],
+  ];
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 64 32"
+      width={width}
+      style={{ color, transform: flip ? "scaleY(-1)" : undefined }}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="0.9"
+      strokeLinecap="round"
+    >
+      {[1, -1].map((dir) => (
+        <g key={dir} transform={dir === 1 ? undefined : "translate(64 0) scale(-1 1)"}>
+          <path d="M31 16 C 24 15.4 17.5 12.8 10.5 7.4" />
+          <path d="M31 16.8 C 28.6 18.3 27 19.2 25.2 19.8" />
+          {leaves.map(([cx, cy, rot], i) => (
+            <ellipse
+              key={i}
+              cx={cx}
+              cy={cy}
+              rx="3.6"
+              ry="1.45"
+              transform={`rotate(${rot} ${cx} ${cy})`}
+              fill="currentColor"
+              stroke="none"
+              opacity="0.85"
+            />
+          ))}
+          <ellipse
+            cx="23.4"
+            cy="20.4"
+            rx="2.9"
+            ry="1.2"
+            transform="rotate(24 23.4 20.4)"
+            fill="currentColor"
+            stroke="none"
+            opacity="0.7"
+          />
+        </g>
+      ))}
+      <circle cx="32" cy="16" r="1.7" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+/**
+ * Séparateur « feuille » : deux filets et une paire de feuilles centrale, même
+ * construction que le FloralDivider de rose-elegance, pour que le bloc parle
+ * la même langue que les séparateurs de section.
+ */
+function LeafRule({ color, width = 104 }: { color: string; width?: number }) {
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 104 12"
+      width={width}
+      style={{ color }}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="0.8"
+      strokeLinecap="round"
+    >
+      <path d="M2 6 H41" opacity="0.45" />
+      <path d="M63 6 H102" opacity="0.45" />
+      <path d="M44 6 C 47.5 2.7 50.8 2 52 2 C 53.2 2 56.5 2.7 60 6" />
+      <path d="M44 6 C 47.5 9.3 50.8 10 52 10 C 53.2 10 56.5 9.3 60 6" />
+      <circle cx="52" cy="6" r="1.5" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
 
 export function ThemeBlockSection({ couple, accent }: { couple: Couple; accent?: string }) {
   if (!couple.themeBlockEnabled) return null;
 
-  const title = couple.themeBlockTitle?.trim() || "Thème du mariage";
+  const title = couple.themeBlockTitle?.trim();
   const body = couple.themeBlockBody?.trim();
   const reference = couple.themeBlockReference?.trim();
-  if (!body) return null;
+  if (!title && !body) return null;
 
+  /** Titre de section : suit le vocabulaire du type d'événement (mariage, dot, …). */
+  const label = eventTypeMeta[couple.eventType ?? "mariage"].themeTitle;
+
+  // Un template sombre passe un accent clair (cf. noir-minimal), donc on part
+  // de la prop et de `--wedding-accent` sinon. Panneau, cadre, filets et ombre
+  // se déduisent de cette seule couleur, en transparence pour se poser sur
+  // n'importe quel fond de thème. L'encre du titre et du corps reste héritée
+  // du template, pour que `[data-text-override]` (couleur de texte
+  // personnalisée) continue de s'appliquer.
+  const ink = accent ?? "var(--wedding-accent)";
+  const panel = `color-mix(in oklab, ${ink} 7%, transparent)`;
+  const panelBorder = `color-mix(in oklab, ${ink} 34%, transparent)`;
+  const innerBorder = `color-mix(in oklab, ${ink} 16%, transparent)`;
+  const rule = `color-mix(in oklab, ${ink} 55%, transparent)`;
+
+  // Variantes historiques du bloc : plus imposées par défaut (le corps reprend
+  // la police courante de l'invitation), mais un choix explicite est respecté.
   const style = couple.themeBlockStyle ?? {};
-  const font = style.font ?? "serif";
-  const size = style.size ?? "md";
-  const align = style.align ?? "center";
-
-  const bodyFontClass = {
-    serif: "font-serif italic",
-    sans: "font-sans",
-    script: "font-serif italic tracking-wide",
-    mono: "font-mono uppercase tracking-[0.2em]",
-    display: "font-serif tracking-tight",
-  }[font];
-  const bodySizeClass = {
-    sm: "text-[13px]",
-    md: "text-[15px]",
-    lg: "text-lg sm:text-xl",
-  }[size];
-  const alignClass = align === "left" ? "text-left" : "text-center";
-  const dividerAlign = align === "left" ? "ml-0" : "mx-auto";
+  const bodyFontClass = style.font
+    ? {
+        serif: "font-serif italic",
+        sans: "font-sans",
+        script: "font-serif italic tracking-wide",
+        mono: "font-mono uppercase tracking-[0.2em]",
+        display: "font-serif tracking-tight",
+      }[style.font]
+    : "";
+  const bodySizeClass = style.size
+    ? { sm: "text-[13px]", md: "text-[15px]", lg: "text-lg" }[style.size]
+    : "text-[15px]";
+  const bodyAlignClass = style.align === "left" ? "text-left" : "text-center";
 
   return (
     <section className="mt-14">
-      <div className={"mb-6 " + alignClass}>
+      {/* En-tête identique aux autres sections (histoire, galerie, programme) :
+          filet de 10px puis titre serif italique. */}
+      <div className="mb-6 text-center">
         <span
-          className={"mb-3 block h-px w-10 " + dividerAlign}
-          style={{ backgroundColor: (accent ?? "#999") + "80" }}
+          className="mx-auto mb-3 block h-px w-10"
+          style={{ backgroundColor: rule }}
+          aria-hidden
         />
-        <h2 className="font-serif text-2xl italic">{title}</h2>
+        <h2 className="font-serif text-2xl italic">{label}</h2>
       </div>
 
-      <p
-        className={
-          "whitespace-pre-line text-pretty leading-relaxed opacity-80 " +
-          bodyFontClass +
-          " " +
-          bodySizeClass +
-          " " +
-          alignClass
-        }
+      <div
+        className="relative mx-auto max-w-[22rem] rounded-[22px] border px-7 pb-11 pt-11 text-center"
+        style={{
+          backgroundColor: panel,
+          backgroundImage: `radial-gradient(120% 80% at 50% -12%, color-mix(in oklab, ${ink} 11%, transparent), transparent 72%)`,
+          borderColor: panelBorder,
+          boxShadow: `0 22px 48px -34px color-mix(in oklab, ${ink} 65%, transparent)`,
+        }}
       >
-        {body}
-      </p>
+        {/* Double filet gravé : un second cadre en retrait du premier. */}
+        <span
+          className="pointer-events-none absolute inset-[7px] rounded-[15px] border"
+          style={{ borderColor: innerBorder }}
+          aria-hidden
+        />
 
-      {reference && (
-        <p
-          className={
-            "mt-3 font-mono text-[11px] uppercase tracking-[0.2em] opacity-70 " + alignClass
-          }
-          style={{ color: accent }}
+        {/* Brins à cheval sur les bordures haute et basse : l'ornement encadre
+            le bloc au lieu de flotter autour. */}
+        <span
+          className="pointer-events-none absolute left-1/2 top-0 flex -translate-x-1/2 -translate-y-1/2"
+          aria-hidden
         >
-          {reference}
-        </p>
-      )}
+          <BotanicalSprig color={ink} />
+        </span>
+        <span
+          className="pointer-events-none absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-1/2"
+          aria-hidden
+        >
+          <BotanicalSprig color={ink} width={42} flip />
+        </span>
+
+        {/* Le nom du thème n'est pas un titre de section (le h2 est au-dessus) :
+            `data-wedding-title` lui donne la police de titre sans ajouter un
+            niveau de titre, et le romain évite de répéter l'italique du h2. */}
+        {title && (
+          <p
+            data-wedding-title
+            className="relative text-pretty text-[26px] leading-[1.15] sm:text-[28px]"
+          >
+            {title}
+          </p>
+        )}
+
+        {title && body && (
+          <span className="relative mt-5 flex justify-center" aria-hidden>
+            <LeafRule color={ink} />
+          </span>
+        )}
+
+        {body && (
+          <p
+            className={
+              "relative mx-auto max-w-[280px] whitespace-pre-line text-pretty leading-[1.7] opacity-80 " +
+              (title ? "mt-5 " : "") +
+              bodyFontClass +
+              " " +
+              bodySizeClass +
+              " " +
+              bodyAlignClass
+            }
+          >
+            {body}
+          </p>
+        )}
+
+        {reference && (
+          <p
+            className="relative mt-6 flex items-center justify-center gap-2.5 font-mono text-[10px] uppercase tracking-[0.24em]"
+            style={{ color: ink }}
+          >
+            <span className="h-px w-3.5 shrink-0" style={{ background: rule }} aria-hidden />
+            {reference}
+            <span className="h-px w-3.5 shrink-0" style={{ background: rule }} aria-hidden />
+          </p>
+        )}
+      </div>
     </section>
   );
 }

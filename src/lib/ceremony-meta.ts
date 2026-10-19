@@ -1,16 +1,40 @@
 import type { CeremonyType, EventType, TemplateId } from "./wedding-store";
 import mariageHero from "@/assets/abidjan-couple.jpg.asset.json";
 
-const EVENT_TYPE_META: Record<EventType, { label: string; programTitle: string }> = {
-  mariage: { label: "Mariage", programTitle: "Programme du mariage" },
-  dot: { label: "Mariage traditionnel", programTitle: "Programme du mariage traditionnel" },
+const EVENT_TYPE_META: Record<
+  EventType,
+  { label: string; programTitle: string; themeTitle: string }
+> = {
+  mariage: {
+    label: "Mariage",
+    programTitle: "Programme du mariage",
+    themeTitle: "Thème du mariage",
+  },
+  dot: {
+    label: "Mariage traditionnel",
+    programTitle: "Programme du mariage traditionnel",
+    themeTitle: "Thème du mariage traditionnel",
+  },
   traditionnel: {
     label: "Cérémonie traditionnelle",
     programTitle: "Programme de la cérémonie",
+    themeTitle: "Thème de la cérémonie",
   },
-  coutumier: { label: "Mariage coutumier", programTitle: "Programme du mariage coutumier" },
-  anniversaire: { label: "Anniversaire", programTitle: "Programme de l'anniversaire" },
-  autre: { label: "Autre événement", programTitle: "Programme de l'événement" },
+  coutumier: {
+    label: "Mariage coutumier",
+    programTitle: "Programme du mariage coutumier",
+    themeTitle: "Thème du mariage coutumier",
+  },
+  anniversaire: {
+    label: "Anniversaire",
+    programTitle: "Programme de l'anniversaire",
+    themeTitle: "Thème de l'anniversaire",
+  },
+  autre: {
+    label: "Autre événement",
+    programTitle: "Programme de l'événement",
+    themeTitle: "Thème de l'événement",
+  },
 };
 
 export const eventTypeMeta = new Proxy(EVENT_TYPE_META, {
