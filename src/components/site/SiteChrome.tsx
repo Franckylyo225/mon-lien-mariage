@@ -298,7 +298,6 @@ export function SiteFooter() {
           <FooterColumn title="Explorer">
             <FooterLink to="/">Accueil</FooterLink>
             <FooterLink to="/comment-ca-marche">Comment ça marche</FooterLink>
-            <FooterLink to="/temoignages">Témoignages</FooterLink>
             <FooterLink to="/blog">Blog</FooterLink>
           </FooterColumn>
 

@@ -25,7 +25,6 @@ import { Route as PublishRouteImport } from './routes/publish'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as TemoignagesRouteImport } from './routes/temoignages'
 import { Route as TermesEtConditionsRouteImport } from './routes/termes-et-conditions'
 import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
@@ -157,11 +156,6 @@ const SignupRoute = SignupRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TemoignagesRoute = TemoignagesRouteImport.update({
-  id: '/temoignages',
-  path: '/temoignages',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermesEtConditionsRoute = TermesEtConditionsRouteImport.update({
@@ -436,7 +430,6 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/verify-email': typeof VerifyEmailRoute
   '/admin/activity': typeof AdminActivityRoute
@@ -503,7 +496,6 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/verify-email': typeof VerifyEmailRoute
   '/admin/activity': typeof AdminActivityRoute
@@ -573,7 +565,6 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/temoignages': typeof TemoignagesRoute
   '/termes-et-conditions': typeof TermesEtConditionsRoute
   '/verify-email': typeof VerifyEmailRoute
   '/admin/activity': typeof AdminActivityRoute
@@ -644,7 +635,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/sitemap.xml'
-    | '/temoignages'
     | '/termes-et-conditions'
     | '/verify-email'
     | '/admin/activity'
@@ -711,7 +701,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/sitemap.xml'
-    | '/temoignages'
     | '/termes-et-conditions'
     | '/verify-email'
     | '/admin/activity'
@@ -780,7 +769,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/signup'
     | '/sitemap.xml'
-    | '/temoignages'
     | '/termes-et-conditions'
     | '/verify-email'
     | '/admin/activity'
@@ -850,7 +838,6 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  TemoignagesRoute: typeof TemoignagesRoute
   TermesEtConditionsRoute: typeof TermesEtConditionsRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
   AppGuestbookRoute: typeof AppGuestbookRoute
@@ -988,13 +975,6 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/temoignages': {
-      id: '/temoignages'
-      path: '/temoignages'
-      fullPath: '/temoignages'
-      preLoaderRoute: typeof TemoignagesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/termes-et-conditions': {
@@ -1458,7 +1438,6 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  TemoignagesRoute: TemoignagesRoute,
   TermesEtConditionsRoute: TermesEtConditionsRoute,
   VerifyEmailRoute: VerifyEmailRoute,
   AppGuestbookRoute: AppGuestbookRoute,
