@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { FIRST_ONBOARDING_STEP } from "@/lib/onboarding-steps";
 import { AuthLayout, Field, inputClass } from "./signup";
 
 export const Route = createFileRoute("/verify-email")({
@@ -62,7 +63,7 @@ function VerifyEmailPage() {
       setError(err.message);
       return;
     }
-    navigate({ to: "/onboarding/prenoms" });
+    navigate({ to: FIRST_ONBOARDING_STEP });
   };
 
 

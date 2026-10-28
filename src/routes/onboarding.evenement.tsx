@@ -3,10 +3,17 @@ import { useState, type ComponentType } from "react";
 import { Building2, Cake, Check, Droplet, Gem, Sparkles } from "lucide-react";
 import { useWedding, type EventType } from "@/lib/wedding-store";
 import { EVENT_CHOICES, isSelectableChoice, type EventChoice } from "@/lib/ceremony-meta";
+import {
+  onboardingNextDestination,
+  onboardingStepAfter,
+  onboardingStepTitle,
+} from "@/lib/onboarding-steps";
 import { cn } from "@/lib/utils";
 
+const STEP = "/onboarding/evenement";
+
 export const Route = createFileRoute("/onboarding/evenement")({
-  head: () => ({ meta: [{ title: "Étape 2 / 4 — Votre événement" }] }),
+  head: () => ({ meta: [{ title: onboardingStepTitle(STEP, "Votre événement") }] }),
   component: StepEvenement,
 });
 
@@ -64,8 +71,8 @@ function StepEvenement() {
     setSaving(true);
     try {
       await updateCouple({ eventType: selected });
-      await setOnboardingStep(2);
-      navigate({ to: "/onboarding/dates" });
+      await setOnboardingStep(onboardingStepAfter(STEP));
+      navigate({ to: onboardingNextDestination(STEP) });
     } catch {
       setSaving(false);
     }

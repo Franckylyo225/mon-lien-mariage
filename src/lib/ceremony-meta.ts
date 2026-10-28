@@ -3,37 +3,43 @@ import mariageHero from "@/assets/abidjan-couple.jpg.asset.json";
 
 const EVENT_TYPE_META: Record<
   EventType,
-  { label: string; programTitle: string; themeTitle: string }
+  { label: string; programTitle: string; themeTitle: string; identityTitle: string }
 > = {
   mariage: {
     label: "Mariage",
     programTitle: "Programme du mariage",
     themeTitle: "Thème du mariage",
+    identityTitle: "Vos prénoms",
   },
   dot: {
     label: "Mariage traditionnel",
     programTitle: "Programme du mariage traditionnel",
     themeTitle: "Thème du mariage traditionnel",
+    identityTitle: "Vos prénoms",
   },
   traditionnel: {
     label: "Cérémonie traditionnelle",
     programTitle: "Programme de la cérémonie",
     themeTitle: "Thème de la cérémonie",
+    identityTitle: "Vos prénoms",
   },
   coutumier: {
     label: "Mariage coutumier",
     programTitle: "Programme du mariage coutumier",
     themeTitle: "Thème du mariage coutumier",
+    identityTitle: "Vos prénoms",
   },
   anniversaire: {
     label: "Anniversaire",
     programTitle: "Programme de l'anniversaire",
     themeTitle: "Thème de l'anniversaire",
+    identityTitle: "Les prénoms à l'honneur",
   },
   autre: {
     label: "Autre événement",
     programTitle: "Programme de l'événement",
     themeTitle: "Thème de l'événement",
+    identityTitle: "Les prénoms à l'honneur",
   },
 };
 
@@ -75,11 +81,11 @@ const EVENT_TYPE_PLACEHOLDER_NAMES: Record<EventType, { brideName: string; groom
 };
 
 /* ------------------------------------------------------------------ */
-/* Choix d'événement de l'onboarding (étape 2)                         */
+/* Choix d'événement de l'onboarding (première étape)                  */
 /* ------------------------------------------------------------------ */
 
 /**
- * Les identifiants proposés à l'étape 2. Volontairement plus large que
+ * Les identifiants proposés à la première étape. Volontairement plus large que
  * `EventType` : un choix peut être affiché en teasing avant que le reste du
  * système (modèle de données, thèmes, vocabulaire) ne sache le traiter.
  */

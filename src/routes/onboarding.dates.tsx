@@ -2,10 +2,17 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { CalendarDays, Check, MapPin } from "lucide-react";
 import { useWedding } from "@/lib/wedding-store";
+import {
+  onboardingNextDestination,
+  onboardingStepAfter,
+  onboardingStepTitle,
+} from "@/lib/onboarding-steps";
 import { Field } from "./signup";
 
+const STEP = "/onboarding/dates";
+
 export const Route = createFileRoute("/onboarding/dates")({
-  head: () => ({ meta: [{ title: "Étape 3 / 4 — Les dates clés" }] }),
+  head: () => ({ meta: [{ title: onboardingStepTitle(STEP, "Les dates clés") }] }),
   component: StepDates,
 });
 
@@ -72,8 +79,8 @@ function StepDates() {
               city: city.trim() || "Abidjan",
             },
       );
-      await setOnboardingStep(3);
-      navigate({ to: "/onboarding/theme" });
+      await setOnboardingStep(onboardingStepAfter(STEP));
+      navigate({ to: onboardingNextDestination(STEP) });
     } catch {
       setSaving(false);
     }

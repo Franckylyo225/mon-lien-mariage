@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { FIRST_ONBOARDING_STEP, onboardingResumePath } from "@/lib/onboarding-steps";
 import { AuthLayout, Field, inputClass } from "./signup";
 
 export const Route = createFileRoute("/login")({
@@ -27,7 +28,7 @@ function LoginPage() {
     if (userId) {
       const { data: list } = await supabase
         .from("weddings")
-        .select("id, onboarding_step, created_at")
+        .select("id, onboarding_step, created_at, bride_name, groom_name")
         .eq("owner_id", userId)
         .order("created_at", { ascending: false });
       const weddings = list ?? [];
@@ -36,25 +37,19 @@ function LoginPage() {
         return;
       }
       if (weddings.length === 1) {
-        const rawStep = weddings[0].onboarding_step as number | null;
-        const step = Number.isInteger(rawStep) && rawStep !== null && rawStep >= 0 && rawStep <= 4
-          ? rawStep
-          : 0;
-        const targets = [
-          "/onboarding/prenoms",
-          "/onboarding/evenement",
-          "/onboarding/dates",
-          "/onboarding/theme",
-        ] as const;
-        if (step < 4) {
-          navigate({ to: targets[step as 0 | 1 | 2 | 3] });
+        const row = weddings[0];
+        const resume = onboardingResumePath(row.onboarding_step as number | null, {
+          hasNames: Boolean(row.bride_name?.trim() && row.groom_name?.trim()),
+        });
+        if (resume) {
+          navigate({ to: resume });
           return;
         }
       }
       // 0 weddings → the store will bootstrap one on first dashboard load,
       // but push the user through the onboarding wizard
       if (weddings.length === 0) {
-        navigate({ to: "/onboarding/prenoms" });
+        navigate({ to: FIRST_ONBOARDING_STEP });
         return;
       }
     }

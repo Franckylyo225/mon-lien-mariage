@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { FIRST_ONBOARDING_STEP } from "@/lib/onboarding-steps";
 import { Logo } from "@/components/site/SiteChrome";
 import {
   PasswordChecklist,
@@ -105,7 +106,7 @@ function SignupPage() {
       },
     }).catch(() => {});
     if (data.session) {
-      navigate({ to: "/onboarding/prenoms" });
+      navigate({ to: FIRST_ONBOARDING_STEP });
     } else {
       navigate({ to: "/verify-email", search: { email } });
     }

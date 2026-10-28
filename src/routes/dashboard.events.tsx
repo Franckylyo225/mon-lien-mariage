@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 import { useWedding, formatShortDate, isPastEvent, type WeddingSummary } from "@/lib/wedding-store";
+import { FIRST_ONBOARDING_STEP } from "@/lib/onboarding-steps";
 
 export const Route = createFileRoute("/dashboard/events")({
   head: () => ({ meta: [{ title: "Mes événements — MonInvit.com" }] }),
@@ -89,7 +90,7 @@ function EventsPage() {
     setCreating(true);
     const id = await createNewWedding();
     setCreating(false);
-    if (id) navigate({ to: "/onboarding/prenoms" });
+    if (id) navigate({ to: FIRST_ONBOARDING_STEP });
   };
 
   return (

@@ -2,10 +2,18 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useWedding } from "@/lib/wedding-store";
 import { DEMO_BRIDE, DEMO_GROOM } from "@/lib/couple-photos";
+import { eventTypeMeta, normalizeEventType, placeholderNamesFor } from "@/lib/ceremony-meta";
+import {
+  onboardingNextDestination,
+  onboardingStepAfter,
+  onboardingStepTitle,
+} from "@/lib/onboarding-steps";
 import { Field } from "./signup";
 
+const STEP = "/onboarding/prenoms";
+
 export const Route = createFileRoute("/onboarding/prenoms")({
-  head: () => ({ meta: [{ title: "Étape 1 / 4 — Vos prénoms" }] }),
+  head: () => ({ meta: [{ title: onboardingStepTitle(STEP, "Vos prénoms") }] }),
   component: StepPrenoms,
 });
 
@@ -16,6 +24,15 @@ function StepPrenoms() {
   // straight onto published invitations. They are placeholders only.
   const [brideName, setBride] = useState(couple.brideName ?? "");
   const [groomName, setGroom] = useState(couple.groomName ?? "");
+
+  // Le type d'événement est désormais choisi avant cette étape : son
+  // vocabulaire règle le titre et les prénoms d'exemple. Le formulaire lui-même
+  // ne change pas encore — deux prénoms pour tous les types, comme un mariage.
+  const eventType = normalizeEventType(couple.eventType);
+  const meta = eventTypeMeta[eventType];
+  const hints = placeholderNamesFor(eventType);
+  const bridePlaceholder = hints.brideName || DEMO_BRIDE;
+  const groomPlaceholder = hints.groomName || DEMO_GROOM;
 
   const valid = Boolean(brideName.trim() && groomName.trim());
 
@@ -28,19 +45,24 @@ function StepPrenoms() {
           brideName: brideName.trim(),
           groomName: groomName.trim(),
         });
-        await setOnboardingStep(1);
-        navigate({ to: "/onboarding/evenement" });
+        await setOnboardingStep(onboardingStepAfter(STEP));
+        navigate({ to: onboardingNextDestination(STEP) });
       }}
       className="space-y-5"
     >
       <div>
-        <h1 className="page-title">Vos prénoms</h1>
+        <h1 className="page-title">{meta.identityTitle}</h1>
         <p className="mt-2.5 text-sm text-muted-foreground">
           Ils apparaîtront en grand sur votre page d'invitation.
         </p>
       </div>
 
-      <NamesPreview bride={brideName} groom={groomName} />
+      <NamesPreview
+        bride={brideName}
+        groom={groomName}
+        bridePlaceholder={bridePlaceholder}
+        groomPlaceholder={groomPlaceholder}
+      />
 
       <div className="space-y-3">
         <Field label="Premier prénom">
@@ -51,7 +73,7 @@ function StepPrenoms() {
             value={brideName}
             onChange={(e) => setBride(e.target.value)}
             className="wizard-input"
-            placeholder={DEMO_BRIDE}
+            placeholder={bridePlaceholder}
             autoComplete="off"
           />
         </Field>
@@ -69,7 +91,7 @@ function StepPrenoms() {
             value={groomName}
             onChange={(e) => setGroom(e.target.value)}
             className="wizard-input"
-            placeholder={DEMO_GROOM}
+            placeholder={groomPlaceholder}
             autoComplete="off"
           />
         </Field>
@@ -93,7 +115,17 @@ function StepPrenoms() {
  * updated on every keystroke. A blank field shows its placeholder dimmed, so
  * the effect is visible without passing a demo name off as the user's own.
  */
-function NamesPreview({ bride, groom }: { bride: string; groom: string }) {
+function NamesPreview({
+  bride,
+  groom,
+  bridePlaceholder,
+  groomPlaceholder,
+}: {
+  bride: string;
+  groom: string;
+  bridePlaceholder: string;
+  groomPlaceholder: string;
+}) {
   const a = bride.trim();
   const b = groom.trim();
 
@@ -111,9 +143,13 @@ function NamesPreview({ bride, groom }: { bride: string; groom: string }) {
         className="flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1 text-center font-serif text-[26px] leading-tight text-foreground"
         aria-live="polite"
       >
-        <span className={a ? "break-words" : "break-words opacity-35"}>{a || DEMO_BRIDE}</span>
+        <span className={a ? "break-words" : "break-words opacity-35"}>
+          {a || bridePlaceholder}
+        </span>
         <span className="text-champagne italic">&amp;</span>
-        <span className={b ? "break-words" : "break-words opacity-35"}>{b || DEMO_GROOM}</span>
+        <span className={b ? "break-words" : "break-words opacity-35"}>
+          {b || groomPlaceholder}
+        </span>
       </p>
     </div>
   );

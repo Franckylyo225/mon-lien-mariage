@@ -9,12 +9,19 @@ import { ThemeThumbnail } from "@/components/editor/ThemeThumbnail";
 import { couplePhotoForTheme } from "@/lib/couple-photos";
 import { THEME_THUMBNAIL_URL } from "@/lib/theme-thumbnails";
 import { placeholderNamesFor } from "@/lib/ceremony-meta";
+import {
+  onboardingNextDestination,
+  onboardingStepAfter,
+  onboardingStepTitle,
+} from "@/lib/onboarding-steps";
 import { preloadThemeFonts } from "@/hooks/use-wedding-fonts";
 import { cn } from "@/lib/utils";
 import { ThemeRoot } from "@/components/theme/ThemeRoot";
 
+const STEP = "/onboarding/theme";
+
 export const Route = createFileRoute("/onboarding/theme")({
-  head: () => ({ meta: [{ title: "Étape 4 / 4 — Choisissez un thème" }] }),
+  head: () => ({ meta: [{ title: onboardingStepTitle(STEP, "Choisissez un thème") }] }),
   component: StepTheme,
 });
 
@@ -83,8 +90,8 @@ function StepTheme() {
     setSaving(true);
     try {
       await updateCouple({ theme: selected });
-      await setOnboardingStep(4);
-      navigate({ to: "/dashboard" });
+      await setOnboardingStep(onboardingStepAfter(STEP));
+      navigate({ to: onboardingNextDestination(STEP) });
     } catch {
       setSaving(false);
     }

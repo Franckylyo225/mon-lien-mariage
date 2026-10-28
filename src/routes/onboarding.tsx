@@ -1,17 +1,29 @@
-import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  Outlet,
+  redirect,
+  useNavigate,
+  useRouterState,
+} from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useWedding } from "@/lib/wedding-store";
+import {
+  FIRST_ONBOARDING_STEP,
+  ONBOARDING_STEPS,
+  ONBOARDING_STEP_COUNT,
+} from "@/lib/onboarding-steps";
 
 export const Route = createFileRoute("/onboarding")({
+  beforeLoad: ({ location }) => {
+    // `/onboarding` nu n'a pas d'écran : sans cela il rend l'en-tête du wizard
+    // au-dessus d'un Outlet vide.
+    if (location.pathname.replace(/\/$/, "") === "/onboarding") {
+      throw redirect({ to: FIRST_ONBOARDING_STEP, replace: true });
+    }
+  },
   component: OnboardingLayout,
 });
-
-const stepPaths = [
-  "/onboarding/prenoms",
-  "/onboarding/evenement",
-  "/onboarding/dates",
-  "/onboarding/theme",
-] as const;
 
 function OnboardingLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -24,9 +36,12 @@ function OnboardingLayout() {
     }
   }, [loading, account.isAuthenticated, navigate]);
 
-  const current = Math.max(0, stepPaths.findIndex((p) => pathname.startsWith(p)));
+  const current = Math.max(
+    0,
+    ONBOARDING_STEPS.findIndex((p) => pathname.startsWith(p)),
+  );
   const stepNum = current + 1;
-  const prev = current > 0 ? stepPaths[current - 1] : null;
+  const prev = current > 0 ? ONBOARDING_STEPS[current - 1] : null;
 
   if (loading || !account.isAuthenticated) {
     return (
@@ -56,14 +71,14 @@ function OnboardingLayout() {
             </span>
           )}
           <p className="page-kicker">
-            Étape {stepNum} / 4
+            Étape {stepNum} / {ONBOARDING_STEP_COUNT}
           </p>
         </header>
 
         <div className="mb-10 flex items-center gap-2">
-          {Array.from({ length: 5 }).map((_, i) => (
+          {ONBOARDING_STEPS.map((path, i) => (
             <span
-              key={i}
+              key={path}
               className={
                 "h-1.5 w-1.5 rounded-full " +
                 (i <= current ? "bg-primary" : "bg-border")
