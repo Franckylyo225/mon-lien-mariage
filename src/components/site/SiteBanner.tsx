@@ -5,6 +5,7 @@ import {
   bannerDismissKey,
   bannerTargets,
   fetchActiveBanner,
+  resolveBannerHref,
   type SiteBanner as Banner,
   type SiteBannerAudience,
   type SiteBannerVariant,
@@ -72,6 +73,7 @@ export function SiteBanner({
   return (
     <BannerBar
       banner={banner}
+      href={resolveBannerHref(banner, surface)}
       className={className}
       onClose={
         banner.isDismissible
@@ -91,17 +93,22 @@ export function SiteBanner({
  * publier, afin que l'aperçu ne puisse pas dériver du rendu réel.
  *
  * Sans `onClose`, aucune croix n'est rendue — un aperçu ne se ferme pas.
+ * Sans `href`, l'adresse configurée est suivie telle quelle ; les surfaces du
+ * site passent celle que `resolveBannerHref` a résolue pour elles.
  */
 export function BannerBar({
   banner,
+  href,
   onClose,
   className,
 }: {
   banner: Banner;
+  href?: string | null;
   onClose?: () => void;
   className?: string;
 }) {
   const tone = TONES[banner.variant];
+  const target = href === undefined ? banner.linkHref : href;
 
   return (
     <aside
@@ -116,13 +123,13 @@ export function BannerBar({
         <span aria-hidden className={cn("size-1.5 shrink-0 rounded-full", tone.dot)} />
         <p className="min-w-0 flex-1 leading-snug">
           {banner.message}
-          {banner.linkHref && banner.linkLabel ? (
+          {target && banner.linkLabel ? (
             <>
               {" "}
               {/* Lien brut plutôt que <Link> : la cible vient de la base, elle
                   n'est pas connue du routeur à la compilation. */}
               <a
-                href={banner.linkHref}
+                href={target}
                 className={cn("font-semibold underline underline-offset-2", tone.link)}
               >
                 {banner.linkLabel}

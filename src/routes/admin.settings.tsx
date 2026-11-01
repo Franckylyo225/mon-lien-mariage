@@ -12,7 +12,11 @@ import {
   deleteSiteBanner,
 } from "@/lib/admin.functions";
 import { BannerBar } from "@/components/site/SiteBanner";
-import type { SiteBannerAudience, SiteBannerVariant } from "@/lib/site-banner";
+import {
+  resolveBannerHref,
+  type SiteBannerAudience,
+  type SiteBannerVariant,
+} from "@/lib/site-banner";
 
 export const Route = createFileRoute("/admin/settings")({
   component: AdminSettings,
@@ -810,6 +814,18 @@ function BannerForm({
   const fieldClass =
     "w-full rounded-lg border border-border/60 bg-white px-3 py-2 outline-none focus:ring-2 focus:ring-primary/40";
 
+  const previewBanner = {
+    id: "apercu",
+    message: form.message.trim() || "Votre message apparaîtra ici",
+    linkLabel: form.link_label.trim() || null,
+    linkHref: form.link_href.trim() || null,
+    variant: form.variant,
+    audience: form.audience,
+    isDismissible: form.is_dismissible,
+    updatedAt: "",
+  };
+  const appHref = resolveBannerHref(previewBanner, "connectes");
+
   return (
     <div className="mb-4 rounded-xl border border-border/60 bg-neutral-50/50 p-4">
       <p className="mb-3 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
@@ -818,20 +834,20 @@ function BannerForm({
 
       {/* Aperçu rendu par le composant du site : ce que voit l'administrateur
           est exactement ce que verront les visiteurs. */}
-      <div className="mb-4 overflow-hidden rounded-lg border border-border/60">
-        <BannerBar
-          banner={{
-            id: "apercu",
-            message: form.message.trim() || "Votre message apparaîtra ici",
-            linkLabel: form.link_label.trim() || null,
-            linkHref: form.link_href.trim() || null,
-            variant: form.variant,
-            audience: form.audience,
-            isDismissible: form.is_dismissible,
-            updatedAt: "",
-          }}
-        />
+      <div className="mb-2 overflow-hidden rounded-lg border border-border/60">
+        <BannerBar banner={previewBanner} />
       </div>
+
+      {/* La traduction du lien pour l'espace connecté serait invisible sans
+          cela : un lien vers l'inscription y mène ailleurs, exprès. */}
+      {appHref && appHref !== previewBanner.linkHref ? (
+        <p className="mb-4 text-[11px] text-muted-foreground">
+          Dans l'espace connecté, ce lien mènera à <span className="font-mono">{appHref}</span> —
+          l'inscription n'a pas de sens pour qui a déjà un compte.
+        </p>
+      ) : (
+        <div className="mb-4" />
+      )}
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <label className="text-sm sm:col-span-2">

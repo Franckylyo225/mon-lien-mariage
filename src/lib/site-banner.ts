@@ -78,6 +78,41 @@ export async function fetchActiveBanner(): Promise<SiteBanner | null> {
   };
 }
 
+/**
+ * Équivalent connecté des chemins réservés aux visiteurs déconnectés.
+ *
+ * Un bandeau n'a qu'une adresse, et elle est écrite pour la vitrine : une
+ * promotion sur les publications renvoie à l'inscription. Servie telle quelle
+ * dans le tableau de bord, elle éjecterait de son espace quelqu'un qui a déjà
+ * un compte — alors que c'est précisément la personne qui va payer. Chaque
+ * chemin d'entrée est donc traduit en l'action qui lui correspond une fois
+ * connecté.
+ */
+const SIGNED_IN_EQUIVALENT: Record<string, string> = {
+  "/signup": "/publish",
+  "/login": "/dashboard",
+  "/verify-email": "/dashboard",
+  "/forgot-password": "/dashboard",
+  "/reset-password": "/dashboard",
+};
+
+/**
+ * L'adresse à suivre depuis la surface qui affiche le bandeau. Les liens
+ * externes et les chemins qui valent pour les deux surfaces passent intacts.
+ */
+export function resolveBannerHref(
+  banner: SiteBanner,
+  surface: Exclude<SiteBannerAudience, "tous">,
+): string | null {
+  const href = banner.linkHref;
+  if (!href || surface === "visiteurs") return href;
+  // Seuls les chemins internes sont traduits ; une URL absolue reste la cible
+  // voulue, où qu'on clique.
+  if (!href.startsWith("/")) return href;
+  const pathname = href.split(/[?#]/)[0].replace(/\/$/, "") || "/";
+  return SIGNED_IN_EQUIVALENT[pathname] ?? href;
+}
+
 /** Vrai si ce bandeau s'adresse à la surface qui l'affiche. */
 export function bannerTargets(
   banner: SiteBanner,
