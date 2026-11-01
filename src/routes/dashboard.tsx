@@ -11,6 +11,7 @@ import { PageChromeProvider, usePageChrome } from "@/lib/page-chrome";
 import { AutosaveProvider } from "@/lib/autosave-context";
 import { registerDashboardServiceWorker } from "@/components/pwa/pwa-install";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SiteBanner } from "@/components/site/SiteBanner";
 import { cn } from "@/lib/utils";
 
 const InstallPrompt = lazy(() =>
@@ -210,6 +211,10 @@ function DashboardChrome({
         onBack={options.backTo ? () => navigate({ to: options.backTo! }) : undefined}
         backLabel={options.backLabel}
       />
+
+      {/* Sous l'en-tête, et jamais dans l'éditeur de page : une annonce n'a pas
+          à s'intercaler dans un écran immersif ni en cours d'édition. */}
+      {!editing && !immersive ? <SiteBanner surface="connectes" /> : null}
 
       <main
         className={cn(

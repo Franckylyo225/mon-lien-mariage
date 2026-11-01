@@ -2,12 +2,17 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Ticket, Info, Mail, Plus, Pencil, Trash, LoaderCircle } from "lucide-react";
+import { Ticket, Info, Mail, Megaphone, Plus, Pencil, Trash, LoaderCircle } from "lucide-react";
 import {
   listPromoCodes,
   upsertPromoCode,
   deletePromoCode,
+  listSiteBanners,
+  upsertSiteBanner,
+  deleteSiteBanner,
 } from "@/lib/admin.functions";
+import { BannerBar } from "@/components/site/SiteBanner";
+import type { SiteBannerAudience, SiteBannerVariant } from "@/lib/site-banner";
 
 export const Route = createFileRoute("/admin/settings")({
   component: AdminSettings,
@@ -66,7 +71,9 @@ function formatDate(iso: string | null): string {
   const d = new Date(iso);
   return Number.isNaN(d.getTime())
     ? "—"
-    : new Intl.DateTimeFormat("fr-FR", { day: "2-digit", month: "short", year: "numeric" }).format(d);
+    : new Intl.DateTimeFormat("fr-FR", { day: "2-digit", month: "short", year: "numeric" }).format(
+        d,
+      );
 }
 
 function AdminSettings() {
@@ -191,6 +198,8 @@ function AdminSettings() {
         </p>
       </div>
 
+      <BannerSection />
+
       {/* ---------- Codes promo ---------- */}
       <section className="rounded-2xl border border-border/60 bg-white p-5 shadow-sm">
         <div className="mb-4 flex items-start justify-between gap-3">
@@ -251,7 +260,8 @@ function AdminSettings() {
               </thead>
               <tbody>
                 {rows.map((row) => {
-                  const expired = row.valid_until && new Date(row.valid_until).getTime() < Date.now();
+                  const expired =
+                    row.valid_until && new Date(row.valid_until).getTime() < Date.now();
                   const exhausted = row.max_uses !== null && row.uses >= row.max_uses;
                   const status = !row.is_active
                     ? { label: "Inactif", cls: "bg-neutral-100 text-neutral-600" }
@@ -357,8 +367,7 @@ function AdminSettings() {
             <span className="font-mono">24 900 XOF</span>
           </li>
           <li>
-            <span className="text-muted-foreground">Devise :</span>{" "}
-            <span>Franc CFA (XOF)</span>
+            <span className="text-muted-foreground">Devise :</span> <span>Franc CFA (XOF)</span>
           </li>
           <li>
             <span className="text-muted-foreground">Paiement en ligne :</span>{" "}
@@ -477,6 +486,485 @@ function PromoForm({
         <button
           onClick={onSubmit}
           disabled={busy}
+          className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-[12px] font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
+        >
+          {busy ? <LoaderCircle className="animate-spin" size={14} /> : null}
+          {form.id ? "Enregistrer" : "Créer"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------------- */
+/* Bandeau d'information                                                     */
+/* ------------------------------------------------------------------------- */
+
+type BannerRow = {
+  id: string;
+  message: string;
+  link_label: string | null;
+  link_href: string | null;
+  variant: SiteBannerVariant;
+  audience: SiteBannerAudience;
+  is_dismissible: boolean;
+  is_active: boolean;
+  starts_at: string | null;
+  ends_at: string | null;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+type BannerFormState = {
+  id?: string;
+  message: string;
+  link_label: string;
+  link_href: string;
+  variant: SiteBannerVariant;
+  audience: SiteBannerAudience;
+  is_dismissible: boolean;
+  is_active: boolean;
+  starts_at: string;
+  ends_at: string;
+  notes: string;
+};
+
+/**
+ * Une fin saisie au jour couvre ce jour en entier. Sans cela, « jusqu'au
+ * 30 novembre » retirerait le bandeau dès l'entrée dans le 30. La Côte
+ * d'Ivoire étant à UTC+0, la fin de journée UTC est bien la fin de journée
+ * locale.
+ */
+function endOfInputDate(v: string): string | null {
+  if (!v) return null;
+  const d = new Date(`${v}T23:59:59.999Z`);
+  return Number.isNaN(d.getTime()) ? null : d.toISOString();
+}
+
+const EMPTY_BANNER: BannerFormState = {
+  message: "",
+  link_label: "",
+  link_href: "",
+  variant: "promo",
+  audience: "tous",
+  is_dismissible: true,
+  is_active: false,
+  starts_at: "",
+  ends_at: "",
+  notes: "",
+};
+
+const VARIANT_LABELS: Record<SiteBannerVariant, string> = {
+  promo: "Promotion",
+  info: "Information",
+  alerte: "Alerte",
+};
+
+const AUDIENCE_LABELS: Record<SiteBannerAudience, string> = {
+  tous: "Tout le monde",
+  visiteurs: "Vitrine seulement",
+  connectes: "Espace connecté seulement",
+};
+
+/** Un seul bandeau s'affiche : le plus récemment modifié parmi les actifs. */
+function isLive(row: BannerRow, rows: BannerRow[]): boolean {
+  if (!row.is_active) return false;
+  const now = Date.now();
+  const started = !row.starts_at || Date.parse(row.starts_at) <= now;
+  const ended = row.ends_at ? Date.parse(row.ends_at) <= now : false;
+  if (!started || ended) return false;
+  const winner = rows.find((r) => {
+    if (!r.is_active) return false;
+    const s = !r.starts_at || Date.parse(r.starts_at) <= now;
+    const e = r.ends_at ? Date.parse(r.ends_at) <= now : false;
+    return s && !e;
+  });
+  return winner?.id === row.id;
+}
+
+function BannerSection() {
+  const list = useServerFn(listSiteBanners);
+  const upsert = useServerFn(upsertSiteBanner);
+  const remove = useServerFn(deleteSiteBanner);
+  const [rows, setRows] = useState<BannerRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [form, setForm] = useState<BannerFormState>(EMPTY_BANNER);
+  const [editing, setEditing] = useState(false);
+
+  const refresh = async () => {
+    setLoading(true);
+    try {
+      setRows((await list()) as BannerRow[]);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Chargement impossible.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void refresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const cancel = () => {
+    setEditing(false);
+    setForm(EMPTY_BANNER);
+  };
+
+  const startEdit = (row: BannerRow) => {
+    setForm({
+      id: row.id,
+      message: row.message,
+      link_label: row.link_label ?? "",
+      link_href: row.link_href ?? "",
+      variant: row.variant,
+      audience: row.audience,
+      is_dismissible: row.is_dismissible,
+      is_active: row.is_active,
+      starts_at: toInputDate(row.starts_at),
+      ends_at: toInputDate(row.ends_at),
+      notes: row.notes ?? "",
+    });
+    setEditing(true);
+  };
+
+  const payloadOf = (f: BannerFormState) => ({
+    id: f.id,
+    message: f.message,
+    link_label: f.link_label.trim() || null,
+    link_href: f.link_href.trim() || null,
+    variant: f.variant,
+    audience: f.audience,
+    is_dismissible: f.is_dismissible,
+    is_active: f.is_active,
+    starts_at: fromInputDate(f.starts_at),
+    ends_at: endOfInputDate(f.ends_at),
+    notes: f.notes,
+  });
+
+  const submit = async () => {
+    setBusy(true);
+    try {
+      await upsert({ data: payloadOf(form) });
+      toast.success(form.id ? "Bandeau mis à jour." : "Bandeau créé.");
+      cancel();
+      await refresh();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Enregistrement impossible.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const toggle = async (row: BannerRow) => {
+    try {
+      await upsert({
+        data: {
+          id: row.id,
+          message: row.message,
+          link_label: row.link_label,
+          link_href: row.link_href,
+          variant: row.variant,
+          audience: row.audience,
+          is_dismissible: row.is_dismissible,
+          is_active: !row.is_active,
+          starts_at: row.starts_at,
+          ends_at: row.ends_at,
+          notes: row.notes,
+        },
+      });
+      await refresh();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Modification impossible.");
+    }
+  };
+
+  const del = async (row: BannerRow) => {
+    if (!confirm("Supprimer ce bandeau ?")) return;
+    try {
+      await remove({ data: { id: row.id } });
+      toast.success("Bandeau supprimé.");
+      await refresh();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Suppression impossible.");
+    }
+  };
+
+  const live = rows.find((r) => isLive(r, rows)) ?? null;
+
+  return (
+    <section className="rounded-2xl border border-border/60 bg-white p-5 shadow-sm">
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <span className="grid size-8 place-items-center rounded-full bg-rose-50 text-rose-700">
+            <Megaphone size={16} />
+          </span>
+          <div>
+            <h2 className="font-serif text-lg">Bandeau d'information</h2>
+            <p className="text-[12px] text-muted-foreground">
+              {live
+                ? "Un bandeau est en ligne, en tête de la vitrine et de l'espace connecté."
+                : "Aucun bandeau en ligne."}
+            </p>
+          </div>
+        </div>
+        {!editing ? (
+          <button
+            onClick={() => {
+              setForm(EMPTY_BANNER);
+              setEditing(true);
+            }}
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-2 text-[12px] font-medium text-primary-foreground transition hover:opacity-90"
+          >
+            <Plus size={14} />
+            Nouveau bandeau
+          </button>
+        ) : null}
+      </div>
+
+      {editing ? (
+        <BannerForm form={form} setForm={setForm} onCancel={cancel} onSubmit={submit} busy={busy} />
+      ) : null}
+
+      {loading ? (
+        <div className="grid place-items-center py-10 text-sm text-muted-foreground">
+          <LoaderCircle className="animate-spin" size={18} />
+        </div>
+      ) : rows.length === 0 ? (
+        <p className="rounded-xl border border-dashed border-border/60 bg-neutral-50 px-4 py-6 text-center text-sm text-muted-foreground">
+          Aucun bandeau pour le moment.
+        </p>
+      ) : (
+        <ul className="space-y-2.5">
+          {rows.map((row) => {
+            const onAir = isLive(row, rows);
+            return (
+              <li key={row.id} className="rounded-xl border border-border/60 p-3.5">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium">{row.message}</p>
+                    <p className="mt-0.5 text-[11px] text-muted-foreground">
+                      {VARIANT_LABELS[row.variant]} · {AUDIENCE_LABELS[row.audience]}
+                      {row.ends_at ? ` · jusqu'au ${formatDate(row.ends_at)}` : ""}
+                      {row.is_dismissible ? " · masquable" : " · non masquable"}
+                    </p>
+                    {row.notes ? (
+                      <p className="mt-0.5 text-[11px] text-muted-foreground/80">{row.notes}</p>
+                    ) : null}
+                  </div>
+                  <div className="flex shrink-0 items-center gap-1">
+                    <button
+                      onClick={() => toggle(row)}
+                      title="Activer / désactiver"
+                      className={`rounded-full px-2 py-0.5 text-[11px] transition ${
+                        onAir
+                          ? "bg-emerald-50 text-emerald-700"
+                          : row.is_active
+                            ? "bg-amber-50 text-amber-700"
+                            : "bg-neutral-100 text-neutral-600"
+                      }`}
+                    >
+                      {onAir ? "En ligne" : row.is_active ? "Programmé" : "Inactif"}
+                    </button>
+                    <button
+                      onClick={() => startEdit(row)}
+                      className="grid size-8 place-items-center rounded-full text-muted-foreground transition hover:bg-neutral-100 hover:text-foreground"
+                      title="Modifier"
+                    >
+                      <Pencil size={15} />
+                    </button>
+                    <button
+                      onClick={() => del(row)}
+                      className="grid size-8 place-items-center rounded-full text-red-600 transition hover:bg-red-50"
+                      title="Supprimer"
+                    >
+                      <Trash size={15} />
+                    </button>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+function BannerForm({
+  form,
+  setForm,
+  onCancel,
+  onSubmit,
+  busy,
+}: {
+  form: BannerFormState;
+  setForm: (f: BannerFormState) => void;
+  onCancel: () => void;
+  onSubmit: () => void;
+  busy: boolean;
+}) {
+  const fieldClass =
+    "w-full rounded-lg border border-border/60 bg-white px-3 py-2 outline-none focus:ring-2 focus:ring-primary/40";
+
+  return (
+    <div className="mb-4 rounded-xl border border-border/60 bg-neutral-50/50 p-4">
+      <p className="mb-3 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+        {form.id ? "Modifier le bandeau" : "Nouveau bandeau"}
+      </p>
+
+      {/* Aperçu rendu par le composant du site : ce que voit l'administrateur
+          est exactement ce que verront les visiteurs. */}
+      <div className="mb-4 overflow-hidden rounded-lg border border-border/60">
+        <BannerBar
+          banner={{
+            id: "apercu",
+            message: form.message.trim() || "Votre message apparaîtra ici",
+            linkLabel: form.link_label.trim() || null,
+            linkHref: form.link_href.trim() || null,
+            variant: form.variant,
+            audience: form.audience,
+            isDismissible: form.is_dismissible,
+            updatedAt: "",
+          }}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <label className="text-sm sm:col-span-2">
+          <span className="mb-1 block text-[11px] text-muted-foreground">
+            Message ({form.message.trim().length}/180)
+          </span>
+          <input
+            value={form.message}
+            onChange={(e) => setForm({ ...form, message: e.target.value })}
+            placeholder="Ex : -40 % sur toutes les publications"
+            maxLength={180}
+            className={fieldClass}
+          />
+        </label>
+        <label className="text-sm">
+          <span className="mb-1 block text-[11px] text-muted-foreground">
+            Libellé du lien (optionnel)
+          </span>
+          <input
+            value={form.link_label}
+            onChange={(e) => setForm({ ...form, link_label: e.target.value })}
+            placeholder="En profiter"
+            maxLength={40}
+            className={fieldClass}
+          />
+        </label>
+        <label className="text-sm">
+          <span className="mb-1 block text-[11px] text-muted-foreground">
+            Adresse du lien (/ ou https://)
+          </span>
+          <input
+            value={form.link_href}
+            onChange={(e) => setForm({ ...form, link_href: e.target.value })}
+            placeholder="/signup"
+            className={fieldClass}
+          />
+        </label>
+        <label className="text-sm">
+          <span className="mb-1 block text-[11px] text-muted-foreground">Ton</span>
+          <select
+            value={form.variant}
+            onChange={(e) => setForm({ ...form, variant: e.target.value as SiteBannerVariant })}
+            className={fieldClass}
+          >
+            {(Object.keys(VARIANT_LABELS) as SiteBannerVariant[]).map((v) => (
+              <option key={v} value={v}>
+                {VARIANT_LABELS[v]}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="text-sm">
+          <span className="mb-1 block text-[11px] text-muted-foreground">Audience</span>
+          <select
+            value={form.audience}
+            onChange={(e) => setForm({ ...form, audience: e.target.value as SiteBannerAudience })}
+            className={fieldClass}
+          >
+            {(Object.keys(AUDIENCE_LABELS) as SiteBannerAudience[]).map((a) => (
+              <option key={a} value={a}>
+                {AUDIENCE_LABELS[a]}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="text-sm">
+          <span className="mb-1 block text-[11px] text-muted-foreground">
+            Début (vide = tout de suite)
+          </span>
+          <input
+            type="date"
+            value={form.starts_at}
+            onChange={(e) => setForm({ ...form, starts_at: e.target.value })}
+            className={fieldClass}
+          />
+        </label>
+        <label className="text-sm">
+          <span className="mb-1 block text-[11px] text-muted-foreground">
+            Fin (vide = sans limite)
+          </span>
+          <input
+            type="date"
+            value={form.ends_at}
+            onChange={(e) => setForm({ ...form, ends_at: e.target.value })}
+            className={fieldClass}
+          />
+        </label>
+        <label className="text-sm">
+          <span className="mb-1 block text-[11px] text-muted-foreground">Statut</span>
+          <select
+            value={form.is_active ? "1" : "0"}
+            onChange={(e) => setForm({ ...form, is_active: e.target.value === "1" })}
+            className={fieldClass}
+          >
+            <option value="1">Actif</option>
+            <option value="0">Inactif</option>
+          </select>
+        </label>
+        <label className="text-sm">
+          <span className="mb-1 block text-[11px] text-muted-foreground">
+            Le visiteur peut le masquer
+          </span>
+          <select
+            value={form.is_dismissible ? "1" : "0"}
+            onChange={(e) => setForm({ ...form, is_dismissible: e.target.value === "1" })}
+            className={fieldClass}
+          >
+            <option value="1">Oui</option>
+            <option value="0">Non</option>
+          </select>
+        </label>
+        <label className="text-sm sm:col-span-2">
+          <span className="mb-1 block text-[11px] text-muted-foreground">Notes internes</span>
+          <input
+            value={form.notes}
+            onChange={(e) => setForm({ ...form, notes: e.target.value })}
+            placeholder="Ex : campagne de lancement novembre"
+            className={fieldClass}
+          />
+        </label>
+      </div>
+
+      <div className="mt-4 flex justify-end gap-2">
+        <button
+          onClick={onCancel}
+          disabled={busy}
+          className="rounded-full border border-border/60 bg-white px-4 py-2 text-[12px] font-medium transition hover:bg-neutral-50"
+        >
+          Annuler
+        </button>
+        <button
+          onClick={onSubmit}
+          disabled={busy || !form.message.trim()}
           className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-[12px] font-medium text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
         >
           {busy ? <LoaderCircle className="animate-spin" size={14} /> : null}

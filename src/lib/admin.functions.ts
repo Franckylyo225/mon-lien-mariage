@@ -622,6 +622,132 @@ export const deletePromoCode = createServerFn({ method: "POST" })
 
 
 // ---------------------------------------------------------------------------
+// Bandeau d'information
+// ---------------------------------------------------------------------------
+
+const BANNER_SELECT =
+  "id, message, link_label, link_href, variant, audience, is_dismissible, is_active, starts_at, ends_at, notes, created_at, updated_at";
+
+const BANNER_VARIANTS = ["promo", "info", "alerte"];
+const BANNER_AUDIENCES = ["tous", "visiteurs", "connectes"];
+
+interface BannerUpsertInput {
+  id?: string;
+  message: string;
+  link_label: string | null;
+  link_href: string | null;
+  variant: string;
+  audience: string;
+  is_dismissible: boolean;
+  is_active: boolean;
+  starts_at: string | null;
+  ends_at: string | null;
+  notes: string | null;
+}
+
+/**
+ * Les mêmes règles que les contraintes de la table, rejouées ici pour rendre
+ * un message lisible plutôt qu'une erreur Postgres.
+ */
+function validateBannerInput(data: BannerUpsertInput) {
+  const message = (data.message || "").trim();
+  if (!message) throw new Error("Le message est obligatoire.");
+  if (message.length > 180) {
+    throw new Error("Message trop long (180 caractères maximum).");
+  }
+  if (!BANNER_VARIANTS.includes(data.variant)) throw new Error("Ton invalide.");
+  if (!BANNER_AUDIENCES.includes(data.audience)) throw new Error("Audience invalide.");
+
+  const label = data.link_label?.trim() || null;
+  const href = data.link_href?.trim() || null;
+  if (Boolean(label) !== Boolean(href)) {
+    throw new Error("Un lien demande un libellé et une adresse.");
+  }
+  // Un href rendu sur toutes les pages : chemin interne ou https, rien d'autre.
+  if (href && !/^(\/|https:\/\/)/.test(href)) {
+    throw new Error("Le lien doit commencer par « / » ou « https:// ».");
+  }
+
+  const starts = data.starts_at || null;
+  const ends = data.ends_at || null;
+  if (starts && ends && Date.parse(ends) <= Date.parse(starts)) {
+    throw new Error("La fin doit suivre le début.");
+  }
+
+  return { message, label, href, starts, ends };
+}
+
+export const listSiteBanners = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { data, error } = await context.supabase
+      .from("site_banners")
+      .select(BANNER_SELECT)
+      .order("updated_at", { ascending: false });
+    if (error) {
+      // Le code peut être déployé avant que la migration ne soit appliquée :
+      // dire laquelle manque vaut mieux qu'un message de cache de schéma.
+      if (error.code === "PGRST205" || /site_banners/.test(error.message)) {
+        throw new Error(
+          "La table site_banners est absente : la migration n'a pas été appliquée sur cette base.",
+        );
+      }
+      throw new Error(error.message);
+    }
+    return data ?? [];
+  });
+
+export const upsertSiteBanner = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: BannerUpsertInput) => data)
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { message, label, href, starts, ends } = validateBannerInput(data);
+    const supabaseAdmin = context.supabase;
+
+    const payload = {
+      message,
+      link_label: label,
+      link_href: href,
+      variant: data.variant,
+      audience: data.audience,
+      is_dismissible: data.is_dismissible,
+      is_active: data.is_active,
+      starts_at: starts,
+      ends_at: ends,
+      notes: data.notes?.trim() ? data.notes.trim() : null,
+    };
+
+    if (data.id) {
+      const { error } = await supabaseAdmin
+        .from("site_banners")
+        .update(payload as never)
+        .eq("id", data.id);
+      if (error) throw new Error(error.message);
+      return { ok: true, id: data.id };
+    }
+
+    const { data: inserted, error } = await supabaseAdmin
+      .from("site_banners")
+      .insert(payload as never)
+      .select("id")
+      .single();
+    if (error) throw new Error(error.message);
+    return { ok: true, id: (inserted as { id: string }).id };
+  });
+
+export const deleteSiteBanner = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { id: string }) => data)
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { error } = await context.supabase.from("site_banners").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+// ---------------------------------------------------------------------------
 // Blog
 // ---------------------------------------------------------------------------
 

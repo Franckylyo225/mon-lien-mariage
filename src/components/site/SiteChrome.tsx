@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { openConsentPreferences } from "@/lib/consent";
+import { SiteBanner } from "@/components/site/SiteBanner";
 import logoFull from "@/assets/logo-moninvit.png.asset.json";
 
 const NAV = [
@@ -54,173 +55,178 @@ export function SiteHeader() {
   }, [open]);
 
   return (
-    <header
-      className="sticky top-0 z-50 border-b border-[#F4EFF0] backdrop-blur-[10px]"
-      style={{ background: "rgba(255,255,255,0.92)" }}
-    >
-      <div className="mx-auto flex h-[74px] max-w-6xl items-center justify-between gap-3 px-5">
-        <Link to="/" aria-label="moninvit.com — accueil" className="shrink-0">
-          <Logo />
-        </Link>
-
-        <nav aria-label="Navigation principale" className="hidden items-center gap-1 md:flex">
-          {NAV.map((n) => {
-            const hash = "hash" in n ? n.hash : undefined;
-            const active = isActive(pathname, n.to, hash);
-            return (
-              <Link
-                key={n.label}
-                to={n.to}
-                hash={hash}
-                onClick={() => {
-                  if (hash && pathname === n.to) scrollToHash(hash);
-                }}
-                aria-current={active ? "page" : undefined}
-                className={
-                  "rounded-full px-3 py-2 font-[family-name:var(--font-brand-ui)] text-sm font-semibold transition " +
-                  (active ? "text-[#E82050]" : "text-[#3D3437] hover:text-[#E82050]")
-                }
-              >
-                {n.label}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="flex items-center gap-2">
-          <Link
-            to="/login"
-            className="hidden font-[family-name:var(--font-brand-ui)] text-sm font-semibold text-[#3D3437] transition hover:text-[#E82050] sm:inline-block"
-          >
-            Se connecter
-          </Link>
-          <Link
-            to="/signup"
-            className="btn-framboise hidden px-[22px] py-[11px] text-sm sm:inline-flex"
-          >
-            Commencer →
-          </Link>
-
-          <button
-            type="button"
-            aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
-            aria-expanded={open}
-            aria-controls="mobile-menu"
-            onClick={() => setOpen((v) => !v)}
-            className="grid size-11 place-items-center rounded-full text-[#201A1C] transition active:scale-95 md:hidden"
-          >
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.75"
-              strokeLinecap="round"
-              className="size-6"
-            >
-              {open ? (
-                <>
-                  <path d="M6 6l12 12" />
-                  <path d="M18 6L6 18" />
-                </>
-              ) : (
-                <>
-                  <path d="M4 7h16" />
-                  <path d="M4 12h16" />
-                  <path d="M4 17h16" />
-                </>
-              )}
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile drawer */}
-      <div
-        aria-hidden={!open}
-        onClick={() => setOpen(false)}
-        className={
-          "fixed inset-0 z-30 bg-black/35 transition-opacity duration-200 md:hidden " +
-          (open ? "opacity-100" : "pointer-events-none opacity-0")
-        }
-      />
-      <div
-        id="mobile-menu"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Menu"
-        aria-hidden={!open}
-        className={
-          "fixed inset-x-0 top-0 z-40 origin-top rounded-b-[24px] border-b border-[#F4EFF0] bg-white shadow-2xl transition-transform duration-200 ease-out md:hidden " +
-          (open ? "translate-y-0" : "-translate-y-full")
-        }
-        style={{ paddingTop: "env(safe-area-inset-top)" }}
+    <>
+      {/* Hors de l'en-tête collant : le bandeau défile avec la page au lieu de
+          manger la hauteur d'écran à chaque défilement. */}
+      <SiteBanner surface="visiteurs" />
+      <header
+        className="sticky top-0 z-50 border-b border-[#F4EFF0] backdrop-blur-[10px]"
+        style={{ background: "rgba(255,255,255,0.92)" }}
       >
-        <div className="flex items-center justify-between px-5 py-4">
-          <Logo className="h-[22px]" />
-          <button
-            type="button"
-            aria-label="Fermer le menu"
-            onClick={() => setOpen(false)}
-            className="grid size-11 place-items-center rounded-full text-[#201A1C]"
-          >
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.75"
-              strokeLinecap="round"
-              className="size-5"
-            >
-              <path d="M6 6l12 12" />
-              <path d="M18 6L6 18" />
-            </svg>
-          </button>
-        </div>
-        <nav aria-label="Navigation mobile" className="px-3 pb-5">
-          <ul className="flex flex-col">
+        <div className="mx-auto flex h-[74px] max-w-6xl items-center justify-between gap-3 px-5">
+          <Link to="/" aria-label="moninvit.com — accueil" className="shrink-0">
+            <Logo />
+          </Link>
+
+          <nav aria-label="Navigation principale" className="hidden items-center gap-1 md:flex">
             {NAV.map((n) => {
               const hash = "hash" in n ? n.hash : undefined;
+              const active = isActive(pathname, n.to, hash);
               return (
-                <li key={n.label}>
-                  <Link
-                    to={n.to}
-                    hash={hash}
-                    onClick={() => {
-                      setOpen(false);
-                      if (hash && pathname === n.to) {
-                        setTimeout(() => scrollToHash(hash), 60);
-                      }
-                    }}
-                    className="flex min-h-12 items-center rounded-2xl px-4 font-[family-name:var(--font-brand-ui)] text-[15px] font-semibold text-[#201A1C] transition hover:bg-[#FDF0F3]"
-                  >
-                    {n.label}
-                  </Link>
-                </li>
+                <Link
+                  key={n.label}
+                  to={n.to}
+                  hash={hash}
+                  onClick={() => {
+                    if (hash && pathname === n.to) scrollToHash(hash);
+                  }}
+                  aria-current={active ? "page" : undefined}
+                  className={
+                    "rounded-full px-3 py-2 font-[family-name:var(--font-brand-ui)] text-sm font-semibold transition " +
+                    (active ? "text-[#E82050]" : "text-[#3D3437] hover:text-[#E82050]")
+                  }
+                >
+                  {n.label}
+                </Link>
               );
             })}
-          </ul>
+          </nav>
 
-          <div className="mt-4 flex flex-col gap-2 border-t border-[#F4EFF0] px-1 pt-4">
-            <Link
-              to="/signup"
-              onClick={() => setOpen(false)}
-              className="btn-framboise min-h-12 px-5 text-sm"
-            >
-              Créer mon invitation →
-            </Link>
+          <div className="flex items-center gap-2">
             <Link
               to="/login"
-              onClick={() => setOpen(false)}
-              className="btn-outline-framboise min-h-12 px-5 text-sm"
+              className="hidden font-[family-name:var(--font-brand-ui)] text-sm font-semibold text-[#3D3437] transition hover:text-[#E82050] sm:inline-block"
             >
               Se connecter
             </Link>
+            <Link
+              to="/signup"
+              className="btn-framboise hidden px-[22px] py-[11px] text-sm sm:inline-flex"
+            >
+              Commencer →
+            </Link>
+
+            <button
+              type="button"
+              aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              onClick={() => setOpen((v) => !v)}
+              className="grid size-11 place-items-center rounded-full text-[#201A1C] transition active:scale-95 md:hidden"
+            >
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                className="size-6"
+              >
+                {open ? (
+                  <>
+                    <path d="M6 6l12 12" />
+                    <path d="M18 6L6 18" />
+                  </>
+                ) : (
+                  <>
+                    <path d="M4 7h16" />
+                    <path d="M4 12h16" />
+                    <path d="M4 17h16" />
+                  </>
+                )}
+              </svg>
+            </button>
           </div>
-        </nav>
-      </div>
-    </header>
+        </div>
+
+        {/* Mobile drawer */}
+        <div
+          aria-hidden={!open}
+          onClick={() => setOpen(false)}
+          className={
+            "fixed inset-0 z-30 bg-black/35 transition-opacity duration-200 md:hidden " +
+            (open ? "opacity-100" : "pointer-events-none opacity-0")
+          }
+        />
+        <div
+          id="mobile-menu"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu"
+          aria-hidden={!open}
+          className={
+            "fixed inset-x-0 top-0 z-40 origin-top rounded-b-[24px] border-b border-[#F4EFF0] bg-white shadow-2xl transition-transform duration-200 ease-out md:hidden " +
+            (open ? "translate-y-0" : "-translate-y-full")
+          }
+          style={{ paddingTop: "env(safe-area-inset-top)" }}
+        >
+          <div className="flex items-center justify-between px-5 py-4">
+            <Logo className="h-[22px]" />
+            <button
+              type="button"
+              aria-label="Fermer le menu"
+              onClick={() => setOpen(false)}
+              className="grid size-11 place-items-center rounded-full text-[#201A1C]"
+            >
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                className="size-5"
+              >
+                <path d="M6 6l12 12" />
+                <path d="M18 6L6 18" />
+              </svg>
+            </button>
+          </div>
+          <nav aria-label="Navigation mobile" className="px-3 pb-5">
+            <ul className="flex flex-col">
+              {NAV.map((n) => {
+                const hash = "hash" in n ? n.hash : undefined;
+                return (
+                  <li key={n.label}>
+                    <Link
+                      to={n.to}
+                      hash={hash}
+                      onClick={() => {
+                        setOpen(false);
+                        if (hash && pathname === n.to) {
+                          setTimeout(() => scrollToHash(hash), 60);
+                        }
+                      }}
+                      className="flex min-h-12 items-center rounded-2xl px-4 font-[family-name:var(--font-brand-ui)] text-[15px] font-semibold text-[#201A1C] transition hover:bg-[#FDF0F3]"
+                    >
+                      {n.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <div className="mt-4 flex flex-col gap-2 border-t border-[#F4EFF0] px-1 pt-4">
+              <Link
+                to="/signup"
+                onClick={() => setOpen(false)}
+                className="btn-framboise min-h-12 px-5 text-sm"
+              >
+                Créer mon invitation →
+              </Link>
+              <Link
+                to="/login"
+                onClick={() => setOpen(false)}
+                className="btn-outline-framboise min-h-12 px-5 text-sm"
+              >
+                Se connecter
+              </Link>
+            </div>
+          </nav>
+        </div>
+      </header>
+    </>
   );
 }
 
