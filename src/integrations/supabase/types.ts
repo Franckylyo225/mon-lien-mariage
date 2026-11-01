@@ -803,6 +803,54 @@ export type Database = {
           },
         ]
       }
+      site_banners: {
+        Row: {
+          audience: string
+          created_at: string
+          ends_at: string | null
+          id: string
+          is_active: boolean
+          is_dismissible: boolean
+          link_href: string | null
+          link_label: string | null
+          message: string
+          notes: string | null
+          starts_at: string | null
+          updated_at: string
+          variant: string
+        }
+        Insert: {
+          audience?: string
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean
+          is_dismissible?: boolean
+          link_href?: string | null
+          link_label?: string | null
+          message: string
+          notes?: string | null
+          starts_at?: string | null
+          updated_at?: string
+          variant?: string
+        }
+        Update: {
+          audience?: string
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean
+          is_dismissible?: boolean
+          link_href?: string | null
+          link_label?: string | null
+          message?: string
+          notes?: string | null
+          starts_at?: string | null
+          updated_at?: string
+          variant?: string
+        }
+        Relationships: []
+      }
       support_messages: {
         Row: {
           author_id: string
