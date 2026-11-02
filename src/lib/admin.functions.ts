@@ -939,8 +939,225 @@ export const adminDeleteUser = createServerFn({ method: "POST" })
     await runAdminAuthAction({ action: "delete_user", userId: data.userId });
     return { ok: true };
   });
+/* ------------------------------------------------------- campagnes email --- */
 
+interface CampaignInput {
+  key: string;
+  subject: string;
+  eyebrow: string;
+  bodyHtml: string;
+  ctaLabel: string;
+  ctaUrl: string;
+}
 
+/**
+ * Les mêmes règles que le formulaire, rejouées côté serveur : un envoi en
+ * masse ne doit pas pouvoir partir sur un contenu que seule l'interface avait
+ * validé.
+ */
+function validateCampaign(input: CampaignInput) {
+  const key = (input.key || "").trim().toLowerCase();
+  if (!/^[a-z0-9][a-z0-9-]{2,48}$/.test(key)) {
+    throw new Error(
+      "Identifiant de campagne invalide (3 à 49 caractères : minuscules, chiffres, tirets).",
+    );
+  }
+  const subject = (input.subject || "").trim();
+  if (!subject) throw new Error("L'objet est obligatoire.");
+  if (subject.length > 150) throw new Error("Objet trop long (150 caractères maximum).");
+
+  const bodyHtml = (input.bodyHtml || "").trim();
+  if (!bodyHtml) throw new Error("Le corps du message est obligatoire.");
+
+  const ctaLabel = (input.ctaLabel || "").trim();
+  const ctaUrl = (input.ctaUrl || "").trim();
+  if (Boolean(ctaLabel) !== Boolean(ctaUrl)) {
+    throw new Error("Un bouton demande un libellé et une adresse.");
+  }
+  // Une adresse absolue en https : un chemin relatif ne mène nulle part depuis
+  // une boîte mail.
+  if (ctaUrl && !/^https:\/\//.test(ctaUrl)) {
+    throw new Error("L'adresse du bouton doit commencer par « https:// ».");
+  }
+
+  return {
+    key,
+    subject,
+    eyebrow: (input.eyebrow || "").trim(),
+    bodyHtml,
+    ctaLabel,
+    ctaUrl,
+  };
+}
+
+/** Taille du segment, exclusions, et reste à envoyer pour cette campagne. */
+export const getCampaignAudience = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { segment: string; key: string }) => data)
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { resolveAudience, alreadySent, SEGMENT_LABELS } =
+      await import("@/lib/email-campaign.server");
+    const segment = (
+      data.segment in SEGMENT_LABELS ? data.segment : "tous"
+    ) as keyof typeof SEGMENT_LABELS;
+
+    const { recipients, excluded } = await resolveAudience(context.supabase, segment);
+    const key = (data.key || "").trim().toLowerCase();
+    const done = key ? await alreadySent(context.supabase, key) : new Set<string>();
+    const pending = recipients.filter((r) => !done.has(r.email));
+
+    return {
+      segment,
+      eligible: recipients.length,
+      alreadySent: recipients.length - pending.length,
+      pending: pending.length,
+      excluded,
+      // De quoi vérifier d'un coup d'œil qu'on vise les bonnes personnes.
+      sample: pending.slice(0, 5).map((r) => r.email),
+    };
+  });
+
+/**
+ * Le HTML exact qui partira, rendu par le serveur.
+ *
+ * L'aperçu passe par ici plutôt que d'être reconstruit dans le navigateur :
+ * un aperçu qui diverge du message envoyé ne sert à rien.
+ */
+export const previewCampaign = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: CampaignInput & { firstName?: string }) => data)
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const content = validateCampaign(data);
+    const { renderCampaign, campaignText } = await import("@/lib/email-campaign.server");
+    const firstName = (data.firstName || "Aïcha").trim();
+    return {
+      html: renderCampaign(content, firstName),
+      text: campaignText(content, firstName),
+      subject: content.subject,
+    };
+  });
+
+/** Un seul email, à une seule adresse, pour relecture avant l'envoi réel. */
+export const sendCampaignTest = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: CampaignInput & { email?: string }) => data)
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const content = validateCampaign(data);
+
+    const { data: profile } = await context.supabase
+      .from("profiles")
+      .select("email, user_first_name, display_name")
+      .eq("id", context.userId)
+      .maybeSingle();
+
+    const recipient = (data.email || profile?.email || "").trim().toLowerCase();
+    if (!/^\S+@\S+\.\S+$/.test(recipient)) {
+      throw new Error("Adresse de test invalide.");
+    }
+
+    const { sendCampaignTo } = await import("@/lib/email-campaign.server");
+    const [outcome] = await sendCampaignTo(
+      // L'essai ne doit pas marquer la campagne comme servie pour cette
+      // adresse, ni consommer sa clé d'idempotence : il porte sa propre clé.
+      {
+        ...content,
+        key: `${content.key}-test-${Date.now()}`,
+        subject: `[TEST] ${content.subject}`,
+      },
+      [
+        {
+          userId: context.userId,
+          email: recipient,
+          firstName:
+            profile?.user_first_name?.trim() || profile?.display_name?.trim().split(/\s+/)[0] || "",
+        },
+      ],
+    );
+    if (outcome.status === "failed") throw new Error(outcome.error || "Envoi impossible.");
+    return { ok: true, recipient };
+  });
+
+/**
+ * Envoie un lot. L'écran rappelle cette fonction jusqu'à ce que `pending`
+ * tombe à zéro, ce qui garde chaque requête courte et rend l'envoi reprenable.
+ */
+export const sendCampaignBatch = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: CampaignInput & { segment: string; limit?: number }) => data)
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const content = validateCampaign(data);
+    const { resolveAudience, alreadySent, sendCampaignTo, SEGMENT_LABELS, MAX_BATCH } =
+      await import("@/lib/email-campaign.server");
+
+    const segment = (
+      data.segment in SEGMENT_LABELS ? data.segment : "tous"
+    ) as keyof typeof SEGMENT_LABELS;
+    const limit = Math.min(Math.max(1, Math.round(data.limit ?? MAX_BATCH)), MAX_BATCH);
+
+    const { recipients } = await resolveAudience(context.supabase, segment);
+    const done = await alreadySent(context.supabase, content.key);
+    const pending = recipients.filter((r) => !done.has(r.email));
+    const batch = pending.slice(0, limit);
+
+    if (!batch.length) return { sent: 0, failed: 0, remaining: 0, failures: [] };
+
+    const outcomes = await sendCampaignTo(content, batch);
+    const sent = outcomes.filter((o) => o.status === "sent").length;
+    const failures = outcomes
+      .filter((o) => o.status === "failed")
+      .map((o) => ({ email: o.email, error: o.error ?? "" }));
+
+    return {
+      sent,
+      failed: failures.length,
+      // Un échec reste à faire : il n'est pas journalisé comme envoyé.
+      remaining: pending.length - sent,
+      failures: failures.slice(0, 10),
+    };
+  });
+
+/** Ce qui est déjà parti, toutes campagnes confondues. */
+export const listCampaignHistory = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { data, error } = await context.supabase
+      .from("email_send_log")
+      .select("template_name, status, created_at")
+      .like("template_name", "campaign-%")
+      .order("created_at", { ascending: false })
+      .limit(5000);
+    if (error) throw new Error(error.message);
+
+    const rows = (data ?? []) as {
+      template_name: string;
+      status: string;
+      created_at: string;
+    }[];
+    const byCampaign = new Map<string, { sent: number; failed: number; last: string }>();
+    for (const r of rows) {
+      // Les essais portent une clé horodatée : ils n'ont pas à peupler
+      // l'historique des campagnes réellement envoyées.
+      if (/-test-\d+$/.test(r.template_name)) continue;
+      const name = r.template_name.replace(/^campaign-/, "");
+      const agg = byCampaign.get(name) ?? {
+        sent: 0,
+        failed: 0,
+        last: r.created_at,
+      };
+      if (r.status === "sent") agg.sent += 1;
+      else agg.failed += 1;
+      if (r.created_at > agg.last) agg.last = r.created_at;
+      byCampaign.set(name, agg);
+    }
+    return [...byCampaign.entries()]
+      .map(([key, v]) => ({ key, ...v }))
+      .sort((a, b) => (a.last < b.last ? 1 : -1));
+  });
 /* ------------------------------------------------- emails automatiques --- */
 
 export interface EmailAutomationRow {

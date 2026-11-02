@@ -30,6 +30,7 @@ import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminActivityRouteImport } from './routes/admin.activity'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog'
+import { Route as AdminCampaignsRouteImport } from './routes/admin.campaigns'
 import { Route as AdminEmailsRouteImport } from './routes/admin.emails'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
@@ -181,6 +182,11 @@ const AdminActivityRoute = AdminActivityRouteImport.update({
 const AdminBlogRoute = AdminBlogRouteImport.update({
   id: '/blog',
   path: '/blog',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCampaignsRoute = AdminCampaignsRouteImport.update({
+  id: '/campaigns',
+  path: '/campaigns',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminEmailsRoute = AdminEmailsRouteImport.update({
@@ -434,6 +440,7 @@ export interface FileRoutesByFullPath {
   '/verify-email': typeof VerifyEmailRoute
   '/admin/activity': typeof AdminActivityRoute
   '/admin/blog': typeof AdminBlogRoute
+  '/admin/campaigns': typeof AdminCampaignsRoute
   '/admin/emails': typeof AdminEmailsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/payments': typeof AdminPaymentsRoute
@@ -500,6 +507,7 @@ export interface FileRoutesByTo {
   '/verify-email': typeof VerifyEmailRoute
   '/admin/activity': typeof AdminActivityRoute
   '/admin/blog': typeof AdminBlogRoute
+  '/admin/campaigns': typeof AdminCampaignsRoute
   '/admin/emails': typeof AdminEmailsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/payments': typeof AdminPaymentsRoute
@@ -569,6 +577,7 @@ export interface FileRoutesById {
   '/verify-email': typeof VerifyEmailRoute
   '/admin/activity': typeof AdminActivityRoute
   '/admin/blog': typeof AdminBlogRoute
+  '/admin/campaigns': typeof AdminCampaignsRoute
   '/admin/emails': typeof AdminEmailsRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/payments': typeof AdminPaymentsRoute
@@ -639,6 +648,7 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/admin/activity'
     | '/admin/blog'
+    | '/admin/campaigns'
     | '/admin/emails'
     | '/admin/login'
     | '/admin/payments'
@@ -705,6 +715,7 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/admin/activity'
     | '/admin/blog'
+    | '/admin/campaigns'
     | '/admin/emails'
     | '/admin/login'
     | '/admin/payments'
@@ -773,6 +784,7 @@ export interface FileRouteTypes {
     | '/verify-email'
     | '/admin/activity'
     | '/admin/blog'
+    | '/admin/campaigns'
     | '/admin/emails'
     | '/admin/login'
     | '/admin/payments'
@@ -1010,6 +1022,13 @@ declare module '@tanstack/react-router' {
       path: '/blog'
       fullPath: '/admin/blog'
       preLoaderRoute: typeof AdminBlogRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/campaigns': {
+      id: '/admin/campaigns'
+      path: '/campaigns'
+      fullPath: '/admin/campaigns'
+      preLoaderRoute: typeof AdminCampaignsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/emails': {
@@ -1333,6 +1352,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminActivityRoute: typeof AdminActivityRoute
   AdminBlogRoute: typeof AdminBlogRoute
+  AdminCampaignsRoute: typeof AdminCampaignsRoute
   AdminEmailsRoute: typeof AdminEmailsRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminPaymentsRoute: typeof AdminPaymentsRoute
@@ -1346,6 +1366,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminActivityRoute: AdminActivityRoute,
   AdminBlogRoute: AdminBlogRoute,
+  AdminCampaignsRoute: AdminCampaignsRoute,
   AdminEmailsRoute: AdminEmailsRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminPaymentsRoute: AdminPaymentsRoute,

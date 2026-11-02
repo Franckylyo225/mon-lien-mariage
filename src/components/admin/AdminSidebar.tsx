@@ -1,5 +1,17 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Users, CalendarHeart, Banknote, Mail, Activity, Settings, ArrowLeft, LifeBuoy, Newspaper } from "lucide-react";
+import {
+  LayoutDashboard,
+  Users,
+  CalendarHeart,
+  Banknote,
+  Mail,
+  Megaphone,
+  Activity,
+  Settings,
+  ArrowLeft,
+  LifeBuoy,
+  Newspaper,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -25,7 +37,10 @@ const growth: Item[] = [
   { to: "/admin/weddings", label: "Événements", Icon: CalendarHeart },
 ];
 const finance: Item[] = [{ to: "/admin/payments", label: "Paiements", Icon: Banknote }];
-const content: Item[] = [{ to: "/admin/blog", label: "Blog", Icon: Newspaper }];
+const content: Item[] = [
+  { to: "/admin/blog", label: "Blog", Icon: Newspaper },
+  { to: "/admin/campaigns", label: "Campagnes", Icon: Megaphone },
+];
 const systemItems = (supportBadge: number): Item[] => [
   { to: "/admin/support", label: "Support", Icon: LifeBuoy, badge: supportBadge },
   { to: "/admin/emails", label: "Emails", Icon: Mail },
@@ -41,7 +56,9 @@ function Section({ label, items, pathname }: { label: string; items: Item[]; pat
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((it) => {
-            const active = it.exact ? pathname === it.to : pathname === it.to || pathname.startsWith(it.to + "/");
+            const active = it.exact
+              ? pathname === it.to
+              : pathname === it.to || pathname.startsWith(it.to + "/");
             return (
               <SidebarMenuItem key={it.to}>
                 <SidebarMenuButton
@@ -53,7 +70,9 @@ function Section({ label, items, pathname }: { label: string; items: Item[]; pat
                     <span
                       className={
                         "grid size-6 shrink-0 place-items-center rounded-md transition " +
-                        (active ? "bg-primary/15 text-primary" : "bg-secondary text-muted-foreground")
+                        (active
+                          ? "bg-primary/15 text-primary"
+                          : "bg-secondary text-muted-foreground")
                       }
                     >
                       <it.Icon size={14} />
