@@ -41,9 +41,15 @@ export const logoWhiteUrl = "https://moninvit.com/media/logo-moninvit-blanc.png"
 /** Dark wordmark, kept for anything rendered on a light surface. */
 export const logoUrl = "https://moninvit.com/media/a53d13c7-logo-moninvit.png";
 
-const SERIF = 'Georgia, "Times New Roman", Times, serif';
-const SANS = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
-const MONO = '"Courier New", Courier, monospace';
+// Les noms de familles sont entre apostrophes, jamais entre guillemets
+// doubles. Ces piles sont interpolées telles quelles dans des attributs
+// style="…", eux-mêmes délimités par des guillemets doubles : un `"Segoe UI"`
+// refermait l'attribut en plein milieu et faisait tomber tout ce qui suivait,
+// dont la couleur du texte des boutons — qui devenaient illisibles. En CSS les
+// deux écritures sont équivalentes, donc l'apostrophe ne coûte rien.
+const SERIF = "Georgia, 'Times New Roman', Times, serif";
+const SANS = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
+const MONO = "'Courier New', Courier, monospace";
 
 export const fonts = { serif: SERIF, sans: SANS, mono: MONO } as const;
 
